@@ -1,5 +1,5 @@
 import { getAllSolutions, getSolutionBySlug } from "@/_solutions";
-import { SolutionItems } from "@/app/solutions/solution-items";
+import { SolutionItems } from "@/components/solution-items";
 import { GiscusComments } from "@/components/giscus-comments";
 import { PageContainer } from "@/components/page-container";
 import { Pagination } from "@/components/pagination";
