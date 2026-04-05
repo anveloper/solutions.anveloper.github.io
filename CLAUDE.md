@@ -41,9 +41,10 @@ app/                 # Next.js App Router 페이지
 ├── sitemap.ts       # sitemap.xml 생성
 ├── robots.ts        # robots.txt 생성
 ├── not-found.tsx    # 글로벌 404 페이지
-└── solutions/[slug]/ # 솔루션 상세 + 페이지네이션 (2페이지~)
+└── [slug]/          # 솔루션 상세 + 페이지네이션 (2페이지~)
 
 components/          # 재사용 컴포넌트
+├── solution-items.tsx # 솔루션 목록 아이템
 ├── ui/              # 기본 UI (Badge 등)
 ├── giscus-comments.tsx # giscus 댓글 위젯
 ├── header-logo.tsx  # 로고 텍스트 애니메이션
