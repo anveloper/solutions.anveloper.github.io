@@ -1,3 +1,0 @@
-:HL["/_next/static/chunks/0hw-q0--3.xjs.css","style"]
-:HL["/fonts/PretendardVariable-subset.woff2","font",{"crossOrigin":"anonymous","type":"font/woff2"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"solutions","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"boj-1176","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"b_-8hBNC8i4TZ2-uVUfhJ"}
