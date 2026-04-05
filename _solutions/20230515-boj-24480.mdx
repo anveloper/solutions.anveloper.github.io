@@ -1,0 +1,110 @@
+---
+title: "BOJ 24480 - 알고리즘 수업 - 깊이 우선 탐색 2"
+date: "2023-05-15"
+description: "그래프 이론, 그래프 탐색, 정렬 문제"
+tags: ["그래프 이론", "그래프 탐색", "정렬", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "24480"
+problem_url: "https://www.acmicpc.net/problem/24480"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 24480 - 알고리즘 수업 - 깊이 우선 탐색 2](https://www.acmicpc.net/problem/24480)
+
+N개의 정점, M개의 간선인 무방향 그래프에서 정점 R부터 DFS를 수행할 때, 각 정점의 방문 순서를 구하라. 인접 정점은 내림차순으로 방문한다.
+
+### 입력
+
+첫째 줄에 N, M, R, 이후 M줄에 간선이 주어진다.
+
+### 출력
+
+각 정점의 방문 순서를 출력한다 (방문하지 않으면 0).
+
+### 예제
+
+| 입력                                  | 출력                |
+| ------------------------------------- | ------------------- |
+| `5 5 1` `1 4` `1 2` `2 3` `2 4` `3 4` | `1` `4` `3` `2` `0` |
+
+## 풀이
+
+인접 리스트를 내림차순 정렬한 뒤 DFS로 방문 순서를 기록한다.
+
+1. 인접 리스트를 구성하고 각 리스트를 내림차순 정렬한다
+2. 시작 정점 R부터 DFS를 시작하며 방문 순서를 기록한다
+3. 미방문 인접 정점을 내림차순으로 방문한다
+
+**핵심 아이디어**: 24479번(오름차순)의 변형으로, 내림차순 정렬만 다르다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day463BOJ24480알고리즘수업깊이우선탐색2 {
+  static StringBuilder sb = new StringBuilder();
+  static ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+  static int[] check;
+  static int cnt;
+
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+    int n = Integer.parseInt(st.nextToken());
+    int m = Integer.parseInt(st.nextToken());
+    int r = Integer.parseInt(st.nextToken());
+
+    check = new int[n + 1];
+
+    for (int i = 0; i < n + 1; i++) {
+      graph.add(new ArrayList<Integer>());
+
+    }
+    while (m-- > 0) {
+      st = new StringTokenizer(br.readLine(), " ");
+      int u = Integer.parseInt(st.nextToken());
+      int v = Integer.parseInt(st.nextToken());
+
+      graph.get(u).add(v);
+      graph.get(v).add(u);
+    }
+
+    for (int i = 1; i < graph.size(); i++) {
+      Collections.sort(graph.get(i), Collections.reverseOrder());
+    }
+
+    cnt = 1;
+    dfs(r);
+
+    for (int i = 1; i < check.length; i++)
+      sb.append(check[i]).append("\n");
+
+    System.out.println(sb);
+  }
+
+  private static void dfs(int node) {
+    check[node] = cnt;
+    for (int i = 0; i < graph.get(node).size(); i++) {
+      int newNode = graph.get(node).get(i);
+      if (check[newNode] == 0) {
+        cnt++;
+        dfs(newNode);
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O((N + M) log N) - 정렬 + DFS
+- 공간: O(N + M)

@@ -1,0 +1,107 @@
+---
+title: "BOJ 1027 - 고층 건물"
+date: "2022-05-17"
+description: "수학, 브루트포스 알고리즘, 기하학 문제"
+tags: ["수학", "브루트포스 알고리즘", "기하학"]
+platform: "boj"
+problem_number: "1027"
+problem_url: "https://www.acmicpc.net/problem/1027"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1027 - 고층 건물](https://www.acmicpc.net/problem/1027)
+
+N개의 빌딩이 1차원 수직선 위에 나란히 서 있다. 각 빌딩은 1의 너비와 주어진 높이를 가지며, i번째 빌딩은 위치 i에 있다. 두 빌딩이 서로 보인다는 것은, 두 빌딩 꼭대기를 잇는 선분이 다른 어떤 빌딩과도 겹치지 않음을 의미한다. 각 빌딩에서 볼 수 있는 다른 빌딩의 수를 구하고, 그 중 최댓값을 출력하는 문제이다.
+
+### 입력
+
+- 첫째 줄: 빌딩의 수 N (1 이상 50 이하)
+- 둘째 줄: N개의 빌딩 높이 (1 이상 1,000,000,000 이하 정수)
+
+### 출력
+
+- 다른 빌딩이 가장 많이 보이는 빌딩에서 보이는 빌딩의 수
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `5` `1 5 3 2 4` | `4`  |
+
+## 풀이
+
+두 빌딩 꼭대기를 잇는 직선의 기울기 비교를 통해 가시성을 판단하는 브루트포스 접근이다. 기준 빌딩에서 왼쪽과 오른쪽 방향을 분리하여 탐색한다.
+
+1. 각 빌딩 i를 기준으로 왼쪽(`bfr`)과 오른쪽(`aft`) 방향을 별도로 탐색한다.
+2. 왼쪽 방향: 기준 빌딩에서 바라볼 때 기울기가 점점 작아지는(더 아래쪽) 빌딩만 보인다. 초기 기울기를 INF로 설정하고, 더 작은 기울기를 만날 때마다 카운트한다.
+3. 오른쪽 방향: 기울기가 점점 커지는(더 위쪽) 빌딩만 보인다. 초기 기울기를 -INF로 설정하고, 더 큰 기울기를 만날 때마다 카운트한다.
+4. 두 방향의 합이 기준 빌딩의 가시 빌딩 수이며, 전체 최댓값을 출력한다.
+
+**핵심 아이디어**: 빌딩 a에서 b를 바라볼 때, 중간에 어떤 빌딩 c가 시야를 가리면 a-b 직선이 c를 통과한다. 이는 a→c 기울기와 a→b 기울기를 비교하는 것으로 판단할 수 있다. 왼쪽 탐색 시 기울기가 단조 감소해야 시야가 뚫려 있음을 이용한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day99BOJ1027고층건물 {
+	static final int INF = 1_000_000_001;// 왜...? 최대값 오류가 나지?
+	static int N, ans, tmp;
+	static double l; // 기울기 tmp
+	static double[] arr; // 1_000_000_000, 접함을 구하려면
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		arr = new double[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++)
+			arr[i] = Double.parseDouble(st.nextToken());
+		for (int i = 0; i < N; i++)
+			ans = Math.max(ans, bfr(i) + aft(i));
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static int bfr(int idx) {
+		tmp = 0;
+		l = INF; // i기준 이전 빌딩이 더 낮으면 양의 기울기
+		for (int i = idx - 1; i >= 0; i--) {
+			if ((lean(i, idx)) >= l)
+				continue;
+			l = lean(i, idx);
+			tmp++;
+		}
+		return tmp;
+	}
+
+	private static int aft(int idx) {
+		tmp = 0;
+		l = -INF; // i기준 이후 빌딩이 더 낮으면 음의 기울기
+		for (int i = idx + 1; i < N; i++) {
+			if (lean(i, idx) <= l)
+				continue;
+			l = lean(i, idx);
+			tmp++;
+		}
+		return tmp;
+	}
+
+	private static double lean(int a, int b) {
+		return (arr[a] - arr[b]) / (double) (a - b);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

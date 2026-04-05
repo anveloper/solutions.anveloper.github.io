@@ -1,0 +1,85 @@
+---
+title: "BOJ 2078 - 무한이진트리"
+date: "2025-07-17"
+description: "수학 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "2078"
+problem_url: "https://www.acmicpc.net/problem/2078"
+difficulty: "실버 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2078 - 무한이진트리](https://www.acmicpc.net/problem/2078)
+
+무한 이진 트리에서 루트 (1/1)에서 분수 (A/B)까지의 경로에서 왼쪽 이동 횟수와 오른쪽 이동 횟수를 구하라. 왼쪽은 (a/b) → (a/(a+b)), 오른쪽은 (a/b) → ((a+b)/b)이다.
+
+### 입력
+
+분수의 분자 A와 분모 B가 주어진다.
+
+### 출력
+
+왼쪽 이동 횟수와 오른쪽 이동 횟수를 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `3 5` | `2 2` |
+
+## 풀이
+
+유클리드 호제법과 유사한 재귀로 경로를 역추적한다.
+
+1. A가 B보다 크면 오른쪽으로 `A/B`번 이동한 것이므로, `(A%B, B)`로 재귀한다
+2. B가 A보다 크면 왼쪽으로 `B/A`번 이동한 것이므로, `(A, B%A)`로 재귀한다
+3. A 또는 B가 0이 되면 종료한다
+
+**핵심 아이디어**: Stern-Brocot 트리의 경로는 유클리드 호제법의 연분수 전개와 동치이므로, 나눗셈으로 한 번에 여러 이동을 처리할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+pair<int, int> func(int A, int B)
+{
+  if (A == 0)
+    return make_pair(-1, 0);
+  if (B == 0)
+    return make_pair(0, -1);
+
+  if (A > B)
+  {
+    auto p = func(A % B, B);
+    return make_pair(p.first + A / B, p.second);
+  }
+  else
+  {
+    auto p = func(A, B % A);
+    return make_pair(p.first, p.second + B / A);
+  }
+}
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  int A, B;
+  cin >> A >> B;
+  auto p = func(A, B);
+  cout << p.first << ' ' << p.second;
+}
+```
+
+## 복잡도
+
+- 시간: O(log(max(A, B)))
+- 공간: O(log(max(A, B)))

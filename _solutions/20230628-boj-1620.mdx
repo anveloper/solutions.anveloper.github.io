@@ -1,0 +1,96 @@
+---
+title: "BOJ 1620 - 나는야 포켓몬 마스터 이다솜"
+date: "2023-06-28"
+description: "자료 구조, 집합과 맵, 해시를 사용한 집합과 맵 문제"
+tags: ["자료 구조", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "1620"
+problem_url: "https://www.acmicpc.net/problem/1620"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1620 - 나는야 포켓몬 마스터 이다솜](https://www.acmicpc.net/problem/1620)
+
+N개의 포켓몬 이름이 번호순으로 주어질 때, M개의 질의에 대해 번호가 입력되면 이름을, 이름이 입력되면 번호를 출력한다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. 다음 N줄에 포켓몬 이름이 번호순으로 주어진다. 다음 M줄에 질의가 주어진다.
+
+### 출력
+
+각 질의에 대해 번호 또는 이름을 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                                                                            | 출력                                |
+| ------------------------------------------------------------------------------- | ----------------------------------- |
+| `26 5` `Bulbasaur` `...` `Pikachu` `Raichu` `25` `Raichu` `3` `Pidgey` `Kakuna` | `Pikachu` `26` `Venusaur` `16` `14` |
+
+## 풀이
+
+두 개의 HashMap을 사용하여 번호→이름, 이름→번호 양방향 조회를 구현한다.
+
+1. `HashMap<Integer, String>`과 `HashMap<String, Integer>`를 생성한다
+2. N개의 포켓몬 이름을 읽으며 양쪽 맵에 저장한다
+3. M개의 질의를 읽고, 숫자인지 판별하여 해당 맵에서 조회한다
+4. isNum 함수로 문자열의 모든 문자가 숫자인지 확인한다
+
+**핵심 아이디어**: 양방향 조회를 위해 두 개의 HashMap을 사용하면 각 질의를 O(1)에 처리할 수 있다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day507BOJ1620포켓몬마스터 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String[] inputs = br.readLine().split(" ");
+    int n = Integer.parseInt(inputs[0]);
+    int m = Integer.parseInt(inputs[1]);
+
+    HashMap<Integer, String> map_int = new HashMap<>();
+    HashMap<String, Integer> map_str = new HashMap<>();
+    for (int i = 1; i <= n; i++) {
+      String name = br.readLine();
+      map_int.put(i, name);
+      map_str.put(name, i);
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 1; i <= m; i++) {
+      String tmp = br.readLine();
+      if (isNum(tmp)) {
+        sb.append(map_int.get(Integer.parseInt(tmp)) + "\n");
+      } else {
+        sb.append(map_str.get(tmp) + "\n");
+      }
+    }
+
+    System.out.println(sb);
+  }
+
+  public static boolean isNum(String str) {
+    for (int i = 0; i < str.length(); i++) {
+      if (!Character.isDigit(str.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N + M)
+- 공간: O(N)

@@ -1,0 +1,69 @@
+---
+title: "BOJ 2902 - KMP는 왜 KMP일까?"
+date: "2023-11-22"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2902"
+problem_url: "https://www.acmicpc.net/problem/2902"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2902 - KMP는 왜 KMP일까?](https://www.acmicpc.net/problem/2902)
+
+하이픈으로 구분된 단어들로 이루어진 알고리즘 이름이 주어질 때, 각 단어의 첫 글자(대문자)를 이어 붙인 약어를 구하라.
+
+### 입력
+
+하이픈(`-`)으로 구분된 단어들이 주어진다. 각 단어의 첫 글자는 대문자이다.
+
+### 출력
+
+각 단어의 첫 글자를 이어 붙인 약어를 출력한다.
+
+### 예제
+
+| 입력                 | 출력  |
+| -------------------- | ----- |
+| `Knuth-Morris-Pratt` | `KMP` |
+
+## 풀이
+
+문자열을 순회하며 대문자(A-Z)인 문자만 추출하여 이어 붙인다.
+
+1. 입력 문자열의 각 문자를 확인한다
+2. 대문자(A~Z 범위)이면 결과 문자열에 추가한다
+3. 소문자와 하이픈은 무시한다
+
+**핵심 아이디어**: 하이픈으로 구분된 각 단어의 첫 글자가 반드시 대문자이므로, 대문자만 필터링하면 약어가 완성된다.
+
+## 코드
+
+```java
+package day699;
+
+import java.util.*;
+
+public class Day655BOJ2902왜KMP {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    String str = sc.nextLine();
+    String ans = "";
+    for (int i = 0; i < str.length(); i++) {
+      if (str.charAt(i) >= 'A' && str.charAt(i) <= 'Z')
+        ans += str.charAt(i);
+    }
+    System.out.println(ans);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

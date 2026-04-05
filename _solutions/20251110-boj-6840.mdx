@@ -1,0 +1,72 @@
+---
+title: "BOJ 6840 - Who is in the middle?"
+date: "2025-11-10"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "6840"
+problem_url: "https://www.acmicpc.net/problem/6840"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6840 - Who is in the middle?](https://www.acmicpc.net/problem/6840)
+
+세 개의 정수가 주어졌을 때, 중간값(median)을 출력한다. 즉 세 수를 정렬했을 때 두 번째로 큰 수를 출력한다.
+
+### 입력
+
+- 한 줄에 세 개의 정수가 주어진다.
+
+### 출력
+
+- 세 수 중 중간값을 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `3 1 2` | `2`  |
+
+## 풀이
+
+세 수를 정렬하여 두 번째 원소를 출력한다.
+
+1. 크기 3의 배열에 세 수를 입력받는다.
+2. `std::sort`로 오름차순 정렬한다.
+3. 인덱스 1번(중간) 원소를 출력한다.
+
+**핵심 아이디어**: 세 수의 중간값은 정렬 후 `num[1]`이다. `std::sort`는 소규모 배열에서 삽입 정렬을 사용하므로 사실상 O(1)로 동작한다. 조건 분기 없이 정렬 한 번으로 해결하는 것이 가장 간결하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int num[3];
+  for (int i = 0; i < 3; i++)
+  {
+    cin >> num[i];
+  }
+  sort(num, num + 3);
+
+  cout << num[1] << endl;
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 크기(3개) 배열 정렬
+- 공간: O(1) — 크기 3의 정수 배열만 사용

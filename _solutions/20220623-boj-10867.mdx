@@ -1,0 +1,81 @@
+---
+title: "BOJ 10867 - 중복 빼고 정렬하기"
+date: "2022-06-23"
+description: "정렬 문제"
+tags: ["정렬"]
+platform: "boj"
+problem_number: "10867"
+problem_url: "https://www.acmicpc.net/problem/10867"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10867 - 중복 빼고 정렬하기](https://www.acmicpc.net/problem/10867)
+
+N개의 정수가 주어졌을 때, 중복된 수를 제거하고 오름차순으로 정렬하여 출력하는 문제이다.
+
+### 입력
+
+첫째 줄에 정수의 개수 N(1 ≤ N ≤ 100,000)이 주어진다.
+둘째 줄에 N개의 정수가 공백으로 구분되어 주어진다. 각 정수는 절댓값이 1,000,000을 넘지 않는 정수이다.
+
+### 출력
+
+중복을 제거한 뒤, 오름차순으로 정렬한 결과를 한 줄에 출력한다.
+
+### 예제
+
+| 입력            | 출력    |
+| --------------- | ------- |
+| `5` `1 3 2 1 1` | `1 2 3` |
+
+## 풀이
+
+`HashSet`으로 중복을 제거한 뒤 `ArrayList`로 변환하고 `Collections.sort()`로 정렬하는 방식으로 풀이한다.
+
+1. 입력받은 N개의 정수를 `HashSet`에 삽입하여 중복을 자동으로 제거한다.
+2. `HashSet`을 `ArrayList`로 변환한다.
+3. `Collections.sort()`로 오름차순 정렬한다.
+4. `toString()`의 출력에서 `[`, `]`, `,`를 정규식으로 제거하여 공백으로 구분된 결과를 출력한다.
+
+**핵심 아이디어**: `HashSet`의 중복 불허 특성과 `Collections.sort()`를 조합하면 별도의 중복 제거 로직 없이 간결하게 풀 수 있다. `replaceAll("[\\[\\],]", "")`로 `ArrayList.toString()` 형식을 정리한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.StringTokenizer;
+
+public class Day136BOJ10867중복빼고정렬하기SET {
+	static int N;
+	static HashSet<Integer> set;
+	static ArrayList<Integer> arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		set = new HashSet<>();
+		for (int i = 0; i < N; i++)
+			set.add(Integer.parseInt(st.nextToken()));
+		arr = new ArrayList<>(set);
+		Collections.sort(arr);
+		System.out.println(arr.toString().replaceAll("[\\[\\],]", ""));
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

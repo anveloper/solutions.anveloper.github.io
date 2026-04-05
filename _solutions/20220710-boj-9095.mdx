@@ -1,0 +1,82 @@
+---
+title: "BOJ 9095 - 1, 2, 3 더하기"
+date: "2022-07-10"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "9095"
+problem_url: "https://www.acmicpc.net/problem/9095"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9095 - 1, 2, 3 더하기](https://www.acmicpc.net/problem/9095)
+
+정수 n이 주어졌을 때, n을 1, 2, 3의 합으로 나타내는 방법의 수를 구하는 문제이다. 합을 나타내는 방법에서 순서가 다르면 다른 방법으로 계산한다.
+
+### 입력
+
+첫째 줄에 테스트 케이스의 개수 T가 주어진다. 각 테스트 케이스는 한 줄로 이루어져 있고, 정수 n이 주어진다. (1 ≤ n ≤ 10)
+
+### 출력
+
+각 테스트 케이스마다 n을 1, 2, 3의 합으로 나타내는 방법의 수를 출력한다.
+
+### 예제
+
+| 입력             | 출력           |
+| ---------------- | -------------- |
+| `3` `4` `7` `10` | `7` `44` `274` |
+
+## 풀이
+
+점화식 기반의 DP로 해결한다. `dp[i]`를 "i를 1, 2, 3의 합으로 나타내는 방법의 수"로 정의한다.
+
+1. 기저 조건 설정: `dp[1] = 1`, `dp[2] = 2`, `dp[3] = 4`
+2. 점화식: `dp[i] = dp[i-1] + dp[i-2] + dp[i-3]`
+   - i를 만드는 마지막 수가 1이면 dp[i-1]가지, 2이면 dp[i-2]가지, 3이면 dp[i-3]가지
+3. n의 최댓값이 10으로 제한되므로 미리 dp 배열을 계산해둔다
+4. 각 테스트 케이스에 대해 dp[n]을 바로 출력
+
+**핵심 아이디어**: 마지막으로 더하는 수(1, 2, 3)에 따라 이전 상태로 분기되는 단순한 점화식 DP이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day153BOJ9095DP {
+	static int N;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		StringBuilder sb = new StringBuilder();
+		int[] dp = new int[11];
+		dp[0] = 0;
+		dp[1] = 1;
+		dp[2] = 2;
+		dp[3] = 4;
+		for (int i = 4; i < 11; i++) {
+			dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+		}
+		for (int i = 0; i < N; i++) {
+			int n = Integer.parseInt(br.readLine());
+			sb.append(dp[n] + "\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N ≤ 10으로 상수)
+- 공간: O(N)

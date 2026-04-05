@@ -1,0 +1,86 @@
+---
+title: "BOJ 1822 - 차집합"
+date: "2023-10-19"
+description: "자료 구조, 정렬, 집합과 맵 문제"
+tags: ["자료 구조", "정렬", "집합과 맵", "해시를 사용한 집합과 맵", "트리를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "1822"
+problem_url: "https://www.acmicpc.net/problem/1822"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1822 - 차집합](https://www.acmicpc.net/problem/1822)
+
+집합 A와 B가 주어질 때, A - B (A에는 속하지만 B에는 속하지 않는 원소)를 구하라.
+
+### 입력
+
+첫째 줄에 A, B의 크기, 둘째 줄에 A의 원소, 셋째 줄에 B의 원소가 주어진다.
+
+### 출력
+
+차집합의 원소 수와 오름차순 원소를 출력한다.
+
+### 예제
+
+| 입력                     | 출력         |
+| ------------------------ | ------------ |
+| `4 3` `2 5 11 7` `9 7 4` | `3` `2 5 11` |
+
+## 풀이
+
+`TreeSet`에 A의 원소를 넣고 B의 원소를 제거하면 차집합이 자동으로 오름차순 정렬된다.
+
+1. A의 모든 원소를 `TreeSet`에 삽입한다
+2. B의 각 원소를 `TreeSet`에서 제거한다
+3. 남은 원소 수와 오름차순 출력한다
+
+**핵심 아이디어**: `TreeSet`은 정렬된 상태를 유지하므로 삽입/삭제/순회가 효율적이다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day622BOJ1822차집합 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    StringBuilder sb = new StringBuilder();
+
+    int A = Integer.parseInt(st.nextToken());
+    int B = Integer.parseInt(st.nextToken());
+
+    TreeSet<Integer> Aset = new TreeSet<>();
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < A; i++) {
+      Aset.add(Integer.parseInt(st.nextToken()));
+    }
+    st = new StringTokenizer(br.readLine());
+    for (int j = 0; j < B; j++) {
+      int Bnum = Integer.parseInt(st.nextToken());
+      Aset.remove(Bnum);
+    }
+
+    sb.append(Aset.size() + "\n");
+    for (Integer num : Aset) {
+      sb.append(num + " ");
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O((A+B) log A)
+- 공간: O(A)

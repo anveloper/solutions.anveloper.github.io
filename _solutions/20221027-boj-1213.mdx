@@ -1,0 +1,102 @@
+---
+title: "BOJ 1213 - 팰린드롬 만들기"
+date: "2022-10-27"
+description: "구현, 그리디 알고리즘, 문자열 문제"
+tags: ["구현", "그리디 알고리즘", "문자열", "홀짝성"]
+platform: "boj"
+problem_number: "1213"
+problem_url: "https://www.acmicpc.net/problem/1213"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1213 - 팰린드롬 만들기](https://www.acmicpc.net/problem/1213)
+
+알파벳 대문자로 이루어진 이름이 주어졌을 때, 문자 순서를 바꿔 팰린드롬을 만들어라. 불가능하면 "I'm Sorry Hansoo"를 출력하고, 가능하면 사전순으로 앞서는 것을 출력한다.
+
+### 입력
+
+첫째 줄에 알파벳 대문자로만 이루어진 이름이 주어진다 (최대 50자).
+
+### 출력
+
+팰린드롬을 출력한다. 불가능하면 `I'm Sorry Hansoo`를 출력한다.
+
+### 예제
+
+| 입력    | 출력    |
+| ------- | ------- |
+| `AABB`  | `ABBA`  |
+| `AAACC` | `ACACA` |
+
+## 풀이
+
+알파벳 빈도를 세어 팰린드롬 가능 여부를 판단하고, 가능하면 사전순으로 구성한다.
+
+1. 각 알파벳(A~Z)의 등장 횟수를 센다
+2. 홀수 번 등장하는 알파벳이 2개 이상이면 팰린드롬 불가능 → "I'm Sorry Hansoo" 출력
+3. A부터 Z 순서대로 `등장 횟수 / 2`개씩 앞쪽(prefix)에 배치한다
+4. 홀수 번 등장하는 알파벳이 있으면 가운데에 배치한다
+5. prefix + 가운데 + reverse(prefix)로 결과를 구성한다
+
+**핵심 아이디어**: 팰린드롬은 홀수 빈도 문자가 최대 1개여야 하고, A~Z 순서대로 절반씩 배치하면 자동으로 사전순 최소가 된다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day262BOJ1213팰린드롬만들기 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String line = br.readLine();
+
+		int[] arr = new int[26];
+
+		for (int i = 0; i < line.length(); i++) {
+			arr[line.charAt(i) - 'A']++;
+		}
+
+		int isOne = 0;
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] % 2 != 0)
+				isOne++;
+		}
+
+		String answer = "";
+		StringBuilder sb = new StringBuilder();
+		if (isOne > 1)
+			answer += "I'm Sorry Hansoo";
+		else {
+			for (int i = 0; i < arr.length; i++) {
+
+				for (int r = 0; r < arr[i] / 2; r++) {
+					sb.append((char) (i + 65));
+				}
+			}
+			answer += sb.toString();
+			String end = sb.reverse().toString();
+
+			sb = new StringBuilder();
+			for (int i = 0; i < arr.length; i++) {
+				if (arr[i] % 2 == 1) {
+					sb.append((char) (i + 65));
+				}
+			}
+			answer += sb.toString() + end;
+		}
+		System.out.println(answer);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

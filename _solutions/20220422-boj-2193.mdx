@@ -1,0 +1,83 @@
+---
+title: "BOJ 2193 - 이친수"
+date: "2022-04-22"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "2193"
+problem_url: "https://www.acmicpc.net/problem/2193"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2193 - 이친수](https://www.acmicpc.net/problem/2193)
+
+0과 1로만 이루어진 N자리 수 중에서 "이친수"의 개수를 구한다. 이친수는 다음 조건을 만족한다.
+
+- 0으로 시작하지 않는다.
+- 1이 연속으로 두 번 나타나지 않는다. (즉, 11이 없다)
+
+### 입력
+
+- 첫째 줄: 자릿수 N (1 이상 90 이하)
+
+### 출력
+
+- N자리 이친수의 개수
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `3`  | `3`  |
+
+## 풀이
+
+N자리 이친수의 수는 피보나치 수열과 동일한 점화식을 가진다. 탑다운 DP(메모이제이션 재귀)로 중복 계산을 제거하여 해결한다.
+
+1. `dp[n]`을 "n자리 이친수의 개수"로 정의한다.
+2. 기저 조건: `dp[1] = 1` (이친수: "1"), `dp[2] = 1` (이친수: "10")
+3. 점화식: `dp[n] = dp[n-1] + dp[n-2]`
+   - 마지막 자리가 0이면 n-1자리 이친수 뒤에 0을 붙인 경우
+   - 마지막 자리가 1이면 반드시 앞이 0이어야 하므로, n-2자리 이친수 뒤에 "01"을 붙인 경우
+4. N이 90까지이므로 `long` 타입을 사용한다.
+
+**핵심 아이디어**: "1은 연속으로 올 수 없다"는 조건 때문에 이친수의 수는 피보나치 수열을 따른다. `dp[n] = dp[n-1] + dp[n-2]`이며, N=90까지 결과가 `long` 범위에 들어온다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.util.Scanner;
+
+public class Day74BOJ2193이친수DP점화식찾기 {
+	static int N, ans;
+	static Long[] dp;
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		N = sc.nextInt();
+		ans = 0;
+		dp = new Long[N + 1];
+		System.out.println(recur(N));
+		sc.close();
+	}
+
+	private static long recur(int n) {
+		if (n < 2)
+			return dp[n] = (long) n;
+		if (dp[n] == null)
+			dp[n] = recur(n - 1) + recur(n - 2);
+		return dp[n];
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 n에 대해 한 번씩만 계산 (메모이제이션)
+- 공간: O(N) — dp 배열 크기

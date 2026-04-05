@@ -1,0 +1,92 @@
+---
+title: "BOJ 7581 - Cuboids"
+date: "2025-11-16"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "7581"
+problem_url: "https://www.acmicpc.net/problem/7581"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7581 - Cuboids](https://www.acmicpc.net/problem/7581)
+
+직육면체의 가로, 세로, 높이, 부피 중 하나가 0(미지수)일 때, 나머지 세 값으로 미지수를 구하라.
+
+### 입력
+
+여러 테스트 케이스에 네 값이 주어지며, 모두 0이면 종료한다. 하나가 0인 값이 미지수이다.
+
+### 출력
+
+각 케이스마다 네 값을 모두 채워서 출력한다.
+
+### 예제
+
+| 입력                 | 출력       |
+| -------------------- | ---------- |
+| `2 3 0 24` `0 0 0 0` | `2 3 4 24` |
+
+## 풀이
+
+0인 위치를 찾아 나머지 값들로 역산한다.
+
+1. 네 값 중 0인 위치를 기록한다
+2. 네 번째 값(부피)이 0이 아니면, 나머지 세 값의 곱으로 나누어 미지수를 구한다
+3. 네 번째 값이 있으면 부피를 알려진 세 값의 곱으로 나눈다
+4. 모든 값을 출력한다
+
+**핵심 아이디어**: `부피 = 가로 * 세로 * 높이` 관계에서 하나의 미지수를 나눗셈으로 바로 구한다.
+
+## 코드
+
+```cpp
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  while (1)
+  {
+    int zeroIdx, val = 1;
+    vector<int> len(4);
+
+    for (int i = 0; i < 4; i++)
+    {
+      cin >> len[i];
+      if (!len[i])
+        zeroIdx = i;
+    }
+
+    if (!len[0] && !len[1] && !len[2] && !len[3])
+      break;
+
+    for (int i = 0; i < 3; i++)
+      if (len[i])
+        val *= len[i];
+
+    if (len[3])
+      val = len[3] / val;
+
+    for (int i = 0; i < 4; i++)
+    {
+      if (i == zeroIdx)
+        cout << val << ' ';
+      else
+        cout << len[i] << ' ';
+    }
+    cout << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

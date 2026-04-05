@@ -1,0 +1,68 @@
+---
+title: "BOJ 6159 - Costume Party"
+date: "2025-05-30"
+description: "브루트포스 알고리즘, 정렬, 두 포인터 문제"
+tags: ["브루트포스 알고리즘", "정렬", "두 포인터"]
+platform: "boj"
+problem_number: "6159"
+problem_url: "https://www.acmicpc.net/problem/6159"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6159 - Costume Party](https://www.acmicpc.net/problem/6159)
+
+N마리 소의 크기가 주어질 때, 두 소의 크기 합이 S 이하인 쌍의 수를 구하라.
+
+### 입력
+
+소의 수 N, 제한 S와 각 소의 크기가 주어진다.
+
+### 출력
+
+조건을 만족하는 쌍의 수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `4 6` `1` `2` `3` `4` | `4`  |
+
+## 풀이
+
+정렬 후 투 포인터로 합이 S 이하인 쌍을 효율적으로 센다.
+
+1. 크기를 오름차순 정렬한다
+2. 왼쪽 포인터 i와 오른쪽 포인터 j를 설정한다
+3. `arr[i] + arr[j] > S`이면 j를 줄이고, 아니면 i~j 사이의 모든 j가 i와 쌍이 되므로 `j - i`를 더한다
+
+**핵심 아이디어**: 정렬된 배열에서 투 포인터를 사용하면 O(N)에 모든 유효 쌍을 셀 수 있다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+n, s = map(int, input().split())
+arr = sorted([int(input()) for _ in range(n)])
+
+ans = 0
+j = n - 1
+
+for i in range(n):
+    while arr[i] + arr[j] > s and i < j:
+        j -= 1
+    if i == j:
+        break
+    ans += j - i
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

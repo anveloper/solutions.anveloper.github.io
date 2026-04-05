@@ -1,0 +1,87 @@
+---
+title: "BOJ 5343 - Parity Bit"
+date: "2026-02-08"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5343"
+problem_url: "https://www.acmicpc.net/problem/5343"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5343 - Parity Bit](https://www.acmicpc.net/problem/5343)
+
+패리티 비트(Parity Bit)는 데이터 전송 오류를 감지하기 위한 비트이다. 8비트 블록에서 앞의 7비트가 데이터이고, 마지막 1비트가 패리티 비트이다. 짝수 패리티 방식에서는 앞 7비트의 `1`의 개수가 짝수가 되도록 패리티 비트를 설정한다. 입력된 비트 문자열에서 패리티 오류가 있는 블록의 수를 세어 출력한다.
+
+### 입력
+
+- 첫 줄에 테스트 케이스 수 T가 주어진다.
+- 각 케이스마다 8의 배수 길이의 이진 문자열이 주어진다.
+
+### 출력
+
+각 케이스마다 패리티 오류가 있는 8비트 블록의 수를 출력한다.
+
+### 예제
+
+| 입력                      | 출력    |
+| ------------------------- | ------- |
+| `2` `10110101` `11111110` | `0` `1` |
+
+## 풀이
+
+비트 문자열을 8개씩 나누어 각 블록의 앞 7비트의 `1` 개수와 마지막 패리티 비트를 비교하는 구현 문제이다.
+
+1. 테스트 케이스 수 T를 읽는다.
+2. 각 케이스마다 비트 문자열 `s`를 읽는다.
+3. 인덱스를 8씩 증가시키며 각 블록을 처리한다:
+   - 블록의 앞 7비트(`s[i]`~`s[i+6]`)에서 `'1'`의 개수 `cnt`를 센다.
+   - `cnt % 2`가 마지막 비트(`s[i+7]`)와 다르면 오류 카운터 `err`를 증가시킨다.
+4. `err`를 출력한다.
+
+**핵심 아이디어**: 짝수 패리티 규칙에 따라 앞 7비트의 `1` 개수의 홀짝성(`cnt % 2`)이 패리티 비트와 일치해야 한다. 불일치한 블록 수만 세면 되므로 단순한 선형 순회로 해결할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int T;
+  if (!(cin >> T)) return 0;
+
+  while (T--) {
+    string s;
+    cin >> s;
+    int err = 0;
+
+    for (size_t i = 0; i < s.size(); i += 8) {
+      int cnt = 0;
+      for (size_t j = i; j < i + 7; j++) {
+        if (s[j] == '1') cnt++;
+      }
+
+      int p = cnt % 2;
+      if (p != (s[i + 7] - '0')) {
+        err++;
+      }
+    }
+    cout << err << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T × L) — 각 케이스의 비트 문자열 길이 L만큼 순회
+- 공간: O(L) — 비트 문자열을 저장하는 문자열

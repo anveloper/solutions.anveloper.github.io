@@ -1,0 +1,88 @@
+---
+title: "BOJ 9243 - 파일 완전 삭제"
+date: "2026-01-01"
+description: "문자열, 홀짝성 문제"
+tags: ["문자열", "홀짝성"]
+platform: "boj"
+problem_number: "9243"
+problem_url: "https://www.acmicpc.net/problem/9243"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9243 - 파일 완전 삭제](https://www.acmicpc.net/problem/9243)
+
+이진 문자열에 N번 NOT 연산을 적용한 결과가 주어진 목표 문자열과 일치하는지 확인하라.
+
+### 입력
+
+연산 횟수 N, 원본 문자열, 결과 문자열이 주어진다.
+
+### 출력
+
+삭제에 성공했으면 `Deletion succeeded`, 실패했으면 `Deletion failed`를 출력한다.
+
+### 예제
+
+| 입력              | 출력                 |
+| ----------------- | -------------------- |
+| `1` `1011` `0100` | `Deletion succeeded` |
+
+## 풀이
+
+N의 홀짝성에 따라 원본과 결과가 같거나 반전인지 확인한다.
+
+1. N이 짝수이면 NOT 연산이 상쇄되므로, 원본과 결과가 같아야 성공이다
+2. N이 홀수이면 한 번 반전된 결과이므로, 모든 비트가 달라야 성공이다
+3. 한 비트라도 조건에 맞지 않으면 실패이다
+
+**핵심 아이디어**: NOT 연산은 자기 역원이므로, 홀짝성만 확인하면 N번 연산의 결과를 O(L)에 검증할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  string a, b;
+  int n;
+  cin >> n;
+  cin >> a >> b;
+  if (n % 2 == 0)
+  {
+    for (int i = 0; i < a.size(); i++)
+    {
+      if (a[i] != b[i])
+      {
+        cout << "Deletion failed" << '\n';
+        return 0;
+      }
+    }
+    cout << "Deletion succeeded" << '\n';
+  }
+  else
+  {
+    for (int i = 0; i < a.size(); i++)
+    {
+      if (a[i] == b[i])
+      {
+        cout << "Deletion failed" << '\n';
+        return 0;
+      }
+    }
+    cout << "Deletion succeeded" << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

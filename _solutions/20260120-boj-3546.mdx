@@ -1,0 +1,122 @@
+---
+title: "BOJ 3546 - Headshot"
+date: "2026-01-20"
+description: "수학, 확률론 문제"
+tags: ["수학", "확률론"]
+platform: "boj"
+problem_number: "3546"
+problem_url: "https://www.acmicpc.net/problem/3546"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3546 - Headshot](https://www.acmicpc.net/problem/3546)
+
+원형 탄창의 상태가 0(빈칸)과 1(총알)로 주어진다. 현재 칸이 비어 있을 때, 회전하는 것과 바로 쏘는 것 중 어느 쪽이 비어 있을 확률이 높은지 판별하라.
+
+### 입력
+
+0과 1로 이루어진 문자열이 주어진다.
+
+### 출력
+
+회전이 유리하면 `ROTATE`, 바로 쏘는 것이 유리하면 `SHOOT`, 같으면 `EQUAL`을 출력한다.
+
+### 예제
+
+| 입력   | 출력    |
+| ------ | ------- |
+| `0011` | `EQUAL` |
+
+## 풀이
+
+조건부 확률을 비교한다.
+
+1. `P(다음칸 비어있음 | 현재 비어있음)` = (0 다음에 0이 오는 횟수) / (0의 총 개수)
+2. `P(임의 칸 비어있음)` = (0의 총 개수) / (전체 길이)
+3. 두 확률을 교차 곱셈으로 비교한다 (분수 비교를 정수로)
+4. 전자가 크면 `ROTATE`, 후자가 크면 `SHOOT`, 같으면 `EQUAL`
+
+**핵심 아이디어**: 원형 배열에서 "0 다음 0" 연속 패턴의 비율과 전체 0의 비율을 비교하여 조건부 확률 우위를 판별한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  string strWord;
+  cin >> strWord;
+
+  int iA = 0;
+  int iB = 0;
+  int iC = 0;
+  int iD = 0;
+
+  int iN = strWord.length();
+
+  for (int i = 0; i < iN; ++i)
+  {
+    if (strWord[i] == '0')
+    {
+      ++iB;
+      if (i == iN - 1)
+      {
+        if (strWord[0] == '1')
+        {
+          ++iA;
+        }
+      }
+      else
+      {
+        if (strWord[i + 1] == '1')
+        {
+          ++iA;
+        }
+      }
+    }
+  }
+
+  for (int i = 0; i < iN; ++i)
+  {
+    if (strWord[i] == '1')
+    {
+      ++iC;
+    }
+  }
+
+  iD = iN;
+
+  if (iA * iD == iC * iB)
+  {
+    cout << "EQUAL" << "\n";
+  }
+  else if (iA * iD > iC * iB)
+  {
+    cout << "ROTATE" << "\n";
+  }
+  else
+  {
+    cout << "SHOOT" << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

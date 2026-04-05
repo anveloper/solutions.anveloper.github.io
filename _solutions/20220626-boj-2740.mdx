@@ -1,0 +1,106 @@
+---
+title: "BOJ 2740 - 행렬 곱셈"
+date: "2022-06-26"
+description: "수학, 구현, 선형대수학 문제"
+tags: ["수학", "구현", "선형대수학"]
+platform: "boj"
+problem_number: "2740"
+problem_url: "https://www.acmicpc.net/problem/2740"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2740 - 행렬 곱셈](https://www.acmicpc.net/problem/2740)
+
+N x M 행렬 A와 M x K 행렬 B가 주어질 때, 두 행렬의 곱 A x B를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 다음 N줄에 행렬 A, 다음 줄에 M, K, 다음 M줄에 행렬 B가 주어진다. N, M, K는 모두 100 이하이고 원소는 절댓값 100 이하 정수이다.
+
+### 출력
+
+N x K 행렬 A x B를 N줄에 걸쳐 출력한다. 각 원소는 공백으로 구분한다.
+
+### 예제
+
+| 입력                                          | 출력                            |
+| --------------------------------------------- | ------------------------------- |
+| `3 2` `1 2` `3 4` `5 6` `2 3` `1 2 3` `4 5 6` | `9 12 15` `19 26 33` `29 40 51` |
+
+## 풀이
+
+행렬 곱셈의 정의를 그대로 구현한다. 결과 행렬 C의 (i, j) 원소는 A의 i행과 B의 j열의 내적이다.
+
+1. N x M 행렬 A와 M x K 행렬 B를 입력받는다
+2. 3중 루프로 결과 행렬의 각 원소를 계산한다: C[i][j] = sum(A[i][k] \* B[k][j]) (k: 0~M-1)
+3. 결과를 공백으로 구분하여 출력한다
+
+**핵심 아이디어**: 행렬 곱셈의 정의를 그대로 3중 루프로 구현하며, N, M, K 모두 100 이하이므로 O(N*M*K)로 충분하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day139BOJ2740행렬곱셈 { // 2740 행렬 곱셈
+	static int N, M, K;
+	static int[][] A, B;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		A = new int[N][M];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++)
+				A[i][j] = Integer.parseInt(st.nextToken());
+
+		}
+
+		st = new StringTokenizer(br.readLine());
+
+		M = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+
+		B = new int[M][K];
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < K; j++)
+				B[i][j] = Integer.parseInt(st.nextToken());
+
+		}
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < K; j++) {
+				int sum = 0;
+				for (int k = 0; k < M; k++)
+					sum += A[i][k] * B[k][j];
+				sb.append(sum).append(' ');
+			}
+			sb.append('\n');
+		}
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N _ M _ K)
+- 공간: O(N _ K + N _ M + M \* K)

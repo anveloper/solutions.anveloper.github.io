@@ -1,0 +1,128 @@
+---
+title: "BOJ 1052 - 물병"
+date: "2022-08-07"
+description: "수학, 그리디 알고리즘, 비트마스킹 문제"
+tags: ["수학", "그리디 알고리즘", "비트마스킹"]
+platform: "boj"
+problem_number: "1052"
+problem_url: "https://www.acmicpc.net/problem/1052"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1052 - 물병](https://www.acmicpc.net/problem/1052)
+
+N리터의 물을 K개 이하의 물병에 나누어 담아야 한다. 처음에 1리터짜리 물병 N개가 있으며, 같은 크기의 물병 2개를 합쳐 2배 크기의 물병 1개로 만들 수 있다. 최소 몇 리터의 물을 더 사야 K개 이하의 물병으로 만들 수 있는지 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 10^7, 1 ≤ K ≤ 20)
+
+### 출력
+
+최솟값을 출력한다.
+
+### 예제
+
+**입력:**
+
+```
+4 2
+```
+
+**출력:**
+
+```
+0
+```
+
+**입력:**
+
+```
+3 1
+```
+
+**출력:**
+
+```
+1
+```
+
+## 풀이
+
+**핵심 아이디어:** N을 2진수로 변환하면 1인 비트의 수가 현재 물병의 수이다. N에 물을 더해(N을 증가시켜) 2진수에서 1인 비트의 수가 K 이하가 되는 최솟값을 찾는다.
+
+단계별 풀이:
+
+1. N을 2진수로 분해하여 각 비트 위치를 `flag` 리스트에 저장. 1인 비트의 수가 이미 K 이하이면 0을 출력.
+2. 가장 높은 비트 위치에서 K번째 높은 비트 위치 사이의 0인 비트들을 채워야 한다.
+3. 결과적으로 추가로 필요한 물의 양은 `flag`의 K번째 높은 비트 아래의 0 비트들을 채우는 것이다: 각 0 비트 위치 i에 대해 `2^i`를 합산.
+
+비트 관점: N의 이진 표현에서 1 비트의 수가 K 이하가 되려면, 낮은 비트의 1들을 올림(carry)으로 합쳐야 한다. 그 과정에서 필요한 최솟값을 계산한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Day181BOJ1052물병비트마스킹그리디 {
+	static int N, K, idx, ans;
+	static boolean[] check;
+	static List<Integer> flag;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String[] str = br.readLine().split(" ");
+
+		N = Integer.parseInt(str[0]);
+		K = Integer.parseInt(str[1]);
+
+		check = new boolean[24];
+		flag = new ArrayList<>();
+
+		idx = 0;
+
+		while (true) {
+			int rem = N % 2;
+			N /= 2;
+			if (rem == 1) {
+				check[idx] = true;
+				flag.add(idx);
+			}
+			if ((N + flag.size()) <= K) {
+				System.out.print(0);
+				return;
+			}
+			if (N == 1) {
+				check[idx + 1] = true;
+				flag.add(idx + 1);
+				break;
+			}
+			idx++;
+		}
+
+		ans = 1;
+		for (int i = flag.get(flag.size() - K); i >= 0; i--) {
+
+			if (!check[i]) {
+				ans += Math.pow(2, i);
+			}
+		}
+		System.out.print(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(log N) — N을 이진수로 변환하는 과정
+- 공간: O(log N) — 비트 위치 배열과 플래그 리스트

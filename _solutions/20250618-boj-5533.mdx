@@ -1,0 +1,71 @@
+---
+title: "BOJ 5533 - 유니크"
+date: "2025-06-18"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "5533"
+problem_url: "https://www.acmicpc.net/problem/5533"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5533 - 유니크](https://www.acmicpc.net/problem/5533)
+
+N명의 학생이 세 문제에 각각 점수를 받는다. 각 문제에서 자신의 점수가 다른 학생과 겹치지 않는 경우에만 그 점수를 획득한다. 각 학생의 최종 점수를 출력하는 문제다.
+
+### 입력
+
+- 첫 줄: 학생 수 N (1 ≤ N ≤ 100)
+- 다음 N줄: 각 학생의 세 문제 점수 (1 ≤ 점수 ≤ 100)
+
+### 출력
+
+각 학생의 최종 점수를 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                                       | 출력           |
+| ------------------------------------------ | -------------- |
+| `3` `100 100 100` `100 100 80` `80 100 80` | `0` `80` `100` |
+
+## 풀이
+
+각 문제별로 점수 목록을 따로 저장하고, 각 학생의 점수가 해당 문제에서 유일한지 `count` 함수로 확인한다.
+
+1. 3개의 리스트에 각 문제별 점수를 분리하여 저장한다.
+2. 각 학생 i에 대해, 문제 j(0~2)별로 `score[j][i]`가 `score[j]` 리스트에 한 번만 등장하면 그 점수를 획득 점수에 더한다.
+3. 모든 학생의 획득 점수를 순서대로 출력한다.
+
+**핵심 아이디어**: 같은 점수를 가진 학생이 둘 이상이면 해당 점수는 무효다. `list.count(x) == 1` 조건으로 유일성을 O(N) 시간에 확인한다.
+
+## 코드
+
+```python
+n = int(input())
+score = [[], [], []]
+sum = []
+
+for i in range(n):
+    a, b, c = map(int, input().split())
+    score[0].append(a)
+    score[1].append(b)
+    score[2].append(c)
+
+for i in range(n):
+    get = 0
+    for j in range(3):
+        if score[j].count(score[j][i]) == 1:
+            get += score[j][i]
+    sum.append(get)
+for i in sum:
+    print(i)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

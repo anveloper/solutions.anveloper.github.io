@@ -1,0 +1,85 @@
+---
+title: "BOJ 2702 - 초6 수학"
+date: "2024-10-22"
+description: "두 수의 최소공배수와 최대공약수를 구하는 정수론 문제"
+tags: ["수학", "정수론"]
+platform: "boj"
+problem_number: "2702"
+problem_url: "https://www.acmicpc.net/problem/2702"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2702 - 초6 수학](https://www.acmicpc.net/problem/2702)
+
+두 자연수가 주어질 때, 최소공배수와 최대공약수를 출력하라.
+
+### 입력
+
+테스트 케이스 수 N, 각 케이스마다 두 자연수가 주어진다.
+
+### 출력
+
+각 케이스마다 최소공배수와 최대공약수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력             | 출력          |
+| ---------------- | ------------- |
+| `2` `6 9` `8 12` | `18 3` `24 4` |
+
+## 풀이
+
+유클리드 호제법으로 GCD를 구하고 LCM을 계산한다.
+
+1. `a % b`를 반복하여 GCD를 구한다
+2. `LCM = a * b / GCD`로 최소공배수를 계산한다
+3. LCM과 GCD를 출력한다
+
+**핵심 아이디어**: `LCM(a, b) = a * b / GCD(a, b)`이므로 GCD만 구하면 LCM도 O(1)에 계산된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int gcd(int a, int b)
+{
+  int r;
+  while (b != 0)
+  {
+    r = a % b;
+    a = b;
+    b = r;
+  }
+  return a;
+}
+
+int main()
+{
+
+  int n;
+  cin >> n;
+
+  int a, b;
+
+  for (int i = 0; i < n; i++)
+  {
+
+    cin >> a >> b;
+
+    cout << (a * b) / gcd(a, b) << " ";
+    cout << gcd(a, b) << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* log(min(a, b)))
+- 공간: O(1)

@@ -1,0 +1,95 @@
+---
+title: "BOJ 1049 - 기타줄"
+date: "2022-07-27"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "1049"
+problem_url: "https://www.acmicpc.net/problem/1049"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1049 - 기타줄](https://www.acmicpc.net/problem/1049)
+
+끊어진 기타줄 N개를 사야 한다. M개 브랜드에서 6개 패키지 가격과 낱개 가격이 주어질 때, 적어도 N개를 사기 위한 최소 비용을 구하라.
+
+### 입력
+
+첫째 줄에 N(1 이상 100 이하)과 M(1 이상 50 이하)이 주어진다. 둘째 줄부터 M개의 줄에 각 브랜드의 패키지 가격과 낱개 가격이 주어진다 (0 이상 1,000 이하).
+
+### 출력
+
+기타줄을 적어도 N개 사기 위해 필요한 돈의 최솟값을 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `4 2` `12 3` `15 4`         | `12` |
+| `10 3` `20 8` `40 7` `60 4` | `36` |
+
+## 풀이
+
+모든 브랜드에서 가장 저렴한 패키지 가격과 가장 저렴한 낱개 가격을 찾아 세 가지 경우를 비교한다.
+
+1. 모든 브랜드에서 최소 패키지 가격(minSix)과 최소 낱개 가격(minOne)을 구한다
+2. 세 가지 구매 방법의 비용을 계산한다:
+   - A: 패키지만으로 구매 `(N/6 + 1) * minSix` (나머지도 패키지로)
+   - B: 패키지 + 낱개 혼합 `(N/6) * minSix + (N%6) * minOne`
+   - C: 낱개만으로 구매 `N * minOne`
+3. 세 값 중 최솟값이 정답이다
+
+**핵심 아이디어**: 패키지가 낱개 6개보다 저렴할 수 있고, 반대로 낱개가 더 저렴할 수도 있으므로 세 가지 조합을 모두 비교해야 한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day170BOJ1049기타줄그리디 {
+	static final int INF = 1 << 20;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		int minSix = INF;
+		int minOne = INF;
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+
+			minSix = Math.min(minSix, x);
+			minOne = Math.min(minOne, y);
+		}
+
+		int a = N / 6;
+		int b = N % 6;
+
+		int A = (a + 1) * minSix;
+		int B = a * minSix + b * minOne;
+		int C = N * minOne;
+
+		int ans = Math.min(A, Math.min(B, C));
+
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(M) - 브랜드 수만큼 순회
+- 공간: O(1)

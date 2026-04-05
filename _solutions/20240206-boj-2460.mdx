@@ -1,0 +1,72 @@
+---
+title: "BOJ 2460 - 지능형 기차 2"
+date: "2024-02-06"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "2460"
+problem_url: "https://www.acmicpc.net/problem/2460"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2460 - 지능형 기차 2](https://www.acmicpc.net/problem/2460)
+
+10개 역에서 내린 사람 수와 탄 사람 수가 주어질 때, 기차에 가장 많은 사람이 타고 있었던 순간의 인원을 구하라.
+
+### 입력
+
+10줄에 걸쳐 각 역에서 내린 수와 탄 수가 주어진다.
+
+### 출력
+
+기차에 동시에 타고 있었던 최대 인원을 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `0 32` `3 13` `...` | `42` |
+
+## 풀이
+
+각 역에서 내린 수를 빼고 탄 수를 더하며 최대 인원을 추적한다.
+
+1. 현재 탑승 인원을 0으로 초기화한다
+2. 10번 반복하며 내린 수를 빼고 탄 수를 더한다
+3. 매 역마다 현재 인원과 최대 인원을 비교하여 갱신한다
+
+**핵심 아이디어**: 시뮬레이션으로 각 역 통과 후 탑승 인원을 추적하며 최댓값을 구한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day735BOJ2460지능형기차2 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+    int ans = 0;
+    int tmp = 0;
+    for (int i = 0; i < 10; i++) {
+      st = new StringTokenizer(br.readLine());
+
+      tmp = tmp - Integer.parseInt(st.nextToken()) + Integer.parseInt(st.nextToken());
+      ans = Math.max(tmp, ans);
+    }
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 10개 역
+- 공간: O(1) — 상수 변수만 사용

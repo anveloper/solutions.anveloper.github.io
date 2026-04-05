@@ -1,0 +1,80 @@
+---
+title: "BOJ 5217 - 쌍의 합"
+date: "2024-09-12"
+description: "주어진 수를 두 수의 합으로 나타내는 모든 쌍을 구하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5217"
+problem_url: "https://www.acmicpc.net/problem/5217"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5217 - 쌍의 합](https://www.acmicpc.net/problem/5217)
+
+정수 N이 주어질 때, 1 이상 12 이하의 서로 다른 두 수의 합이 N이 되는 모든 쌍을 구하라 (작은 수가 앞).
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 정수 N이 주어진다.
+
+### 출력
+
+각 케이스마다 "Pairs for N: "에 이어 쌍들을 쉼표로 구분하여 출력한다.
+
+### 예제
+
+| 입력        | 출력                                       |
+| ----------- | ------------------------------------------ |
+| `2` `3` `5` | `Pairs for 3: 1 2` `Pairs for 5: 1 4, 2 3` |
+
+## 풀이
+
+1부터 12까지 이중 반복문으로 합이 N인 쌍을 탐색한다.
+
+1. i를 1부터 12까지, j를 1부터 12까지 순회한다
+2. `i + j == N`이고 `i < j`인 경우에만 쌍으로 출력한다
+3. 첫 번째 쌍은 그대로, 이후 쌍은 앞에 ", "를 붙여 구분한다
+
+**핵심 아이디어**: 범위가 1~12로 고정이므로 이중 루프(144회)로 모든 경우를 탐색해도 충분하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#define ll long long
+using namespace std;
+int main()
+{
+  int t;
+  cin >> t;
+  while (t--)
+  {
+    int n;
+    int cnt = 0;
+    cin >> n;
+    cout << "Pairs for " << n << ": ";
+    for (int i = 1; i <= 12; i++)
+      for (int j = 1; j <= 12; j++)
+        if (i + j == n && i < j)
+        {
+          if (!cnt)
+          {
+            cnt++;
+            cout << i << ' ' << j;
+          }
+          else
+            cout << ", " << i << ' ' << j;
+        }
+    cout << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* 144)
+- 공간: O(1)

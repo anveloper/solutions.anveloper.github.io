@@ -1,0 +1,73 @@
+---
+title: "BOJ 2744 - 대소문자 바꾸기"
+date: "2023-08-11"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2744"
+problem_url: "https://www.acmicpc.net/problem/2744"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2744 - 대소문자 바꾸기](https://www.acmicpc.net/problem/2744)
+
+영어 소문자와 대문자로 이루어진 단어가 주어질 때, 대문자는 소문자로, 소문자는 대문자로 바꾸어 출력한다.
+
+### 입력
+
+첫째 줄에 영어 단어가 주어진다 (길이 1 이상 100 이하).
+
+### 출력
+
+대소문자를 바꾼 결과를 출력한다.
+
+### 예제
+
+| 입력          | 출력          |
+| ------------- | ------------- |
+| `WrongAnswer` | `wRONGaNSWER` |
+
+## 풀이
+
+문자열의 각 문자를 순회하며 대소문자를 반전시킨다.
+
+1. 입력 문자열의 각 문자를 순회한다
+2. 대문자이면 Character.toLowerCase()로 변환한다
+3. 소문자이면 Character.toUpperCase()로 변환한다
+4. StringBuilder에 변환 결과를 추가하여 출력한다
+
+**핵심 아이디어**: Character 클래스의 isUpperCase/toLowerCase/toUpperCase 메서드를 활용한 단순 문자 변환이다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day551BOJ2744대소문자 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String s = br.readLine();
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (Character.isUpperCase(c)) {
+        sb.append(Character.toLowerCase(c));
+      } else {
+        sb.append(Character.toUpperCase(c));
+      }
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

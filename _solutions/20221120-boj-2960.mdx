@@ -1,0 +1,99 @@
+---
+title: "BOJ 2960 - 에라토스테네스의 체"
+date: "2022-11-20"
+description: "수학, 구현, 정수론 문제"
+tags: ["수학", "구현", "정수론", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "2960"
+problem_url: "https://www.acmicpc.net/problem/2960"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2960 - 에라토스테네스의 체](https://www.acmicpc.net/problem/2960)
+
+에라토스테네스의 체 알고리즘을 수행할 때, K번째로 지워지는 수를 구하라.
+
+### 입력
+
+N, K가 주어진다 (2 ≤ N ≤ 1000, 1 ≤ K).
+
+### 출력
+
+K번째로 지워지는 수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `7 3` | `4`  |
+
+## 풀이
+
+에라토스테네스의 체를 단계별로 시뮬레이션하며 K번째 지워지는 수를 찾는다.
+
+1. 2부터 N까지 배열에 숫자를 채운다
+2. 가장 작은 지워지지 않은 수 i부터, i의 배수를 순서대로 지운다
+3. 지울 때마다 K를 감소시키고, K가 0이 되면 해당 수를 출력한다
+4. 이미 지워진 수는 건너뛴다
+
+**핵심 아이디어**: 일반적인 에라토스테네스의 체는 소수만 남기지만, 이 문제는 지워지는 순서가 중요하므로 하나씩 지우며 카운트한다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.StringTokenizer;
+
+public class Day286BOJ2960에라토스네세스체 {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+		br.close();
+
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+		int[] arr = new int[N + 1];
+
+		for (int i = 2; i <= N; i++) {
+			arr[i] = i;
+		}
+
+		for (int i = 2; i <= N; i++) {
+			if (arr[i] == 0)
+				continue;
+
+			for (int j = i; j <= N; j += i) {
+				if (arr[j] != 0) {
+					arr[j] = 0;
+					K--;
+
+					if (K == 0)
+						bw.write(String.valueOf(j));
+				}
+			}
+		}
+
+		bw.write(String.valueOf(""));
+		bw.flush();
+		bw.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N)
+- 공간: O(N)

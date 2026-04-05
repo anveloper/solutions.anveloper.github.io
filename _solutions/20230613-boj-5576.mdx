@@ -1,0 +1,73 @@
+---
+title: "BOJ 5576 - 콘테스트"
+date: "2023-06-13"
+description: "구현, 정렬 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "5576"
+problem_url: "https://www.acmicpc.net/problem/5576"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5576 - 콘테스트](https://www.acmicpc.net/problem/5576)
+
+W대학과 K대학 각각 10명의 점수가 주어질 때, 각 대학 상위 3명의 점수 합을 구하라.
+
+### 입력
+
+W대학 10명의 점수, K대학 10명의 점수가 한 줄에 하나씩 주어진다.
+
+### 출력
+
+W대학과 K대학의 상위 3명 점수 합을 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                                                                              | 출력    |
+| --------------------------------------------------------------------------------- | ------- |
+| `1` `2` `3` `4` `5` `6` `7` `8` `9` `10` `1` `2` `3` `4` `5` `6` `7` `8` `9` `10` | `27 27` |
+
+## 풀이
+
+각 대학의 점수를 정렬한 후 상위 3명의 합을 구한다.
+
+1. W대학 10명, K대학 10명의 점수를 각각 리스트에 저장한다
+2. 각 리스트를 오름차순 정렬한다
+3. 인덱스 7, 8, 9(상위 3명)의 합을 출력한다
+
+**핵심 아이디어**: 10명 고정이므로 정렬 후 뒤에서 3개를 더하면 상위 3명의 합이다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day492BOJ5576콘테스트 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    ArrayList<Integer> W = new ArrayList<>();
+    ArrayList<Integer> K = new ArrayList<>();
+    for (int i = 0; i < 10; i++)
+      W.add(Integer.parseInt(br.readLine()));
+    for (int i = 0; i < 10; i++)
+      K.add(Integer.parseInt(br.readLine()));
+    Collections.sort(W);
+    Collections.sort(K);
+    StringBuilder sb = new StringBuilder();
+    sb.append(W.get(7) + W.get(8) + W.get(9)).append(' ').append(K.get(7) + K.get(8) + K.get(9));
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) - 입력 크기 고정(20명)
+- 공간: O(1)

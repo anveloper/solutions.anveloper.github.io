@@ -1,0 +1,87 @@
+---
+title: "BOJ 2495 - 연속구간"
+date: "2024-10-20"
+description: "같은 숫자가 연속으로 나타나는 최대 길이를 구하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2495"
+problem_url: "https://www.acmicpc.net/problem/2495"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2495 - 연속구간](https://www.acmicpc.net/problem/2495)
+
+세 개의 8자리 수가 주어질 때, 각 수에서 같은 숫자가 연속으로 나타나는 최대 길이를 구하라.
+
+### 입력
+
+8자리 수가 세 줄에 걸쳐 주어진다.
+
+### 출력
+
+각 수의 최대 연속 길이를 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                             | 출력        |
+| -------------------------------- | ----------- |
+| `12345678` `11223344` `11112222` | `1` `2` `4` |
+
+## 풀이
+
+문자열을 순회하며 연속 같은 문자의 최대 길이를 추적한다.
+
+1. 현재 카운트를 1로 초기화한다
+2. 인접한 문자가 같으면 카운트를 증가시키고, 다르면 1로 리셋한다
+3. 매 단계마다 최대값을 갱신한다
+
+**핵심 아이디어**: 한 번의 순회로 연속 구간 최대 길이를 O(L)에 구할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+
+  string str;
+
+  for (int i = 0; i < 3; i++)
+  {
+    cin >> str;
+    int cnt = 1;
+    int max = 1;
+    for (int i = 0; i < str.length() - 1; i++)
+    {
+      if (str[i] == str[i + 1])
+      {
+        cnt++;
+
+        if (cnt > max)
+        {
+          max = cnt;
+        }
+      }
+      else
+      {
+        cnt = 1;
+      }
+    }
+    cout << max << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 문자열 길이, 고정 8)
+- 공간: O(L)

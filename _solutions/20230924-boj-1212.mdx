@@ -1,0 +1,77 @@
+---
+title: "BOJ 1212 - 8진수 2진수"
+date: "2023-09-24"
+description: "수학, 구현, 문자열 문제"
+tags: ["수학", "구현", "문자열"]
+platform: "boj"
+problem_number: "1212"
+problem_url: "https://www.acmicpc.net/problem/1212"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1212 - 8진수 2진수](https://www.acmicpc.net/problem/1212)
+
+8진수가 주어질 때, 이를 2진수로 변환하여 출력한다.
+
+### 입력
+
+첫째 줄에 8진수가 주어진다 (최대 333,334자리).
+
+### 출력
+
+2진수를 출력한다. 선행 0은 제외한다.
+
+### 예제
+
+| 입력  | 출력       |
+| ----- | ---------- |
+| `314` | `11001100` |
+
+## 풀이
+
+8진수의 각 자릿수를 3비트 2진수로 변환하여 이어 붙인다.
+
+1. 8진수 문자열의 각 문자를 순회한다
+2. 각 문자를 Integer.toBinaryString()으로 2진수 문자열로 변환한다
+3. 첫 번째 자릿수를 제외하고는 3자리로 맞추기 위해 앞에 0을 패딩한다
+4. 결과를 StringBuilder로 이어 붙여 출력한다
+
+**핵심 아이디어**: 8진수 한 자리는 정확히 2진수 세 자리에 대응하므로, 각 자릿수를 독립적으로 변환하면 된다. 첫 번째 자릿수는 선행 0을 제거한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.util.Scanner;
+
+public class Day597BOJ1212a8진수2진수 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    String s = sc.next();
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < s.length(); i++) {
+      String a = Integer.toBinaryString(s.charAt(i) - '0');
+      if (a.length() == 2 && i != 0)
+        a = "0" + a;
+      else if (a.length() == 1 && i != 0)
+        a = "00" + a;
+
+      sb.append(a);
+    }
+
+    System.out.println(sb);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

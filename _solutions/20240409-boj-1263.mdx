@@ -1,0 +1,74 @@
+---
+title: "BOJ 1263 - 시간 관리"
+date: "2024-04-09"
+description: "모든 작업을 마감 시간 내에 완료하기 위한 최대 시작 시간을 구하는 문제"
+tags: ["그리디", "정렬"]
+platform: "boj"
+problem_number: "1263"
+problem_url: "https://www.acmicpc.net/problem/1263"
+difficulty: "골드 V"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1263 - 시간 관리](https://www.acmicpc.net/problem/1263)
+
+N개의 작업이 각각 소요 시간과 마감 시간을 가질 때, 모든 작업을 마감 내에 끝내기 위한 가장 늦은 시작 시간을 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 소요 시간과 마감 시간이 주어진다.
+
+### 출력
+
+가장 늦은 시작 시간을 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `3 5` `4 8` `2 9` | `0`  |
+
+## 풀이
+
+마감 시간 내림차순으로 정렬 후, 뒤에서부터 그리디하게 작업을 배치한다.
+
+1. 마감 시간 기준 내림차순 정렬한다
+2. 첫 작업은 마감 시간에서 소요 시간을 빼서 시작 시각을 구한다
+3. 이후 작업은 (마감 시간, 이전 시작 시각) 중 작은 값에서 소요 시간을 뺀다
+4. 최종 시작 시각이 음수면 불가능(-1)이다
+
+**핵심 아이디어**: 마감이 늦은 작업부터 배치하면 가장 늦게 시작할 수 있으며, 각 작업은 마감과 이전 작업 시작 시각 중 빠른 시점에 맞춰야 한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  const tasks = [];
+  for (let i = 1; i <= N; i++) {
+    const [t, s] = input[i].trim().split(" ").map(Number);
+    tasks.push([t, s]);
+  }
+
+  tasks.sort((a, b) => b[1] - a[1]);
+
+  let time = tasks[0][1] - tasks[0][0];
+  for (let i = 1; i < N; i++) {
+    time = Math.min(time, tasks[i][1]) - tasks[i][0];
+  }
+
+  return time < 0 ? -1 : time;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

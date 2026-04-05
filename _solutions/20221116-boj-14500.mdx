@@ -1,0 +1,116 @@
+---
+title: "BOJ 14500 - 테트로미노"
+date: "2022-11-16"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "14500"
+problem_url: "https://www.acmicpc.net/problem/14500"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14500 - 테트로미노](https://www.acmicpc.net/problem/14500)
+
+N x M 격자에 수가 적혀 있을 때, 테트로미노 하나를 놓아 칸에 적힌 수의 합의 최댓값을 구하라.
+
+### 입력
+
+첫째 줄에 N, M (4 ≤ N, M ≤ 500), 이후 N줄에 격자의 수가 주어진다.
+
+### 출력
+
+테트로미노가 놓인 칸에 적힌 수의 합의 최댓값을 출력한다.
+
+### 예제
+
+| 입력                                                              | 출력 |
+| ----------------------------------------------------------------- | ---- |
+| `5 5` `1 2 3 4 5` `5 4 3 2 1` `2 3 4 5 6` `6 5 4 3 2` `1 2 1 2 1` | `19` |
+
+## 풀이
+
+깊이 4의 DFS로 모든 테트로미노 모양을 탐색한다. T자 모양은 현재 위치에서 이동하지 않고 인접 칸을 선택하는 방식으로 처리한다.
+
+1. 모든 칸에서 시작하여 깊이 4의 DFS를 수행한다
+2. `dfs(r, c, depth, sum)`에서 인접 4방향을 탐색할 때 두 가지 재귀를 호출한다
+3. `dfs(nr, nc, ...)`: 다음 칸으로 이동 (I, O, S, Z, L, J 모양)
+4. `dfs(r, c, ...)`: 현재 위치에서 이동하지 않음 (T자 모양 커버)
+5. 가지치기: 남은 칸에 최대값을 넣어도 현재 답을 넘지 못하면 종료
+
+**핵심 아이디어**: 일반적인 DFS는 T자 모양을 탐색하지 못하지만, 이동하지 않고 인접 칸만 선택하는 재귀 호출을 추가하면 T자를 포함한 모든 테트로미노를 탐색할 수 있다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.*;
+import java.util.*;
+
+public class Day282BOJ14500테크로미노구현 {
+	static int N, M, max, answer;
+	static int[][] board;
+	static boolean[][] isVisited;
+	static int[][] drc = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+
+	static void dfs(int r, int c, int depth, int sum) {
+		if (answer >= (4 - depth) * max + sum)
+			return;
+		if (depth == 4) {
+			if (sum > answer)
+				answer = sum;
+			return;
+		}
+
+		for (int i = 0; i < 4; i++) {
+			int nr = r + drc[i][0];
+			int nc = c + drc[i][1];
+			if (nr < 0 || nc < 0 || nr >= N || nc >= M || isVisited[nr][nc])
+				continue;
+			isVisited[nr][nc] = true;
+			dfs(r, c, depth + 1, sum + board[nr][nc]);
+			dfs(nr, nc, depth + 1, sum + board[nr][nc]);
+			isVisited[nr][nc] = false;
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		board = new int[N][M];
+		isVisited = new boolean[N][M];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+				if (board[i][j] > max)
+					max = board[i][j];
+			}
+		}
+		br.close();
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				isVisited[i][j] = true;
+				dfs(i, j, 1, board[i][j]);
+				isVisited[i][j] = false;
+			}
+		}
+		System.out.println(answer);
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N _ M _ 4^3)
+- 공간: O(N \* M)

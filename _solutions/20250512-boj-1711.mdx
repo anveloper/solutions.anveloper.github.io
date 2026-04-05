@@ -1,0 +1,100 @@
+---
+title: "BOJ 1711 - 직각삼각형"
+date: "2025-05-12"
+description: "브루트포스 알고리즘, 기하학, 피타고라스 정리 문제"
+tags: ["브루트포스 알고리즘", "기하학", "피타고라스 정리"]
+platform: "boj"
+problem_number: "1711"
+problem_url: "https://www.acmicpc.net/problem/1711"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1711 - 직각삼각형](https://www.acmicpc.net/problem/1711)
+
+2차원 평면에 N개의 점이 주어질 때, 이 중 3개를 골라 직각삼각형이 되는 경우의 수를 구하라.
+
+### 입력
+
+첫째 줄에 점의 개수 N (3 이상 1500 이하), 이후 N줄에 각 점의 좌표가 주어진다.
+
+### 출력
+
+직각삼각형의 개수를 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `4` `1 1` `2 3` `4 1` `2 1` | `4`  |
+
+## 풀이
+
+각 점을 직각 꼭짓점으로 고정하고, 다른 점들과의 방향 벡터를 정규화하여 수직 쌍을 센다.
+
+1. 각 점 i를 직각 꼭짓점으로 가정한다
+2. 다른 모든 점 j에 대해 방향 벡터 (dx, dy)를 GCD로 정규화하고 딕셔너리에 빈도를 기록한다
+3. 각 방향 (dx, dy)에 대해 수직 방향 (-dy, dx)의 빈도를 곱하여 직각 쌍의 수를 구한다
+4. 양방향 중복을 제거하기 위해 2로 나눈다
+
+**핵심 아이디어**: 두 벡터가 수직이면 내적이 0이므로, 방향 벡터를 정규화하여 수직 관계를 O(1)에 확인한다.
+
+## 코드
+
+```python
+from math import gcd
+
+n = int(input())
+points = []
+for _ in range(n):
+    x, y = map(int, input().split())
+    points.append((x, y))
+
+
+def crt(points):
+    n = len(points)
+    total = 0
+
+    for i in range(n):
+        freq = {}
+        x0, y0 = points[i]
+
+        for j in range(n):
+            if i == j:
+                continue
+            dx = points[j][0] - x0
+            dy = points[j][1] - y0
+
+            g = gcd(dx, dy)
+            dx //= g
+            dy //= g
+
+            if dx < 0 or (dx == 0 and dy < 0):
+                dx, dy = -dx, -dy
+
+            freq[(dx, dy)] = freq.get((dx, dy), 0) + 1
+
+        count_i = 0
+        for (dx, dy), cnt in freq.items():
+            rdx, rdy = -dy, dx
+            if rdx < 0 or (rdx == 0 and rdy < 0):
+                rdx, rdy = -rdx, -rdy
+
+            if (rdx, rdy) in freq:
+                count_i += cnt * freq[(rdx, rdy)]
+
+        total += count_i // 2
+
+    return total
+
+
+print(crt(points))
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

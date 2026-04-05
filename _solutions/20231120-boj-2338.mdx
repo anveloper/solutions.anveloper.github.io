@@ -1,0 +1,66 @@
+---
+title: "BOJ 2338 - 긴자리 계산"
+date: "2023-11-20"
+description: "수학, 사칙연산, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["수학", "사칙연산", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "2338"
+problem_url: "https://www.acmicpc.net/problem/2338"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2338 - 긴자리 계산](https://www.acmicpc.net/problem/2338)
+
+매우 큰 두 정수 A, B가 주어질 때, A+B, A-B, A\*B를 구하라.
+
+### 입력
+
+두 줄에 정수 A, B가 주어진다 (매우 큰 수 가능).
+
+### 출력
+
+A+B, A-B, A\*B를 각 줄에 출력한다.
+
+### 예제
+
+| 입력      | 출력             |
+| --------- | ---------------- |
+| `10` `20` | `30` `-10` `200` |
+
+## 풀이
+
+Java의 `BigInteger`를 사용하여 임의 정밀도 사칙연산을 수행한다.
+
+1. 두 수를 `BigInteger`로 읽는다
+2. `add`, `subtract`, `multiply` 메서드로 각각 계산한다
+
+**핵심 아이디어**: 일반 정수 범위를 초과하므로 `BigInteger`를 사용하여 임의 정밀도 연산을 수행한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.math.BigInteger;
+
+public class Day656BOJ2338긴자리계산 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BigInteger a = new BigInteger(br.readLine());
+    BigInteger b = new BigInteger(br.readLine());
+    System.out.println(a.add(b));
+    System.out.println(a.subtract(b));
+    System.out.print(a.multiply(b));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

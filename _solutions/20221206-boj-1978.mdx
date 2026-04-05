@@ -1,0 +1,98 @@
+---
+title: "BOJ 1978 - 소수 찾기"
+date: "2022-12-06"
+description: "소수 판정, 정수론, 수학 문제"
+tags: ["소수 판정", "정수론", "수학"]
+platform: "boj"
+problem_number: "1978"
+problem_url: "https://www.acmicpc.net/problem/1978"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1978 - 소수 찾기](https://www.acmicpc.net/problem/1978)
+
+주어진 수 N개 중에서 소수가 몇 개인지 찾아서 출력하는 프로그램을 작성하시오.
+
+### 입력
+
+첫 줄에 수의 개수 N이 주어진다. N은 100이하이다. 다음으로 N개의 수가 주어지는데 수는 1,000 이하의 자연수이다.
+
+### 출력
+
+입력으로 주어진 수 중 소수의 개수를 출력한다.
+
+### 예제
+
+입력:
+
+```
+4
+1 3 5 7
+```
+
+출력:
+
+```
+3
+```
+
+## 풀이
+
+**핵심 아이디어**: 각 수에 대해 2부터 √num까지의 약수가 있는지 확인한다. √num까지만 확인해도 되는 이유는, num = a × b일 때 a ≤ √num 또는 b ≤ √num이 반드시 성립하기 때문이다.
+
+1. **1 예외 처리**: 1은 소수가 아니므로 건너뛴다.
+2. **소수 판정**: 2부터 `Math.sqrt(num)`까지 반복하며 나머지가 0인 약수가 하나라도 있으면 소수가 아니다(`isPrime = false`).
+3. **카운트**: 소수로 판별된 수의 개수를 세어 출력한다.
+4. **제약 조건**: N ≤ 100, 각 수 ≤ 1,000이므로 단순 판정 방식으로 충분하다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day302BOJ1978소수찾기 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        br.readLine();
+        int count = 0;
+
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+        while (st.hasMoreTokens()) {
+            boolean isPrime = true;
+
+            int num = Integer.parseInt(st.nextToken());
+
+            if (num == 1) {
+                continue;
+            }
+            for (int i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i == 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+            if (isPrime) {
+                count++;
+            }
+        }
+        System.out.println(count);
+        br.close();
+    }
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* sqrt(M)) — N개의 수 각각에 대해 sqrt(M)까지 나눗셈 확인 (M = 최대값 1,000)
+- 공간: O(1)

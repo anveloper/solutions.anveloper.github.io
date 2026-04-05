@@ -1,0 +1,140 @@
+---
+title: "BOJ 11437 - LCA"
+date: "2022-07-06"
+description: "그래프 이론, 트리, 최소 공통 조상 문제"
+tags: ["그래프 이론", "트리", "최소 공통 조상"]
+platform: "boj"
+problem_number: "11437"
+problem_url: "https://www.acmicpc.net/problem/11437"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11437 - LCA](https://www.acmicpc.net/problem/11437)
+
+N개의 노드로 이루어진 트리에서 M쌍의 두 노드의 최소 공통 조상(LCA)을 구하라.
+
+### 입력
+
+첫째 줄에 노드 수 N (2 ≤ N ≤ 50,000), 이후 N-1개의 간선, M개의 쿼리가 주어진다.
+
+### 출력
+
+각 쿼리에 대해 두 노드의 LCA를 출력한다.
+
+### 예제
+
+| 입력                                                  | 출력      |
+| ----------------------------------------------------- | --------- |
+| `15` `1 2` `1 3` `... (생략)` `6` `6 11` `... (생략)` | `2` `...` |
+
+## 풀이
+
+희소 테이블(Sparse Table)을 이용한 O(log N) LCA 알고리즘을 구현한다.
+
+1. DFS로 각 노드의 깊이와 직접 부모를 구한다
+2. 희소 테이블 구성: `parent[v][k]` = v에서 2^k번째 조상. `parent[v][k] = parent[parent[v][k-1]][k-1]`
+3. LCA 쿼리: 두 노드의 깊이를 맞춘 후, 같은 깊이에서 동시에 올라가며 공통 조상을 찾는다
+4. 깊이 맞추기: 깊이 차이를 이진수로 분해하여 2^k씩 점프한다
+5. 공통 조상 찾기: 큰 k부터 작은 k로 탐색하며 조상이 다를 때만 점프한다
+
+**핵심 아이디어**: 2의 거듭제곱 단위로 조상을 미리 계산해두면, 깊이 맞추기와 LCA 탐색 모두 O(log N)에 수행할 수 있다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Day366BOJ11437LCA {
+    static int N, M, D;
+    static List<Integer>[] list;
+    static Integer[] depth;
+    static int[][] parent;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        D = (int) (Math.ceil(Math.log(N) / Math.log(2)) + 1);
+
+        list = new ArrayList[N + 1];
+        for (int i = 0; i < N + 1; i++)
+            list[i] = new ArrayList<>();
+
+        depth = new Integer[N + 1];
+        parent = new int[N + 1][D];
+
+        for (int i = 0; i < N - 1; i++) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            list[u].add(v);
+            list[v].add(u);
+        }
+        dfs(1, 1, 1);
+
+        for (int i = 1; i < D; i++)
+            for (int j = 1; j < N + 1; j++)
+                parent[j][i] = parent[parent[j][i - 1]][i - 1];
+
+        M = Integer.parseInt(br.readLine());
+        for (int i = 0; i < M; i++) {
+            st = new StringTokenizer(br.readLine());
+            int l = Integer.parseInt(st.nextToken());
+            int r = Integer.parseInt(st.nextToken());
+            sb.append(LCA(l, r)).append("\n");
+        }
+
+        System.out.println(sb);
+        br.close();
+    }
+
+    private static int LCA(int l, int r) {
+        if (depth[l] < depth[r]) {
+            int tmp = l;
+            l = r;
+            r = tmp;
+        }
+
+        if (depth[l] != depth[r]) {
+            int diff = depth[l] - depth[r];
+            for (int i = 0; i < D; i++)
+                if ((diff & (1 << i)) != 0)
+                    l = parent[l][i];
+        }
+
+        if (l == r)
+            return l;
+
+        for (int i = D - 1; i >= 0; i--)
+            if (parent[l][i] != parent[r][i]) {
+                l = parent[l][i];
+                r = parent[r][i];
+            }
+
+        return parent[l][0];
+
+    }
+
+    private static void dfs(int c, int p, int d) {
+        if (depth[c] == null) {
+            depth[c] = d;
+            parent[c][0] = p;
+
+            for (int nc : list[c])
+                dfs(nc, c, d + 1);
+        }
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O((N + M) log N)
+- 공간: O(N log N)

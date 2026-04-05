@@ -1,0 +1,71 @@
+---
+title: "BOJ 7130 - Milk and Honey"
+date: "2026-01-31"
+description: "수학, 그리디 알고리즘, 사칙연산 문제"
+tags: ["수학", "그리디 알고리즘", "사칙연산"]
+platform: "boj"
+problem_number: "7130"
+problem_url: "https://www.acmicpc.net/problem/7130"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7130 - Milk and Honey](https://www.acmicpc.net/problem/7130)
+
+우유 단가 m과 꿀 단가 h가 주어지고, N개의 농장에서 각각 소 c마리와 벌통 b개가 있을 때, 총 수입을 최대화하라.
+
+### 입력
+
+우유 단가 m, 꿀 단가 h, 농장 수 N, 이후 각 농장의 소 수와 벌통 수가 주어진다.
+
+### 출력
+
+최대 총 수입을 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `5 3 2` `3 4` `2 5` | `30` |
+
+## 풀이
+
+각 농장에서 우유와 꿀 중 수입이 더 큰 쪽을 선택한다.
+
+1. 각 농장의 우유 수입 `c * m`과 꿀 수입 `b * h`를 비교한다
+2. 더 큰 값을 선택하여 총 수입에 누적한다
+
+**핵심 아이디어**: 농장별로 독립적인 선택이므로, 각 농장에서 더 큰 수입을 선택하면 전체 최적이 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  int m, h, n;
+  cin >> m >> h >> n;
+  long long ans = 0;
+  while (n--)
+  {
+    int c, b;
+    cin >> c >> b;
+    ans += max(c * m, b * h);
+  }
+  cout << ans << "\n";
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

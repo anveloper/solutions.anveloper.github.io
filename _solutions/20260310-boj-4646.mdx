@@ -1,0 +1,63 @@
+---
+title: "BOJ 4646 - Magnificent Meatballs"
+date: "2026-03-10"
+description: "배열을 두 부분으로 나누어 합이 같은 위치를 찾는 누적 합 문제"
+tags: ["수학", "구현", "브루트포스"]
+platform: "boj"
+problem_number: "4646"
+problem_url: "https://www.acmicpc.net/problem/4646"
+difficulty: "브론즈 IV"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4646 - Magnificent Meatballs](https://www.acmicpc.net/problem/4646)
+
+> n개의 미트볼 무게가 주어질 때, 연속된 두 그룹으로 나누어 합이 같아지는 분할 지점을 찾는 문제
+
+## 풀이
+
+누적 합 배열을 구성한 뒤, 각 위치에서 앞쪽 합이 전체 합의 절반인지 확인한다. `v[i] * 2 == v[n]` 조건으로 분할 가능 여부를 판별한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+  ios::sync_with_stdio(0); cin.tie(0);
+
+  int n;
+  while (cin >> n && n != 0) {
+    int v[31] = {0};
+    for (int i = 1; i <= n; i++) {
+        cin >> v[i];
+        v[i] += v[i - 1];
+    }
+
+    int split_pos = -1;
+    for (int i = 1; i < n; i++) {
+      if (v[i] * 2 == v[n]) {
+          split_pos = i;
+          break;
+      }
+    }
+
+    if (split_pos != -1) {
+      cout << "Sam stops at position " << split_pos
+            << " and Ella stops at position " << split_pos + 1 << ".\n";
+    } else {
+      cout << "No equal partitioning.\n";
+    }
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n)
+- 공간: O(n)

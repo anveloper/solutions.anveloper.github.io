@@ -1,0 +1,94 @@
+---
+title: "BOJ 2823 - 유턴 싫어"
+date: "2025-03-07"
+description: "그래프 이론 문제"
+tags: ["그래프 이론"]
+platform: "boj"
+problem_number: "2823"
+problem_url: "https://www.acmicpc.net/problem/2823"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2823 - 유턴 싫어](https://www.acmicpc.net/problem/2823)
+
+R x C 격자 도시에서 `.`은 도로, `X`는 건물이다. 도로 위의 어떤 칸에서 인접한 도로가 1개 이하(막다른 골목)이면 유턴이 필요하다. 유턴이 필요한 칸이 하나라도 존재하면 1, 아니면 0을 출력하라.
+
+### 입력
+
+첫 줄에 R, C가 주어지고, 이후 R줄에 격자가 주어진다.
+
+### 출력
+
+유턴이 필요한 칸이 있으면 `1`, 없으면 `0`을 출력한다.
+
+### 예제
+
+| 입력                    | 출력 |
+| ----------------------- | ---- |
+| `3 3` `...` `.X.` `...` | `0`  |
+
+## 풀이
+
+BFS로 모든 도로 칸을 탐색하면서 인접 도로가 2개 미만인 칸이 있는지 확인한다.
+
+1. 격자에서 모든 도로(`.`) 칸의 좌표를 수집한다
+2. 첫 번째 도로 칸부터 BFS를 시작한다
+3. 각 칸에서 상하좌우 4방향으로 인접한 도로 수를 센다
+4. 인접 도로 수가 2 미만이면 막다른 골목이므로 1을 반환한다
+5. 모든 칸이 2개 이상의 인접 도로를 가지면 0을 반환한다
+
+**핵심 아이디어**: 도로 칸의 인접 도로 수가 1 이하이면 해당 칸에서 반드시 유턴해야 한다. BFS로 연결된 도로를 탐색하면서 각 칸의 차수(degree)를 확인하면 된다.
+
+## 코드
+
+```python
+import sys
+from collections import deque
+
+
+def bfs(v):
+    dx = [1, -1, 0, 0]
+    dy = [0, 0, 1, -1]
+
+    q = deque([v])
+
+    while q:
+        a, b = q.popleft()
+        cnt = 0
+
+        for i in range(4):
+            x = a + dx[i]
+            y = b + dy[i]
+            if -1 < x < r and -1 < y < c and graph[x][y] == ".":
+                cnt += 1
+                if visited[x][y] == False:
+                    visited[x][y] = True
+                    q.append([x, y])
+        if cnt < 2:
+            return 1
+    return 0
+
+
+r, c = map(int, sys.stdin.readline().split())
+chek = []
+
+graph = []
+for i in range(r):
+    graph.append(list(map(str, sys.stdin.readline().strip())))
+    for j in range(c):
+        if graph[i][j] == ".":
+            chek.append([i, j])
+
+visited = [[False] * c for _ in range(r)]
+
+print(bfs(chek[0]))
+```
+
+## 복잡도
+
+- 시간: O(R \* C) — 격자의 모든 칸을 최대 한 번씩 방문
+- 공간: O(R \* C) — 방문 배열 및 큐

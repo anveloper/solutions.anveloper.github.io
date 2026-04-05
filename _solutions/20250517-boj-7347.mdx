@@ -1,0 +1,68 @@
+---
+title: "BOJ 7347 - 플립과 시프트"
+date: "2025-05-17"
+description: "수학, 애드 혹, 홀짝성 문제"
+tags: ["수학", "애드 혹", "홀짝성"]
+platform: "boj"
+problem_number: "7347"
+problem_url: "https://www.acmicpc.net/problem/7347"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7347 - 플립과 시프트](https://www.acmicpc.net/problem/7347)
+
+원형으로 놓인 동전을 플립과 시프트 연산으로 모두 같은 면이 되도록 만들 수 있는지 판별하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 동전 수와 각 동전의 상태(0 또는 1)가 주어진다.
+
+### 출력
+
+가능하면 `YES`, 불가능하면 `NO`를 출력한다.
+
+### 예제
+
+| 입력                      | 출력        |
+| ------------------------- | ----------- |
+| `2` `3 0 1 0` `4 0 0 1 1` | `YES` `YES` |
+
+## 풀이
+
+동전 수의 홀짝성과 위치별 합의 차이로 가능 여부를 판별한다.
+
+1. 동전 수가 홀수이면 항상 가능하다
+2. 짝수이면 홀수 위치와 짝수 위치의 뒤집힌 동전 수 차이가 1 이하인지 확인한다
+
+**핵심 아이디어**: 짝수 개의 원형 배열에서는 홀수/짝수 위치 그룹 간 이동이 제한되므로, 두 그룹의 뒤집힌 수 차이가 1 이하여야 해결 가능하다.
+
+## 코드
+
+```python
+t = int(input())
+for _ in range(t):
+    temp = list(map(int, input().split()))
+    count, info = temp[0], temp[1:]
+    if count % 2:
+        print("YES")
+    else:
+        odd, even = 0, 0
+        for idx, i in enumerate(info):
+            if idx % 2:
+                odd += i
+            else:
+                even += i
+        if abs(odd - even) <= 1:
+            print("YES")
+        else:
+            print("NO")
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

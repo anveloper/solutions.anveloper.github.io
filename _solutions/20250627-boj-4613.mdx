@@ -1,0 +1,77 @@
+---
+title: "BOJ 4613 - Quicksum"
+date: "2025-06-27"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4613"
+problem_url: "https://www.acmicpc.net/problem/4613"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4613 - Quicksum](https://www.acmicpc.net/problem/4613)
+
+문자열의 각 알파벳에 위치값과 알파벳 순서값을 곱한 합을 구하는 문제다. A=1, B=2, ..., Z=26으로 대응하며, 공백은 값을 더하지 않되 위치는 계산에 포함된다. `#`이 입력되면 종료한다.
+
+### 입력
+
+- 여러 줄의 대문자 알파벳과 공백으로 이루어진 문자열
+- `#`이 오면 종료
+
+### 출력
+
+- 각 문자열에 대해 Quicksum 값을 출력
+
+### 예제
+
+| 입력                 | 출력  |
+| -------------------- | ----- |
+| `FIRST` `#`          | `240` |
+| `OF` `#`             | `12`  |
+| `SECOND EXAMPLE` `#` | `547` |
+
+## 풀이
+
+문자열의 각 문자를 1-indexed 위치와 알파벳 순서값으로 가중합을 계산하는 구현 문제다. 공백은 기여값이 없으므로 `continue`로 건너뛴다.
+
+1. `#`이 입력될 때까지 반복 처리한다.
+2. `enumerate(s, start=1)`로 1-indexed 위치를 얻는다.
+3. 공백(` `)이면 `continue`로 건너뛴다.
+4. 각 문자에 대해 `ord(ch) - ord('A') + 1`로 알파벳 순서값을 구한다.
+5. 위치 × 알파벳값을 누적하여 최종 합을 출력한다.
+
+**핵심 아이디어**: 공백도 위치 카운트에 포함되지만 값 기여는 없으므로, 위치 인덱스는 `enumerate`로 자동 증가시키되 공백 시 합산만 건너뛰면 된다.
+
+## 코드
+
+```python
+def quicksum(s: str) -> int:
+    total = 0
+    for i, ch in enumerate(s, start=1):
+        if ch == " ":
+            continue
+        value = ord(ch) - ord("A") + 1
+        total += i * value
+    return total
+
+
+def main():
+    while True:
+        line = input()
+        if line == "#":
+            break
+        print(quicksum(line))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## 복잡도
+
+- 시간: O(L) — 각 문자열 길이 L에 대해 선형 순회
+- 공간: O(1) — 누적 합만 저장

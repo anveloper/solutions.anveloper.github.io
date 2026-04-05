@@ -1,0 +1,77 @@
+---
+title: "BOJ 10827 - a^b"
+date: "2023-02-08"
+description: "임의 정밀도 / 큰 수 연산 문제"
+tags: ["임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "10827"
+problem_url: "https://www.acmicpc.net/problem/10827"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10827 - a^b](https://www.acmicpc.net/problem/10827)
+
+실수 a와 자연수 b가 주어졌을 때 a^b를 정확하게 출력하라. a는 소수점이 포함될 수 있으며, 정밀도 손실 없이 계산해야 한다.
+
+### 입력
+
+첫째 줄에 a (`0 < a < 100`, 소수점 9자리 이하)와 b (1 ≤ b ≤ 100)가 주어진다.
+
+### 출력
+
+a^b의 정확한 값을 소수점 이하 불필요한 0 없이 출력한다.
+
+### 예제
+
+| 입력    | 출력    |
+| ------- | ------- |
+| `1.5 3` | `3.375` |
+
+## 풀이
+
+BigDecimal로 정밀도 손실 없이 분할 정복 거듭제곱을 수행한다.
+
+1. a를 BigDecimal로 파싱하여 정밀도를 보장한다
+2. 분할 정복 거듭제곱: pow(a, b) = pow(a, b/2)^2 \* (b가 홀수면 a 추가 곱셈)
+3. 기저 조건: b == 1이면 a를 반환한다
+4. `toPlainString()`으로 과학적 표기법 없이 정확한 값을 출력한다
+
+**핵심 아이디어**: double은 부동소수점 오차가 발생하므로 BigDecimal을 사용해야 하며, 단순 반복 곱셈 대신 분할 정복으로 O(log b) 곱셈으로 최적화한다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.math.*;
+import java.util.*;
+
+public class Day366BOJ10827a의b승 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(in.readLine());
+
+        BigDecimal a = new BigDecimal(st.nextToken());
+        int b = Integer.parseInt(st.nextToken());
+
+        BigDecimal res = pow(a, b);
+
+        System.out.print(res.toPlainString());
+    }
+
+    public static BigDecimal pow(BigDecimal a, int b) {
+        if (b == 1)
+            return a;
+        BigDecimal half = pow(a, b / 2);
+        return (b % 2 == 0) ? half.multiply(half) : a.multiply(half.multiply(half));
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(log b) (분할 정복 거듭제곱)
+- 공간: O(log b) (재귀 호출 스택)

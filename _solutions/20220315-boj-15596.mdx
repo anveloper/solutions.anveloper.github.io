@@ -1,0 +1,63 @@
+---
+title: "BOJ 15596 - 정수 N개의 합"
+date: "2022-03-15"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "15596"
+problem_url: "https://www.acmicpc.net/problem/15596"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15596 - 정수 N개의 합](https://www.acmicpc.net/problem/15596)
+
+정수 배열이 주어질 때, 배열의 모든 원소의 합을 반환하는 함수를 작성하라. (함수 구현 문제)
+
+### 입력
+
+정수 배열 a가 함수 인자로 주어진다.
+
+### 출력
+
+배열의 모든 원소의 합을 long 타입으로 반환한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `[1, 2, 3, 4, 5]` | `15` |
+
+## 풀이
+
+배열을 순회하며 모든 원소를 long 변수에 누적한다.
+
+1. long 타입 변수 sum을 0으로 초기화한다
+2. 배열의 모든 원소를 순회하며 sum에 더한다
+3. sum을 반환한다
+
+**핵심 아이디어**: 원소 값이 클 수 있으므로 합계를 long 타입으로 선언해야 오버플로우를 방지할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+class Test { // 15596 정수N개의 합 함수 만들기 1단계....
+	long sum(int[] a) {
+		long sum = 0;
+		for (int i = 0; i < a.length; i++) {
+			sum += a[i];
+		}
+		return sum;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 배열 한 번 순회
+- 공간: O(1) — 추가 공간 없음

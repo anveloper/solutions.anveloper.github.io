@@ -1,0 +1,125 @@
+---
+title: "BOJ 13277 - 큰 수 곱셈"
+date: "2024-12-02"
+description: "매우 큰 두 수의 곱셈을 FFT로 수행하는 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "13277"
+problem_url: "https://www.acmicpc.net/problem/13277"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13277 - 큰 수 곱셈](https://www.acmicpc.net/problem/13277)
+
+두 개의 매우 큰 자연수가 주어질 때 그 곱을 출력하라.
+
+### 입력
+
+두 자연수가 주어진다 (최대 300,000자리).
+
+### 출력
+
+두 수의 곱을 출력한다.
+
+### 예제
+
+| 입력      | 출력    |
+| --------- | ------- |
+| `123 456` | `56088` |
+
+## 풀이
+
+FFT(고속 푸리에 변환)를 사용하여 큰 수 곱셈을 다항식 곱셈으로 변환한다.
+
+1. 각 수의 자릿수를 다항식 계수로 놓는다
+2. FFT로 두 다항식을 변환하고, 각 항을 곱한 뒤 역 FFT로 복원한다
+3. 결과 배열에서 올림(carry) 처리를 하여 최종 수를 출력한다
+
+**핵심 아이디어**: 일반 곱셈은 O(N^2)이지만, FFT를 이용하면 O(N log N)에 큰 수 곱셈이 가능하다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+#define _USE_MATH_DEFINES
+using namespace std;
+typedef complex<double> cpx;
+void fft(vector<cpx> &A, bool inv = false)
+{
+  int n = A.size();
+  for (int i = 1, j = 0, bit; i < n; i++)
+  {
+    bit = n >> 1;
+    while (j >= bit)
+      j -= bit, bit >>= 1;
+    j += bit;
+    if (i < j)
+      swap(A[i], A[j]);
+  }
+  double p = M_PI;
+  if (inv)
+    p *= -2;
+  else
+    p *= 2;
+  for (int s = 2; s <= n; s <<= 1)
+  {
+    cpx z = exp((cpx){0, p / s});
+    for (int i = 0; i < n; i += s)
+    {
+      cpx w = {1, 0};
+      for (int j = i; j < i + (s >> 1); j++)
+      {
+        cpx tmp = A[j + (s >> 1)] * w;
+        A[j + (s >> 1)] = A[j] - tmp;
+        A[j] += tmp;
+        w *= z;
+      }
+    }
+  }
+  if (inv)
+    for (auto &x : A)
+      x /= n;
+}
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  string SA, SB;
+  cin >> SA >> SB;
+  int a = SA.size(), b = SB.size(), N = 1 << (int)ceil(log2(a + b - 1));
+  vector<cpx> A(N, {0, 0});
+  for (int i = 0; i < a; i++)
+    A[i] = {SA[i] - '0', 0};
+  vector<cpx> B(N, {0, 0});
+  for (int i = 0; i < b; i++)
+    B[i] = {SB[i] - '0', 0};
+  fft(A);
+  fft(B);
+  for (int i = 0; i < N; i++)
+    A[i] *= B[i];
+  fft(A, true);
+  int result[a + b] = {
+      0,
+  };
+  for (int i = 0; i < a + b - 1; i++)
+    result[i + 1] = round(A[i].real());
+  for (int i = a + b - 1; i > 0; i--)
+  {
+    result[i - 1] += result[i] / 10;
+    result[i] %= 10;
+  }
+  if (result[0])
+    cout << result[0];
+  for (int i = 1; i < a + b; i++)
+    cout << result[i];
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) (N: 두 수의 자릿수 합)
+- 공간: O(N)

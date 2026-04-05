@@ -1,0 +1,66 @@
+---
+title: "BOJ 5666 - Hot Dogs"
+date: "2025-08-08"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "5666"
+problem_url: "https://www.acmicpc.net/problem/5666"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5666 - Hot Dogs](https://www.acmicpc.net/problem/5666)
+
+핫도그 H개를 P명이 나눠 먹을 때 1인당 평균 핫도그 수를 소수점 두 자리까지 출력하는 문제다. 입력은 EOF까지 반복된다.
+
+### 입력
+
+- 각 줄에 핫도그 수 H와 사람 수 P가 주어진다.
+- EOF까지 반복 입력된다.
+
+### 출력
+
+- 각 줄마다 H를 P로 나눈 값을 소수점 두 자리로 출력한다.
+
+### 예제
+
+| 입력   | 출력   |
+| ------ | ------ |
+| `10 3` | `3.33` |
+| `7 2`  | `3.50` |
+
+## 풀이
+
+정수 나눗셈을 피하기 위해 실수 형변환 후 나누고, `%.2f` 포맷으로 출력한다.
+
+1. `scanf`로 H와 P를 읽고, EOF이면 종료
+2. `(double)h / (double)p`로 실수 나눗셈 수행
+3. `printf("%.2f\n", ans)`로 소수점 두 자리 출력
+
+**핵심 아이디어**: 정수를 `double`로 캐스팅하여 정수 나눗셈 오류를 방지하고 `%.2f`로 반올림 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int h, p;
+
+  while (scanf("%d %d", &h, &p) != EOF)
+  {
+    double ans = (double)h / (double)p;
+    printf("%.2f\n", ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 입력 줄 수 N에 비례
+- 공간: O(1) — 상수 개의 변수만 사용

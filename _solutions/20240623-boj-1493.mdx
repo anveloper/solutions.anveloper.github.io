@@ -1,0 +1,82 @@
+---
+title: "BOJ 1493 - 박스 채우기"
+date: "2024-06-23"
+description: "큰 큐브부터 그리디하게 채워서 박스를 가득 채우는 최소 큐브 수를 구하는 문제"
+tags: ["수학", "그리디", "분할 정복"]
+platform: "boj"
+problem_number: "1493"
+problem_url: "https://www.acmicpc.net/problem/1493"
+difficulty: "골드 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1493 - 박스 채우기](https://www.acmicpc.net/problem/1493)
+
+L×W×H 크기의 박스를 한 변의 길이가 2^i인 정육면체 큐브로 빈틈없이 채울 때, 필요한 최소 큐브 수를 구하라. 불가능하면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 L, W, H, 둘째 줄에 큐브 종류 수 N, 이후 N줄에 각 큐브의 크기 지수와 개수가 주어진다.
+
+### 출력
+
+최소 큐브 수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                            | 출력 |
+| ------------------------------- | ---- |
+| `4 4 4` `3` `0 10` `1 10` `2 1` | `9`  |
+
+## 풀이
+
+큰 큐브부터 그리디하게 채우며, 이전 단계의 부피를 8배로 환산하여 현재 단위의 가용 공간을 계산한다.
+
+1. 큐브를 크기 내림차순으로 정렬한다
+2. 각 크기별로 박스에 들어갈 수 있는 최대 개수 = `(L//s) * (W//s) * (H//s) - 이전 누적`
+3. 가용 개수와 보유 개수 중 최솟값만큼 채우고, 누적 부피를 갱신한다
+4. 최종 누적 부피가 전체 부피와 같으면 답, 아니면 -1
+
+**핵심 아이디어**: 큰 큐브 1개는 작은 큐브 8개와 같으므로, 이전 누적을 8배하여 단위를 맞추면 그리디가 성립한다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+l, w, h = map(int, input().split())
+total_v = l * w * h
+n = int(input())
+cubes = []
+for i in range(n):
+    s, count = map(int, input().split())
+    s = 2**s
+    cubes.append([s * s * s, s, count])
+
+
+cur_v = 0
+ans = 0
+cubes.sort(reverse=True)
+for v, s, c in cubes:
+
+    cur_v *= 8
+    cur_c = (l // s) * (w // s) * (h // s) - cur_v
+    cur_c = min(cur_c, c)
+    ans += cur_c
+    cur_v += cur_c
+
+if cur_v == total_v:
+    print(ans)
+else:
+    print(-1)
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

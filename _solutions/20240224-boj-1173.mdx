@@ -1,0 +1,95 @@
+---
+title: "BOJ 1173 - 운동"
+date: "2024-02-24"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "1173"
+problem_url: "https://www.acmicpc.net/problem/1173"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1173 - 운동](https://www.acmicpc.net/problem/1173)
+
+N분 운동이 목표이다. 매 분마다 운동 또는 휴식을 선택한다. 운동하면 맥박이 T 증가, 휴식하면 R 감소한다. 맥박이 M을 초과하면 운동 불가하고, m 아래로 내려가지 않는다. 불가능하면 -1을 출력한다.
+
+### 입력
+
+N, m, M, T, R이 공백으로 주어진다.
+
+### 출력
+
+N분 운동을 완료하는 최소 시간을 출력하거나, 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `3 50 70 10 5` | `7`  |
+
+## 풀이
+
+매 분 운동 가능 여부를 판단하며 시뮬레이션한다.
+
+1. 초기 맥박 m에서 T를 더해도 M 이하이면 운동 불가능 판정 (-1)
+2. 매 분마다 맥박 + T가 M 이하이면 운동(맥박 += T, 운동 횟수 증가)
+3. 아니면 휴식(맥박 -= R, 최솟값 m 유지)
+4. 운동 횟수가 N에 도달하면 경과 시간을 출력한다
+
+**핵심 아이디어**: 탐욕적으로 운동 가능하면 운동하고, 불가능하면 휴식하는 시뮬레이션이다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day753BOJ1173운동 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int N = Integer.parseInt(st.nextToken());
+    int m = Integer.parseInt(st.nextToken());
+    int M = Integer.parseInt(st.nextToken());
+    int T = Integer.parseInt(st.nextToken());
+    int R = Integer.parseInt(st.nextToken());
+
+    int mix = m;
+    int count = 0;
+
+    if ((M - m) < T) {
+      System.out.println(-1);
+    } else {
+      while (true) {
+
+        if ((m + T) <= M) {
+          m += T;
+          N--;
+        } else {
+          m -= R;
+        }
+        if (m < mix) {
+          m = mix;
+        }
+
+        count++;
+
+        if (N == 0)
+          break;
+      }
+      System.out.println(count);
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* (M-m) / min(T,R)) — 운동/휴식 반복
+- 공간: O(1) — 상수 변수만 사용

@@ -1,0 +1,66 @@
+---
+title: "BOJ 1271 - 엄청난 부자2"
+date: "2023-06-14"
+description: "수학, 사칙연산, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["수학", "사칙연산", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "1271"
+problem_url: "https://www.acmicpc.net/problem/1271"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1271 - 엄청난 부자2](https://www.acmicpc.net/problem/1271)
+
+돈 N을 M명에게 균등하게 나눌 때, 한 명이 받는 금액과 나머지를 구하라. N과 M은 매우 큰 수이다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다 (1 이상 10^1000 이하).
+
+### 출력
+
+첫째 줄에 몫, 둘째 줄에 나머지를 출력한다.
+
+### 예제
+
+| 입력     | 출력      |
+| -------- | --------- |
+| `1000 3` | `333` `1` |
+
+## 풀이
+
+BigInteger를 사용하여 큰 수의 나눗셈과 나머지 연산을 수행한다.
+
+1. N과 M을 BigInteger로 입력받는다
+2. `divide`로 몫, `remainder`로 나머지를 구한다
+
+**핵심 아이디어**: 10^1000까지의 수는 기본 자료형으로 표현 불가능하므로 BigInteger를 사용한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.math.*;
+import java.util.*;
+
+public class Day493BOJ1271엄청난부자2 {
+  public static void main(String[] args) {
+    Scanner in = new Scanner(System.in);
+    BigInteger n = in.nextBigInteger();
+    BigInteger m = in.nextBigInteger();
+    in.close();
+    System.out.println(n.divide(m));
+    System.out.println(n.remainder(m));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) - BigInteger 연산
+- 공간: O(1)

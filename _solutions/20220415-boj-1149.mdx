@@ -1,0 +1,109 @@
+---
+title: "BOJ 1149 - RGB거리"
+date: "2022-04-15"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "1149"
+problem_url: "https://www.acmicpc.net/problem/1149"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1149 - RGB거리](https://www.acmicpc.net/problem/1149)
+
+N개의 집을 빨강(R), 초록(G), 파랑(B) 세 가지 색으로 칠할 때, 인접한 두 집이 같은 색이 되지 않도록 하면서 전체 칠하는 비용의 최솟값을 구하는 문제다. 각 집마다 세 가지 색 중 하나를 선택해야 하며, 이웃한 집과 같은 색을 사용할 수 없다.
+
+### 입력
+
+- 첫째 줄: 집의 수 N (2 ≤ N ≤ 1000)
+- 다음 N개의 줄: 각 집을 R, G, B로 칠하는 비용 (1 ≤ 비용 ≤ 1000)
+
+### 출력
+
+모든 집을 칠하는 최솟값을 출력한다.
+
+### 예제
+
+| 입력                                 | 출력 |
+| ------------------------------------ | ---- |
+| `3` `26 40 83` `49 60 57` `13 89 99` | `96` |
+
+## 풀이
+
+각 집을 특정 색으로 칠할 때의 최소 비용을 메모이제이션(Top-Down DP)으로 구한다. i번째 집을 색 c로 칠하는 최소 비용은, i-1번째 집을 c가 아닌 두 색 중 최솟값에 현재 비용을 더한 값이다.
+
+1. 2차원 배열 `dp[N][3]`을 선언하고 첫 번째 집의 비용을 `dp[0][R/G/B]`로 초기화한다.
+2. `recur(n, c)` 함수는 n번째 집을 c색으로 칠할 때의 최소 누적 비용을 반환한다.
+3. `dp[n][c]`가 0이면 아직 계산되지 않은 상태로, 이전 집의 나머지 두 색 중 최솟값에 현재 비용을 더해 저장한다.
+4. 마지막 N-1번째 집의 R, G, B 세 경우 중 최솟값이 최종 답이다.
+
+**핵심 아이디어**: `dp[i][c] = min(dp[i-1][c 아닌 두 색]) + cost[i][c]` 점화식으로, 각 집의 색 선택을 이전 집의 상태와 연계하여 최솟값을 구한다. 인접 집과 같은 색 사용 금지 조건이 점화식에 자연스럽게 반영된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day67BOJ1149RGB거리 { // 1149 RGB거리
+	static final int R = 0, G = 1, B = 2;
+	static int N, ans = 1 << 22;
+	static int[][] rgb, dp;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+		rgb = new int[N][3];
+		dp = new int[N][3];
+		for (int n = 0; n < N; n++) {
+			st = new StringTokenizer(br.readLine());
+			rgb[n][R] = Integer.parseInt(st.nextToken());
+			rgb[n][G] = Integer.parseInt(st.nextToken());
+			rgb[n][B] = Integer.parseInt(st.nextToken());
+		}
+
+		dp[0][R] = rgb[0][R];
+		dp[0][G] = rgb[0][G];
+		dp[0][B] = rgb[0][B];
+
+		ans = m(recur(N - 1, R), m(recur(N - 1, G), recur(N - 1, B)));
+
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static int recur(int n, int c) {
+		if (dp[n][c] == 0) {
+			switch (c) {
+			case R:
+				dp[n][c] = m(recur(n - 1, G), recur(n - 1, B)) + rgb[n][R];
+				break;
+			case G:
+				dp[n][c] = m(recur(n - 1, B), recur(n - 1, R)) + rgb[n][G];
+				break;
+			case B:
+				dp[n][c] = m(recur(n - 1, R), recur(n - 1, G)) + rgb[n][B];
+				break;
+			}
+		}
+		return dp[n][c];
+	}
+
+	private static int m(int a, int b) {
+		return Math.min(a, b);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 집마다 3가지 색에 대해 한 번씩 계산 (총 3N번)
+- 공간: O(N) — dp 배열 N x 3 크기

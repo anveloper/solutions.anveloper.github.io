@@ -1,0 +1,85 @@
+---
+title: "BOJ 1639 - 행운의 티켓"
+date: "2024-06-17"
+description: "앞뒤 절반의 자릿수 합이 같은 가장 긴 부분 문자열을 구하는 문제"
+tags: ["구현", "브루트포스"]
+platform: "boj"
+problem_number: "1639"
+problem_url: "https://www.acmicpc.net/problem/1639"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1639 - 행운의 티켓](https://www.acmicpc.net/problem/1639)
+
+숫자 문자열에서 앞쪽 절반과 뒤쪽 절반의 자릿수 합이 같은 가장 긴 짝수 길이 부분 문자열의 길이를 구하라.
+
+### 입력
+
+숫자로 이루어진 문자열이 주어진다 (길이 1 이상 100 이하).
+
+### 출력
+
+행운의 티켓 조건을 만족하는 가장 긴 부분 문자열의 길이를 출력한다. 없으면 0을 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `12345678` | `6`  |
+
+## 풀이
+
+가능한 짝수 길이를 큰 것부터 시도하며, 조건을 만족하는 부분 문자열이 있으면 바로 반환한다.
+
+1. 문자열 길이에서 가장 큰 짝수부터 시작하여 2씩 줄여가며 탐색한다
+2. 각 길이에 대해 모든 시작 위치에서 부분 문자열을 추출한다
+3. 부분 문자열의 앞 절반과 뒤 절반의 자릿수 합을 비교한다
+4. 같으면 해당 길이를 반환한다
+
+**핵심 아이디어**: 가장 긴 길이부터 시도하므로 처음 발견된 결과가 최대 길이이다.
+
+## 코드
+
+```python
+import sys
+
+
+def check(x):
+    mid = len(x) // 2
+    sum1 = sum(x[:mid])
+    sum2 = sum(x[mid:])
+    if sum1 == sum2:
+        return True
+    else:
+        return False
+
+
+def solution(arr):
+    if len(arr) % 2 == 0:
+        chk = len(arr)
+    else:
+        chk = len(arr) - 1
+    while chk > 0:
+        i = 0
+        ans = 0
+        while i + chk <= len(arr):
+            if check(arr[i : i + chk]):
+                ans = chk
+                return ans
+            i += 1
+        chk -= 2
+    return 0
+
+
+s = list(map(int, list(sys.stdin.readline().strip())))
+print(solution(s))
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(N)

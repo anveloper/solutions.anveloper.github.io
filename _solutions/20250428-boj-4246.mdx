@@ -1,0 +1,72 @@
+---
+title: "BOJ 4246 - To and Fro"
+date: "2025-04-28"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4246"
+problem_url: "https://www.acmicpc.net/problem/4246"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4246 - To and Fro](https://www.acmicpc.net/problem/4246)
+
+N열짜리 격자에 문자열을 지그재그(뱀 형태)로 써넣은 뒤 행 순서로 읽어낸 암호문이 주어질 때, 원래 문자열을 복원하는 문제이다.
+홀수 행은 왼쪽에서 오른쪽으로, 짝수 행은 오른쪽에서 왼쪽으로 문자를 채운다.
+복원은 열 우선(column-major) 순서로 읽어낸다.
+
+### 입력
+
+각 줄에 열 수 N과 암호화된 문자열이 주어진다. N이 0이면 종료한다.
+
+### 출력
+
+각 케이스에 대해 복원된 원래 문자열을 출력한다.
+
+### 예제
+
+| 입력                                    | 출력                                  |
+| --------------------------------------- | ------------------------------------- |
+| `5 toioynnkpheleaigshareconhtomesnlewx` | `thisisnotareallylongmessagetoconvey` |
+
+## 풀이
+
+암호문을 2N 단위로 분할하여 앞 N자는 순방향, 뒤 N자는 역방향으로 배치한 뒤, 열 방향으로 읽어 복원한다.
+
+1. N이 0이면 반복을 종료한다.
+2. 암호문 `a`를 2N 단위 청크로 분할한다.
+   - 각 청크의 앞 N자는 그대로, 뒤 N자는 뒤집어 `s` 리스트에 추가한다.
+   - 마지막 청크가 빈 슬라이스이면 제거한다.
+3. `s`는 행 개수만큼의 N-길이 리스트들의 리스트이다.
+4. 열 `i`(0~N-1), 행 `j`(0~전체행수-1) 순서로 `s[j][i]`를 출력한다.
+
+**핵심 아이디어**: 지그재그 쓰기를 홀수/짝수 행에서의 순방향/역방향 분할로 모델링하면, 열 우선 읽기로 원문을 복원할 수 있다.
+
+## 코드
+
+```python
+while 1:
+    n = int(input())
+    if n == 0:
+        break
+    a = list(input())
+    s = []
+    for i in range(0, len(a), n * 2):
+        s.append(a[i : i + n])
+        s.append(list(reversed(a[i + n : i + n * 2])))
+    if s[-1] == []:
+        s.pop()
+    for i in range(n):
+        for j in range(len(a) // n):
+            print(s[j][i], end="")
+    print()
+```
+
+## 복잡도
+
+- 시간: O(L) — 문자열 길이 L에 대해 선형
+- 공간: O(L) — 분할된 행 리스트 저장

@@ -1,0 +1,70 @@
+---
+title: "BOJ 1229 - 육각수"
+date: "2024-04-02"
+description: "주어진 수를 최소 개수의 육각수 합으로 표현하는 문제"
+tags: ["수학", "DP"]
+platform: "boj"
+problem_number: "1229"
+problem_url: "https://www.acmicpc.net/problem/1229"
+difficulty: "골드 IV"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1229 - 육각수](https://www.acmicpc.net/problem/1229)
+
+자연수 N을 육각수(1, 6, 15, 28, ...)의 합으로 나타낼 때 필요한 최소 항의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 자연수 N이 주어진다 (1 이상 1,000,000 이하).
+
+### 출력
+
+최소 육각수 개수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `40` | `2`  |
+
+## 풀이
+
+육각수를 미리 계산한 뒤, DP로 각 수를 만드는 데 필요한 최소 개수를 구한다.
+
+1. i번째 육각수 = `i(2i-1)` 공식으로 N 이하의 모든 육각수를 생성한다
+2. `dp[i]`: i를 만드는 최소 육각수 개수, 초기값은 6(상한)으로 설정한다
+3. 각 i에 대해 모든 육각수 h를 빼며 `dp[i] = min(dp[i], dp[i-h] + 1)`로 갱신한다
+
+**핵심 아이디어**: 동전 교환 문제와 동일한 구조로, 육각수를 동전으로 보고 DP로 최소 개수를 구한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input;
+  const nums = [];
+  const dp = Array(N + 1).fill(6);
+  for (let i = 1; i * (2 * i - 1) <= 1_000_000; i++) nums[i] = i * (2 * i - 1);
+  dp[0] = 0;
+  dp[1] = 1;
+  for (let i = 2; i <= N; i++) {
+    for (let j = 1; nums[j] <= i; j++) {
+      if (dp[i - nums[j]] + 1 < dp[i]) dp[i] = dp[i - nums[j]] + 1;
+    }
+  }
+  return dp[N];
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N × √N)
+- 공간: O(N)

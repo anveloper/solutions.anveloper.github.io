@@ -1,0 +1,90 @@
+---
+title: "BOJ 2703 - Cryptoquote"
+date: "2025-12-05"
+description: "구현, 문자열, 집합과 맵 문제"
+tags: ["구현", "문자열", "집합과 맵"]
+platform: "boj"
+problem_number: "2703"
+problem_url: "https://www.acmicpc.net/problem/2703"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2703 - Cryptoquote](https://www.acmicpc.net/problem/2703)
+
+암호화된 문장(cryptoquote)과 알파벳 치환 키(key)가 주어질 때, 각 대문자를 키에 따라 치환하여 원본 문장을 복원하는 문제이다.
+
+키는 26개의 대문자로 이루어진 문자열이며, `key[i]`는 알파벳 `'A' + i`에 해당하는 문자가 어떤 문자로 치환되는지를 나타낸다.
+
+### 입력
+
+- 첫째 줄에 테스트 케이스 수 T가 주어진다.
+- 각 테스트 케이스마다:
+  - 암호화된 문장(공백 포함 가능)
+  - 알파벳 치환 키 (26개 대문자)
+
+### 출력
+
+각 테스트 케이스에 대해 복호화된 문장을 출력한다.
+
+### 예제
+
+| 입력                                     | 출력    |
+| ---------------------------------------- | ------- |
+| `1` `HELLO` `BCDEFGHIJKLMNOPQRSTUVWXYZA` | `IFMMP` |
+
+## 풀이
+
+암호 문장의 각 대문자를 키 배열을 사용해 직접 치환한다.
+
+1. 테스트 케이스 수 T를 읽은 후, `cin.ignore()`으로 개행 문자를 제거한다.
+2. 암호 문장과 키를 `getline()`으로 읽는다.
+3. 문장의 각 문자가 대문자(`'A'`~`'Z'`)인 경우, `word[j] = alpha[word[j] - 'A']`로 치환한다.
+4. 소문자와 공백 등 비알파벳 문자는 그대로 유지한다.
+5. 치환 완료된 문장을 출력한다.
+
+**핵심 아이디어**: `alpha[c - 'A']` 인덱싱으로 배열을 직접 치환 테이블로 활용한다. `getline()`을 사용해 공백이 포함된 문장을 안전하게 읽는다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  int t;
+  cin >> t;
+  cin.ignore();
+
+  string word, alpha;
+  for (int i = 0; i < t; i++)
+  {
+
+    getline(cin, word);
+    getline(cin, alpha);
+    int len = word.length();
+    for (int j = 0; j < len; j++)
+    {
+      if (word[j] >= 'A' && word[j] <= 'Z')
+      {
+        word[j] = alpha[(int)(word[j] - 'A')];
+      }
+    }
+
+    cout << word << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* L) — T개의 테스트 케이스, 각 문장 길이 L만큼 순회
+- 공간: O(L) — 문장 문자열 저장

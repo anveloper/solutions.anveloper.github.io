@@ -1,0 +1,87 @@
+---
+title: "BOJ 14717 - 앉았다"
+date: "2022-04-19"
+description: "수학, 구현, 브루트포스 알고리즘 문제"
+tags: ["수학", "구현", "브루트포스 알고리즘", "조합론", "확률론"]
+platform: "boj"
+problem_number: "14717"
+problem_url: "https://www.acmicpc.net/problem/14717"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14717 - 앉았다](https://www.acmicpc.net/problem/14717)
+
+1부터 10까지 적힌 카드 중 이미 뽑은 카드 2장(a, b)이 주어졌을 때, 나머지 18장에서 2장을 더 뽑아 (a+b) mod 10보다 작은 합(mod 10)이 나올 확률을 구하라.
+
+### 입력
+
+두 정수 a, b가 주어진다 (1 ≤ a, b ≤ 10).
+
+### 출력
+
+확률을 소수점 셋째 자리까지 출력한다.
+
+### 예제
+
+| 입력  | 출력    |
+| ----- | ------- |
+| `1 2` | `0.196` |
+
+## 풀이
+
+전체 경우의 수 C(18,2) = 153가지 중, 두 장의 합(mod 10)이 기준값 (a+b) mod 10보다 작은 경우를 세어 확률을 계산한다.
+
+1. 전체 경우의 수는 C(18,2) = 153이다
+2. a == b인 경우, 같은 숫자 카드가 하나 빠지므로 별도 처리한다
+3. a != b인 경우, 1~10에서 두 장을 선택하는 모든 쌍 (i, j)을 순회한다
+4. 선택된 카드가 이미 뽑은 카드와 겹치면 가능한 경우가 2배 줄고, 겹치지 않으면 4배 가능하다 (각 숫자 카드가 2장씩 있기 때문)
+5. 유리한 경우의 수를 전체로 나누어 확률을 구한다
+
+**핵심 아이디어**: 각 숫자(1~10)의 카드가 2장씩 총 20장이고, 이미 2장을 뽑은 상태에서 남은 18장 중 2장을 뽑는 확률 문제이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.util.Scanner;
+
+public class Day71BOJ14717앉았다수학 {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.printf("%.3f\n", solve(sc.nextInt(), sc.nextInt()));
+		sc.close();
+	}
+
+	private static double solve(int a, int b) {
+		int cases = (18 * 17) / (2 * 1);
+		int cnt = 0;
+		if (a == b)
+			cnt = cases - (10 - a);
+		else {
+			int e = (a + b) % 10;
+			for (int i = 1; i < 11; i++) {
+				for (int j = i + 1; j < 11; j++) {
+					if ((i + j) % 10 < e) {
+						if (i == a || i == b || j == a || j == b)
+							cnt += 2;
+						else
+							cnt += 4;
+					}
+				}
+			}
+		}
+		return cnt / (cases * 1.0);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(1) (상수 범위 10x10 이중 루프)
+- 공간: O(1)

@@ -1,0 +1,82 @@
+---
+title: "BOJ 6230 - Buy One Get One Free"
+date: "2025-10-23"
+description: "그리디 알고리즘, 정렬, 두 포인터 문제"
+tags: ["그리디 알고리즘", "정렬", "두 포인터"]
+platform: "boj"
+problem_number: "6230"
+problem_url: "https://www.acmicpc.net/problem/6230"
+difficulty: "실버 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6230 - Buy One Get One Free](https://www.acmicpc.net/problem/6230)
+
+1+1 행사에서 비싼 물건을 사면 더 싼 물건을 무료로 얻을 수 있다. 최소 비용으로 모든 물건을 구매하라.
+
+### 입력
+
+A그룹 물건 수 N과 B그룹 물건 수 M, 이후 각 물건의 가격이 주어진다.
+
+### 출력
+
+최소 구매 수를 출력한다.
+
+### 예제
+
+| 입력                       | 출력 |
+| -------------------------- | ---- |
+| `3 3` `10 20 30` `5 15 25` | `5`  |
+
+## 풀이
+
+양쪽 가격을 내림차순 정렬 후 투 포인터로 짝을 맞춘다.
+
+1. A그룹과 B그룹을 각각 내림차순으로 정렬한다
+2. B의 가격이 A보다 작으면 A를 사면서 B를 무료로 얻으므로, 추가 구매 1회를 추가한다
+3. B의 가격이 A 이상이면 B만 구매(이미 포함)로 넘어간다
+
+**핵심 아이디어**: 비싼 순서대로 비교하여, 무료로 얻을 수 있는 짝을 최대한 활용하면 총 구매 수를 최소화할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main(void)
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  int a[10'005], b[10'005];
+  int n, m;
+  cin >> n >> m;
+  for (int i = 0; i < n; i++)
+    cin >> a[i];
+  for (int i = 0; i < m; i++)
+    cin >> b[i];
+  sort(a, a + n, greater<int>());
+  sort(b, b + m, greater<int>());
+  int ai = 0, bi = 0;
+  int ans = n;
+  while (ai < n && bi < m)
+  {
+    if (b[bi] < a[ai])
+    {
+      ans++;
+      ai++;
+    }
+    bi++;
+  }
+  cout << ans << "\n";
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N + M log M)
+- 공간: O(N + M)

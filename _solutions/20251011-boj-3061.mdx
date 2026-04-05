@@ -1,0 +1,74 @@
+---
+title: "BOJ 3061 - 사다리"
+date: "2025-10-11"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "3061"
+problem_url: "https://www.acmicpc.net/problem/3061"
+difficulty: "실버 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3061 - 사다리](https://www.acmicpc.net/problem/3061)
+
+1부터 N까지의 순열이 주어질 때, 인접한 두 원소를 교환하여 정렬하는 최소 교환 횟수를 구하라.
+
+### 입력
+
+테스트 케이스 수 T와 각 케이스마다 순열 크기 N과 순열이 주어진다.
+
+### 출력
+
+각 케이스마다 최소 교환 횟수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `1` `3` `2 1 3` | `1`  |
+
+## 풀이
+
+역순 쌍(inversion)의 수를 세는 것이 최소 인접 교환 횟수와 같다.
+
+1. 순열의 모든 쌍 (i, j)에서 i보다 j가 뒤에 있지만 값이 더 작은 경우를 센다
+2. 이중 반복문으로 역순 쌍의 개수를 누적한다
+3. 결과가 최소 교환 횟수이다
+
+**핵심 아이디어**: 버블 정렬의 교환 횟수는 역순 쌍(inversion)의 수와 정확히 같다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  int a, b, c[1010], s, i, j;
+  scanf("%d", &a);
+  for (; a--;)
+  {
+    scanf("%d", &b);
+    s = 0;
+    for (i = 0; i < b; i++)
+      scanf("%d", &c[i]);
+    for (i = 0; i < b; i++)
+      for (j = 0; j < i; j++)
+        if (c[i] < c[j])
+          s++;
+    printf("%d\n", s);
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

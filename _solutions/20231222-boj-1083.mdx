@@ -1,0 +1,102 @@
+---
+title: "BOJ 1083 - 소트"
+date: "2023-12-22"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "1083"
+problem_url: "https://www.acmicpc.net/problem/1083"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1083 - 소트](https://www.acmicpc.net/problem/1083)
+
+N개의 원소로 이루어진 배열에서, 인접한 두 원소를 최대 S번 교환하여 사전순으로 가장 뒤인 배열을 만들라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 배열 원소, 셋째 줄에 S가 주어진다.
+
+### 출력
+
+사전순으로 가장 뒤인 배열을 출력한다.
+
+### 예제
+
+| 입력                | 출력        |
+| ------------------- | ----------- |
+| `5` `2 3 5 1 4` `2` | `5 2 3 1 4` |
+
+## 풀이
+
+앞자리부터 그리디하게, 남은 교환 횟수 내에서 도달 가능한 범위의 최대값을 앞으로 가져온다.
+
+1. 현재 위치 i부터 `min(i+S, N-1)` 범위에서 최대값의 인덱스를 찾는다
+2. 최대값을 인접 교환으로 현재 위치까지 끌어오고 S를 차감한다
+3. 다음 위치로 이동하여 반복한다
+
+**핵심 아이디어**: 사전순 최대를 만들려면 앞자리가 클수록 좋으므로, 앞에서부터 가능한 범위 내 최대값을 가져오는 그리디가 최적이다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day689BOJ1083소트 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    StringTokenizer st;
+
+    int N;
+    int[] arr;
+    int S;
+
+    N = Integer.parseInt(br.readLine());
+    arr = new int[N];
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    S = Integer.parseInt(br.readLine());
+
+    ArrayList<Integer> arrayList = new ArrayList<>();
+    for (Integer value : arr)
+      arrayList.add(value);
+
+    for (int i = 0; i < arrayList.size(); i++) {
+
+      int maxIndex = i;
+      for (int j = i + 1; j < arrayList.size(); j++) {
+        if (S >= (j - i)) {
+          if (arrayList.get(maxIndex) < arrayList.get(j))
+            maxIndex = j;
+        } else {
+          break;
+        }
+      }
+
+      S -= (maxIndex - i);
+
+      arrayList.add(i, arrayList.remove(maxIndex));
+    }
+
+    for (Integer value : arrayList)
+      sb.append(value + " ");
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* min(N, S))
+- 공간: O(N)

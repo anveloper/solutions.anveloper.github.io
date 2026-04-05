@@ -1,0 +1,103 @@
+---
+title: "BOJ 6603 - 로또"
+date: "2022-03-19"
+description: "수학, 조합론, 백트래킹 문제"
+tags: ["수학", "조합론", "백트래킹", "재귀"]
+platform: "boj"
+problem_number: "6603"
+problem_url: "https://www.acmicpc.net/problem/6603"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6603 - 로또](https://www.acmicpc.net/problem/6603)
+
+독일 로또는 1~49에서 6개의 숫자를 고른다. 집합 S(크기 k, `6 < k ≤ 13`)가 주어지면, S에서 6개의 숫자를 골라 만들 수 있는 모든 조합을 오름차순으로 출력하는 문제다. 여러 테스트 케이스를 처리하며, 0 하나만 입력되면 종료한다.
+
+### 입력
+
+- 각 줄: k와 k개의 숫자 (공백 구분), `0` 입력 시 종료
+
+### 출력
+
+각 테스트 케이스마다 가능한 모든 6개 조합을 오름차순으로 출력 후 빈 줄 추가
+
+### 예제
+
+| 입력                  | 출력                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------- |
+| `7 1 2 3 4 5 6 7` `0` | `1 2 3 4 5 6` `1 2 3 4 5 7` `1 2 3 4 6 7` `1 2 3 5 6 7` `1 2 4 5 6 7` `1 3 4 5 6 7` `2 3 4 5 6 7` |
+
+## 풀이
+
+DFS(백트래킹)로 k개의 원소 중 6개를 순서 없이 선택하는 조합을 구한다. 시작 인덱스를 증가시키며 탐색하여 오름차순 조합만 생성한다.
+
+1. 각 테스트 케이스마다 k개의 숫자를 배열에 저장한다.
+2. `dfs(시작인덱스, 선택된수)` 함수로 6개가 선택될 때까지 재귀 탐색한다.
+3. 선택된 수가 6이 되면 체크 배열에서 선택된 숫자를 순서대로 출력한다.
+4. 다음 탐색은 현재 인덱스 `i + 1`부터 시작하여 중복 없는 오름차순 조합을 보장한다.
+
+**핵심 아이디어:** 시작 인덱스를 재귀 호출 시 `i + 1`로 전달하면 이전에 선택한 원소보다 큰 인덱스만 탐색하므로 자동으로 오름차순 조합(순열이 아닌 조합)이 생성된다. 이것이 순열과 조합 백트래킹의 핵심 차이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day40BOJ6603로또숫자DFS { // 3306 로또 재귀 dfs
+	static int N;
+	static int[] arr;
+	static boolean[] chk;
+	static StringBuilder sb;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		sb = new StringBuilder();
+		while (true) {
+			String tmp = br.readLine();
+			if (tmp.equals("0"))
+				break;
+			st = new StringTokenizer(tmp);
+			N = Integer.parseInt(st.nextToken());
+			arr = new int[N];
+			chk = new boolean[N];
+			for (int i = 0; i < N; i++) {
+				arr[i] = Integer.parseInt(st.nextToken());
+			}
+			dfs(0, 0);
+			sb.append("\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void dfs(int st, int cnt) {
+		if (cnt == 6) {
+			for (int i = 0; i < N; i++) {
+				if (chk[i])
+					sb.append(arr[i]).append(" ");
+			}
+			sb.append("\n");
+		}
+		for (int i = st; i < N; i++) {
+			chk[i] = true;
+			dfs(i + 1, cnt + 1);
+			chk[i] = false;
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(C(k, 6)) — k개 중 6개를 고르는 조합 수 (최대 C(13, 6) = 1716)
+- 공간: O(k) — 재귀 호출 스택 깊이와 체크 배열

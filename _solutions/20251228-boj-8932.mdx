@@ -1,0 +1,105 @@
+---
+title: "BOJ 8932 - 7종 경기"
+date: "2025-12-28"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "8932"
+problem_url: "https://www.acmicpc.net/problem/8932"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8932 - 7종 경기](https://www.acmicpc.net/problem/8932)
+
+7종 경기(Heptathlon)는 7개 종목으로 구성된 육상 복합 경기이다. 각 종목은 트랙 종목과 필드 종목으로 나뉘며, 종목별로 정해진 공식에 따라 점수를 계산한다.
+
+- 트랙 종목 (0번: 100m 허들, 3번: 200m, 6번: 800m): `floor(A * (B - P)^C)`
+- 필드 종목 (1번: 높이뛰기, 2번: 포환던지기, 4번: 멀리뛰기, 5번: 창던지기): `floor(A * (P - B)^C)`
+
+각 종목의 A, B, C 상수는 국제육상경기연맹(IAAF)이 정한 값을 사용한다.
+
+### 입력
+
+첫 번째 줄에 테스트 케이스 수 T가 주어진다. 각 테스트 케이스마다 7개의 정수가 한 줄에 주어지며, 각각 7종목의 기록(P)이다.
+
+### 출력
+
+각 테스트 케이스에 대해 총점을 출력한다.
+
+### 예제
+
+| 입력                           | 출력   |
+| ------------------------------ | ------ |
+| `1` `13 183 14 22 1099 47 128` | `6017` |
+
+## 풀이
+
+종목 인덱스에 따라 트랙/필드 공식을 적용하고 floor 처리하여 점수를 합산한다.
+
+1. 각 종목의 A, B, C 상수를 배열로 미리 정의한다.
+2. T개의 테스트 케이스를 처리한다.
+3. 각 테스트 케이스에서 7종목 기록을 읽는다.
+4. 인덱스가 0, 3, 6이면 트랙 공식 `floor(A * (B - P)^C)`, 나머지는 필드 공식 `floor(A * (P - B)^C)`를 적용한다.
+5. 7종목 점수를 합산하여 출력한다.
+
+**핵심 아이디어**: 트랙 종목은 기록이 작을수록(빠를수록) 높은 점수이므로 `B - P`, 필드 종목은 기록이 클수록 높은 점수이므로 `P - B` 형태의 공식을 사용한다. 상수 배열을 미리 정의하면 종목별 분기 처리가 간결해진다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <math.h>
+
+using namespace std;
+
+int trackCal(double A, double B, double C, int P)
+{
+  return floor(A * pow(B - P, C));
+}
+
+int fieldCal(double A, double B, double C, int P)
+{
+  return floor(A * pow(P - B, C));
+}
+
+double a[] = {9.23076, 1.84523, 56.0211, 4.99087, 0.188807, 15.9803, 0.11193};
+double b[] = {26.7, 75, 1.5, 42.5, 210, 3.8, 254};
+double c[] = {1.835, 1.348, 1.05, 1.81, 1.41, 1.04, 1.88};
+
+int main()
+{
+  int t;
+  cin >> t;
+
+  for (int i = 0; i < t; i++)
+  {
+    int track = 0, field = 0;
+    int p;
+    for (int j = 0; j < 7; j++)
+    {
+      cin >> p;
+      if (j == 0 || j == 3 || j == 6)
+      {
+        track += trackCal(a[j], b[j], c[j], p);
+      }
+      else
+      {
+        field += fieldCal(a[j], b[j], c[j], p);
+      }
+    }
+
+    cout << track + field << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T) — 테스트 케이스마다 고정 7회 연산
+- 공간: O(1) — 상수 배열 크기가 고정

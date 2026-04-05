@@ -1,0 +1,95 @@
+---
+title: "BOJ 1074 - Z"
+date: "2022-08-11"
+description: "분할 정복, 재귀 문제"
+tags: ["분할 정복", "재귀"]
+platform: "boj"
+problem_number: "1074"
+problem_url: "https://www.acmicpc.net/problem/1074"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1074 - Z](https://www.acmicpc.net/problem/1074)
+
+크기가 `2^N * 2^N`인 2차원 배열을 Z 모양으로 탐색한다. 배열을 4등분하여 왼쪽 위, 오른쪽 위, 왼쪽 아래, 오른쪽 아래 순서로 재귀 방문할 때, r행 c열을 몇 번째로 방문하는지 구하라.
+
+### 입력
+
+첫째 줄에 N, r, c가 주어진다 (1 이상 15 이하, 0 이상 `2^N - 1` 이하).
+
+### 출력
+
+r행 c열을 몇 번째로 방문하는지 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `2 3 1` | `11` |
+| `3 7 7` | `63` |
+
+## 풀이
+
+분할 정복으로 (r, c)가 속한 사분면을 찾아 해당 사분면까지의 방문 횟수를 누적한다.
+
+1. 현재 크기 size에서 (r, c)가 어느 사분면에 속하는지 판별한다
+2. 왼쪽 위(1사분면)이면 그대로, 오른쪽 위(2사분면)이면 `size^2/4`를 누적, 왼쪽 아래(3사분면)이면 `size^2/4 * 2`를 누적, 오른쪽 아래(4사분면)이면 `size^2/4 * 3`을 누적한다
+3. 해당 사분면 내에서의 상대 좌표로 변환 후 size를 절반으로 줄여 재귀한다
+4. size가 1이 되면 종료한다
+
+**핵심 아이디어**: 전체 배열을 탐색하지 않고, (r, c)가 속한 사분면만 재귀적으로 탐색하여 O(N)에 해결한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day185BOJ1074Z순회 { // 1074 Z 구선생님 도움
+	static int count = 0;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int r = Integer.parseInt(st.nextToken());
+		int c = Integer.parseInt(st.nextToken());
+		int size = (int) Math.pow(2, N);
+
+		find(size, r, c);
+		System.out.println(count);
+		br.close();
+	}
+
+	private static void find(int size, int r, int c) {
+		if (size == 1)
+			return;
+
+		if (r < size / 2 && c < size / 2) {
+			find(size / 2, r, c);
+		} else if (r < size / 2 && c >= size / 2) {
+			count += size * size / 4;
+			find(size / 2, r, c - size / 2);
+		} else if (r >= size / 2 && c < size / 2) {
+			count += (size * size / 4) * 2;
+			find(size / 2, r - size / 2, c);
+		} else {
+			count += (size * size / 4) * 3;
+			find(size / 2, r - size / 2, c - size / 2);
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) - 재귀 깊이가 N
+- 공간: O(N) - 재귀 호출 스택

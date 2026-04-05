@@ -1,0 +1,104 @@
+---
+title: "BOJ 15654 - N과 M (5)"
+date: "2022-04-05"
+description: "백트래킹 문제"
+tags: ["백트래킹"]
+platform: "boj"
+problem_number: "15654"
+problem_url: "https://www.acmicpc.net/problem/15654"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15654 - N과 M (5)](https://www.acmicpc.net/problem/15654)
+
+N개의 자연수 중에서 M개를 고른 수열을 모두 출력하는 문제이다. 수열은 사전 순으로 증가하는 순서로 출력해야 하며, 같은 수를 중복으로 선택할 수 없다. 1~N에서 고르는 것이 아니라 **임의의 N개의 자연수**가 주어지는 점이 기본 N과 M 시리즈와의 차이점이다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. (1 ≤ M ≤ N ≤ 8)
+둘째 줄에 N개의 자연수가 주어진다. 각 자연수는 10,000보다 작거나 같다.
+
+### 출력
+
+한 줄에 하나씩, M개를 고른 수열을 모두 출력한다.
+
+### 예제
+
+| 입력            | 출력                                |
+| --------------- | ----------------------------------- |
+| `3 1` `3 1 4`   | `1` `3` `4`                         |
+| `4 2` `9 8 7 1` | `1 7` `1 8` `1 9` `7 8` `7 9` `8 9` |
+
+## 풀이
+
+N개의 자연수 중 M개를 고르는 순열(중복 없음)을 백트래킹으로 열거한다. 입력 배열을 먼저 정렬하여 사전 순 출력을 보장하고, 비트마스크로 방문 여부를 추적한다.
+
+1. 입력받은 N개의 수를 `Arrays.sort()`로 오름차순 정렬한다.
+2. `perm(idx, vis)` 재귀 함수를 호출한다. `idx`는 현재 선택 깊이, `vis`는 방문 비트마스크이다.
+3. `idx == M`이면 선택된 배열 `sel`을 출력하고 반환한다.
+4. 0부터 N-1까지 순회하며, 비트마스크로 이미 선택된 인덱스는 건너뛴다.
+5. 선택 후 재귀 호출하고 복귀 시 비트마스크가 자동으로 복원된다(파라미터로 전달하므로).
+
+**핵심 아이디어**: 비트마스크 `vis`를 파라미터로 전달하면 별도의 복구(backtrack) 코드 없이도 탐색이 끝나면 이전 상태로 돌아온다. `vis | 1 << i` 연산으로 i번째 원소를 선택 상태로 만들어 다음 재귀에 전달한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day57BOJ15654N과M5순열 { // 15654
+	static int N, M;
+	static int[] arr, sel;
+	static StringBuilder sb;
+	static List<String> ans;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		arr = new int[N];
+		sel = new int[M];
+		sb = new StringBuilder();
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(arr);
+		perm(0, 0);
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void perm(int idx, int vis) {
+		if (idx == M) {
+			sb.append(Arrays.toString(sel).replaceAll("[\\[\\],]", "").trim()).append("\n");
+			return;
+		}
+		for (int i = 0; i < N; i++) {
+			if (0 < (vis & 1 << i))
+				continue;
+
+			sel[idx] = arr[i];
+			perm(idx + 1, vis | 1 << i);
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N! / (N-M)!) — N개 중 M개를 순서 있게 고르는 순열의 수
+- 공간: O(N) — 재귀 스택 깊이 M, 선택 배열 M

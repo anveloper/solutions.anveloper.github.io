@@ -1,0 +1,76 @@
+---
+title: "BOJ 1195 - 킥다운"
+date: "2024-03-26"
+description: "두 기어 부품을 최소 길이로 맞물리게 결합하는 문제"
+tags: ["구현", "브루트포스"]
+platform: "boj"
+problem_number: "1195"
+problem_url: "https://www.acmicpc.net/problem/1195"
+difficulty: "실버 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1195 - 킥다운](https://www.acmicpc.net/problem/1195)
+
+톱니 높이가 1 또는 2인 두 기어 부품이 주어질 때, 겹치는 위치에서 높이 합이 3을 초과하지 않도록 결합하여 최소 전체 길이를 구하라.
+
+### 입력
+
+두 줄에 걸쳐 각 부품의 톱니 높이가 1과 2로 이루어진 문자열로 주어진다.
+
+### 출력
+
+결합했을 때 가능한 최소 길이를 출력한다.
+
+### 예제
+
+| 입력                   | 출력 |
+| ---------------------- | ---- |
+| `2112112112` `2212112` | `10` |
+
+## 풀이
+
+긴 부품을 기준으로 짧은 부품을 슬라이딩하며 모든 위치에서 충돌 여부를 확인한다.
+
+1. 두 부품을 길이순으로 정렬하여 긴 부품 기준으로 슬라이딩한다
+2. 긴 부품 양쪽에 0 패딩을 추가하여 부분 겹침 위치도 탐색한다
+3. 각 위치에서 겹치는 칸의 높이 합이 3을 초과하면(둘 다 2) 해당 위치는 불가능하다
+4. 유효한 위치에서 겹치는 칸 수를 세어 전체 길이를 최소화한다
+
+**핵심 아이디어**: 높이 2+2=4만 충돌이고 1+2=3은 허용되므로, 슬라이딩하며 충돌 없는 최대 겹침을 찾는다.
+
+## 코드
+
+```javascript
+const solution = () => {
+  const [l, s] = input.sort((a, b) => b.length - a.length);
+
+  const isPossible = (a, b) => !(a === "2" && b === "2");
+
+  const padded = "0".repeat(s.length - 1) + l + "0".repeat(s.length - 1);
+  let mx = l.length + s.length;
+
+  outer: for (let i = 0; i <= padded.length - s.length; i += 1) {
+    let tmp = 0;
+    for (let j = 0; j < s.length && padded[i + j]; j += 1) {
+      if (padded[i + j] === "0") continue;
+      if (!isPossible(padded[i + j], s[j])) continue outer;
+      tmp += 1;
+    }
+    mx = Math.min(mx, l.length + s.length - tmp);
+    if (mx === l.length) break;
+  }
+  return mx;
+};
+
+const input = require("fs").readFileSync("./data.in").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N × M) — N, M은 각 부품 길이
+- 공간: O(N + M)

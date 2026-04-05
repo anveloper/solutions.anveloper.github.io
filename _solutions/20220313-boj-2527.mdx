@@ -1,0 +1,122 @@
+---
+title: "BOJ 2527 - 직사각형"
+date: "2022-03-13"
+description: "기하학, 많은 조건 분기 문제"
+tags: ["기하학", "많은 조건 분기"]
+platform: "boj"
+problem_number: "2527"
+problem_url: "https://www.acmicpc.net/problem/2527"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2527 - 직사각형](https://www.acmicpc.net/problem/2527)
+
+두 직사각형의 좌표가 주어질 때, 겹치는 부분의 형태를 판별하라. 직사각형이 겹치면 a, 변이 겹치면 b, 꼭짓점만 겹치면 c, 겹치지 않으면 d를 출력한다.
+
+### 입력
+
+4줄에 걸쳐 각 줄에 두 직사각형의 좌표 (x1, y1, x2, y2, x3, y3, x4, y4)가 주어진다.
+
+### 출력
+
+각 줄에 겹치는 형태를 a, b, c, d 중 하나로 출력한다.
+
+### 예제
+
+| 입력                                                                                                             | 출력            |
+| ---------------------------------------------------------------------------------------------------------------- | --------------- |
+| `3 10 50 60 100 100 200 300` `45 50 600 600 400 10 500 60` `11 120 120 230 50 40 60 150` `0 0 20 20 20 15 40 50` | `d` `a` `a` `b` |
+
+## 풀이
+
+x축과 y축의 겹침 상태를 각각 판별한 뒤, 조합하여 최종 결과를 결정한다.
+
+1. x축 겹침 상태를 계산한다: 0(분리), 1(점 접촉), 2(구간 겹침)
+2. y축 겹침 상태도 동일하게 계산한다
+3. 두 축 모두 구간 겹침(2)이면 a(면적 겹침)
+4. 어느 한 축이 분리(0)이면 d(겹치지 않음)
+5. 두 축 모두 점 접촉(1)이면 c(꼭짓점 겹침)
+6. 나머지(한쪽 점 접촉, 다른쪽 구간 겹침)는 b(변 겹침)
+
+**핵심 아이디어**: x축과 y축의 겹침을 독립적으로 분류한 뒤 조합하면, 복잡한 기하학 조건을 깔끔하게 처리할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day12BOJ2527B직사각형 { // 2527Best 저장용(정현님)
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuffer sb = new StringBuffer();
+
+		for (int tc = 1; tc <= 4; tc++) {
+			StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+			int[] arr = new int[8];
+			for (int i = 0; i < 8; i++) {
+				arr[i] = Integer.parseInt(st.nextToken());
+			}
+			sb.append(check(arr)).append("\n");
+		}
+		System.out.println(sb);
+
+	}
+
+	public static char check(int[] arr) {
+		int x;
+		int y;
+		if (arr[0] <= arr[4]) {
+			if (arr[2] < arr[4])
+				x = 0;
+			else if (arr[2] == arr[4])
+				x = 1;
+			else
+				x = 2;
+		} else {
+			if (arr[6] == arr[0])
+				x = 1;
+			else if (arr[6] < arr[0])
+				x = 0;
+			else
+				x = 2;
+		}
+		if (arr[1] <= arr[5]) {
+			if (arr[3] < arr[5])
+				y = 0;
+			else if (arr[3] == arr[5])
+				y = 1;
+			else
+				y = 2;
+		} else {
+			if (arr[7] == arr[1])
+				y = 1;
+			else if (arr[7] < arr[1])
+				y = 0;
+			else
+				y = 2;
+		}
+		if (x == 2 && y == 2)
+			return 'a';
+		else if (x == 0 || y == 0)
+			return 'd';
+		else if (x == 1 && y == 1)
+			return 'c';
+		else
+			return 'b';
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 4개 테스트 케이스, 각각 상수 시간
+- 공간: O(1) — 좌표 배열

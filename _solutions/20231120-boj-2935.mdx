@@ -1,0 +1,69 @@
+---
+title: "BOJ 2935 - 소음"
+date: "2023-11-20"
+description: "수학, 문자열, 사칙연산 문제"
+tags: ["수학", "문자열", "사칙연산"]
+platform: "boj"
+problem_number: "2935"
+problem_url: "https://www.acmicpc.net/problem/2935"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2935 - 소음](https://www.acmicpc.net/problem/2935)
+
+10의 거듭제곱 두 수와 연산자(+또는\*)가 주어질 때, 결과를 구하라.
+
+### 입력
+
+첫째 줄에 A, 둘째 줄에 연산자, 셋째 줄에 B가 주어진다 (10의 거듭제곱).
+
+### 출력
+
+연산 결과를 출력한다.
+
+### 예제
+
+| 입력            | 출력   |
+| --------------- | ------ |
+| `1000` `+` `10` | `1010` |
+
+## 풀이
+
+`BigInteger`를 사용하여 연산자에 따라 덧셈 또는 곱셈을 수행한다.
+
+1. 두 수를 `BigInteger`로 읽는다
+2. 연산자가 `*`이면 `multiply`, `+`이면 `add`를 수행한다
+
+**핵심 아이디어**: 10의 거듭제곱이므로 매우 큰 수가 될 수 있어 `BigInteger`를 사용한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.math.*;
+
+public class Day653BOJ2935소음 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BigInteger a = new BigInteger(br.readLine());
+    String op = br.readLine();
+    BigInteger b = new BigInteger(br.readLine());
+    if (op.equals("*")) {
+      System.out.print(a.multiply(b));
+    } else {
+      System.out.print(a.add(b));
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

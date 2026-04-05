@@ -1,0 +1,93 @@
+---
+title: "BOJ 25194 - 결전의 금요일"
+date: "2022-05-16"
+description: "다이나믹 프로그래밍, 브루트포스 알고리즘 문제"
+tags: ["다이나믹 프로그래밍", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "25194"
+problem_url: "https://www.acmicpc.net/problem/25194"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 25194 - 결전의 금요일](https://www.acmicpc.net/problem/25194)
+
+N개의 양의 정수로 이루어진 수열이 있다. 이 수열에서 연속하지 않아도 되는 부분 수열을 골라 합이 7의 배수이면서 나머지가 4인 수가 되도록 할 수 있는지 판단한다. (즉, 합 mod 7 == 4)
+
+### 입력
+
+- 첫째 줄: 수열의 길이 N (1 ≤ N ≤ 1,000,000)
+- 둘째 줄: N개의 양의 정수 (1 ≤ 값 ≤ 10^9)
+
+### 출력
+
+부분 수열의 합을 7로 나눈 나머지가 4가 되는 경우가 존재하면 `YES`, 없으면 `NO`를 출력한다.
+
+### 예제
+
+| 입력        | 출력  |
+| ----------- | ----- |
+| `3` `1 2 4` | `YES` |
+| `2` `3 3`   | `NO`  |
+
+## 풀이
+
+현재까지 선택된 부분 수열의 합을 7로 나눈 나머지의 가능한 집합을 `boolean[7]` 배열로 관리한다. 각 원소를 처리할 때 기존 가능한 나머지에 현재 원소를 더한 경우와 현재 원소 단독 선택을 합쳐 집합을 갱신한다.
+
+1. 입력값을 7로 나눈 나머지만 사용한다.
+2. `ans[arr[0]] = true`로 첫 원소 단독 선택 상태를 초기화한다.
+3. `ans[4]`가 이미 true이면 즉시 종료한다.
+4. 이후 원소 `arr[i]`마다 현재 `ans`를 복사한 `tmp`에 가능한 모든 나머지에 `arr[i]`를 더한 결과를 반영한다.
+5. `ans = tmp`로 갱신하고 `arr[i]` 단독 선택도 반영한다.
+
+**핵심 아이디어**: 부분 수열 합의 mod 7 값은 0~6 중 하나이므로, 가능한 상태를 `boolean[7]`로 압축하여 관리한다. 배열 복사(`ans.clone()`)로 현재 단계의 기존 상태를 보존한 뒤 새로운 상태를 갱신함으로써, 하나의 원소를 중복 사용하는 경우를 방지한다. 나머지 4가 도달 가능해지면 즉시 종료하는 조기 탈출로 효율을 높인다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day98BOJ25194결전의금요일배열 { // 25194 결전의 금요일 배열복제
+	static int N;
+	static int[] arr;
+	static boolean[] ans;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N];
+		ans = new boolean[7];
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++)
+			arr[i] = Integer.parseInt(st.nextToken()) % 7;
+
+		ans[arr[0]] = true;
+		for (int i = 1; i < N; i++) {
+			if (ans[4]) break;
+			boolean[] tmp = ans.clone();
+			for (int n = 0; n < 7; n++) {
+				if (!ans[n]) continue;
+				tmp[(n + arr[i]) % 7] = true;
+			}
+			ans = tmp.clone();
+			ans[arr[i]] = true;
+		}
+
+		System.out.println(ans[4] ? "YES" : "NO");
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* 7) = O(N) — 각 원소마다 7가지 나머지 상태를 갱신
+- 공간: O(7) = O(1) — 나머지 상태를 저장하는 boolean 배열

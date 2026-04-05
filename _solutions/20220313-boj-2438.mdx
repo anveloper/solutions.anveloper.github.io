@@ -1,0 +1,68 @@
+---
+title: "BOJ 2438 - 별 찍기 - 1"
+date: "2022-03-13"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2438"
+problem_url: "https://www.acmicpc.net/problem/2438"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2438 - 별 찍기 - 1](https://www.acmicpc.net/problem/2438)
+
+첫째 줄에는 별 1개, 둘째 줄에는 별 2개, ..., N번째 줄에는 별 N개를 출력하라.
+
+### 입력
+
+첫째 줄에 N (1 이상 100 이하)이 주어진다.
+
+### 출력
+
+첫째 줄부터 N번째 줄까지 차례대로 별을 출력한다.
+
+### 예제
+
+| 입력 | 출력                          |
+| ---- | ----------------------------- |
+| `5`  | `*` `**` `***` `****` `*****` |
+
+## 풀이
+
+문자열에 별을 하나씩 추가하며 N줄을 출력한다.
+
+1. 문자열 s를 "\*"로 초기화한다
+2. N번 반복하며 매번 s를 출력하고, s에 "\*"를 추가한다
+
+**핵심 아이디어**: 매 줄마다 새 문자열을 만드는 대신, 기존 문자열에 별을 누적하여 자연스럽게 길이가 증가하는 패턴을 만든다.
+
+## 코드
+
+```java
+
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day01BOJ2438별찍기1 { // 2438 날먹
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		String s = "*";
+		for(int i = 0 ;i < n; i++) {
+			System.out.println(s);
+			s += '*';
+		}
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) — 문자열 연결이 매번 새 문자열을 생성하므로 1+2+...+N
+- 공간: O(N) — 최대 길이 N의 문자열

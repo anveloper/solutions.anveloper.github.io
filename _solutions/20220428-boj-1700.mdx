@@ -1,0 +1,111 @@
+---
+title: "BOJ 1700 - 멀티탭 스케줄링"
+date: "2022-04-28"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "1700"
+problem_url: "https://www.acmicpc.net/problem/1700"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1700 - 멀티탭 스케줄링](https://www.acmicpc.net/problem/1700)
+
+N구짜리 멀티탭에 K개의 전기 제품을 순서대로 사용한다. 이미 꽂혀 있으면 그냥 사용하고, 꽂혀 있지 않으면 빈 자리에 꽂는다. 멀티탭이 꽉 차 있으면 하나를 뽑고 새로 꽂아야 한다. 뽑는 횟수를 최소화하는 최솟값을 구한다.
+
+### 입력
+
+- 첫째 줄: 멀티탭 구멍 수 N과 전기 제품 사용 횟수 K
+- 둘째 줄: K개의 전기 제품 번호 (사용 순서대로)
+
+### 출력
+
+- 멀티탭 플러그를 빼는 최소 횟수
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `2 7` `2 3 2 3 1 2 7` | `2`  |
+
+## 풀이
+
+운영체제의 페이지 교체 알고리즘인 OPT(Optimal) 전략과 동일하다. 앞으로 가장 나중에 사용되거나 다시 사용되지 않는 기기를 교체하는 그리디 방식을 적용한다.
+
+1. 현재 사용할 기기가 이미 멀티탭에 꽂혀 있으면 그냥 통과한다.
+2. 멀티탭에 빈 자리가 있으면 현재 기기를 추가한다.
+3. 멀티탭이 가득 찬 경우:
+   - 현재 꽂혀 있는 기기들 중 앞으로 사용 순서상 가장 늦게 다시 등장하거나 다시 등장하지 않는 기기를 후보로 선정한다.
+   - 후보를 현재 기기로 교체하고 뽑은 횟수를 증가시킨다.
+4. 최종 뽑은 횟수를 출력한다.
+
+**핵심 아이디어**: 최적 페이지 교체(OPT) 알고리즘처럼, 미래 사용 일정을 알고 있다는 가정 하에 앞으로 가장 오랫동안 사용되지 않을 기기를 제거하면 교체 횟수를 최소화할 수 있다. 코드에서는 LinkedList로 후보군을 추려나가며 이를 구현한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day80BOJ1700멀티탭그리디 { // 1700 multi-tap scheduling 구현
+	static int N, K, ans;
+	static Integer[] seq;
+	static List<Integer> tap;
+	static LinkedList<Integer> tmp;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		ans = 0;
+		seq = new Integer[K];
+		tap = new ArrayList<>();
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < K; i++)
+			seq[i] = Integer.parseInt(st.nextToken());
+
+		// 이미 사용중인 기기면 통과
+		// 사용중이 아니고, 멀티탭에 자리가 있으면 사용
+		// 사용중이 아니고, 멀티탭이 모두 사용중이면,
+		// 더이상 사용하지 않거나, 가장 나중에 재사용할 기기와 교체, 답증가
+
+		for (int k = 0; k < K; k++) {
+			int cur = seq[k];
+			if (tap.indexOf(cur) != -1)
+				continue; // tap에 없는 seq값이면 -1, 있으면 통과
+			if (tap.size() < N)
+				tap.add(cur); // 자리가 있으면 추가
+			else { // 자리가 없으면 후보군을 그리디적으로 선정
+				tmp = new LinkedList<>();
+				tmp.addAll(tap); // 뽑을 후보군 선정
+
+				int n = k + 1; // 현재 꽂아야 할 k보다 뒤에 값들 탐색 idx
+				while (tmp.size() > 1 && n < K)
+					tmp.remove(seq[n++]);
+
+				tap.set(tap.indexOf(tmp.getFirst()), cur);
+				ans++;
+			}
+		}
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(K × N) — K번의 사용 단계마다 최대 N개의 후보를 탐색
+- 공간: O(N + K) — 멀티탭 리스트(N) + 사용 순서 배열(K)

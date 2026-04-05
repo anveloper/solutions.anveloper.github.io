@@ -1,0 +1,75 @@
+---
+title: "BOJ 11050 - 이항 계수 1"
+date: "2023-01-22"
+description: "수학, 구현, 조합론 문제"
+tags: ["수학", "구현", "조합론"]
+platform: "boj"
+problem_number: "11050"
+problem_url: "https://www.acmicpc.net/problem/11050"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11050 - 이항 계수 1](https://www.acmicpc.net/problem/11050)
+
+자연수 N과 정수 K가 주어졌을 때, 이항 계수 C(N, K)를 구하라.
+
+### 입력
+
+첫째 줄에 N과 K가 주어진다 (1 ≤ N ≤ 10, 0 ≤ K ≤ N).
+
+### 출력
+
+C(N, K)를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `5 2` | `10` |
+
+## 풀이
+
+파스칼의 삼각형 성질을 이용한 재귀로 이항 계수를 계산한다.
+
+1. C(N, K) = C(N-1, K-1) + C(N-1, K)라는 파스칼 항등식을 재귀로 구현한다
+2. 기저 조건: N == K이거나 K == 0이면 1을 반환한다
+3. N이 최대 10이므로 재귀 깊이와 호출 횟수가 작아 메모이제이션 없이도 충분하다
+
+**핵심 아이디어**: C(N, K) = N! / (K! \* (N-K)!)를 팩토리얼로 직접 계산하는 대신, 파스칼 항등식의 재귀적 성질을 활용한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.*;
+
+public class Day349BOJ11050이항계수 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+
+        System.out.println(BC(N, K));
+    }
+
+    static int BC(int n, int k) {
+        if (n == k || k == 0)
+            return 1;
+
+        return BC(n - 1, k - 1) + BC(n - 1, k);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(C(N, K)) (메모이제이션 미사용, N ≤ 10이므로 충분)
+- 공간: O(N) (재귀 호출 스택)

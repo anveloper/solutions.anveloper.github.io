@@ -1,0 +1,104 @@
+---
+title: "BOJ 3187 - 양치기 꿍"
+date: "2025-03-12"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "3187"
+problem_url: "https://www.acmicpc.net/problem/3187"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3187 - 양치기 꿍](https://www.acmicpc.net/problem/3187)
+
+R x C 격자에 울타리(`#`), 양(`k`), 늑대(`v`)가 있다. 울타리로 둘러싸인 각 영역에서 양이 더 많으면 늑대가, 늑대가 같거나 더 많으면 양이 잡아먹힌다. 살아남는 양과 늑대의 수를 구하라.
+
+### 입력
+
+격자 크기 R, C와 R줄의 격자가 주어진다.
+
+### 출력
+
+살아남는 양의 수와 늑대의 수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                                                        | 출력  |
+| ----------------------------------------------------------- | ----- |
+| `6 6` `..####` `.#v..#` `.## .#` `.# k.#` `.####.` `......` | `0 1` |
+
+## 풀이
+
+BFS로 각 울타리 영역을 탐색하며 양과 늑대 수를 비교한다.
+
+1. 격자의 모든 칸을 순회하며 미방문 비울타리 칸에서 BFS를 시작한다
+2. BFS로 연결된 영역의 양과 늑대 수를 각각 센다
+3. 양이 더 많으면 늑대를 제거하고, 그렇지 않으면 양을 제거한다
+4. 전체 생존 양과 늑대 수를 출력한다
+
+**핵심 아이디어**: 울타리로 분리된 각 영역을 BFS로 독립적으로 탐색하여, 영역별로 승자를 결정한다.
+
+## 코드
+
+```python
+input = __import__("sys").stdin.readline
+deque = __import__("collections").deque
+
+
+def bfs(sx, sy):
+    q = deque([(sx, sy)])
+    visited[sx][sy] = 1
+    cnt_ship, cnt_wolf = 0, 0
+
+    while q:
+        x, y = q.popleft()
+        if board[x][y] == "v":
+            cnt_wolf += 1
+        if board[x][y] == "k":
+            cnt_ship += 1
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < r and 0 <= ny < c:
+                if board[nx][ny] != "#" and visited[nx][ny] == 0:
+                    visited[nx][ny] = 1
+                    q.append((nx, ny))
+
+    return cnt_ship, cnt_wolf
+
+
+total_ship, total_wolf = 0, 0
+r, c = map(int, input().split())
+board = []
+
+for _ in range(r):
+    l = [*input()][:-1]
+    for i in l:
+        if i == "v":
+            total_wolf += 1
+        if i == "k":
+            total_ship += 1
+    board.append(l)
+
+visited = [[0] * c for _ in range(r)]
+for i in range(r):
+    for j in range(c):
+        if board[i][j] != "#" and visited[i][j] == 0:
+            k, v = bfs(i, j)
+            if k == 0 or v == 0:
+                continue
+            if k > v:
+                total_wolf -= v
+            else:
+                total_ship -= k
+
+print(total_ship, total_wolf)
+```
+
+## 복잡도
+
+- 시간: O(NM)
+- 공간: O(NM)

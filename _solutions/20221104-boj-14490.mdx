@@ -1,0 +1,75 @@
+---
+title: "BOJ 14490 - 백대열"
+date: "2022-11-04"
+description: "수학, 문자열, 정수론 문제"
+tags: ["수학", "문자열", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "14490"
+problem_url: "https://www.acmicpc.net/problem/14490"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14490 - 백대열](https://www.acmicpc.net/problem/14490)
+
+게임 '백 대 열'에서 두 팀의 점수가 `N:M` 형식으로 주어진다. 이 비율을 가장 간단한 정수 비로 나타내는 문제이다.
+
+### 입력
+
+`N:M` 형식의 두 정수가 콜론(`:`)으로 구분되어 주어진다. N과 M은 1 이상 100 이하이다.
+
+### 출력
+
+가장 간단한 정수 비를 `N:M` 형식으로 출력한다.
+
+### 예제
+
+| 입력   | 출력  |
+| ------ | ----- |
+| `10:8` | `5:4` |
+| `3:5`  | `3:5` |
+
+## 풀이
+
+두 수의 최대공약수(GCD)를 구하여 양 쪽을 나누면 기약비가 된다.
+
+1. 입력 문자열을 `:`로 분리하여 N, M을 파싱한다
+2. 유클리드 호제법으로 `gcd(max(N, M), min(N, M))`을 계산한다
+3. N과 M을 각각 GCD로 나눈 결과를 `N/GCD:M/GCD` 형식으로 출력한다
+
+**핵심 아이디어**: 비율의 기약 표현은 두 수의 GCD로 나누는 것과 동일하며, 유클리드 호제법으로 O(log N)에 GCD를 구한다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.util.Scanner;
+
+public class Day270BOJ14490백대열 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String[] str = sc.nextLine().split(":");
+		int N = Integer.parseInt(str[0]);
+		int M = Integer.parseInt(str[1]);
+		int GCD = gcd(Math.max(N, M), Math.min(N, M));
+
+		System.out.println(N / GCD + ":" + M / GCD);
+		sc.close();
+	}
+
+	static int gcd(int a, int b) {
+		if (b == 0)
+			return a;
+		return gcd(b, a % b);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

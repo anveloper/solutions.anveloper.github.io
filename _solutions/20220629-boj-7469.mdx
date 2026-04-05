@@ -1,0 +1,148 @@
+---
+title: "BOJ 7469 - K번째 수"
+date: "2022-06-29"
+description: "자료 구조, 정렬, 세그먼트 트리 문제"
+tags: ["자료 구조", "정렬", "세그먼트 트리", "이분 탐색", "머지 소트 트리"]
+platform: "boj"
+problem_number: "7469"
+problem_url: "https://www.acmicpc.net/problem/7469"
+difficulty: "플래티넘 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7469 - K번째 수](https://www.acmicpc.net/problem/7469)
+
+N개의 수로 이루어진 배열이 주어진다. M개의 쿼리 `(i, j, k)`에 대해, 배열의 i번째부터 j번째 원소를 정렬했을 때 k번째에 있는 수를 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 N(1 ≤ N ≤ 100,000)과 M(1 ≤ M ≤ 5,000)이 주어진다.
+둘째 줄에 N개의 정수가 주어진다. 각 정수는 절댓값이 1,000,000,000 이하이다.
+다음 M줄에 쿼리 i, j, k가 주어진다.
+
+### 출력
+
+각 쿼리에 대해 답을 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                                      | 출력        |
+| ----------------------------------------- | ----------- |
+| `5 3` `5 1 4 2 3` `1 5 3` `2 4 2` `3 5 1` | `3` `2` `2` |
+
+## 풀이
+
+지속 세그먼트 트리(Persistent Segment Tree) 기반의 머지 소트 트리로 구간 K번째 수를 처리한다.
+
+1. 전체 배열의 값을 좌표 압축(coordinate compression)한다. 전체 값을 정렬하여 순위(rank)를 매긴다.
+2. 각 원소를 순서대로 삽입하면서 지속 세그먼트 트리를 갱신한다. `Tree[i]`는 A[1]~A[i]의 값 분포를 기록한 세그먼트 트리이다.
+3. 쿼리 `(from, to, k)`에 대해 `Tree[from-1]`과 `Tree[to]`의 차이로 구간 [from, to]의 값 분포를 O(log N)에 구한다.
+4. 왼쪽 서브트리의 카운트와 k를 비교하여 이분 탐색으로 K번째 값의 순위를 찾고, 좌표 압축 역변환으로 실제 값을 반환한다.
+
+**핵심 아이디어**: 지속 세그먼트 트리(Persistent Segment Tree)를 이용하면 구간 [l, r]에서 값이 v 이하인 원소의 개수를 O(log N)에 구할 수 있다. `query(Tree[l-1], Tree[r], ...)` 형태로 접두사 트리의 차분을 이용한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.StringTokenizer;
+
+public class Day142BOJ7469K번째정렬 { // 7469 K번째 수, 구 선생님 도움
+	static final int MAXN = 100005;
+	static int N, M;
+	static int[] A = new int[MAXN];
+	static ArrayList<Integer> v = new ArrayList<>();
+	static Node[] Tree = new Node[MAXN];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(in.readLine());
+		for (int i = 1; i <= N; i++) {
+			v.add(A[i] = Integer.parseInt(st.nextToken()));
+		}
+
+		Collections.sort(v);
+
+		Tree[0] = new Node(0);
+		Tree[0].left = Tree[0].right = Tree[0];
+
+		for (int i = 1; i <= N; i++) {
+			A[i] = Collections.binarySearch(v, A[i]) + 1;
+			Tree[i] = update(Tree[i - 1], 1, N, A[i], 1);
+		}
+
+		int from, to, kth, position;
+		for (int i = 1; i <= M; i++) {
+			st = new StringTokenizer(in.readLine());
+			from = Integer.parseInt(st.nextToken());
+			to = Integer.parseInt(st.nextToken());
+			kth = Integer.parseInt(st.nextToken());
+			position = query(Tree[from - 1], Tree[to], 1, N, kth);
+
+			System.out.println(v.get(position - 1));
+		}
+	}
+
+	static int query(Node from, Node to, int low, int high, int kth) {
+		if (low == high) {
+			return low;
+		}
+
+		int mid = (low + high) >> 1;
+		int leftValue = to.left.value - from.left.value;
+
+		if (kth <= leftValue) {
+			return query(from.left, to.left, low, mid, kth);
+		} else {
+			return query(from.right, to.right, mid + 1, high, kth - leftValue);
+		}
+	}
+
+	public static Node update(Node now, int low, int high, int index, int value) {
+		if (index < low || high < index) {
+			return now;
+		}
+
+		if (low == high) {
+			return new Node(now.value + value);
+		}
+
+		int mid = (low + high) >> 1;
+
+		return new Node(now.value + value, update(now.left, low, mid, index, value),
+				update(now.right, mid + 1, high, index, value));
+	}
+
+	static class Node {
+		int value;
+		Node left, right;
+
+		public Node(int value) {
+			this.value = value;
+		}
+
+		public Node(int value, Node left, Node right) {
+			this.value = value;
+			this.left = left;
+			this.right = right;
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O((N + M) log N) — 트리 구성 O(N log N), 쿼리 당 O(log N)
+- 공간: O(N log N) — 지속 세그먼트 트리 노드 수

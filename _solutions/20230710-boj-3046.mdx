@@ -1,0 +1,64 @@
+---
+title: "BOJ 3046 - R2"
+date: "2023-07-10"
+description: "구현, 사칙연산, 수학 문제"
+tags: ["구현", "사칙연산", "수학"]
+platform: "boj"
+problem_number: "3046"
+problem_url: "https://www.acmicpc.net/problem/3046"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3046 - R2](https://www.acmicpc.net/problem/3046)
+
+두 수 R1, R2의 평균 S가 주어질 때, R1과 S로부터 R2를 구한다.
+
+### 입력
+
+첫째 줄에 R1과 S가 공백으로 구분되어 주어진다.
+
+### 출력
+
+R2를 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `10 15` | `20` |
+
+## 풀이
+
+평균 공식 S = (R1 + R2) / 2를 변환하여 R2 = 2 \* S - R1로 계산한다.
+
+1. 두 정수 R1(a)과 S(b)를 읽는다
+2. 2 \* b - a를 계산하여 출력한다
+
+**핵심 아이디어**: 평균 공식을 변형하면 R2 = 2S - R1이라는 단순 수식으로 O(1)에 해결된다.
+
+## 코드
+
+```java
+package day599;
+
+import java.util.Scanner;
+
+public class Day583BOJ3046R2 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int a = sc.nextInt();
+    int b = sc.nextInt();
+    System.out.println((b * 2) - a);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

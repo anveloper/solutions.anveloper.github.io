@@ -1,0 +1,119 @@
+---
+title: "BOJ 4583 - 거울상"
+date: "2025-07-27"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4583"
+problem_url: "https://www.acmicpc.net/problem/4583"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4583 - 거울상](https://www.acmicpc.net/problem/4583)
+
+소문자 알파벳으로 구성된 단어가 주어질 때, 거울에 비친 모습(좌우 반전)을 출력하는 문제이다.
+거울상이 가능한 문자는 `b`, `d`, `p`, `q`, `i`, `o`, `v`, `w`, `x`이며, 이 외의 문자가 포함되면 `INVALID`를 출력한다.
+좌우 반전 시 `b`-`d`, `p`-`q`는 서로 교환되고, 나머지 5개(`i`, `o`, `v`, `w`, `x`)는 그대로 유지된다.
+`#`이 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 단어가 주어진다. `#`이 입력되면 종료.
+
+### 출력
+
+각 단어에 대해 거울상 문자열을 출력하거나 `INVALID`를 출력한다.
+
+### 예제
+
+| 입력  | 출력      |
+| ----- | --------- |
+| `bod` | `INVALID` |
+| `box` | `INVALID` |
+| `bix` | `xid`     |
+| `#`   | (종료)    |
+
+## 풀이
+
+거울상 가능 문자 집합을 배열로 미리 정의하고, 문자열을 순회하며 유효성 검사와 변환을 동시에 수행한 뒤 역순 출력하는 구현 문제이다.
+
+1. `reflect[9]` 배열에 거울상 가능한 9개 문자를 저장한다.
+2. 문자열의 각 문자가 `reflect` 배열에 없으면 `result = "INVALID"`로 설정하고 중단한다.
+3. 유효한 문자이면 변환 규칙에 따라 `result`에 추가한다: `b`-`d` 교환, `p`-`q` 교환, 나머지는 그대로.
+4. `result`가 `"INVALID"`가 아니면 역순으로 출력하고, `"INVALID"`이면 그대로 출력한다.
+
+**핵심 아이디어**: 거울상은 두 단계로 구성된다. 각 문자를 좌우 반전 문자로 치환한 후, 전체 문자열을 역순으로 배치하면 완성된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+
+  char reflect[9] = {'b', 'd', 'p', 'q', 'i', 'o', 'v', 'w', 'x'};
+
+  while (true)
+  {
+    // 입력
+    string str;
+    cin >> str;
+    if (str == "#")
+      break; // 확인
+
+    // 문제 해결
+    int len = str.length();
+    string result = "";
+    for (int i = 0; i < len; i++)
+    {
+      if (*find(begin(reflect), end(reflect), str[i]) != str[i])
+      {
+        result = "INVALID";
+        break;
+      }
+      else
+      {
+        if (str[i] == 'b')
+          result += 'd';
+        else if (str[i] == 'd')
+          result += 'b';
+        else if (str[i] == 'p')
+          result += 'q';
+        else if (str[i] == 'q')
+          result += 'p';
+        else
+          result += str[i];
+      }
+    }
+
+    if (result != "INVALID")
+    {
+      for (int i = len - 1; i >= 0; i--)
+      {
+        cout << result[i];
+      }
+      cout << '\n';
+    }
+    else
+    {
+      cout << result << '\n';
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (N: 단어 수, L: 단어 길이)
+- 공간: O(L)

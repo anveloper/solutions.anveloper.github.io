@@ -1,0 +1,123 @@
+---
+title: "BOJ 10830 - 행렬 제곱"
+date: "2022-05-27"
+description: "수학, 분할 정복, 분할 정복을 이용한 거듭제곱 문제"
+tags: ["수학", "분할 정복", "분할 정복을 이용한 거듭제곱", "선형대수학"]
+platform: "boj"
+problem_number: "10830"
+problem_url: "https://www.acmicpc.net/problem/10830"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10830 - 행렬 제곱](https://www.acmicpc.net/problem/10830)
+
+N×N 크기의 행렬 A가 주어졌을 때, A^B를 구하는 문제이다. 결과 행렬의 각 원소는 1,000으로 나눈 나머지를 출력한다. B가 최대 100,000,000,000으로 매우 크기 때문에 단순 반복으로는 계산 불가능하다.
+
+### 입력
+
+- 첫째 줄: N, B (1 이상 5 이하, 1 이상 100,000,000,000 이하)
+- 다음 N줄: 행렬 A의 원소 (0 이상 1,000 미만 정수)
+
+### 출력
+
+- N줄: A^B mod 1000의 각 행
+
+### 예제
+
+| 입력              | 출력               |
+| ----------------- | ------------------ |
+| `2 5` `1 2` `3 4` | `69 558` `837 406` |
+
+## 풀이
+
+분할 정복을 이용한 빠른 행렬 거듭제곱으로 A^B를 O(N³ log B)에 계산한다. 일반 거듭제곱의 분할 정복과 동일하게 지수를 절반씩 나누어 재귀 처리한다.
+
+1. `pow(A, exp)` 함수: exp가 1이면 A를 반환한다.
+2. `pow(A, exp/2)`를 재귀 호출하여 절반 거듭제곱 결과 `ret`을 얻는다.
+3. `ret = multiply(ret, ret)`로 제곱한다.
+4. exp가 홀수이면 `ret = multiply(ret, arr)`로 원래 행렬을 한 번 더 곱한다.
+5. `multiply` 함수에서 행렬 곱 연산 시 매 단계마다 MOD(1000)로 나머지를 취한다.
+
+**핵심 아이디어**: A^B = (A^(B/2))^2이고 B가 홀수이면 A를 추가로 곱한다. 이 재귀 구조로 O(log B)번만 행렬 곱을 수행한다. 각 행렬 곱은 O(N³)이므로 전체 복잡도는 O(N³ log B)이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day109BOJ10830행렬제곱 { // 10830 행렬제곱, 이전에 행렬 곱 문제를 실패했던적 있는데, 이번에도 실패하여 구선생님 도움으로..
+	static final int MOD = 1000;
+	static int N;
+	static int[][] arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
+
+		N = Integer.parseInt(st.nextToken());
+		long B = Long.parseLong(st.nextToken()); // 타입 주의
+
+		arr = new int[N][N];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++)
+				arr[i][j] = Integer.parseInt(st.nextToken()) % MOD;
+		}
+
+		int[][] res = pow(arr, B);
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++)
+				sb.append(res[i][j]).append(' ');
+			sb.append('\n');
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	public static int[][] pow(int[][] A, long exp) {
+		if (exp == 1L)
+			return A;
+
+		int[][] ret = pow(A, exp / 2);
+
+		ret = multiply(ret, ret);
+
+		if (exp % 2 == 1L)
+			ret = multiply(ret, arr);
+
+		return ret;
+	}
+
+	public static int[][] multiply(int[][] o1, int[][] o2) {
+		int[][] ret = new int[N][N];
+
+		int r;
+		for (int k = 0; k < N; k++)
+			for (int i = 0; i < N; i++) {
+				r = o1[i][k];
+				for (int j = 0; j < N; j++) {
+					ret[i][j] += r * o2[k][j];
+					ret[i][j] %= MOD;
+				}
+			}
+
+		return ret;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N³ log B) — 행렬 곱 O(N³) × log B번 재귀
+- 공간: O(N² log B) — 재귀 스택에 행렬 저장

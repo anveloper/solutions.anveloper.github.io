@@ -1,0 +1,111 @@
+---
+title: "BOJ 1987 - 알파벳"
+date: "2023-01-17"
+description: "그래프 이론, 그래프 탐색, 깊이 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "깊이 우선 탐색", "백트래킹", "격자 그래프"]
+platform: "boj"
+problem_number: "1987"
+problem_url: "https://www.acmicpc.net/problem/1987"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1987 - 알파벳](https://www.acmicpc.net/problem/1987)
+
+R×C 크기 보드의 각 칸에 대문자 알파벳이 하나씩 있다. (1,1)에서 시작하여 상하좌우로 이동하되, 이미 지나온 알파벳은 다시 밟을 수 없다. 최대 이동 칸 수를 구하라.
+
+### 입력
+
+첫째 줄에 R, C (1 이상 20 이하), 둘째 줄부터 보드가 주어진다.
+
+### 출력
+
+최대로 지날 수 있는 칸 수를 출력한다 (시작 칸 포함).
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `2 4` `CAAB` `ADCB` | `3`  |
+
+## 풀이
+
+DFS 백트래킹으로 알파벳 중복 없이 최대 경로를 탐색한다.
+
+1. 크기 26의 `check` 배열로 사용된 알파벳을 관리한다
+2. (0,0)에서 시작하여 4방향으로 DFS 탐색한다
+3. 다음 칸의 알파벳이 이미 사용되었으면 건너뛴다
+4. 미사용 알파벳이면 `check`를 true로 설정하고 재귀 진입, 복귀 시 false로 복원한다
+5. 매 단계에서 현재 칸 수의 최댓값을 갱신한다
+
+**핵심 아이디어**: 알파벳은 26종류뿐이므로 경로 길이가 최대 26이다. 백트래킹으로 불가능한 경로를 빠르게 가지치기하여 탐색 공간을 줄인다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day344BOJ1987알파벳 {
+    static int R, C, ans = 0;
+    static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+    static char[][] map;
+    static boolean[] check;
+    static boolean[][] visited;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        R = Integer.parseInt(st.nextToken());
+        C = Integer.parseInt(st.nextToken());
+
+        map = new char[R][C];
+        check = new boolean[28];
+        visited = new boolean[R][C];
+
+        for (int i = 0; i < R; i++) {
+            String str = br.readLine();
+            for (int j = 0; j < C; j++) {
+                map[i][j] = str.charAt(j);
+            }
+        }
+        check[map[0][0] - 'A'] = true;
+
+        dfs(0, 0, 1);
+        System.out.println(ans);
+        br.close();
+    }
+
+    private static void dfs(int r, int c, int cnt) {
+        ans = Math.max(ans, cnt);
+        for (int i = 0; i < 4; i++) {
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+
+            if (index(nr, nc))
+                continue;
+            if (check[map[nr][nc] - 'A'])
+                continue;
+
+            check[map[nr][nc] - 'A'] = true;
+            dfs(nr, nc, cnt + 1);
+            check[map[nr][nc] - 'A'] = false;
+        }
+    }
+
+    private static boolean index(int nr, int nc) {
+        return nr < 0 || nc < 0 || nr >= R || nc >= C;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(NM)
+- 공간: O(NM)

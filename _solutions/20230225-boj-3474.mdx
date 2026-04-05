@@ -1,0 +1,79 @@
+---
+title: "BOJ 3474 - 교수가 된 현우"
+date: "2023-02-25"
+description: "수학, 정수론 문제"
+tags: ["수학", "정수론"]
+platform: "boj"
+problem_number: "3474"
+problem_url: "https://www.acmicpc.net/problem/3474"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3474 - 교수가 된 현우](https://www.acmicpc.net/problem/3474)
+
+N!의 뒤에서부터 연속된 0의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T, 이후 T개의 N이 주어진다.
+
+### 출력
+
+각 N에 대해 N!의 끝자리 0의 개수를 출력한다.
+
+### 예제
+
+| 입력               | 출력          |
+| ------------------ | ------------- |
+| `3` `3` `60` `100` | `0` `14` `24` |
+
+## 풀이
+
+N!에서 10의 인수 개수를 구한다. 10 = 2 × 5이고 2의 인수가 항상 더 많으므로, 5의 인수 개수만 세면 된다.
+
+1. N을 5로 나눈 몫을 cnt에 더한다 (5의 배수 개수)
+2. N을 5로 나눈 후 반복한다 (25, 125, ... 의 추가 5 인수)
+3. N이 5보다 작아지면 종료한다
+
+**핵심 아이디어**: `N! = 1 × 2 × ... × N`에서 끝자리 0은 인수 10의 개수이며, `floor(N/5) + floor(N/25) + floor(N/125) + ...`로 구한다 (르장드르 공식).
+
+## 코드
+
+```java
+package day399;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day383BOJ3474교수현우 {
+  static int T, N, cnt;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    T = Integer.parseInt(br.readLine());
+
+    for (int tc = 0; tc < T; tc++) {
+      N = Integer.parseInt(br.readLine());
+      cnt = 0;
+      while (N >= 5) {
+        cnt += N / 5;
+        N /= 5;
+      }
+      sb.append(cnt + "\n");
+    }
+
+    System.out.println(sb);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* log5(N)) - 각 테스트 케이스마다 5로 나누는 횟수
+- 공간: O(1)

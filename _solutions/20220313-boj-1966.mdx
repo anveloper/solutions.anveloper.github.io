@@ -1,0 +1,111 @@
+---
+title: "BOJ 1966 - 프린터 큐"
+date: "2022-03-13"
+description: "구현, 자료 구조, 시뮬레이션 문제"
+tags: ["구현", "자료 구조", "시뮬레이션", "큐"]
+platform: "boj"
+problem_number: "1966"
+problem_url: "https://www.acmicpc.net/problem/1966"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1966 - 프린터 큐](https://www.acmicpc.net/problem/1966)
+
+프린터가 중요도 기반으로 문서를 인쇄한다. 큐의 맨 앞 문서보다 중요도가 높은 문서가 뒤에 있으면 맨 앞 문서를 큐의 맨 뒤로 보내고, 없으면 인쇄한다. 특정 위치의 문서가 몇 번째로 인쇄되는지 구하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T가 주어진다. 각 테스트 케이스의 첫째 줄에 문서 수 N (1 이상 100 이하)과 궁금한 문서의 위치 M (0-indexed)이, 둘째 줄에 N개의 중요도 (1 이상 9 이하)가 주어진다.
+
+### 출력
+
+각 테스트 케이스에 대해 해당 문서가 몇 번째로 인쇄되는지 출력한다.
+
+### 예제
+
+| 입력                                              | 출력        |
+| ------------------------------------------------- | ----------- |
+| `3` `1 0` `5` `4 2` `1 2 3 4` `6 0` `1 1 9 1 1 1` | `1` `2` `5` |
+
+## 풀이
+
+큐에 (원래 인덱스, 중요도) 쌍을 저장하고, 중요도 기반 인쇄 규칙을 시뮬레이션한다.
+
+1. 각 문서를 (인덱스, 중요도) 쌍으로 큐에 넣는다
+2. 맨 앞 문서를 꺼내고, 큐에 더 높은 중요도의 문서가 있는지 확인한다
+3. 있으면 꺼낸 문서와 그 앞의 모든 문서를 큐 뒤로 보낸다
+4. 없으면 인쇄 카운트를 증가시키고, 원래 인덱스가 M이면 답을 출력한다
+
+**핵심 아이디어**: 문서를 큐에 넣을 때 원래 인덱스를 함께 저장하여, 인쇄 시점에 목표 문서인지 식별할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+public class Day17BOJ1966프린트큐 { // 1966
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = null;
+		LinkedList<int[]> q = null;
+		int T = Integer.parseInt(br.readLine());
+		for (int tc = 1; tc <= T; tc++) {
+
+			q = new LinkedList<>();
+
+			st = new StringTokenizer(br.readLine());
+
+			int N = Integer.parseInt(st.nextToken());
+			int M = Integer.parseInt(st.nextToken());
+
+			st = new StringTokenizer(br.readLine());
+
+			for (int i = 0; i < N; i++) {
+				q.offer(new int[] { i, Integer.parseInt(st.nextToken()) });
+			}
+
+			int ans = 0;
+			while (!q.isEmpty()) {
+				int[] front = q.poll();
+				boolean isMax = true;
+				for (int i = 0; i < q.size(); i++) {
+					if (front[1] < q.get(i)[1]) {
+						q.offer(front);
+						for (int j = 0; j < i; j++) {
+							q.offer(q.poll());
+						}
+						isMax = false;
+						break;
+					}
+				}
+				if (isMax == false) {
+					continue;
+				}
+				ans++;
+				if (front[0] == M) {
+					break;
+				}
+			}
+			sb.append(ans).append('\n');
+		}
+
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N^2) — 각 문서 인쇄 시 큐 전체를 탐색
+- 공간: O(N) — 큐

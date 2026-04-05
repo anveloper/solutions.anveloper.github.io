@@ -1,0 +1,99 @@
+---
+title: "BOJ 1912 - 연속합"
+date: "2022-04-20"
+description: "다이나믹 프로그래밍, 최대 부분 배열 문제"
+tags: ["다이나믹 프로그래밍", "최대 부분 배열"]
+platform: "boj"
+problem_number: "1912"
+problem_url: "https://www.acmicpc.net/problem/1912"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1912 - 연속합](https://www.acmicpc.net/problem/1912)
+
+N개의 정수로 이루어진 수열에서 연속된 하나 이상의 수를 선택했을 때 합의 최댓값을 구하는 문제다. 음수가 포함될 수 있으므로, 단순히 전체 합이 최대가 아니라 연속된 구간을 적절히 선택해야 한다. 이는 카데인 알고리즘(Kadane's Algorithm)과 동일한 문제 유형이다.
+
+### 입력
+
+- 첫째 줄: 수열의 크기 N (1 ≤ N ≤ 100,000)
+- 둘째 줄: N개의 정수 (-1000 이상 1000 이하)
+
+### 출력
+
+연속된 부분 수열의 최대 합을 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `10` `10 -4 3 1 5 6 -35 12 21 -1` | `33` |
+
+## 풀이
+
+`dp[n]`을 n번째 원소를 마지막으로 포함하는 연속 부분 수열의 최대 합으로 정의하고 Top-Down 메모이제이션으로 계산한다. 이전 구간을 이어갈지 현재 원소에서 새로 시작할지를 비교하는 것이 핵심이다.
+
+1. `dp[0] = arr[0]`, `ans = arr[0]`으로 초기화한다.
+2. `recur(n)` 함수는 n번째 원소를 끝으로 하는 연속 부분 수열의 최대 합을 반환한다.
+3. 점화식: `dp[n] = max(recur(n-1) + arr[n], arr[n])`
+   - `recur(n-1) + arr[n]`: 이전 구간을 이어붙이는 경우
+   - `arr[n]`: 현재 원소에서 새로 시작하는 경우
+4. 계산할 때마다 `ans = max(ans, dp[n])`으로 전체 최댓값을 갱신한다.
+5. 모든 원소에 대해 계산하면 `ans`가 최종 답이다.
+
+**핵심 아이디어**: 이전 구간의 최대 합이 음수라면 이어붙이는 것보다 현재 원소에서 새로 시작하는 것이 유리하다. 이 선택을 `max(dp[n-1] + arr[n], arr[n])`으로 표현하며, 카데인 알고리즘의 DP 버전이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Day73BOJ1912연속합DP공부 { // 1912 연속합
+	static int N, ans;
+	static int[] arr;
+	static Integer[] dp;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		arr = new int[N];
+		dp = new Integer[N];
+
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+
+		dp[0] = arr[0];
+		ans = arr[0];
+		recur(N - 1);
+
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static int recur(int n) {
+		if (dp[n] == null) {
+			dp[n] = Math.max(recur(n - 1) + arr[n], arr[n]);
+//			System.out.println(Arrays.toString(dp).replaceAll("null", "nn"));
+			ans = Math.max(ans, dp[n]);
+		} // 최대값 dp로 찾는 기본 구성
+		return dp[n];
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 원소를 한 번씩 계산
+- 공간: O(N) — dp 배열과 입력 배열 각각 N 크기

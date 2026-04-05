@@ -1,0 +1,99 @@
+---
+title: "BOJ 13335 - 트럭"
+date: "2022-03-13"
+description: "구현, 자료 구조, 시뮬레이션 문제"
+tags: ["구현", "자료 구조", "시뮬레이션", "큐"]
+platform: "boj"
+problem_number: "13335"
+problem_url: "https://www.acmicpc.net/problem/13335"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13335 - 트럭](https://www.acmicpc.net/problem/13335)
+
+강을 가로지르는 하나의 차선으로 된 다리가 있다. n개의 트럭이 순서대로 다리를 건너가려 할 때, 다리 위에는 최대 w대의 트럭만 동시에 올라갈 수 있고, 다리 위 트럭들의 무게 합이 최대 하중 L 이하여야 한다. 모든 트럭이 다리를 건너는 최단 시간을 구하라.
+
+### 입력
+
+첫째 줄에 트럭 수 n, 다리 길이 w, 최대 하중 L이 주어진다. 둘째 줄에 n개의 트럭 무게가 주어진다.
+
+### 출력
+
+모든 트럭이 다리를 건너는 최단 시간을 출력한다.
+
+### 예제
+
+| 입력               | 출력 |
+| ------------------ | ---- |
+| `4 2 10` `7 4 5 6` | `8`  |
+
+## 풀이
+
+다리를 길이 w의 큐로 모델링하여, 매 초마다 트럭 진입 여부를 판단하는 시뮬레이션을 수행한다.
+
+1. 대기 트럭을 큐(trucks)에, 다리를 길이 w의 큐(bridge)에 0으로 초기화하여 저장한다
+2. 매 초마다 다리 앞쪽에서 하나를 빼고(나감), 현재 다리 무게(tmp)를 갱신한다
+3. 다음 트럭의 무게와 현재 다리 무게의 합이 L 이하이면 트럭을 진입시키고, 아니면 0(빈 칸)을 추가한다
+4. 다리 큐가 빌 때까지 반복하여 총 경과 시간을 출력한다
+
+**핵심 아이디어**: 다리를 고정 길이 큐로 표현하면, 매 초 앞에서 빼고 뒤에 넣는 연산으로 트럭의 이동을 자연스럽게 시뮬레이션할 수 있다. 0은 빈 칸을 의미한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day24BOJ13335트럭 { // 13335 트럭
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int W = Integer.parseInt(st.nextToken());
+		int L = Integer.parseInt(st.nextToken());
+		st = new StringTokenizer(br.readLine());
+
+		Queue<Integer> trucks = new LinkedList<>();
+		for (int n = 0; n < N; n++) {
+			trucks.offer(Integer.parseInt(st.nextToken()));
+		}
+
+		Queue<Integer> bridge = new LinkedList<>();
+		for (int w = 0; w < W; w++) {
+			bridge.add(0);
+		}
+
+		int cnt = 0;
+		int tmp = 0;
+
+		while (!bridge.isEmpty()) {
+			tmp -= bridge.poll();
+			if (!trucks.isEmpty()) {
+				if (tmp + trucks.peek() <= L) {
+					int newTruck = trucks.poll();
+					tmp += newTruck;
+					bridge.add(newTruck);
+				} else {
+					bridge.add(0);
+				}
+			}
+			cnt++;
+		}
+		System.out.println(cnt);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N + W) — 트럭 N대 진입 후 다리 길이 W만큼 추가 진행
+- 공간: O(N + W) — 트럭 큐와 다리 큐

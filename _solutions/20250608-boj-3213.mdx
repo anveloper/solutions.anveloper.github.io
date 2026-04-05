@@ -1,0 +1,78 @@
+---
+title: "BOJ 3213 - 피자"
+date: "2025-06-08"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "3213"
+problem_url: "https://www.acmicpc.net/problem/3213"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3213 - 피자](https://www.acmicpc.net/problem/3213)
+
+N명이 각각 1/4, 1/2, 3/4 크기의 피자 조각을 원할 때, 필요한 최소 피자 판 수를 구하라. 한 판은 4/4이다.
+
+### 입력
+
+사람 수 N과 각 사람이 원하는 피자 크기(1/4, 1/2, 3/4)가 주어진다.
+
+### 출력
+
+최소 피자 판 수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `1/4` `1/2` `3/4` | `1`  |
+
+## 풀이
+
+3/4와 1/4를 매칭하고, 남은 1/2와 1/4를 묶어 최소 판 수를 계산한다.
+
+1. 각 크기별 주문 수를 센다 (1/4, 1/2, 3/4)
+2. 3/4 조각은 각각 1판이 필요하며, 1/4 조각과 매칭하여 빈 공간을 채운다
+3. 1/2 조각은 2개씩 묶어 1판으로 처리한다
+4. 남은 1/4 조각은 홀수 1/2에 2개 채우거나 4개씩 묶어 처리한다
+
+**핵심 아이디어**: 큰 조각부터 처리하면서 남은 공간에 작은 조각을 채우면 피자 판 수를 최소화할 수 있다.
+
+## 코드
+
+```python
+from math import ceil
+import sys
+
+input = sys.stdin.readline
+
+N = int(input())
+slice1 = 0
+slice2 = 0
+slice3 = 0
+ans = 0
+
+for i in range(N):
+    x = input().rstrip()
+    if x == "1/4":
+        slice1 += 1
+    if x == "3/4":
+        slice2 += 1
+    if x == "1/2":
+        slice3 += 1
+
+if slice1 <= slice2:
+    ans = slice2 + ceil(slice3 / 2)
+else:
+    ans = slice2 + ceil(slice3 / 2) + ceil((slice1 - slice2 - (slice3 % 2 * 2)) / 4)
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

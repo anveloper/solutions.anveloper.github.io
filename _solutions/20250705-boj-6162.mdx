@@ -1,0 +1,88 @@
+---
+title: "BOJ 6162 - Superlatives"
+date: "2025-07-05"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "6162"
+problem_url: "https://www.acmicpc.net/problem/6162"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6162 - Superlatives](https://www.acmicpc.net/problem/6162)
+
+증발량(E)과 강수량(A)이 주어진다. E가 A 이하이면 "no drought", E/A가 5 이하이면 "drought", 5배를 초과하면 초과 단계마다 "mega "를 앞에 붙여 출력하는 문제다. K개의 테스트 케이스를 처리한다.
+
+### 입력
+
+- 첫 줄: 테스트 케이스 수 K
+- 각 케이스: 증발량 E와 강수량 A
+
+### 출력
+
+각 케이스마다 "Data Set `{번호}`:" 헤더와 가뭄 수준 문자열을 출력하고 빈 줄을 삽입한다.
+
+### 예제
+
+| 입력                      | 출력                                                                                                      |
+| ------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `3` `5 10` `15 3` `500 2` | `Data Set 1:` `no drought` (빈줄) `Data Set 2:` `drought` (빈줄) `Data Set 3:` `mega mega drought` (빈줄) |
+
+## 풀이
+
+E와 A의 비율을 단계별 임계값과 비교하여 가뭄 수준을 결정하고, "mega " 접두사의 개수를 카운트해 출력한다.
+
+1. E가 A 이하이면 "no drought"를 출력한다.
+2. E/A 비율을 계산한다.
+3. 비율이 5 이하이면 "drought"를 출력한다.
+4. 비율이 5를 초과하면 임계값을 5배씩 늘려가며 초과 단계 수를 센다.
+5. 단계 수만큼 "mega "를 앞에 붙여 "mega ... mega drought" 형식으로 출력한다.
+
+**핵심 아이디어**: 5의 지수적 증가를 while 루프로 단계별 비교하면 "mega" 접두사 개수를 자연스럽게 카운트할 수 있다. 출력 형식의 빈 줄 삽입도 정확히 처리해야 한다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.read
+data = input().split()
+
+K = int(data[0])
+result = []
+
+index = 1
+for case_num in range(1, K + 1):
+    E = int(data[index])
+    A = int(data[index + 1])
+    index += 2
+
+    result.append(f"Data Set {case_num}:")
+
+    if E <= A:
+        result.append("no drought")
+    else:
+        ratio = E / A
+        if ratio <= 5:
+            result.append("drought")
+        else:
+            count = 0
+            threshold = 5
+            while ratio > threshold:
+                count += 1
+                threshold *= 5
+            result.append("mega " * count + "drought")
+
+    result.append("")  # blank line
+
+print("\n".join(result))
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

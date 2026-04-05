@@ -1,0 +1,94 @@
+---
+title: "BOJ 11328 - Strfry"
+date: "2024-10-14"
+description: "두 문자열이 애너그램인지 판별하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "11328"
+problem_url: "https://www.acmicpc.net/problem/11328"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11328 - Strfry](https://www.acmicpc.net/problem/11328)
+
+두 문자열이 주어질 때, 하나를 재배열하여 다른 하나를 만들 수 있는지(애너그램인지) 판별하라.
+
+### 입력
+
+테스트 케이스 수 N, 각 케이스마다 두 문자열이 주어진다.
+
+### 출력
+
+가능하면 "Possible", 불가능하면 "Impossible"을 출력한다.
+
+### 예제
+
+| 입력                  | 출력                    |
+| --------------------- | ----------------------- |
+| `2` `abc bca` `ab cd` | `Possible` `Impossible` |
+
+## 풀이
+
+알파벳 빈도 배열로 두 문자열의 문자 구성을 비교한다.
+
+1. 크기 26의 빈도 배열을 0으로 초기화한다
+2. 첫 번째 문자열의 각 문자에 대해 카운트를 증가시킨다
+3. 두 번째 문자열의 각 문자에 대해 카운트를 감소시킨다
+4. 모든 카운트가 0이면 "Possible", 아니면 "Impossible"을 출력한다
+
+**핵심 아이디어**: 두 문자열이 애너그램이면 알파벳 빈도가 완전히 동일하므로, 빈도 차이 배열이 전부 0이어야 한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main(void)
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+
+  int N;
+  int arr[26];
+  bool is_possible;
+  string s1, s2;
+  cin >> N;
+
+  for (int i = 0; i < N; i++)
+  {
+    cin >> s1 >> s2;
+    is_possible = true;
+    fill(arr, arr + 26, 0);
+    for (int j = 0; j < s1.length(); j++)
+    {
+      arr[s1[j] - 'a']++;
+      arr[s2[j] - 'a']--;
+    }
+    for (int j = 0; j < 26; j++)
+    {
+      if (arr[j] != 0)
+      {
+        is_possible = false;
+        break;
+      }
+    }
+    if (is_possible)
+      cout << "Possible\n";
+    else
+      cout << "Impossible\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (N: 테스트 케이스 수, L: 문자열 길이)
+- 공간: O(1)

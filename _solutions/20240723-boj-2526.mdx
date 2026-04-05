@@ -1,0 +1,68 @@
+---
+title: "BOJ 2526 - 싸이클"
+date: "2024-07-23"
+description: "N에 P를 반복 곱하며 나머지를 취할 때 싸이클의 길이를 구하는 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "2526"
+problem_url: "https://www.acmicpc.net/problem/2526"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2526 - 싸이클](https://www.acmicpc.net/problem/2526)
+
+N에 N을 곱하고 P로 나눈 나머지를 반복하여 수열을 만들 때, 수열에서 나타나는 싸이클의 길이를 구하라.
+
+### 입력
+
+N과 P가 주어진다.
+
+### 출력
+
+싸이클의 길이를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `2 3` | `2`  |
+
+## 풀이
+
+나머지 연산의 결과가 반복되는 시점을 찾아 싸이클 길이를 구한다.
+
+1. 현재 값에 N을 곱하고 P로 나눈 나머지를 반복 계산한다
+2. 각 값이 처음 나타난 순서를 배열에 기록한다
+3. 이미 나타난 값이 다시 등장하면 현재 순서 - 처음 순서 = 싸이클 길이가 된다
+
+**핵심 아이디어**: 나머지는 0~P-1 범위이므로 최대 P번 안에 반드시 값이 반복되며(비둘기집 원리), 방문 순서를 기록하면 싸이클 길이를 즉시 구할 수 있다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int n, p, ne, cnt = 1;
+vector<int> nums(1001);
+
+int main()
+{
+  cin >> n >> p;
+  ne = n;
+  while (!nums[ne])
+  {
+    nums[ne] = cnt++;
+    ne = ne * n % p;
+  }
+  cout << cnt - nums[ne] << '\n';
+}
+```
+
+## 복잡도
+
+- 시간: O(P)
+- 공간: O(P)

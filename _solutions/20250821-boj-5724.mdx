@@ -1,0 +1,72 @@
+---
+title: "BOJ 5724 - 파인만"
+date: "2025-08-21"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5724"
+problem_url: "https://www.acmicpc.net/problem/5724"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5724 - 파인만](https://www.acmicpc.net/problem/5724)
+
+N x N 격자에서 크기가 다른 모든 정사각형의 개수를 구하라.
+
+### 입력
+
+여러 테스트 케이스로 N이 주어지며, 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 정사각형의 총 개수를 출력한다.
+
+### 예제
+
+| 입력        | 출력    |
+| ----------- | ------- |
+| `2` `1` `0` | `5` `1` |
+
+## 풀이
+
+N x N 격자의 정사각형 개수는 1² + 2² + ... + N²의 합이다.
+
+1. 크기 k인 정사각형은 `(N-k+1)²`개가 아니라, k x k 크기가 `(N-k+1)²`개이므로 총합은 `sum(i² for i=1..N)`이다
+2. 코드에서 `ans = 1 + n*n`으로 1²과 n²을 먼저 더하고, 2부터 n-1까지의 i²을 누적한다
+3. N=1일 때는 별도 처리하여 1을 출력한다
+
+**핵심 아이디어**: N x N 격자의 정사각형 총 개수는 제곱수의 합 공식 `N(N+1)(2N+1)/6`과 동일하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int n;
+  while (1)
+  {
+    int ans = 0;
+    cin >> n;
+    if (!n)
+      break;
+    ans += 1 + n * n;
+    for (int i = 2; i <= n - 1; i++)
+      ans += i * i;
+    if (n != 1)
+      cout << ans << '\n';
+    else
+      cout << 1 << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

@@ -1,0 +1,88 @@
+---
+title: "BOJ 2090 - 조화평균"
+date: "2025-06-05"
+description: "수학, 구현, 정수론 문제"
+tags: ["수학", "구현", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "2090"
+problem_url: "https://www.acmicpc.net/problem/2090"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2090 - 조화평균](https://www.acmicpc.net/problem/2090)
+
+N개의 자연수가 주어질 때, 이 수들의 역수의 합의 역수를 기약분수 형태로 출력하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 N개의 자연수가 주어진다.
+
+### 출력
+
+`분자/분모` 형태의 기약분수를 출력한다.
+
+### 예제
+
+| 입력        | 출력  |
+| ----------- | ----- |
+| `3` `2 3 6` | `1/1` |
+
+## 풀이
+
+모든 수의 LCM을 공통 분모로 사용하여 역수의 합을 분수로 계산한 뒤 기약분수로 만든다.
+
+1. 모든 수의 LCM을 구한다 (분모 통일)
+2. 각 수에 대해 `LCM / a_i`를 계산하여 모두 합산한다 (통분된 분자의 합)
+3. 결과 분수는 `LCM / 합`이다
+4. GCD로 약분하여 기약분수로 출력한다
+
+**핵심 아이디어**: LCM을 이용해 분수 연산을 정수 연산으로 변환하고, GCD로 약분하여 정확한 기약분수를 구한다.
+
+## 코드
+
+```python
+import sys
+
+
+input = sys.stdin.readline
+n = int(input().rstrip())
+A = list(map(int, input().rstrip().split()))
+
+
+def gcd(a, b):
+    if b == 0:
+        return a
+    return gcd(b, a % b)
+
+
+def lcm(a, b):
+    return abs(a * b) // gcd(a, b)
+
+
+def multi_lcm(lst):
+    result = lst[0]
+    for l in lst[1:]:
+        result = lcm(result, l)
+    return result
+
+
+de = multi_lcm(A)
+nu = 0
+for a in A:
+    a = de // a
+    nu += a
+
+g = gcd(de, nu)
+
+
+print(f"{de // g}/{nu // g}")
+```
+
+## 복잡도
+
+- 시간: O(N \* log(max A)) — LCM 계산의 GCD 반복
+- 공간: O(N) — 입력 배열

@@ -1,0 +1,65 @@
+---
+title: "BOJ 2847 - 게임을 만든 동준이"
+date: "2025-02-20"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "2847"
+problem_url: "https://www.acmicpc.net/problem/2847"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2847 - 게임을 만든 동준이](https://www.acmicpc.net/problem/2847)
+
+N개 레벨의 점수가 주어질 때, 뒤에서부터 순감소하도록 만들기 위해 줄여야 하는 총 점수를 구하라.
+
+### 입력
+
+레벨 수 N과 각 레벨의 점수가 주어진다.
+
+### 출력
+
+점수를 줄이는 총 횟수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `3` `5` `3` `7` | `0`  |
+
+## 풀이
+
+뒤에서부터 순감소를 유지하며 필요시 점수를 줄인다.
+
+1. 마지막 레벨부터 앞으로 순회한다
+2. 현재 점수가 다음 점수 이상이면 `다음 점수 - 1`로 줄인다
+3. 줄인 양을 누적하여 출력한다
+
+**핵심 아이디어**: 뒤에서부터 처리하면 각 레벨의 상한이 명확하므로 최소한으로 줄일 수 있다.
+
+## 코드
+
+```python
+N = int(input())
+score = []
+cnt = 0
+
+for _ in range(N):
+    score.append(int(input()))
+
+for i in range(N - 1, 0, -1):
+    if score[i] <= score[i - 1]:
+        cnt += score[i - 1] - score[i] + 1
+        score[i - 1] = score[i] - 1
+
+print(cnt)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

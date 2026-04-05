@@ -1,0 +1,82 @@
+---
+title: "BOJ 4176 - Digits"
+date: "2026-01-26"
+description: "구현, 문자열, 시뮬레이션 문제"
+tags: ["구현", "문자열", "시뮬레이션"]
+platform: "boj"
+problem_number: "4176"
+problem_url: "https://www.acmicpc.net/problem/4176"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4176 - Digits](https://www.acmicpc.net/problem/4176)
+
+양의 정수가 주어진다. 그 수의 자릿수를 구하고, 그 자릿수를 새로운 수로 삼는 과정을 반복한다. 최종적으로 수가 1이 될 때까지 이 과정을 몇 번 거쳤는지 출력한다. 처음 수도 1번으로 센다. 입력 종료 신호는 `END`이다.
+
+### 입력
+
+여러 줄에 걸쳐 양의 정수 또는 `END`가 주어진다.
+
+### 출력
+
+각 수에 대해 1에 도달하기까지 거친 단계 수를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `100` `END` | `3`  |
+
+(`100` → 자릿수 3 → 자릿수 1, 총 3단계)
+
+## 풀이
+
+주어진 수를 문자열로 읽어 자릿수 변환을 시뮬레이션한다.
+
+1. 문자열을 읽어 `END`이면 종료한다.
+2. 현재 수가 `"1"`이 아닌 동안 반복한다.
+3. 현재 문자열의 길이(`length()`)가 새로운 수이므로, `to_string(len)`으로 교체한다.
+4. 카운터를 증가시키며, 최초 카운터는 1에서 시작한다.
+5. 반복이 끝나면 카운터를 출력한다.
+
+**핵심 아이디어:** 어떤 수든 자릿수를 반복 취하면 매우 빠르게 1자리 수가 되고, 1자리 수 중 1만이 불변점이다. 따라서 반복 횟수는 매우 작다. 문자열의 `length()`로 자릿수를 O(1)에 얻는다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  while (1)
+  {
+    string x;
+    cin >> x;
+    if (x == "END")
+      break;
+    int cnt = 1, len;
+    while (x != "1")
+    {
+      len = x.length();
+      cnt++;
+      x = to_string(len);
+    }
+    cout << cnt << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log N) — 자릿수를 반복 취하면 매우 빠르게 수렴
+- 공간: O(log N) — 현재 수를 문자열로 저장

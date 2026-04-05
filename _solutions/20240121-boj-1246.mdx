@@ -1,0 +1,93 @@
+---
+title: "BOJ 1246 - 온라인 판매"
+date: "2024-01-21"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "1246"
+problem_url: "https://www.acmicpc.net/problem/1246"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1246 - 온라인 판매](https://www.acmicpc.net/problem/1246)
+
+달걀 N개를 판매하려 하고 M명의 고객이 각자 최대 지불 가격을 제시했을 때, 모든 달걀을 같은 가격에 팔아 수익을 최대화하는 가격과 수익을 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 M줄에 각 고객의 최대 지불 가격이 주어진다.
+
+### 출력
+
+최적 가격과 최대 수익을 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                   | 출력   |
+| ---------------------- | ------ |
+| `5 4` `2` `8` `10` `7` | `7 21` |
+
+## 풀이
+
+고객의 희망 가격을 오름차순 정렬한 뒤, 각 가격을 판매가로 설정했을 때의 수익을 계산하여 최대를 찾는다.
+
+1. M명의 희망 가격을 오름차순 정렬한다
+2. 각 가격 `p[i]`를 판매가로 설정하면, 이 가격 이상인 고객 수는 `M-i`명이다
+3. 판매 가능한 수량은 `min(N, M-i)`이므로 수익은 `p[i] * min(N, M-i)`이다
+4. 최대 수익을 주는 가격을 출력한다
+
+**핵심 아이디어**: 판매가를 올리면 구매자 수가 줄지만 단가가 올라가므로, 모든 후보 가격을 시도하여 최적을 찾는다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day719BOJ1246온라인판매 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int n = Integer.parseInt(st.nextToken());
+    int m = Integer.parseInt(st.nextToken());
+
+    ArrayList<Integer> client = new ArrayList<Integer>();
+    for (int i = 0; i < m; i++) {
+      client.add(Integer.parseInt(br.readLine()));
+    }
+    int ans = 0;
+    int idx = 0;
+
+    Collections.sort(client);
+
+    for (int i = 0; i < client.size(); i++) {
+      int tmp = client.get(i);
+      int sum = 0;
+
+      if (m - i < n) {
+        sum = tmp * (m - i);
+      } else {
+        sum = tmp * n;
+      }
+
+      if (sum > ans) {
+        ans = sum;
+        idx = tmp;
+      }
+    }
+    System.out.println(idx + " " + ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(M log M)
+- 공간: O(M)

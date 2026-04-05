@@ -1,0 +1,62 @@
+---
+title: "BOJ 1297 - TV 크기"
+date: "2024-03-28"
+description: "대각선 길이와 비율로 TV의 가로·세로 길이를 구하는 문제"
+tags: ["수학", "기하학"]
+platform: "boj"
+problem_number: "1297"
+problem_url: "https://www.acmicpc.net/problem/1297"
+difficulty: "브론즈 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1297 - TV 크기](https://www.acmicpc.net/problem/1297)
+
+TV 대각선 길이 D와 세로:가로 비율 H:W가 주어질 때, 실제 세로와 가로 길이를 구하라.
+
+### 입력
+
+첫째 줄에 D, H, W가 공백으로 구분되어 주어진다.
+
+### 출력
+
+TV의 세로와 가로 길이를 소수점 이하 버림하여 출력한다.
+
+### 예제
+
+| 입력      | 출력    |
+| --------- | ------- |
+| `52 9 16` | `25 45` |
+
+## 풀이
+
+피타고라스 정리로 대각선과 비율 관계를 이용해 실제 가로·세로를 계산한다.
+
+1. 비례 상수 `q = sqrt(D² / (H² + W²))`를 구한다
+2. 실제 세로 = `floor(q * H)`, 가로 = `floor(q * W)`를 계산한다
+
+**핵심 아이디어**: D² = (qH)² + (qW)² = q²(H²+W²)이므로 q를 구하면 실제 크기를 바로 계산할 수 있다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [D, H, W] = input[0].trim().split(" ").map(Number);
+  const q = Math.sqrt((D * D) / (H * H + W * W));
+  const height = Math.floor(q * H);
+  const width = Math.floor(q * W);
+  return `${height} ${width}`;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

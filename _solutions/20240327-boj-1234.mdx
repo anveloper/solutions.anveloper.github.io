@@ -1,0 +1,102 @@
+---
+title: "BOJ 1234 - 크리스마스 트리"
+date: "2024-03-27"
+description: "RGB 장식을 레벨별로 배분하여 트리를 꾸미는 경우의 수"
+tags: ["수학", "DP", "조합론"]
+platform: "boj"
+problem_number: "1234"
+problem_url: "https://www.acmicpc.net/problem/1234"
+difficulty: "골드 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1234 - 크리스마스 트리](https://www.acmicpc.net/problem/1234)
+
+N층 트리에서 i번째 층에 i개의 장식을 배치한다. 각 층은 1색, 2색, 3색으로 균등 분배할 수 있을 때, R, G, B 장식을 모두 사용하는 경우의 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, R, G, B가 주어진다.
+
+### 출력
+
+트리를 꾸미는 경우의 수를 출력한다.
+
+### 예제
+
+| 입력      | 출력 |
+| --------- | ---- |
+| `2 2 1 0` | `1`  |
+
+## 풀이
+
+4차원 DP로 (레벨, R 남은 수, G 남은 수, B 남은 수) 상태를 관리한다.
+
+1. `dp[i][r][g][b]`: i층까지 배치하고 R이 r개, G가 g개, B가 b개 남았을 때의 경우의 수
+2. 각 레벨 i에서 1색(i개 모두 한 색), 2색(i/2씩 두 색), 3색(i/3씩 세 색) 배치를 시도한다
+3. 2색은 i가 짝수일 때, 3색은 i가 3의 배수일 때만 가능하다
+4. 다색 배치 시 다항 계수(조합 수)를 곱하여 배치 순서를 반영한다
+
+**핵심 아이디어**: 각 층의 장식 배치는 균등 분배 조건에 의해 경우가 제한되며, 조합 수를 곱하면 색 배열의 순서를 처리할 수 있다.
+
+## 코드
+
+```javascript
+const solution = () => {
+  const inputs = input[0].split(" ").map((v) => +v);
+  const N = inputs[0];
+  const [R, G, B] = [inputs[1], inputs[2], inputs[3]];
+  const dp = [];
+  const factorial = (x) => (x == 1 ? 1 : x * factorial(x - 1));
+  const comb = (n, r) => factorial(n) / (factorial(r) * factorial(n - r));
+
+  for (let i = 0; i < N + 1; i++) {
+    dp[i] = [];
+    for (let r = 0; r < R + 1; r++) {
+      dp[i][r] = [];
+      for (let g = 0; g < G + 1; g++) {
+        dp[i][r][g] = [];
+        for (let b = 0; b < B + 1; b++) {
+          if (i == 0) {
+            dp[i][r][g][b] = 1;
+            continue;
+          }
+          dp[i][r][g][b] = 0;
+          if (r - i >= 0) dp[i][r][g][b] += dp[i - 1][r - i][g][b];
+          if (g - i >= 0) dp[i][r][g][b] += dp[i - 1][r][g - i][b];
+          if (b - i >= 0) dp[i][r][g][b] += dp[i - 1][r][g][b - i];
+
+          if (i % 2 == 0) {
+            let divNum = i / 2;
+            if (g - divNum >= 0 && b - divNum >= 0)
+              dp[i][r][g][b] += dp[i - 1][r][g - divNum][b - divNum] * comb(i, divNum);
+            if (r - divNum >= 0 && b - divNum >= 0)
+              dp[i][r][g][b] += dp[i - 1][r - divNum][g][b - divNum] * comb(i, divNum);
+            if (r - divNum >= 0 && g - divNum >= 0)
+              dp[i][r][g][b] += dp[i - 1][r - divNum][g - divNum][b] * comb(i, divNum);
+          }
+
+          if (i % 3 == 0) {
+            let divNum = i / 3;
+            if (r - divNum >= 0 && g - divNum >= 0 && b - divNum >= 0)
+              dp[i][r][g][b] +=
+                dp[i - 1][r - divNum][g - divNum][b - divNum] * comb(i, divNum) * comb(i - divNum, divNum);
+          }
+        }
+      }
+    }
+  }
+  return dp[N][R][G][B];
+};
+
+const input = require("fs").readFileSync("/dev/stdin").toString().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N × R × G × B)
+- 공간: O(N × R × G × B)

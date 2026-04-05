@@ -1,0 +1,66 @@
+---
+title: "BOJ 2721 - 삼각수의 합"
+date: "2025-02-16"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "2721"
+problem_url: "https://www.acmicpc.net/problem/2721"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2721 - 삼각수의 합](https://www.acmicpc.net/problem/2721)
+
+f(N) = sum(i \* T(i+1), i=1..N)을 구하라. T(k) = k\*(k+1)/2는 삼각수이다.
+
+### 입력
+
+테스트 케이스 수 T와 각 N이 주어진다 (N은 300 이하).
+
+### 출력
+
+각 N에 대해 f(N)을 출력한다.
+
+### 예제
+
+| 입력            | 출력          |
+| --------------- | ------------- |
+| `3` `1` `2` `3` | `3` `15` `45` |
+
+## 풀이
+
+누적합과 DP를 이용하여 f(N)을 전처리한 뒤 쿼리에 답한다.
+
+1. 1부터 301까지의 누적합 배열을 구한다 (삼각수 계산용)
+2. DP로 `dp[i] = i * sums[i+1] + dp[i-1]` 관계식을 이용해 f(N)을 전처리한다
+3. 각 쿼리에 대해 전처리된 값을 출력한다
+
+**핵심 아이디어**: 점화식을 이용해 f(N)을 O(N)에 전처리하면, 여러 쿼리에 O(1)로 응답할 수 있다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+t = int(input())
+sums = [i for i in range(302)]
+dp = [0 for i in range(302)]
+
+for i in range(2, 302):
+    sums[i] += sums[i - 1]
+    dp[i - 1] = (i - 1) * sums[i] + dp[i - 2]
+
+for i in range(t):
+    print(dp[int(input())])
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

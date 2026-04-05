@@ -1,0 +1,78 @@
+---
+title: "BOJ 6321 - IBM 빼기 1"
+date: "2024-09-20"
+description: "각 문자를 알파벳 순서로 한 칸 뒤로 이동시키는 문제"
+tags: ["문자열", "구현"]
+platform: "boj"
+problem_number: "6321"
+problem_url: "https://www.acmicpc.net/problem/6321"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6321 - IBM 빼기 1](https://www.acmicpc.net/problem/6321)
+
+대문자 알파벳으로 이루어진 문자열이 주어질 때, 각 문자를 알파벳 순서에서 다음 문자로 바꿔 출력하라. Z는 A가 된다.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 대문자 문자열이 주어진다.
+
+### 출력
+
+각 케이스마다 "String #i"를 출력하고 변환된 문자열을 출력한다.
+
+### 예제
+
+| 입력      | 출력              |
+| --------- | ----------------- |
+| `1` `HAL` | `String #1` `IBM` |
+
+## 풀이
+
+각 문자에 1을 더하고 26으로 모듈로 연산하여 순환 변환한다.
+
+1. 각 문자에서 `'A'`를 빼 0~25 범위의 값을 얻는다
+2. 1을 더하고 26으로 나눈 나머지를 구한다 (Z→A 순환)
+3. 다시 `'A'`를 더해 문자로 변환하여 출력한다
+
+**핵심 아이디어**: 모듈로 26 연산으로 Z→A 순환을 자연스럽게 처리한다. 문제 이름은 HAL→IBM에서 유래한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+  int ts;
+  string s;
+
+  cin >> ts;
+
+  for (int i = 1; i <= ts; ++i)
+  {
+    cin >> s;
+    cout << "String #" << i << "\n";
+    for (int j = 0; j < s.length(); ++j)
+    {
+      cout << (char)((s[j] - 'A' + 1) % 26 + 'A');
+    }
+    cout << "\n\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* L) (T: 테스트 케이스 수, L: 문자열 길이)
+- 공간: O(L)

@@ -1,0 +1,157 @@
+---
+title: "BOJ 17141 - 연구소 2"
+date: "2023-01-14"
+description: "그래프 이론, 브루트포스 알고리즘, 그래프 탐색 문제"
+tags: ["그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "너비 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "17141"
+problem_url: "https://www.acmicpc.net/problem/17141"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17141 - 연구소 2](https://www.acmicpc.net/problem/17141)
+
+크기가 N×N인 연구소가 있다. 연구소는 빈 칸(0), 벽(1), 바이러스를 놓을 수 있는 칸(2)으로 이루어져 있다. M개의 바이러스를 놓을 수 있는 칸 중에서 정확히 M개를 선택하여 바이러스를 놓는다. 바이러스는 상하좌우로 인접한 빈 칸으로 1초에 하나씩 퍼진다. 모든 빈 칸에 바이러스가 퍼지는 최소 시간을 구한다. 불가능하면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. (1 ≤ N ≤ 50, 1 ≤ M ≤ 10)
+
+다음 N개의 줄에 연구소의 상태가 주어진다. 0은 빈 칸, 1은 벽, 2는 바이러스를 놓을 수 있는 칸이다.
+
+### 출력
+
+모든 빈 칸에 바이러스가 퍼지는 최소 시간을 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+**입력**
+
+```
+5 1
+2 0 0 0 1
+1 0 1 0 1
+0 0 0 0 1
+0 1 0 0 0
+0 0 0 0 2
+```
+
+**출력**
+
+```
+8
+```
+
+## 풀이
+
+**핵심 아이디어**: 바이러스를 놓을 수 있는 칸(2) 중에서 M개를 조합(Combination)으로 선택한 뒤, 각 경우마다 BFS를 실행하여 모든 빈 칸에 바이러스가 퍼지는 최소 시간을 구한다.
+
+1. **전처리**: 맵을 읽으며 바이러스 후보 칸(2)의 좌표를 `list`에 저장하고, 빈 칸(0)의 개수 `cnt`를 센다.
+2. **조합 탐색**: `list`에서 M개를 선택하는 모든 조합을 재귀(`comb`)로 생성한다. 조합의 수는 최대 `C(list.size, M)`이다.
+3. **BFS 실행**: 선택된 M개의 칸을 동시에 출발점으로 삼아 BFS를 수행한다. 0인 빈 칸에 도달할 때마다 카운터를 감소시켜 모든 빈 칸이 채워졌는지 확인한다.
+4. **최솟값 갱신**: BFS 완료 후 모든 빈 칸이 감염됐다면(`c == 0`) 걸린 시간 `tmp`로 전역 최솟값 `ans`를 갱신한다.
+5. **결과 출력**: 최종 `ans`가 초기값(N\*N)이면 -1, 아니면 `ans`를 출력한다.
+
+바이러스 후보 칸이 최대 10개이므로 조합의 수는 최대 `C(10, M)`으로 매우 작고, 각 BFS는 O(N²)이므로 전체 시간 복잡도는 충분히 작다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.*;
+
+public class Day341BOJ17141연구소2 {
+    static int N, M, cnt, ans;
+    static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+    static int[][] map, sel;
+    static List<int[]> list;
+    static Queue<int[]> q;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        cnt = 0;
+        ans = N * N;
+        list = new ArrayList<>();
+        map = new int[N][N];
+        sel = new int[M][];
+
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < N; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+                if (map[i][j] == 2)
+                    list.add(new int[] { i, j });
+                else if (map[i][j] == 0)
+                    cnt++;
+            }
+        }
+        comb(0, 0);
+        System.out.println(ans == N * N ? -1 : ans);
+        br.close();
+    }
+
+    private static void comb(int d, int idx) {
+        if (d == M) {
+            bfs();
+            return;
+        }
+        if (idx == list.size())
+            return;
+        sel[d] = list.get(idx);
+        comb(d + 1, idx + 1);
+        comb(d, idx + 1);
+    }
+
+    private static void bfs() {
+        boolean[][] visited = new boolean[N][N];
+        int c = cnt;
+        q = new LinkedList<>();
+
+        for (int i = 0; i < M; i++) {
+            q.add(new int[] { sel[i][0], sel[i][1], 0 });
+            visited[sel[i][0]][sel[i][1]] = true;
+        }
+
+        int tmp = 0;
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            tmp = cur[2];
+            for (int dir = 0; dir < 4; dir++) {
+                int nr = cur[0] + dr[dir];
+                int nc = cur[1] + dc[dir];
+                if (index(nr, nc))
+                    continue;
+                if (visited[nr][nc])
+                    continue;
+                if (map[nr][nc] == 1)
+                    continue;
+                q.add(new int[] { nr, nc, cur[2] + 1 });
+                visited[nr][nc] = true;
+                if (map[nr][nc] == 0)
+                    c--;
+            }
+        }
+        if (c == 0)
+            ans = Math.min(ans, tmp);
+    }
+
+    private static boolean index(int r, int c) {
+        return r < 0 || c < 0 || r >= N || c >= N;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(C(V, M) × N²) — V: 바이러스 후보 칸 수, 각 조합마다 BFS O(N²)
+- 공간: O(N²) — 방문 배열 및 큐

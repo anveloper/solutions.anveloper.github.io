@@ -1,0 +1,58 @@
+---
+title: "BOJ 4482 - Tetrahedral Stacks of Cannonballs"
+date: "2026-02-25"
+description: "수학 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "4482"
+problem_url: "https://www.acmicpc.net/problem/4482"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4482 - Tetrahedral Stacks of Cannonballs](https://www.acmicpc.net/problem/4482)
+
+정사면체 형태로 대포알을 쌓을 때, n층까지 쌓으면 총 대포알 개수를 구한다. 각 층 k에는 삼각수 `k*(k+1)/2`개의 대포알이 놓이므로, 총 개수는 사면체수 `n*(n+1)*(n+2)/6`이다.
+
+### 입력
+
+- 첫 줄: 테스트 케이스 수
+- 각 줄: 층 수 n
+
+### 출력
+
+각 테스트 케이스마다 `{번호}: {n} {총 개수}` 형식으로 출력한다.
+
+## 풀이
+
+사면체수 공식 `n*(n+1)*(n+2)/6`을 직접 계산한다. n이 클 수 있으므로 `long long`을 사용한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+  int n, cases;
+  if (!(cin >> cases)) return 0;
+
+  for (int i = 1; i <= cases; ++i) {
+    cin >> n;
+    long long total = (long long)n * (n + 1) * (n + 2) / 6;
+
+    cout << i << ": " << n << " " << total << endl;
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T) — 테스트 케이스당 O(1)
+- 공간: O(1) — 상수 변수만 사용

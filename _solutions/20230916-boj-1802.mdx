@@ -1,0 +1,88 @@
+---
+title: "BOJ 1802 - 종이 접기"
+date: "2023-09-16"
+description: "분할 정복 문제"
+tags: ["분할 정복"]
+platform: "boj"
+problem_number: "1802"
+problem_url: "https://www.acmicpc.net/problem/1802"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1802 - 종이 접기](https://www.acmicpc.net/problem/1802)
+
+종이를 여러 번 접은 후의 접힌 방향 정보가 주어질 때, 실제로 종이를 접어서 만들 수 있는 패턴인지 판별하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T, 이후 각 줄에 0과 1로 이루어진 문자열이 주어진다.
+
+### 출력
+
+가능하면 "YES", 불가능하면 "NO"를 출력한다.
+
+### 예제
+
+| 입력                    | 출력             |
+| ----------------------- | ---------------- |
+| `3` `0` `000` `1000110` | `YES` `NO` `YES` |
+
+## 풀이
+
+분할 정복으로 중앙을 기준으로 좌우 대칭 위치의 값이 서로 다른지 재귀적으로 검증한다.
+
+1. 문자열의 중앙을 기준으로 양쪽을 비교한다
+2. 대칭 위치의 문자가 같으면 유효하지 않은 패턴이다 (서로 달라야 함)
+3. 좌반과 우반에 대해 재귀적으로 같은 검증을 수행한다
+4. 길이가 1이면 항상 유효하다
+
+**핵심 아이디어**: 종이를 접으면 대칭 위치가 반대 방향으로 접히므로, 중앙 기준 대칭 위치의 값이 반드시 달라야 한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day589BOJ1802종이접기 {
+  private static String input;
+  private static StringBuilder sb = new StringBuilder();
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int T = Integer.parseInt(br.readLine());
+    for (int i = 0; i < T; i++) {
+      input = br.readLine();
+      if (check(0, input.length() - 1)) {
+        sb.append("YES").append("\n");
+      } else {
+        sb.append("NO").append("\n");
+      }
+    }
+    System.out.println(sb);
+  }
+
+  private static boolean check(int start, int end) {
+    if (start == end) {
+      return true;
+    }
+    int mid = (start + end) / 2;
+    for (int i = start; i < mid; i++) {
+      if (input.charAt(i) == input.charAt(end - i)) {
+        return false;
+      }
+    }
+    return check(start, mid - 1) && check(mid + 1, end);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) - 각 레벨에서 절반씩 비교, 총 O(N)
+- 공간: O(log N) - 재귀 깊이

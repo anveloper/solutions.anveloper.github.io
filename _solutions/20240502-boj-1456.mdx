@@ -1,0 +1,76 @@
+---
+title: "BOJ 1456 - 거의 소수"
+date: "2024-05-02"
+description: "[A, B] 범위에서 소수의 거듭제곱인 수의 개수"
+tags: ["수학", "소수", "에라토스테네스"]
+platform: "boj"
+problem_number: "1456"
+problem_url: "https://www.acmicpc.net/problem/1456"
+difficulty: "골드 V"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1456 - 거의 소수](https://www.acmicpc.net/problem/1456)
+
+어떤 수가 소수의 N제곱(`N >= 2`) 꼴일 때 "거의 소수"라 한다. 두 정수 A, B가 주어질 때, A 이상 B 이하인 거의 소수의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 A와 B가 공백으로 구분되어 주어진다 (`1 <= A <= B <= 10^14`).
+
+### 출력
+
+A 이상 B 이하인 거의 소수의 개수를 출력한다.
+
+### 예제
+
+| 입력     | 출력 |
+| -------- | ---- |
+| `1 1000` | `25` |
+
+## 풀이
+
+에라토스테네스의 체로 sqrt(B) 이하의 소수를 모두 구한 뒤, 각 소수의 거듭제곱이 [A, B] 범위에 포함되는지 확인한다.
+
+1. sqrt(B) 이하의 모든 소수를 에라토스테네스의 체로 구한다
+2. 각 소수 p에 대해 p^2, p^3, p^4, ... 를 계산한다
+3. 거듭제곱 값이 B 이하이면서 A 이상이면 카운트를 증가시킨다
+4. B를 초과하면 다음 소수로 넘어간다
+
+**핵심 아이디어**: 거의 소수는 반드시 어떤 소수의 거듭제곱이므로, sqrt(B) 이하의 소수만 확인하면 모든 거의 소수를 찾을 수 있다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [l, r] = input[0].split(" ").map(Number);
+  const max = parseInt(Math.sqrt(r));
+  const arr = Array(max + 1).fill(0);
+  const primes = [];
+  let ans = 0;
+  for (let i = 2; i <= max; i++) {
+    if (arr[i]) continue;
+    primes.push(i);
+    for (let j = 0; j + i <= max; j += i) arr[i + j] = 1;
+  }
+  for (let i = 0; i < primes.length; i++) {
+    let m = primes[i] * primes[i];
+    while (m <= r) {
+      if (m >= l) ans++;
+      m *= primes[i];
+    }
+  }
+  return ans;
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(sqrt(R) log log sqrt(R) + pi(sqrt(R)) log R)
+- 공간: O(sqrt(R))

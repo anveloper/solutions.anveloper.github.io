@@ -1,0 +1,94 @@
+---
+title: "BOJ 1629 - 곱셈"
+date: "2022-04-08"
+description: "수학, 분할 정복을 이용한 거듭제곱 문제"
+tags: ["수학", "분할 정복을 이용한 거듭제곱"]
+platform: "boj"
+problem_number: "1629"
+problem_url: "https://www.acmicpc.net/problem/1629"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1629 - 곱셈](https://www.acmicpc.net/problem/1629)
+
+자연수 A, B, C가 주어졌을 때 A를 B번 곱한 값을 C로 나눈 나머지를 구하는 문제이다. A, B, C는 최대 2,147,483,647(약 2 \* 10^9)이므로 단순 반복 곱셈으로는 시간 초과가 발생한다. 분할 정복을 이용한 거듭제곱(빠른 거듭제곱)으로 O(log B)에 해결해야 한다.
+
+### 입력
+
+첫째 줄에 A, B, C가 주어진다. (1 ≤ A, B, C ≤ 2,147,483,647)
+
+### 출력
+
+A^B mod C를 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `10 11 12` | `4`  |
+
+## 풀이
+
+거듭제곱을 절반으로 나누는 분할 정복 기법을 사용한다. A^B = (A^(B/2))^2 \* (B가 홀수이면 A)임을 이용하여 재귀적으로 계산한다. 매 곱셈마다 C로 나머지 연산을 적용하여 오버플로를 방지한다.
+
+1. `pow(a, b)` 재귀 함수를 정의한다.
+2. `b == 1`이면 `a % C`를 반환한다(기저 조건).
+3. `pow(a, b/2)`를 재귀 호출하여 절반의 결과 `res`를 얻는다.
+4. `res * res % C`로 제곱을 계산한다.
+5. b가 홀수이면 `* a % C`를 추가로 곱해 반환한다. 짝수이면 그대로 반환한다.
+6. 변수를 `long`으로 선언하여 중간 곱셈 결과가 int 범위를 초과하지 않도록 한다.
+
+**핵심 아이디어**: A^B mod C를 구할 때 매번 C로 나눠도 결과가 유지된다(`(a * b) % c == ((a % c) * (b % c)) % c`). 이 성질을 이용해 중간 결과를 항상 C 미만으로 유지한다. 지수를 절반씩 줄이므로 총 재귀 깊이는 O(log B)이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day60BOJ1629LONG제곱분할정복 { // 1629 곱셈 분할정복
+	static long A, B, C;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		A = Integer.parseInt(st.nextToken());
+		B = Integer.parseInt(st.nextToken());
+		C = Integer.parseInt(st.nextToken());
+
+		System.out.println(pow(A, B));
+
+		br.close();
+	}
+
+	private static long pow(long a, long b) {
+		if (b == 1)
+			return a % C;
+		long res = pow(a, b / 2);
+		return (res * res % C) * ((b % 2 == 1) ? a : 1) % C;
+	} // 최종...? C를 주는 이유가 있었다.
+
+	private static int pow2(int a, int b) {
+		if (b == 1)
+			return a;
+		int res = pow2(a, b / 2);
+		return res * res * ((b % 2 != 0) ? a : 1);
+	} // 기억해 둬도 문제가 틀린다고 나옴 > tc 범위가 long형을 벗어나고, c로 매번 나누는 알고리즘 짜야함.
+
+	private static int pow1(int a, int b) {
+		return (b < 1) ? 1 : pow1(a, b / 2) * pow1(a, b / 2) * ((b % 2 != 0) ? a : 1);
+	} // 한줄로 만들면 시간초과... result 기억 방식으루..
+}
+```
+
+## 복잡도
+
+- 시간: O(log B) — 지수를 절반씩 줄이는 분할 정복
+- 공간: O(log B) — 재귀 스택 깊이

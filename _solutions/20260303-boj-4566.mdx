@@ -1,0 +1,71 @@
+---
+title: "BOJ 4566 - Is the Name of This Problem"
+date: "2026-03-03"
+description: "주어진 문자열이 Quine 형식인지 판별하는 문자열 파싱 문제"
+tags: ["문자열", "파싱"]
+platform: "boj"
+problem_number: "4566"
+problem_url: "https://www.acmicpc.net/problem/4566"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4566 - Is the Name of This Problem](https://www.acmicpc.net/problem/4566)
+
+> 문자열이 `"A" A` 형식(Quine)인지 판별하여 결과를 출력하는 문제
+
+## 풀이
+
+문자열에서 첫 번째와 두 번째 따옴표 사이의 부분문자열 A를 추출한 뒤, 두 번째 따옴표 이후의 나머지 문자열과 A가 동일한지 비교한다. 동일하면 `Quine(A)`, 아니면 `not a quine`을 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  string s;
+  while (getline(cin, s) && s != "END") {
+    if (s.length() < 3 || s[0] != '"') {
+      cout << "not a quine" << endl;
+      continue;
+    }
+
+    size_t second_quote = s.find('"', 1);
+    if (second_quote == string::npos) {
+      cout << "not a quine" << endl;
+      continue;
+    }
+
+    string A = s.substr(1, second_quote - 1);
+
+    if (second_quote + 1 >= s.length() || s[second_quote + 1] != ' ') {
+      cout << "not a quine" << endl;
+      continue;
+    }
+
+    string remainder = s.substr(second_quote + 2);
+    if (remainder == A) {
+      cout << "Quine(" << A << ")" << endl;
+    } else {
+      cout << "not a quine" << endl;
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 문자열 길이)
+- 공간: O(N)

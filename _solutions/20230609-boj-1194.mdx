@@ -1,0 +1,136 @@
+---
+title: "BOJ 1194 - 달이 차오른다, 가자."
+date: "2023-06-09"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "비트마스킹", "격자 그래프"]
+platform: "boj"
+problem_number: "1194"
+problem_url: "https://www.acmicpc.net/problem/1194"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1194 - 달이 차오른다, 가자.](https://www.acmicpc.net/problem/1194)
+
+N x M 미로에서 열쇠(a-f)를 주워 문(A-F)을 열며 출구(1)까지의 최단 거리를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 N줄에 미로가 주어진다. `0`은 시작점, `1`은 출구, `#`은 벽, `.`은 빈 칸, a-f는 열쇠, A-F는 문이다.
+
+### 출력
+
+최단 이동 횟수를 출력한다. 탈출 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `1 7` `f0teleF` | `6`  |
+
+## 풀이
+
+BFS에 비트마스킹으로 보유 열쇠 상태를 추가하여 3차원 방문 배열로 탐색한다.
+
+1. 열쇠 6종(a-f)을 6비트로 표현하여 `visited[r][c][key]` 3차원 배열로 관리한다
+2. 열쇠 칸에 도달하면 해당 비트를 OR하여 새로운 키 상태로 전이한다
+3. 문 칸에 도달하면 해당 열쇠 비트가 켜져있는지 AND로 확인한다
+4. 출구(`1`)에 도달하면 현재 이동 횟수를 반환한다
+
+**핵심 아이디어**: 같은 칸이라도 보유한 열쇠 조합이 다르면 다른 상태이므로, 위치 + 열쇠 상태를 합쳐 BFS의 상태 공간을 구성한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day488BOJ1194달이차오른다 {
+  static int N, M;
+  static char[][] board;
+  static Node start;
+  static int[] dr = { 0, 1, 0, -1 };
+  static int[] dc = { 1, 0, -1, 0 };
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    String str = br.readLine();
+    StringTokenizer st = new StringTokenizer(str);
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+
+    board = new char[N][M];
+    for (int i = 0; i < N; i++) {
+      str = br.readLine();
+      for (int j = 0; j < M; j++) {
+        char c = str.charAt(j);
+        board[i][j] = c;
+        if (c == '0')
+          start = new Node(i, j, 0, 0);
+      }
+    }
+    System.out.println(bfs());
+  }
+
+  public static int bfs() {
+    Queue<Node> q = new LinkedList<>();
+    boolean[][][] visited = new boolean[N][M][64];
+    q.offer(start);
+    visited[start.r][start.c][0] = true;
+
+    while (!q.isEmpty()) {
+      Node cur = q.poll();
+      if (board[cur.r][cur.c] == '1')
+        return cur.cost;
+
+      for (int i = 0; i < 4; i++) {
+        int nr = cur.r + dr[i];
+        int nc = cur.c + dc[i];
+
+        if (nr < 0 || nc < 0 || nr >= N || nc >= M)
+          continue;
+        if (visited[nr][nc][cur.key] || board[nr][nc] == '#')
+          continue;
+
+        if (board[nr][nc] >= 'a' && board[nr][nc] <= 'f') { // 열쇠
+          int next_key = 1 << (board[nr][nc] - 'a');
+          next_key = cur.key | next_key;
+          visited[nr][nc][next_key] = true;
+          q.offer(new Node(nr, nc, cur.cost + 1, next_key));
+        } else if (board[nr][nc] >= 'A' && board[nr][nc] <= 'F') { // 문
+          if ((cur.key & 1 << (board[nr][nc] - 'A')) == (int) Math.pow(2, board[nr][nc] - 'A')) { // 해당 비트가 켜져있는지 확인
+            visited[nr][nc][cur.key] = true;
+            q.offer(new Node(nr, nc, cur.cost + 1, cur.key));
+          }
+        } else {
+          visited[nr][nc][cur.key] = true;
+          q.offer(new Node(nr, nc, cur.cost + 1, cur.key));
+        }
+      }
+    }
+    return -1;
+  }
+
+  public static class Node {
+    int r, c, cost, key;
+
+    public Node(int r, int c, int cost, int key) {
+      this.r = r;
+      this.c = c;
+      this.cost = cost;
+      this.key = key;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N _ M _ 2^6)
+- 공간: O(N _ M _ 2^6)

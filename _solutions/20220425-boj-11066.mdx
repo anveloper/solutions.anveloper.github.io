@@ -1,0 +1,122 @@
+---
+title: "BOJ 11066 - 파일 합치기"
+date: "2022-04-25"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "11066"
+problem_url: "https://www.acmicpc.net/problem/11066"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11066 - 파일 합치기](https://www.acmicpc.net/problem/11066)
+
+소설을 구성하는 K개의 챕터 파일이 있고 각 파일의 크기가 주어진다. 항상 인접한 두 파일만 합칠 수 있고, 합칠 때마다 두 파일 크기의 합만큼 비용이 발생한다. 모든 파일을 하나로 합치는 최소 비용을 구한다. T개의 테스트 케이스가 주어진다.
+
+### 입력
+
+- 첫째 줄: 테스트 케이스 수 T
+- 각 테스트 케이스:
+  - 첫째 줄: 파일 수 K (3 이상 500 이하)
+  - 둘째 줄: K개의 파일 크기
+
+### 출력
+
+- 각 테스트 케이스에 대해 최소 합치기 비용 출력
+
+### 예제
+
+| 입력                  | 출력  |
+| --------------------- | ----- |
+| `1` `4` `40 30 30 50` | `300` |
+
+## 풀이
+
+구간 DP를 이용해 인접한 파일들의 최적 합치기 순서를 결정한다. 누적합 배열로 구간합을 O(1)에 계산한다.
+
+1. 누적합 배열 `sum[i]`를 계산한다. (`sum[i] = sum[i-1] + arr[i]`)
+2. `dp[s][e]`를 "s번부터 e번 파일을 하나로 합치는 최소 비용"으로 정의한다.
+3. 기저 조건: `dp[i][i] = 0`, `dp[i][i+1] = arr[i] + arr[i+1]`
+4. 점화식: `dp[s][e] = min(dp[s][i] + dp[i+1][e] + sum[e] - sum[s-1])` for all i in `[s, e)`
+   - 임의의 분기점 i를 기준으로 왼쪽, 오른쪽을 각각 합친 뒤 두 덩어리를 합치는 비용이 추가된다.
+5. 최종 비용은 `dp[1][K]`이다.
+
+**핵심 아이디어**: 인접 파일만 합칠 수 있다는 제약이 구간 DP의 전형적인 적용 조건이다. 임의의 분기점 i를 기준으로 구간을 나눠 최솟값을 갱신하며, 구간 합은 누적합 배열로 O(1)에 처리해 전체 시간복잡도를 줄인다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day84BOJ11066파일합치기DP재귀재도전 { // 11066 파일 합치기
+	static final int INF = 1 << 30;
+	static int K;
+	static int[] arr, sum;
+	static Integer[][] dp;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = null;
+
+		int T = Integer.parseInt(br.readLine());
+
+		for (int tc = 1; tc <= T; tc++) {
+			K = Integer.parseInt(br.readLine());
+			arr = new int[K + 1];
+			sum = new int[K + 1];
+			dp = new Integer[K + 1][K + 1];
+			st = new StringTokenizer(br.readLine());
+			for (int i = 1; i < K + 1; i++) {
+				arr[i] = Integer.parseInt(st.nextToken()); // 사용안함..
+				sum[i] = sum[i - 1] + arr[i];
+			} // 누적합 배열 생성
+
+			sb.append(recur(1, K)).append("\n");
+//		print(dp); // 1~K까지의 최소 비용
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static int recur(int s, int e) {
+		if (s == e) // dp[i][i] = 0
+			return 0;
+		if (Math.abs(s - e) == 1) // dp[i][i+1] = arr[i]+arr[i+1]
+			return dp[s][e] = arr[s] + arr[e];
+		if (dp[s][e] != null)
+			return dp[s][e]; // 이미 탐색했으면 반환
+		dp[s][e] = INF; // 최소값 비교를 위한 INF
+		for (int i = s; i < e; i++)
+			dp[s][e] = Math.min(dp[s][e], recur(s, i) + recur(i + 1, e) + sum[e] - sum[s - 1]);
+		return dp[s][e]; // s ~ i 까지, i+1 ~ e 의 합이 최소인 값 + 현재 임시파일 비용
+	}
+
+	static int pcnt = 1;
+
+	private static void print(Integer[][] a) {
+		StringBuilder tt = new StringBuilder();
+		tt.append("===== " + pcnt++ + "번째 =====\n");
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[i].length; j++) {
+				tt.append((a[i][j] != null) ? a[i][j] : "n").append("\t");
+			}
+			tt.append("\n");
+		}
+		System.out.println(tt.toString());
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(K^3) — 구간 dp 상태 O(K^2) × 분기점 탐색 O(K)
+- 공간: O(K^2) — 2차원 dp 테이블

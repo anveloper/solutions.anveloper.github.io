@@ -1,0 +1,63 @@
+---
+title: "BOJ 15680 - 연세대학교"
+date: "2024-10-29"
+description: "입력값에 따라 두 문자열 중 하나를 출력하는 조건 분기 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "15680"
+problem_url: "https://www.acmicpc.net/problem/15680"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15680 - 연세대학교](https://www.acmicpc.net/problem/15680)
+
+0 또는 1이 입력되면 해당하는 문자열을 출력하라.
+
+### 입력
+
+0 또는 1이 주어진다.
+
+### 출력
+
+1이면 "Leading the Way to the Future", 0이면 "YONSEI"를 출력한다.
+
+### 예제
+
+| 입력 | 출력     |
+| ---- | -------- |
+| `0`  | `YONSEI` |
+
+## 풀이
+
+입력값에 따라 두 문자열 중 하나를 출력한다.
+
+1. N을 입력받는다
+2. N이 1이면 "Leading the Way to the Future", 아니면 "YONSEI"를 출력한다
+
+**핵심 아이디어**: 단순 조건 분기 문제이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int N;
+  cin >> N;
+  if (N == 1)
+    cout << "Leading the Way to the Future" << endl;
+  else
+    cout << "YONSEI" << endl;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

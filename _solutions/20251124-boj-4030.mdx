@@ -1,0 +1,90 @@
+---
+title: "BOJ 4030 - 포켓볼"
+date: "2025-11-24"
+description: "수학, 이분 탐색, 런타임 전의 전처리 문제"
+tags: ["수학", "이분 탐색", "런타임 전의 전처리"]
+platform: "boj"
+problem_number: "4030"
+problem_url: "https://www.acmicpc.net/problem/4030"
+difficulty: "실버 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4030 - 포켓볼](https://www.acmicpc.net/problem/4030)
+
+구간 `[A, B]`에서 삼각수에 1을 더한 값이 완전제곱수가 되는 삼각수의 개수를 구하라.
+
+### 입력
+
+여러 테스트 케이스에 A와 B가 주어지며, 둘 다 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 조건을 만족하는 삼각수의 개수를 출력한다.
+
+### 예제
+
+| 입력                 | 출력        |
+| -------------------- | ----------- |
+| `1 1000000000` `0 0` | `Case 1: 9` |
+
+## 풀이
+
+삼각수를 생성하며 `삼각수 + 1`이 완전제곱수인지 확인한다.
+
+1. `i = 2`부터 삼각수 `T(i) = i*(i+1)/2`를 순차 생성한다
+2. `T(i)`가 범위 `[A-1, B-1)` 내에 있는지 확인한다
+3. `T(i) + 1`의 제곱근이 정수이면 카운트를 증가시킨다
+4. `T(i)`가 범위를 초과하면 종료한다
+
+**핵심 아이디어**: 삼각수의 성장이 O(i²)이므로 범위 내 삼각수 개수는 O(sqrt(B))개에 불과하여 전수 검사가 가능하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+
+  int n = 0;
+  while (++n)
+  {
+    int a, b, count = 0, tri = 0, squ = 0;
+    cin >> a >> b;
+
+    if (a == 0 && b == 0)
+      break;
+
+    for (int i = 2; i <= 44721; i++)
+    {
+      tri = i * (i + 1) / 2;
+      if (tri > a - 1)
+      {
+        if (tri >= b - 1)
+          break;
+
+        squ = tri + 1;
+        if (squ == (int)sqrt(squ) * (int)sqrt(squ))
+          count++;
+      }
+    }
+    cout << "Case " << n << ": " << count << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(sqrt(B))
+- 공간: O(1)

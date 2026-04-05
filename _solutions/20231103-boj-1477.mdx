@@ -1,0 +1,103 @@
+---
+title: "BOJ 1477 - 휴게소 세우기"
+date: "2023-11-03"
+description: "이분 탐색, 매개 변수 탐색 문제"
+tags: ["이분 탐색", "매개 변수 탐색"]
+platform: "boj"
+problem_number: "1477"
+problem_url: "https://www.acmicpc.net/problem/1477"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1477 - 휴게소 세우기](https://www.acmicpc.net/problem/1477)
+
+고속도로에 N개의 휴게소가 있고 M개를 추가로 세울 때, 휴게소 간 최대 거리의 최솟값을 구하라.
+
+### 입력
+
+첫째 줄에 N, M, L(고속도로 길이), 둘째 줄에 N개의 휴게소 위치가 주어진다.
+
+### 출력
+
+휴게소 간 최대 거리의 최솟값을 출력한다.
+
+### 예제
+
+| 입력                               | 출력 |
+| ---------------------------------- | ---- |
+| `6 7 800` `622 411 201 555 755 82` | `70` |
+
+## 풀이
+
+매개변수 탐색으로 "최대 거리가 d일 때 M개 이하로 설치 가능한가"를 이분 탐색한다.
+
+1. 0과 L을 포함하여 휴게소 위치를 정렬한다
+2. 최대 거리 d를 이분 탐색한다
+3. 각 구간에 `(구간길이 - 1) / d`개의 휴게소가 필요하다
+4. 필요한 총 개수가 M 이하인 최소 d를 찾는다
+
+**핵심 아이디어**: 최대 거리를 기준으로 이분 탐색하면 각 거리에서 필요한 휴게소 수를 O(N)에 계산할 수 있다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day637BOJ1477휴게소세우기 {
+  static int N, M, L;
+  static int[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String[] s = br.readLine().split(" ");
+    N = Integer.parseInt(s[0]);
+    M = Integer.parseInt(s[1]);
+    L = Integer.parseInt(s[2]);
+    arr = new int[N + 2];
+    arr[0] = 0;
+    arr[N + 1] = L;
+
+    String[] s1 = br.readLine().split(" ");
+    for (int i = 0; i < N; i++) {
+      arr[i + 1] = Integer.parseInt(s1[i]);
+    }
+
+    System.out.println(solve());
+  }
+
+  private static int solve() {
+    Arrays.sort(arr);
+    int l = 1;
+    int r = L - 1;
+    while (l <= r) {
+      int m = (l + r) / 2;
+      if (check(m)) {
+        l = m + 1;
+      } else {
+        r = m - 1;
+      }
+    }
+    return l;
+  }
+
+  private static boolean check(int dis) {
+    int cnt = 0;
+    for (int i = 1; i <= N + 1; i++) {
+      cnt += (arr[i] - arr[i - 1] - 1) / dis;
+    }
+    return cnt > M;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log L) - L은 고속도로 길이
+- 공간: O(N)

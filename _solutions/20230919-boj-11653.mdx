@@ -1,0 +1,77 @@
+---
+title: "BOJ 11653 - 소인수분해"
+date: "2023-09-19"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정", "소인수분해"]
+platform: "boj"
+problem_number: "11653"
+problem_url: "https://www.acmicpc.net/problem/11653"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11653 - 소인수분해](https://www.acmicpc.net/problem/11653)
+
+정수 N을 소인수분해하여 소인수를 오름차순으로 출력하라.
+
+### 입력
+
+정수 N이 주어진다 (1 이상 10,000,000 이하).
+
+### 출력
+
+N을 소인수분해한 결과를 한 줄에 하나씩 오름차순으로 출력한다. N이 1이면 아무것도 출력하지 않는다.
+
+### 예제
+
+| 입력 | 출력                |
+| ---- | ------------------- |
+| `72` | `2` `2` `2` `3` `3` |
+
+## 풀이
+
+2부터 sqrt(N)까지 나눌 수 있는 소인수로 반복 나누고, 남은 값이 1보다 크면 그 자체가 소인수이다.
+
+1. i를 2부터 sqrt(N)까지 증가시키며 N을 나눈다
+2. N이 i로 나누어지면 i를 출력하고 N을 i로 나누기를 반복한다
+3. 루프 종료 후 N이 1이 아니면 남은 N을 출력한다
+
+**핵심 아이디어**: sqrt(N)까지만 검사하면 충분하다. 그 이상의 소인수는 최대 1개이며, 루프 후 남은 값이 된다.
+
+## 코드
+
+```java
+package day599;
+
+import java.util.Scanner;
+
+public class Day592BOJ11653소인수분해 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    StringBuilder sb = new StringBuilder();
+
+    int N = sc.nextInt();
+
+    for (int i = 2; i <= Math.sqrt(N); i++) {
+      while (N % i == 0) {
+        sb.append(i).append('\n');
+        N /= i;
+      }
+    }
+    if (N != 1) {
+      sb.append(N);
+    }
+    System.out.println(sb);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(sqrt(N))
+- 공간: O(1)

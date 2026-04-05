@@ -1,0 +1,64 @@
+---
+title: "BOJ 1835 - 카드"
+date: "2025-07-07"
+description: "구현, 자료 구조, 시뮬레이션 문제"
+tags: ["구현", "자료 구조", "시뮬레이션", "덱"]
+platform: "boj"
+problem_number: "1835"
+problem_url: "https://www.acmicpc.net/problem/1835"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1835 - 카드](https://www.acmicpc.net/problem/1835)
+
+카드 마술: 맨 위에서 1장 빼서 맨 아래로, 다시 1장 빼면 1이 나오고, 2장 빼서 맨 아래로, 1장 빼면 2가 나오는 식으로 i번째에 i가 나오도록 카드를 배열하라.
+
+### 입력
+
+카드의 수 N이 주어진다.
+
+### 출력
+
+초기 카드 배열을 위에서부터 출력한다.
+
+### 예제
+
+| 입력 | 출력        |
+| ---- | ----------- |
+| `5`  | `1 5 2 4 3` |
+
+## 풀이
+
+역순 시뮬레이션으로 덱을 이용하여 초기 배열을 구한다.
+
+1. N부터 1까지 역순으로 처리한다
+2. 현재 숫자 n을 덱의 앞에 삽입한다
+3. 덱의 뒤에서 n개의 원소를 꺼내 앞에 삽입한다 (역방향 회전)
+4. 최종 덱이 초기 카드 배열이다
+
+**핵심 아이디어**: 마술 과정을 역순으로 추적하면, 각 단계에서 수행했던 회전을 반대로 적용하여 원래 배열을 복원할 수 있다.
+
+## 코드
+
+```python
+n = int(input())
+from collections import deque
+
+dq = deque([n])
+n -= 1
+while n:
+    dq.appendleft(n)
+    for _ in range(n):
+        dq.appendleft(dq.pop())
+    n -= 1
+print(" ".join(map(str, dq)))
+```
+
+## 복잡도
+
+- 시간: O(N²) — 각 숫자에 대해 최대 N번 회전
+- 공간: O(N) — 덱

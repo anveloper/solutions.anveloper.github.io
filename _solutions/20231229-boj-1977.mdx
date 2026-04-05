@@ -1,0 +1,72 @@
+---
+title: "BOJ 1977 - 완전제곱수"
+date: "2023-12-29"
+description: "수학, 구현, 브루트포스 알고리즘 문제"
+tags: ["수학", "구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1977"
+problem_url: "https://www.acmicpc.net/problem/1977"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1977 - 완전제곱수](https://www.acmicpc.net/problem/1977)
+
+M 이상 N 이하의 완전제곱수의 합과 최솟값을 구하라. 없으면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 M, 둘째 줄에 N이 주어진다 (1 이상 10,000 이하).
+
+### 출력
+
+첫째 줄에 합, 둘째 줄에 최솟값을 출력한다. 완전제곱수가 없으면 -1을 출력한다.
+
+### 예제
+
+| 입력       | 출력       |
+| ---------- | ---------- |
+| `60` `100` | `164` `64` |
+
+## 풀이
+
+i를 1부터 증가시키며 i^2이 범위 내에 있는지 확인하여 합과 최솟값을 구한다.
+
+1. i = 1부터 i\*i가 N 이하인 동안 반복한다
+2. i\*i가 M 이상이면 합에 누적하고 최솟값을 갱신한다
+3. 합이 0이면 -1을, 아니면 합과 최솟값을 출력한다
+
+**핵심 아이디어**: i^2 형태로 직접 완전제곱수를 생성하므로 범위 내 모든 수를 검사할 필요가 없다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day696BOJ1977완전제곱수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int m = Integer.parseInt(br.readLine());
+    int n = Integer.parseInt(br.readLine());
+    int min = Integer.MAX_VALUE;
+    int sum = 0;
+    for (int i = 1; i * i <= n; i++) {
+      if (i * i >= m && i * i <= n) {
+        min = Math.min(i * i, min);
+        sum += i * i;
+      }
+    }
+    System.out.print(sum == 0 ? -1 : sum + "\n" + min);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(√N) — 완전제곱수만 순회
+- 공간: O(1) — 상수 변수만 사용

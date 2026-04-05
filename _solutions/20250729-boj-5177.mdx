@@ -1,0 +1,143 @@
+---
+title: "BOJ 5177 - 출력 형식이 잘못되었습니다"
+date: "2025-07-29"
+description: "문자열, 파싱, 정규 표현식 문제"
+tags: ["문자열", "파싱", "정규 표현식"]
+platform: "boj"
+problem_number: "5177"
+problem_url: "https://www.acmicpc.net/problem/5177"
+difficulty: "실버 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5177 - 출력 형식이 잘못되었습니다](https://www.acmicpc.net/problem/5177)
+
+두 문자열이 형식적으로 동등한지 판별하라. 대소문자, 괄호 종류, 세미콜론/쉼표, 구두점 주변 공백, 연속 공백은 무시한다.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 두 문자열이 주어진다.
+
+### 출력
+
+각 케이스마다 `equal` 또는 `not equal`을 출력한다.
+
+### 예제
+
+| 입력                 | 출력                |
+| -------------------- | ------------------- |
+| `1` `(a,b)` `[a; b]` | `Data Set 1: equal` |
+
+## 풀이
+
+두 문자열을 정규화한 뒤 비교한다.
+
+1. 대문자를 소문자로, 괄호를 소괄호로, 세미콜론을 쉼표로 통일한다
+2. 연속 공백을 하나로 줄이고, 구두점 양쪽의 공백을 제거한다
+3. 앞뒤 공백을 제거한 후 두 문자열을 비교한다
+
+**핵심 아이디어**: 여러 종류의 동등성 규칙을 정규화 함수로 통합하면, 한 번의 비교로 판별할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+string a, b, sp = {"()[]{}.,;:"};
+
+string refine(string a)
+{
+  int i, n = (int)a.length();
+  string r, s;
+
+  while (a.back() == ' ')
+    a.pop_back();
+
+  for (i = 0; i < n; i++)
+    if (a[i] != ' ')
+      break;
+
+  for (; i < n; i++)
+  {
+    if ('A' <= a[i] && a[i] <= 'Z')
+      r.push_back(a[i] - 'A' + 'a');
+    else if (a[i] == '[' || a[i] == '{')
+      r.push_back('(');
+    else if (a[i] == ']' || a[i] == '}')
+      r.push_back(')');
+    else if (a[i] == ';')
+      r.push_back(',');
+
+    else if (a[i] == ' ')
+    {
+      r.push_back(' ');
+      for (; i < n; i++)
+        if (a[i] != ' ')
+          break;
+      i--;
+    }
+
+    else
+      r.push_back(a[i]);
+  }
+
+  for (i = 0, n = (int)r.length(); i < n; i++)
+  {
+    if (sp.find(r[i]) != string::npos)
+    {
+      if (i - 1 >= 0)
+      {
+        if (r[i - 1] == ' ')
+          r[i - 1] = '^';
+      }
+
+      if (i + 1 < n)
+      {
+        if (r[i + 1] == ' ')
+          r[i + 1] = '^';
+      }
+    }
+  }
+
+  for (auto c : r)
+    if (c != '^')
+      s.push_back(c);
+
+  return s;
+}
+
+void process(int TC)
+{
+  getline(cin, a), getline(cin, b);
+  a = refine(a), b = refine(b);
+
+  cout << "Data Set " << TC << ": " << ((!a.compare(b)) ? "equal" : "not equal") << "\n\n";
+}
+
+int main()
+{
+  int i, T;
+
+  cin.tie(NULL), cout.tie(NULL);
+  ios_base::sync_with_stdio(false);
+
+  cin >> T;
+  cin.ignore();
+
+  for (i = 1; i <= T; i++)
+    process(i);
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

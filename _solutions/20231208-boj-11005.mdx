@@ -1,0 +1,65 @@
+---
+title: "BOJ 11005 - 진법 변환 2"
+date: "2023-12-08"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "11005"
+problem_url: "https://www.acmicpc.net/problem/11005"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11005 - 진법 변환 2](https://www.acmicpc.net/problem/11005)
+
+10진법 수 N을 B진법으로 변환하여 출력하라. 10 이상의 자릿수는 대문자 알파벳으로 표현한다.
+
+### 입력
+
+N과 B가 공백으로 구분되어 주어진다 (0 이상, 2 이상 36 이하).
+
+### 출력
+
+N을 B진법으로 변환한 결과를 출력한다.
+
+### 예제
+
+| 입력          | 출력    |
+| ------------- | ------- |
+| `60466176 36` | `ZZZZZ` |
+
+## 풀이
+
+Java의 `Integer.toString(n, b)` 내장 메서드를 활용하여 진법 변환 후 대문자로 변환한다.
+
+1. N과 B를 입력받는다
+2. `Integer.toString(n, b)`로 B진법 문자열을 생성한다
+3. `toUpperCase()`로 대문자 변환 후 출력한다
+
+**핵심 아이디어**: Java 표준 라이브러리의 진법 변환 기능을 활용하여 간결하게 해결한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day671BOJ11005진법변환2 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String[] input = br.readLine().split(" ");
+    int n = Integer.parseInt(input[0]);
+    int b = Integer.parseInt(input[1]);
+    System.out.println(Integer.toString(n, b).toUpperCase());
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log N) — N을 B로 나누는 횟수
+- 공간: O(log N) — 변환된 문자열 길이

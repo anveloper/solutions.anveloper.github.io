@@ -1,0 +1,109 @@
+---
+title: "BOJ 5107 - 마니또"
+date: "2025-08-20"
+description: "자료 구조, 그래프 이론, 그래프 탐색 문제"
+tags: ["자료 구조", "그래프 이론", "그래프 탐색", "집합과 맵", "해시를 사용한 집합과 맵", "순열 사이클 분할"]
+platform: "boj"
+problem_number: "5107"
+problem_url: "https://www.acmicpc.net/problem/5107"
+difficulty: "실버 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5107 - 마니또](https://www.acmicpc.net/problem/5107)
+
+N명이 마니또 게임에 참여하여, 각자 한 명의 마니또를 지정받는다. 마니또 관계의 사이클 수를 구하라.
+
+### 입력
+
+여러 테스트 케이스가 주어진다. 각 케이스에 참가자 수 N과 N개의 마니또 쌍이 주어진다. N이 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 케이스 번호와 사이클 수를 출력한다.
+
+### 예제
+
+| 입력                      | 출력  |
+| ------------------------- | ----- |
+| `3` `A B` `B C` `C A` `0` | `1 1` |
+
+## 풀이
+
+마니또 관계를 방향 그래프로 모델링하고, DFS로 순열 사이클의 수를 센다.
+
+1. 각 사람의 마니또를 맵으로 저장한다
+2. 방문하지 않은 사람부터 DFS를 시작하여 이미 방문한 노드에 도달하면 사이클 하나를 발견한 것이다
+3. 모든 사람을 순회하며 사이클 수를 누적한다
+
+**핵심 아이디어**: 각 사람이 정확히 한 명을 가리키는 순열 구조이므로, 반드시 사이클이 형성된다. DFS로 방문 여부를 추적하면 사이클 수를 정확히 셀 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <map>
+using namespace std;
+int N, answer, i;
+map<string, string> m;
+map<string, bool> isVisited;
+
+void dfs(string name)
+{
+  if (isVisited[m[name]])
+  {
+    ++answer;
+  }
+  else
+  {
+    isVisited[m[name]] = true;
+    dfs(m[name]);
+  }
+}
+
+int main()
+{
+  ios::sync_with_stdio(0), cin.tie(0);
+  while (cin >> N)
+  {
+    if (N == 0)
+    {
+      break;
+    }
+
+    answer = 0;
+
+    isVisited.clear();
+    m.clear();
+
+    while (N--)
+    {
+      string name1, name2;
+      cin >> name1 >> name2;
+      m[name1] = name2;
+    }
+
+    for (auto p : m)
+    {
+      if (isVisited[p.first])
+      {
+        continue;
+      }
+
+      dfs(p.first);
+    }
+
+    cout << ++i << " " << answer << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

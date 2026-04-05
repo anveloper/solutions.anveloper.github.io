@@ -1,0 +1,78 @@
+---
+title: "BOJ 2012 - 등수 매기기"
+date: "2023-04-15"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "2012"
+problem_url: "https://www.acmicpc.net/problem/2012"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2012 - 등수 매기기](https://www.acmicpc.net/problem/2012)
+
+N명의 학생이 각자 예상 등수를 제출했을 때, 실제 등수(1~N)를 배정하여 불만도(|예상-실제| 합)를 최소화하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 학생의 예상 등수가 주어진다.
+
+### 출력
+
+최소 불만도를 출력한다.
+
+### 예제
+
+| 입력                    | 출력 |
+| ----------------------- | ---- |
+| `5` `1` `5` `3` `1` `2` | `3`  |
+
+## 풀이
+
+예상 등수를 정렬한 뒤 실제 등수 1~N과 순서대로 매칭하여 차이의 합을 구한다.
+
+1. 예상 등수를 오름차순 정렬한다
+2. 정렬된 i번째 예상 등수에 실제 등수 i를 배정한다
+3. |i - arr[i]|의 합을 구한다
+
+**핵심 아이디어**: 정렬 후 순서대로 매칭하면 교차 매칭보다 항상 불만도가 작거나 같다 (재배열 부등식).
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day434BOJ2012등수매기기 {
+  static int N;
+  static int[] arr;
+  static long ans = 0;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    arr = new int[N + 1];
+    arr[0] = 0;
+    for (int i = 1; i <= N; i++) {
+      arr[i] = Integer.parseInt(br.readLine());
+    }
+    Arrays.sort(arr);
+
+    for (int i = 1; i <= N; i++)
+      ans += Math.abs(i - arr[i]);
+
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

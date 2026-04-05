@@ -1,0 +1,134 @@
+---
+title: "BOJ 10840 - 구간 성분"
+date: "2023-03-29"
+description: "자료 구조, 집합과 맵, 해싱 문제"
+tags: ["자료 구조", "집합과 맵", "해싱"]
+platform: "boj"
+problem_number: "10840"
+problem_url: "https://www.acmicpc.net/problem/10840"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10840 - 구간 성분](https://www.acmicpc.net/problem/10840)
+
+두 문자열이 주어질 때, 각 문자열의 부분 문자열 중 같은 알파벳 구성(아나그램)을 가지는 쌍의 최대 길이를 구하라.
+
+### 입력
+
+두 줄에 걸쳐 소문자로 이루어진 문자열이 주어진다 (길이 1 이상 1500 이하).
+
+### 출력
+
+같은 알파벳 구성을 가지는 부분 문자열 쌍의 최대 길이를 출력한다. 없으면 0을 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `abcabc` `cbacba` | `6`  |
+
+## 풀이
+
+알파벳 빈도를 해시값으로 인코딩하여, 같은 길이의 모든 부분 문자열 쌍을 비교한다.
+
+1. 길이 pSize를 1부터 짧은 문자열 길이까지 증가시킨다
+2. 각 길이에 대해 슬라이딩 윈도우로 해시값을 계산한다: 알파벳 빈도를 31의 거듭제곱으로 인코딩
+3. 윈도우 이동 시: 빠지는 문자의 가중치를 빼고, 들어오는 문자의 가중치를 더한다
+4. 두 문자열의 해시값 집합을 비교하여 교집합이 있으면 해당 길이가 답 후보이다
+
+**핵심 아이디어**: 아나그램은 알파벳 빈도가 같으므로, 빈도를 해시 함수로 인코딩하면 O(1) 비교가 가능하다. 슬라이딩 윈도우로 해시를 점진적으로 갱신한다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day416BOJ10840구간성분 {
+  static final int P = 31;
+  static final int SIZE = 26;
+  static String str1, str2;
+  static long[] pows;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    str1 = br.readLine();
+    str2 = br.readLine();
+    if (str1.length() > str2.length()) {
+      String tmp = str1;
+      str1 = str2;
+      str2 = tmp;
+    }
+
+    pows = new long[SIZE];
+    pows[0] = 1;
+    for (int i = 1; i < SIZE; i++) {
+      pows[i] = P * pows[i - 1];
+    }
+
+    int maxGap = 0;
+    for (int pSize = 1; pSize < str1.length() + 1; pSize++) {
+      Set<Long> setA = new HashSet<>();
+      Set<Long> setB = new HashSet<>();
+
+      boolean isSame = false;
+      long hashA = 0, hashB = 0;
+      for (int j = 0; j < str2.length() - pSize + 1; j++) {
+        if (j == 0) {
+          hashA = hash(str1, pSize);
+          hashB = hash(str2, pSize);
+        } else {
+          if (j + pSize - 1 < str1.length()) {
+            int aIdxLeft = str1.charAt(j - 1) - 'a';
+            int aIdxRight = str1.charAt(j + pSize - 1) - 'a';
+            hashA = j + pSize - 1 < str1.length() ? hashA - pows[aIdxLeft] + pows[aIdxRight] : hashA;
+          }
+
+          int bIdxLeft = str2.charAt(j - 1) - 'a';
+          int bIdxRight = str2.charAt(j + pSize - 1) - 'a';
+          hashB = hashB - pows[bIdxLeft] + pows[bIdxRight];
+        }
+        setA.add(hashA);
+        setB.add(hashB);
+      }
+
+      int sum1 = setA.size() + setB.size();
+      setA.addAll(setB);
+      isSame = sum1 != setA.size();
+
+      if (isSame) {
+        maxGap = pSize;
+      }
+    }
+    bw.write(String.valueOf(maxGap));
+    br.close();
+    bw.close();
+  }
+
+  public static long hash(String str, int end) {
+    int[] table = new int[SIZE];
+    for (int i = 0; i < end; i++) {
+      table[str.charAt(i) - 'a']++;
+    }
+
+    long hash = 0;
+    for (int i = 0; i < SIZE; i++) {
+      hash = hash + table[i] * pows[i];
+    }
+    return hash;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(L1 \* L2) (L1, L2: 두 문자열 길이)
+- 공간: O(L2)

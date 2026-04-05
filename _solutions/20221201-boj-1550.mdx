@@ -1,0 +1,59 @@
+---
+title: "BOJ 1550 - 16진수"
+date: "2022-12-01"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1550"
+problem_url: "https://www.acmicpc.net/problem/1550"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1550 - 16진수](https://www.acmicpc.net/problem/1550)
+
+16진수 문자열이 주어졌을 때, 이를 10진수로 변환하여 출력하라.
+
+### 입력
+
+첫째 줄에 16진수 문자열이 주어진다 (최대 6자리, 대문자).
+
+### 출력
+
+입력된 16진수를 10진수로 변환한 값을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `A`  | `10` |
+
+## 풀이
+
+Java의 `Integer.parseInt(String, int radix)` 메서드를 사용하여 16진수를 10진수로 변환한다.
+
+1. 문자열을 입력받는다
+2. `Integer.parseInt(input, 16)`으로 16진법 파싱하여 10진수 정수로 변환한다
+3. 결과를 출력한다
+
+**핵심 아이디어**: Java 표준 라이브러리의 진법 변환 기능을 활용하면 한 줄로 해결 가능하다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+class Day297BOJ155016진수 {
+	public static void main(String[] z) {
+		System.out.println(Integer.parseInt(new java.util.Scanner(System.in).next(), 16));
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 문자열 길이)
+- 공간: O(1)

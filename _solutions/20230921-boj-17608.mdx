@@ -1,0 +1,79 @@
+---
+title: "BOJ 17608 - 막대기"
+date: "2023-09-21"
+description: "구현, 자료 구조, 스택 문제"
+tags: ["구현", "자료 구조", "스택"]
+platform: "boj"
+problem_number: "17608"
+problem_url: "https://www.acmicpc.net/problem/17608"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17608 - 막대기](https://www.acmicpc.net/problem/17608)
+
+N개의 막대기가 일렬로 세워져 있을 때, 오른쪽에서 보았을 때 보이는 막대기의 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 막대기의 높이가 왼쪽부터 순서대로 주어진다.
+
+### 출력
+
+오른쪽에서 보이는 막대기의 수를 출력한다.
+
+### 예제
+
+| 입력                            | 출력 |
+| ------------------------------- | ---- |
+| `7` `6` `9` `7` `6` `4` `6` `3` | `3`  |
+
+## 풀이
+
+오른쪽 끝부터 왼쪽으로 스캔하며 현재까지의 최대 높이보다 큰 막대를 센다.
+
+1. 가장 오른쪽 막대기를 최댓값으로 초기화하고 카운트를 1로 시작한다
+2. 오른쪽에서 왼쪽으로 순회하며 현재 최댓값보다 큰 막대기가 나오면 카운트를 증가시키고 최댓값을 갱신한다
+
+**핵심 아이디어**: 오른쪽에서 보이려면 자기 오른쪽의 모든 막대보다 높아야 하므로, 오른쪽부터 최댓값을 갱신하며 세면 된다.
+
+## 코드
+
+```java
+package day599;
+
+import java.util.Scanner;
+
+public class Day594BOJ17608막대기 {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    int N = sc.nextInt();
+    int[] arr = new int[N];
+    for (int i = 0; i < arr.length; i++)
+      arr[i] = sc.nextInt();
+
+    int cnt = 1;
+    int max = arr[arr.length - 1];
+
+    for (int i = arr.length - 2; i >= 0; i--) {
+      if (arr[i] > max) {
+        cnt++;
+        max = arr[i];
+      }
+    }
+
+    System.out.println(cnt);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

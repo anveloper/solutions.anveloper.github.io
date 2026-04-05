@@ -1,0 +1,76 @@
+---
+title: "BOJ 4375 - 1"
+date: "2024-01-16"
+description: "수학, 브루트포스 알고리즘, 정수론 문제"
+tags: ["수학", "브루트포스 알고리즘", "정수론"]
+platform: "boj"
+problem_number: "4375"
+problem_url: "https://www.acmicpc.net/problem/4375"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4375 - 1](https://www.acmicpc.net/problem/4375)
+
+2와 5로 나누어지지 않는 자연수 N이 주어질 때, 1로만 이루어진 N의 배수 중 가장 작은 수의 자릿수를 구하라.
+
+### 입력
+
+여러 줄에 걸쳐 자연수 N이 주어진다 (EOF까지).
+
+### 출력
+
+각 N에 대해 답을 한 줄에 출력한다.
+
+### 예제
+
+| 입력           | 출력         |
+| -------------- | ------------ |
+| `3` `7` `9901` | `3` `6` `12` |
+
+## 풀이
+
+1, 11, 111, ... 을 직접 만들지 않고, 모듈러 연산으로 나머지만 추적하여 N의 배수를 찾는다.
+
+1. 나머지 mod를 0으로 초기화하고 자릿수 i를 1부터 증가시킨다
+2. 매 단계 `mod = (mod * 10 + 1) % N`으로 1...1의 나머지를 갱신한다
+3. mod가 0이 되면 해당 자릿수 i를 출력한다
+
+**핵심 아이디어**: Repunit(1이 반복되는 수)을 직접 계산하면 오버플로가 발생하므로, 모듈러 연산으로 나머지만 추적한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.util.*;
+
+public class Day714BOJ4375일 {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    while (sc.hasNextInt()) {
+      int num = sc.nextInt();
+      int mod = 0;
+
+      for (int i = 1;; i++) {
+        mod = (mod * 10 + 1) % num;
+        if (mod == 0) {
+          System.out.println(i);
+          break;
+        }
+      }
+    }
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) - 최대 N번 반복
+- 공간: O(1)

@@ -1,0 +1,74 @@
+---
+title: "BOJ 2963 - 무한 이진 트리 탐색"
+date: "2023-09-28"
+description: "수학, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["수학", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "2963"
+problem_url: "https://www.acmicpc.net/problem/2963"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2963 - 무한 이진 트리 탐색](https://www.acmicpc.net/problem/2963)
+
+10개의 정수가 주어질 때, 3번째로 큰 수를 구하라.
+
+### 입력
+
+여러 테스트 케이스가 주어지며, 각 줄에 10개의 정수가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 3번째로 큰 수를 출력한다.
+
+### 예제
+
+| 입력                                 | 출력 |
+| ------------------------------------ | ---- |
+| `1` `10 20 30 40 50 60 70 80 90 100` | `80` |
+
+## 풀이
+
+10개의 수를 정렬한 뒤 인덱스 7의 값(3번째로 큰 수)을 출력한다.
+
+1. 10개의 정수를 배열에 저장한다
+2. 오름차순 정렬한다
+3. 인덱스 7(뒤에서 3번째)의 값을 출력한다
+
+**핵심 아이디어**: 정렬 후 고정 인덱스로 접근하면 N번째로 큰 수를 바로 구할 수 있다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day601BOJ2963N번째큰수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int t = Integer.parseInt(br.readLine());
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < t; i++) {
+      int[] arr = new int[10];
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      for (int j = 0; j < 10; j++) {
+        arr[j] = Integer.parseInt(st.nextToken());
+      }
+      Arrays.sort(arr);
+      sb.append(arr[7] + "\n");
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T) - T는 테스트 케이스 수, 각 케이스 O(1) (고정 크기 10)
+- 공간: O(1)

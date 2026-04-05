@@ -1,0 +1,89 @@
+---
+title: "BOJ 3062 - 수 뒤집기"
+date: "2024-08-11"
+description: "수를 뒤집어 더한 결과가 회문인지 판별하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "3062"
+problem_url: "https://www.acmicpc.net/problem/3062"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3062 - 수 뒤집기](https://www.acmicpc.net/problem/3062)
+
+주어진 수와 그 수를 뒤집은 수를 더한 결과가 회문(팰린드롬)인지 판별하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T, 이후 T줄에 수가 주어진다.
+
+### 출력
+
+회문이면 YES, 아니면 NO를 출력한다.
+
+### 예제
+
+| 입력           | 출력       |
+| -------------- | ---------- |
+| `2` `12` `171` | `NO` `YES` |
+
+## 풀이
+
+수를 문자열로 다루어 뒤집은 후 합산하고, 결과의 회문 여부를 판별한다.
+
+1. 수를 문자열로 입력받아 정수로 변환한다
+2. 문자열을 뒤집어 정수로 변환한 뒤 원래 수와 더한다
+3. 합을 다시 문자열로 변환하고 앞뒤 대칭을 확인한다
+4. 대칭이면 YES, 아니면 NO를 출력한다
+
+**핵심 아이디어**: 문자열 reverse로 수를 뒤집고, 합산 결과의 양 끝부터 가운데로 문자를 비교하면 회문 판별이 O(D)이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+  int T, numi;
+  string num;
+  bool flag;
+
+  cin >> T;
+  while (T--)
+  {
+    cin >> num;
+    numi = stoi(num);
+    reverse(num.begin(), num.end());
+    numi += stoi(num);
+    num = to_string(numi);
+    flag = true;
+    for (int i = 0; i < num.length() / 2; i++)
+    {
+      if (num[i] != num[num.length() - 1 - i])
+      {
+        flag = false;
+      }
+    }
+    if (flag)
+    {
+      cout << "YES\n";
+    }
+    else
+    {
+      cout << "NO\n";
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* D) (D: 자릿수)
+- 공간: O(D)

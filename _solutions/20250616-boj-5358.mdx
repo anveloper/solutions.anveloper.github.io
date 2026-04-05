@@ -1,0 +1,69 @@
+---
+title: "BOJ 5358 - Football Team"
+date: "2025-06-16"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "5358"
+problem_url: "https://www.acmicpc.net/problem/5358"
+difficulty: "브론즈 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5358 - Football Team](https://www.acmicpc.net/problem/5358)
+
+영어 텍스트에서 `i`와 `e`를 서로 교환하는 문자열 치환 문제다. 소문자 `i`는 `e`로, `e`는 `i`로, 대문자도 동일하게 교환한다. 그 외 문자는 그대로 출력한다.
+
+### 입력
+
+- 여러 줄의 영어 텍스트 (EOF까지)
+
+### 출력
+
+- 각 줄에서 `i`와 `e`가 교환된 결과 출력
+
+### 예제
+
+| 입력    | 출력    |
+| ------- | ------- |
+| `field` | `fiild` |
+| `FIELD` | `FIILD` |
+
+## 풀이
+
+두 문자를 직접 교환하면 이미 바꾼 문자가 다시 치환되는 문제가 생기므로, 임시 문자(`#`)를 활용한 3단계 교환으로 처리한다.
+
+1. EOF까지 각 줄을 읽는다.
+2. `i` → `#` (임시 보관)
+3. `e` → `i`
+4. `#` → `e` (임시 보관된 `i`를 `e`로)
+5. 대문자 `I`, `E`에 대해 동일한 과정 반복
+
+**핵심 아이디어**: `i`를 바로 `e`로 바꾸면, 다음 단계에서 `e` → `i` 치환 시 방금 바꾼 문자까지 다시 변환된다. 임시 문자 `#`을 중간 단계로 사용하면 두 문자를 안전하게 교환할 수 있다.
+
+## 코드
+
+```python
+import sys
+
+for line in sys.stdin:
+    line = line.rstrip()
+
+    line = line.replace("i", "#")
+    line = line.replace("e", "i")
+    line = line.replace("#", "e")
+
+    line = line.replace("I", "#")
+    line = line.replace("E", "I")
+    line = line.replace("#", "E")
+
+    print(line)
+```
+
+## 복잡도
+
+- 시간: O(L) — 입력 전체 문자 수 L에 대해 선형 처리
+- 공간: O(L) — 치환된 문자열 저장

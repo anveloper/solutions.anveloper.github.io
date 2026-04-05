@@ -1,0 +1,129 @@
+---
+title: "BOJ 4993 - Red and Black"
+date: "2025-12-01"
+description: "너비 우선 탐색, 깊이 우선 탐색, 그래프 이론 문제"
+tags: ["너비 우선 탐색", "깊이 우선 탐색", "그래프 이론", "그래프 탐색"]
+platform: "boj"
+problem_number: "4993"
+problem_url: "https://www.acmicpc.net/problem/4993"
+difficulty: "실버 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4993 - Red and Black](https://www.acmicpc.net/problem/4993)
+
+W x H 격자에서 `@` 위치에서 출발하여 상하좌우로 이동할 수 있는 검은 타일(`.`)의 수를 구하라. 빨간 타일(`#`)은 이동 불가이다.
+
+### 입력
+
+여러 테스트 케이스에 W, H와 격자가 주어지며, W와 H가 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 도달 가능한 타일 수를 출력한다.
+
+### 예제
+
+| 입력                                   | 출력 |
+| -------------------------------------- | ---- |
+| `6 9` `....#.` `...@..` `......` `0 0` | `45` |
+
+## 풀이
+
+시작 위치에서 BFS로 이동 가능한 모든 타일을 탐색하여 개수를 센다.
+
+1. 격자를 입력받으며 `@` 위치를 시작점으로 기록한다
+2. BFS로 상하좌우 인접한 `#`이 아닌 타일을 방문한다
+3. 방문한 타일 수를 카운트하여 출력한다
+
+**핵심 아이디어**: 시작점에서의 flood fill로, BFS/DFS 어느 것이든 연결된 영역의 크기를 구할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <queue>
+#include <cstring>
+using namespace std;
+
+int W, H;
+char grid[21][21];
+bool visited[21][21];
+
+// 상하좌우 이동
+int dx[] = {-1, 1, 0, 0};
+int dy[] = {0, 0, -1, 1};
+
+int bfs(int startX, int startY)
+{
+  queue<pair<int, int>> q;
+  q.push({startX, startY});
+  visited[startX][startY] = true;
+  int count = 1;
+
+  while (!q.empty())
+  {
+    int x = q.front().first;
+    int y = q.front().second;
+    q.pop();
+
+    for (int i = 0; i < 4; i++)
+    {
+      int nx = x + dx[i];
+      int ny = y + dy[i];
+
+      // 범위 체크 및 방문 가능 여부 확인
+      if (nx >= 0 && nx < H && ny >= 0 && ny < W &&
+          !visited[nx][ny] && grid[nx][ny] != '#')
+      {
+        visited[nx][ny] = true;
+        q.push({nx, ny});
+        count++;
+      }
+    }
+  }
+
+  return count;
+}
+
+int main()
+{
+  while (true)
+  {
+    cin >> W >> H;
+
+    if (W == 0 && H == 0)
+      break;
+
+    memset(visited, false, sizeof(visited));
+
+    int startX, startY;
+
+    // 그리드 입력 및 시작 위치 찾기
+    for (int i = 0; i < H; i++)
+    {
+      for (int j = 0; j < W; j++)
+      {
+        cin >> grid[i][j];
+        if (grid[i][j] == '@')
+        {
+          startX = i;
+          startY = j;
+        }
+      }
+    }
+
+    cout << bfs(startX, startY) << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(W \* H)
+- 공간: O(W \* H)

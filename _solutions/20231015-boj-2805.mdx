@@ -1,0 +1,98 @@
+---
+title: "BOJ 2805 - 나무 자르기"
+date: "2023-10-15"
+description: "이분 탐색, 매개 변수 탐색 문제"
+tags: ["이분 탐색", "매개 변수 탐색"]
+platform: "boj"
+problem_number: "2805"
+problem_url: "https://www.acmicpc.net/problem/2805"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2805 - 나무 자르기](https://www.acmicpc.net/problem/2805)
+
+N개의 나무를 높이 H에서 잘라 M미터 이상의 나무를 가져가려 한다. 절단기 높이 H의 최댓값을 구하라.
+
+### 입력
+
+첫째 줄에 N과 M, 둘째 줄에 N개의 나무 높이가 주어진다.
+
+### 출력
+
+절단기 높이의 최댓값을 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `4 7` `20 15 10 17` | `15` |
+
+## 풀이
+
+이분 탐색으로 절단 높이를 탐색하며, 해당 높이에서 얻는 나무 양이 M 이상인 최대 높이를 찾는다.
+
+1. 절단 높이의 범위를 0 ~ 최대 나무 높이로 설정한다
+2. 중간값(mid)으로 잘랐을 때 얻는 나무의 합을 계산한다
+3. 합이 M 미만이면 높이를 낮추고(max = mid), M 이상이면 높이를 올린다(min = mid + 1)
+4. min - 1이 답이다
+
+**핵심 아이디어**: 절단 높이가 높아질수록 얻는 나무가 줄어드는 단조 감소 관계이므로 이분 탐색이 가능하다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day618BOJ2805나무자르기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+    int N = Integer.parseInt(st.nextToken());
+    int M = Integer.parseInt(st.nextToken());
+
+    int[] tree = new int[N];
+
+    int min = 0;
+    int max = 0;
+
+    st = new StringTokenizer(br.readLine(), " ");
+    for (int i = 0; i < N; i++) {
+      tree[i] = Integer.parseInt(st.nextToken());
+      if (max < tree[i])
+        max = tree[i];
+    }
+
+    while (min < max) {
+      int mid = (min + max) / 2;
+      long sum = 0;
+      for (int treeHeight : tree) {
+        if (treeHeight - mid > 0) {
+          sum += (treeHeight - mid);
+        }
+      }
+
+      if (sum < M) {
+        max = mid;
+      }
+
+      else {
+        min = mid + 1;
+      }
+    }
+    System.out.println(min - 1);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log X)
+- 공간: O(N)

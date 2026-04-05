@@ -1,0 +1,71 @@
+---
+title: "BOJ 11365 - !밀비 급일"
+date: "2024-10-12"
+description: "문자열을 뒤집어 출력하는 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "11365"
+problem_url: "https://www.acmicpc.net/problem/11365"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11365 - !밀비 급일](https://www.acmicpc.net/problem/11365)
+
+암호화된 문자열이 주어질 때, 뒤집어서 원래 문장을 복원하라. "END"가 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 문자열이 주어진다. "END"가 입력되면 종료한다.
+
+### 출력
+
+각 문자열을 뒤집어 출력한다.
+
+### 예제
+
+| 입력               | 출력         |
+| ------------------ | ------------ |
+| `!edoc doog` `END` | `good code!` |
+
+## 풀이
+
+각 줄을 역순으로 출력한다.
+
+1. `getline`으로 한 줄씩 읽는다
+2. "END"이면 종료한다
+3. 문자열 끝에서부터 처음까지 역순으로 각 문자를 출력한다
+
+**핵심 아이디어**: 인덱스를 역순으로 순회하여 O(L)에 문자열을 뒤집는다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  while (1)
+  {
+    string s;
+    getline(cin, s);
+    if (s == "END")
+      break;
+    for (int i = s.length() - 1; i >= 0; i--)
+    {
+      cout << s[i];
+    }
+    cout << endl;
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (N: 줄 수, L: 문자열 길이)
+- 공간: O(L)

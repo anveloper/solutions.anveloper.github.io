@@ -1,0 +1,159 @@
+---
+title: "BOJ 9370 - 미확인 도착지"
+date: "2022-04-17"
+description: "그래프 이론, 최단 경로, 데이크스트라 문제"
+tags: ["그래프 이론", "최단 경로", "데이크스트라"]
+platform: "boj"
+problem_number: "9370"
+problem_url: "https://www.acmicpc.net/problem/9370"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9370 - 미확인 도착지](https://www.acmicpc.net/problem/9370)
+
+N개의 교차점과 M개의 양방향 도로가 있는 그래프에서, 목격자는 누군가가 출발지 S에서 교차점 G와 H 사이의 도로(G-H 간선)를 반드시 통과했다고 제보했다. T개의 후보 도착지 중에서 G-H 간선을 반드시 지나는 최단 경로로 도달 가능한 곳을 모두 구하는 문제다.
+
+### 입력
+
+- 첫째 줄: 테스트 케이스 수
+- 각 테스트 케이스 첫째 줄: 교차점 수 N, 도로 수 M, 후보 도착지 수 T
+- 다음 줄: 출발지 S, 필수 경유 교차점 G, H
+- 다음 M개의 줄: 도로 정보 `s e d` (s와 e를 잇는 가중치 d의 양방향 도로)
+- 다음 T개의 줄: 후보 도착지 번호
+
+### 출력
+
+각 테스트 케이스마다 조건을 만족하는 후보 도착지를 오름차순으로 출력한다.
+
+### 예제
+
+| 입력                                                                                                                  | 출력      |
+| --------------------------------------------------------------------------------------------------------------------- | --------- |
+| `2` `5 4 2` `1 2 3` `1 2 6` `2 3 4` `2 4 4` `3 5 1` `4 5` `3 4 7` `1 2 1` `1 3 1` `2 4 1` `3 4 1` `4 5 1` `4 5 2` `5` | `4 5` `5` |
+
+## 풀이
+
+후보 도착지 D가 G-H 간선을 반드시 통과하는지 확인하려면, `S -> G -> H -> D` 또는 `S -> H -> G -> D`의 경로 길이가 `S -> D`의 최단 경로와 같은지 비교한다. 각 경우를 다익스트라로 계산한다.
+
+1. 각 테스트 케이스마다 인접 리스트를 구성하고 출발지 S, 경유 노드 G, H를 입력받는다.
+2. 각 후보 도착지 D에 대해 다음 세 값을 다익스트라로 계산한다:
+   - `dijkstra(S, D)`: 직접 최단 경로
+   - `dijkstra(S, G) + dijkstra(G, H) + dijkstra(H, D)`: G를 먼저 경유하는 경로
+   - `dijkstra(S, H) + dijkstra(H, G) + dijkstra(G, D)`: H를 먼저 경유하는 경로
+3. 두 경유 경로 중 최솟값과 직접 최단 경로가 같으면, D는 G-H 간선을 통과하는 최단 경로로 도달 가능하다.
+4. 조건을 만족하는 D를 우선순위 큐에 모아 오름차순으로 출력한다.
+
+**핵심 아이디어**: G-H 구간을 통과하는 최단 경로는 `S->G->H->D` 또는 `S->H->G->D` 둘 중 하나다. 이 두 값 중 작은 것이 S에서 D까지의 전체 최단 거리와 같을 때만, D가 G-H 간선을 반드시 지나는 경로로 도달 가능하다고 판단할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+public class Day69BOJ9370미확인도착지Dijkstra고정간선 {
+	static final int INF = 1 << 30;
+	static int N, M, T;
+	static int S, G, H;
+	static int[] des, d;
+	static List<int[]>[] list;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		StringBuilder sb = new StringBuilder();
+		PriorityQueue<Integer> pq;
+
+		int TC = Integer.parseInt(br.readLine());
+
+		for (int tc = 1; tc <= TC; tc++) {
+			st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			M = Integer.parseInt(st.nextToken());
+			T = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(br.readLine());
+			S = Integer.parseInt(st.nextToken());
+			G = Integer.parseInt(st.nextToken());
+			H = Integer.parseInt(st.nextToken());
+
+			list = new ArrayList[N + 1];
+			des = new int[T];
+
+			for (int i = 1; i < N + 1; i++)
+				list[i] = new ArrayList<>();
+
+			for (int i = 0; i < M; i++) {
+				st = new StringTokenizer(br.readLine());
+				int s = Integer.parseInt(st.nextToken());
+				int e = Integer.parseInt(st.nextToken());
+				int d = Integer.parseInt(st.nextToken());
+				list[s].add(new int[] { e, d });
+				list[e].add(new int[] { s, d });
+			}
+
+			for (int i = 0; i < T; i++) {
+				des[i] = Integer.parseInt(br.readLine());
+			}
+
+			pq = new PriorityQueue<>();
+
+			for (int D : des) {
+				long res1 = dijkstra(S, G) + dijkstra(G, H) + dijkstra(H, D);
+				long res2 = dijkstra(S, H) + dijkstra(H, G) + dijkstra(G, D);
+				long res = dijkstra(S, D); // G -> H, H -> G 경우와 최소 간선을 비교
+				if (res == Math.min(res1, res2)) // 이부분 구선생님
+					pq.add(D);
+			}
+
+			while (!pq.isEmpty()) {
+				sb.append(pq.poll()).append(" ");
+			}
+			sb.append("\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static int dijkstra(int st, int ed) {
+		d = new int[N + 1];
+		Arrays.fill(d, INF);
+		PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> (o1[1] - o2[1]));
+
+		pq.add(new int[] { st, 0 });
+		d[st] = 0;
+		while (!pq.isEmpty()) {
+			int[] a = pq.poll();
+			int curr = a[0];
+			int dist = a[1];
+
+			if (d[curr] < dist)
+				continue;
+			for (int i = 0; i < list[curr].size(); i++) {
+				int idx = list[curr].get(i)[0];
+				int cost = d[curr] + list[curr].get(i)[1];
+				if (cost < d[idx]) {
+					d[list[curr].get(i)[0]] = cost;
+					pq.add(new int[] { idx, cost });
+				}
+			}
+		}
+		return d[ed]; // 최종 도착지에 누적합 반환
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* (V + E) log V) — 후보 도착지 T개마다 최대 5번의 다익스트라 수행
+- 공간: O(V + E) — 인접 리스트와 거리 배열

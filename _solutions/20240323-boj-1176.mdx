@@ -1,0 +1,119 @@
+---
+title: "BOJ 1176 - 섞기"
+date: "2024-03-23"
+description: "다이나믹 프로그래밍, 비트마스킹, 비트필드를 이용한 다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍", "비트마스킹", "비트필드를 이용한 다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "1176"
+problem_url: "https://www.acmicpc.net/problem/1176"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1176 - 섞기](https://www.acmicpc.net/problem/1176)
+
+N명의 사람을 한 줄로 세울 때, 인접한 두 사람의 키 차이가 K보다 큰 경우의 수를 구하라.
+
+### 입력
+
+첫째 줄에 N과 K, 이후 N줄에 각 사람의 키가 주어진다.
+
+### 출력
+
+조건을 만족하는 순열의 수를 출력한다.
+
+### 예제
+
+| 입력                    | 출력 |
+| ----------------------- | ---- |
+| `4 3` `1` `5` `10` `15` | `4`  |
+
+## 풀이
+
+비트마스크 DP로 사용한 사람 집합과 마지막 사람을 상태로 관리한다.
+
+1. `memo[used][last]`: 사용 집합이 used이고 마지막이 last인 순열의 수
+2. 각 사람을 시작점으로 DFS를 수행한다
+3. 아직 사용하지 않은 사람 중 마지막 사람과의 키 차이가 K보다 큰 사람을 다음에 배치한다
+4. 모든 사람이 배치되면(used == 2^N - 1) 1을 반환한다
+5. 비트 연산으로 사용 가능한 사람을 빠르게 순회한다
+
+**핵심 아이디어**: N이 최대 16이므로 2^16 \* 16 = 약 100만 개의 상태를 메모이제이션하여 효율적으로 풀 수 있다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day781BOJ1176섞기 {
+  static int N, M, K;
+  static int[] height;
+  static long[][] memo;
+  static Map<Integer, Integer> map;
+
+  public static void main(String[] args) throws Exception {
+
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    K = Integer.parseInt(st.nextToken());
+    M = 1 << N;
+
+    height = new int[M];
+
+    for (int i = 0; i < N; i++) {
+      height[1 << i] = Integer.parseInt(br.readLine());
+    }
+
+    map = new HashMap<>();
+    for (int i = 0; i < N; i++)
+      map.put(1 << i, i);
+
+    memo = new long[M][N];
+
+    long ans = 0;
+
+    for (int i = 0; i < N; i++) {
+      ans += dfs(1 << i, 1 << i, i);
+    }
+
+    System.out.println(ans);
+  }
+
+  static long dfs(int used, int last, int i) {
+
+    if (used == M - 1)
+      return 1;
+
+    if (memo[used][i] > 0)
+      return memo[used][i];
+
+    int able = (M - 1) & ~used;
+
+    long res = 0;
+
+    while (able > 0) {
+      int p = able & -able;
+      able -= p;
+
+      if (Math.abs(height[last] - height[p]) > K)
+        res += dfs(used | p, p, map.get(p));
+    }
+
+    return memo[used][i] = res;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N × 2^N)
+- 공간: O(N × 2^N)

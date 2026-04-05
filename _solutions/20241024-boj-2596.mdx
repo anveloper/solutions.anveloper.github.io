@@ -1,0 +1,93 @@
+---
+title: "BOJ 2596 - 비밀편지"
+date: "2024-10-24"
+description: "6비트 코드를 문자로 변환하되 오류를 감지하는 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2596"
+problem_url: "https://www.acmicpc.net/problem/2596"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2596 - 비밀편지](https://www.acmicpc.net/problem/2596)
+
+6비트 단위로 인코딩된 문자열이 주어질 때, 미리 정의된 8개 문자(A~H) 패턴과 비교하여 복호화하라. 최대 1비트 오류까지 복원 가능하고, 2비트 이상 차이나면 오류 위치를 출력한다.
+
+### 입력
+
+문자 개수 N과 6\*N 길이의 0/1 문자열이 주어진다.
+
+### 출력
+
+복호화 성공 시 문자열, 실패 시 오류 위치(1-based)를 출력한다.
+
+### 예제
+
+| 입력                           | 출력   |
+| ------------------------------ | ------ |
+| `4` `011100010011100110111010` | `DBCA` |
+
+## 풀이
+
+6비트씩 끊어 8개 패턴과 비트 차이를 비교한다.
+
+1. 8개의 6비트 패턴(A~H)을 미리 정의한다
+2. 입력을 6비트씩 끊어 각 패턴과 비트 차이를 계산한다
+3. 차이가 1 이하인 패턴을 찾으면 해당 문자로 변환한다
+4. 모든 패턴과 2비트 이상 차이나면 해당 위치를 출력하고 종료한다
+
+**핵심 아이디어**: 해밍 거리 1 이하 오류 복원이 가능하므로, 8개 패턴 모두와 비교하여 가장 가까운 것을 선택한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+int N;
+string s, sen[] = {"000000", "001111", "010011", "011100", "100110", "101001", "110101", "111010"};
+int cmp(string v, int i)
+{
+  int ret = 0;
+  for (int j = 0; j < 6; j++)
+  {
+    if (sen[i][j] != v[j])
+      ret++;
+  }
+  return ret;
+}
+int main()
+{
+  cin >> N >> s;
+  string ans;
+  for (int i = 0; i < N; i++)
+  {
+    string t = s.substr(i * 6, 6);
+    bool ok = 0;
+    for (int j = 0; j < 8; j++)
+    {
+      if (cmp(t, j) <= 1)
+      {
+        ok = 1;
+        ans += ('A' + j);
+        break;
+      }
+    }
+    if (!ok)
+    {
+      cout << i + 1;
+      return 0;
+    }
+  }
+  cout << ans;
+}
+```
+
+## 복잡도
+
+- 시간: O(N _ 8 _ 6) = O(N)
+- 공간: O(N)

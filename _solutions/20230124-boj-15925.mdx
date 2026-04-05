@@ -1,0 +1,119 @@
+---
+title: "BOJ 15925 - 욱제는 정치쟁이야!!"
+date: "2023-01-24"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "15925"
+problem_url: "https://www.acmicpc.net/problem/15925"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15925 - 욱제는 정치쟁이야!!](https://www.acmicpc.net/problem/15925)
+
+N x N 격자에 0과 1이 있을 때, 한 행이나 열에서 특정 값 S가 과반수이면 나머지를 S로 변환할 수 있다. 이 과정을 반복하여 전체를 S로 만들 수 있는지 판별하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 2000), S (0 또는 1), 이후 N줄에 N x N 격자가 주어진다.
+
+### 출력
+
+전체를 S로 만들 수 있으면 1, 아니면 0을 출력한다.
+
+### 예제
+
+| 입력                          | 출력 |
+| ----------------------------- | ---- |
+| `3 1` `1 0 1` `0 1 0` `1 0 1` | `1`  |
+
+## 풀이
+
+행/열별로 S의 개수가 과반수인 곳을 찾아 전파하는 과정을 변화가 없을 때까지 반복한다.
+
+1. 각 행과 열에서 S의 개수를 미리 세어 varr(행), harr(열) 배열에 저장한다
+2. 행에서 S가 과반수(`> N/2`)이지만 아직 전체가 아닌 경우, 해당 행의 모든 칸을 S로 변환하고 관련 열 카운트를 갱신한다
+3. 열에 대해서도 동일하게 처리한다
+4. 변화가 없을 때까지 반복한 후, 모든 행과 열의 카운트가 N이면 성공
+
+**핵심 아이디어**: 과반수 전파는 연쇄적으로 일어날 수 있으므로, 더 이상 변화가 없을 때까지 반복해야 한다. 행과 열의 카운트를 별도로 관리하여 효율적으로 갱신한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day351BOJ15925정치쟁이 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int s = Integer.parseInt(st.nextToken());
+        int[] varr = new int[n];
+        int[] harr = new int[n];
+        int[][] arr = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = Integer.parseInt(st.nextToken());
+                if (arr[i][j] != s)
+                    continue;
+                varr[i]++;
+                harr[j]++;
+            }
+        }
+        boolean flag = true;
+        while (flag) {
+            flag = false;
+            for (int i = 0; i < n; i++) {
+                if (varr[i] < n && varr[i] > n / 2) {
+                    for (int j = 0; j < n; j++) {
+                        if (arr[i][j] == s)
+                            continue;
+                        arr[i][j] = s;
+                        harr[j]++;
+                    }
+                    varr[i] = n;
+                    if (!flag)
+                        flag = true;
+                }
+
+                if (harr[i] < n && harr[i] > n / 2) {
+                    for (int j = 0; j < n; j++) {
+                        if (arr[j][i] == s)
+                            continue;
+                        arr[j][i] = s;
+                        varr[j]++;
+                    }
+                    harr[i] = n;
+                    if (!flag)
+                        flag = true;
+                }
+            }
+        }
+        flag = false;
+        for (int i = 0; i < n; i++) {
+            if (varr[i] != n || harr[i] != n) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag)
+            System.out.println(0);
+        else
+            System.out.println(1);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N³) (최악의 경우 N번 반복 \* N² 순회)
+- 공간: O(N²)

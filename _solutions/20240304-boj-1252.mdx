@@ -1,0 +1,76 @@
+---
+title: "BOJ 1252 - 이진수 덧셈"
+date: "2024-03-04"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "1252"
+problem_url: "https://www.acmicpc.net/problem/1252"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1252 - 이진수 덧셈](https://www.acmicpc.net/problem/1252)
+
+두 이진수가 주어질 때, 이들의 합을 이진수로 출력하라. 선행 0은 제거한다.
+
+### 입력
+
+한 줄에 두 이진수가 공백으로 주어진다 (각각 최대 80자리).
+
+### 출력
+
+두 이진수의 합을 이진수로 출력한다.
+
+### 예제
+
+| 입력            | 출력      |
+| --------------- | --------- |
+| `1001101 10010` | `1011111` |
+
+## 풀이
+
+BigInteger를 활용하여 이진수 문자열을 정수로 변환한 뒤 덧셈하고, 다시 이진수 문자열로 출력한다.
+
+1. 두 이진수 문자열을 `BigInteger(str, 2)`로 파싱하여 정수로 변환한다
+2. `add()`로 두 정수를 더한다
+3. `toString(2)`로 결과를 이진수 문자열로 변환하여 출력한다
+
+**핵심 아이디어**: 최대 80자리 이진수는 `long` 범위를 초과할 수 있으므로 BigInteger를 사용하며, 진법 변환 기능을 활용하면 간결하게 해결된다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+import java.math.BigInteger;
+
+public class Day762BOJ1252이진수덧셈 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    String A = st.nextToken();
+    String B = st.nextToken();
+
+    BigInteger A_binary = new BigInteger(A, 2);
+    BigInteger B_binary = new BigInteger(B, 2);
+
+    BigInteger sum = A_binary.add(B_binary);
+
+    String sum_binary = sum.toString(2);
+
+    System.out.println(sum_binary);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

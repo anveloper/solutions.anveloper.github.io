@@ -1,0 +1,106 @@
+---
+title: "BOJ 10026 - 적록색약"
+date: "2022-05-19"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "10026"
+problem_url: "https://www.acmicpc.net/problem/10026"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10026 - 적록색약](https://www.acmicpc.net/problem/10026)
+
+N×N 격자에 R(빨강), G(초록), B(파랑)으로 칠해진 구역이 있다. 일반인은 세 색을 모두 구분하지만, 적록색약자는 R과 G를 같은 색으로 인식한다. 각각의 경우에 몇 개의 구역이 있는지 출력하는 문제이다. 구역은 상하좌우로 연결된 같은 색의 칸들의 집합이다.
+
+### 입력
+
+- 첫째 줄: N (1 이상 100 이하)
+- 다음 N줄: N개의 문자 (R, G, B)
+
+### 출력
+
+- 일반인이 보는 구역 수와 적록색약자가 보는 구역 수를 공백으로 구분하여 출력
+
+### 예제
+
+| 입력                                        | 출력  |
+| ------------------------------------------- | ----- |
+| `5` `RRRBB` `GGBBB` `BBBRR` `BBRRR` `RRRRR` | `4 3` |
+
+## 풀이
+
+DFS로 연결된 동일 색 구역을 탐색한다. 일반인과 적록색약 두 가지 경우를 k=0, k=1로 분리하여 한 번의 탐색으로 처리한다.
+
+1. 방문 배열을 `visit[2][N][N]`으로 선언하여 두 케이스를 동시에 관리한다.
+2. k=0(일반인)과 k=1(적록색약) 두 번 전체 격자를 순회한다.
+3. 방문하지 않은 칸에서 DFS를 시작하여 같은 색으로 연결된 칸을 모두 방문 처리한다.
+4. k=1(적록색약) 처리 시에는 G를 R로 변환(`map[i][j] == 'G'` 이면 `'R'`로 교체)하여 탐색한다.
+5. 각 케이스별로 DFS 시작 횟수가 곧 구역의 수가 된다.
+
+**핵심 아이디어**: 적록색약 처리를 위해 G를 R로 일괄 변환하는 방식을 사용한다. k=0 탐색이 끝난 후 map에서 G를 R로 바꾸면 k=1 탐색 시 자동으로 적록색약 시각이 적용된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day101BOJ10026적록색약DFS {
+	static int N;
+	static int[] ans, dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+	static boolean[][][] visit;
+	static char[][] map;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		ans = new int[2];
+		visit = new boolean[2][N][N];
+
+		map = new char[N][];
+		for (int i = 0; i < N; i++)
+			map[i] = br.readLine().toCharArray();
+
+		for (int k = 0; k < 2; k++)
+			for (int i = 0; i < N; i++)
+				for (int j = 0; j < N; j++) {
+					if (!visit[k][i][j]) {
+						dfs(i, j, k, map[i][j]);
+						ans[k]++;
+					}
+					if (map[i][j] == 'G')
+						map[i][j] = 'R';
+				}
+
+		System.out.println(ans[0] + " " + ans[1]);
+		br.close();
+	}
+
+	private static void dfs(int r, int c, int k, int cl) {
+		visit[k][r][c] = true;
+		for (int i = 0; i < 4; i++) {
+			int nr = r + dr[i];
+			int nc = c + dc[i];
+			if (index(nr, nc) || visit[k][nr][nc] || map[nr][nc] != cl)
+				continue;
+			dfs(nr, nc, k, cl);
+		}
+	}
+
+	private static boolean index(int r, int c) {
+		return r < 0 || c < 0 || r >= N || c >= N;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N²)

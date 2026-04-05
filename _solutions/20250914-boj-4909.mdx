@@ -1,0 +1,94 @@
+---
+title: "BOJ 4909 - Judging Olympia"
+date: "2025-09-14"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "4909"
+problem_url: "https://www.acmicpc.net/problem/4909"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4909 - Judging Olympia](https://www.acmicpc.net/problem/4909)
+
+올림피아드 심사에서 6명의 심사위원이 점수를 제출한다. 공정성을 위해 최고점과 최저점을 하나씩 제외하고 나머지 4개 점수의 평균을 구한다. 모든 점수가 0이면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 6개 정수가 주어진다. 6개 모두 0이면 종료한다.
+
+```
+9 8 7 6 5 4
+0 0 0 0 0 0
+```
+
+### 출력
+
+각 테스트 케이스마다 최고점과 최저점을 제외한 4개 점수의 평균을 출력한다.
+
+```
+6.5
+```
+
+### 예제
+
+| 입력                | 출력   |
+| ------------------- | ------ |
+| `9 8 7 6 5 4`       | `6.5`  |
+| `10 10 10 10 10 10` | `10`   |
+| `0 0 0 0 0 0`       | (종료) |
+
+## 풀이
+
+6개 점수를 읽어 정렬한 뒤 양 끝 값을 제외한 중간 4개의 평균을 계산한다.
+
+1. 6개 점수를 입력받아 모두 0이면 종료한다.
+2. 6개 점수를 오름차순으로 정렬한다.
+3. 인덱스 1~4(최솟값과 최댓값을 제외한 4개)의 합을 계산한다.
+4. 합을 4로 나누어 평균을 출력한다.
+
+**핵심 아이디어**: 최고점과 최저점 제거는 정렬 후 양 끝 원소를 건너뛰는 것으로 O(1) 처리된다. 점수 수가 고정(6개)이므로 정렬 비용도 O(6 log 6) = O(1)로 상수 시간이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int grades[6];
+
+bool isAllZero()
+{
+  for (int i = 0; i < 6; i++)
+    if (grades[i])
+      return false;
+  return true;
+}
+
+int main()
+{
+  while (1)
+  {
+    for (int i = 0; i < 6; i++)
+      cin >> grades[i];
+    if (isAllZero())
+      break;
+    sort(grades, grades + 6);
+    double sum = 0;
+    for (int i = 1; i < 5; i++)
+      sum += grades[i];
+    cout << sum / 4 << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(Q \* 6 log 6) = O(Q) — Q는 테스트 케이스 수, 각 케이스마다 상수 시간 정렬
+- 공간: O(1) — 고정 크기 배열 사용

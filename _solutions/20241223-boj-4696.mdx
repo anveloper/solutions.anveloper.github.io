@@ -1,0 +1,65 @@
+---
+title: "BOJ 4696 - St. Ives"
+date: "2024-12-23"
+description: "등비급수를 이용해 전체 합을 구하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "4696"
+problem_url: "https://www.acmicpc.net/problem/4696"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4696 - St. Ives](https://www.acmicpc.net/problem/4696)
+
+주어진 수 a에 대해 `1 + a + a^2 + a^3 + a^4`를 계산하여 출력하라.
+
+### 입력
+
+실수 a가 여러 줄에 주어지며, 0이 입력되면 종료한다.
+
+### 출력
+
+각 a에 대해 등비급수 합을 소수점 둘째 자리까지 출력한다.
+
+### 예제
+
+| 입력  | 출력    |
+| ----- | ------- |
+| `2 0` | `31.00` |
+
+## 풀이
+
+등비급수의 처음 5항을 합산한다.
+
+1. `1 + a + a^2 + a^3 + a^4`를 `pow` 함수로 계산한다
+2. 소수점 둘째 자리까지 `printf("%.2f")`로 출력한다
+3. 0이 입력되면 종료한다
+
+**핵심 아이디어**: 공비 a인 등비급수의 처음 5항 합을 직접 계산한다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+double a;
+int main()
+{
+  while (1)
+  {
+    cin >> a;
+    if (a == 0)
+      break;
+    printf("%.2f\n", 1 + a + pow(a, 2) + pow(a, 3) + pow(a, 4));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

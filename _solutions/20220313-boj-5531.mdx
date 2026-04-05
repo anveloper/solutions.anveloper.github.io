@@ -1,0 +1,119 @@
+---
+title: "BOJ 5531 - 버블 정렬"
+date: "2022-03-13"
+description: "다이나믹 프로그래밍, 자료 구조, 세그먼트 트리 문제"
+tags:
+  [
+    "다이나믹 프로그래밍",
+    "자료 구조",
+    "세그먼트 트리",
+    "스위핑",
+    "분할 정복",
+    "느리게 갱신되는 세그먼트 트리",
+    "퍼시스턴트 세그먼트 트리",
+    "분할 정복을 사용한 최적화",
+  ]
+platform: "boj"
+problem_number: "5531"
+problem_url: "https://www.acmicpc.net/problem/5531"
+difficulty: "다이아몬드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5531 - 버블 정렬](https://www.acmicpc.net/problem/5531)
+
+N개의 정수 배열이 주어질 때, 원소 두 개를 먼저 교환한 뒤 버블 정렬을 수행했을 때 교환 횟수가 최소가 되도록 하는 문제이다. 사전에 두 원소를 교환하거나 교환하지 않을 수 있다. 다이아몬드 II 난이도로, 올바른 풀이는 세그먼트 트리 + 분할 정복 최적화를 요구한다.
+
+### 입력
+
+첫째 줄에 N (1 이상 1,000 이하)이 주어진다. 다음 N개의 줄에 정수가 한 줄에 하나씩 주어진다.
+
+### 출력
+
+사전 교환 후 버블 정렬을 수행했을 때 최소 교환 횟수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `3` `3` `1` `2` | `1`  |
+
+## 풀이
+
+이 코드는 O(N⁴)의 브루트포스로 모든 스왑 쌍을 시도하여 시간 초과가 발생한다(클래스명에 `notClear` 명시). 실제 AC를 위해서는 버블 정렬 교환 횟수가 역순 쌍(inversion) 수와 동일함을 이용해야 한다.
+
+1. `minSwapCntArr()`에서 모든 인덱스 쌍 (i, j)를 이중 루프로 탐색한다.
+2. 원본 배열의 복사본에서 arr[i]와 arr[j]를 교환한 뒤 `bubble_sort()`로 정렬한다.
+3. 정렬 과정에서의 교환 횟수를 반환받아 최솟값을 갱신한다.
+4. 모든 쌍을 시도한 후 최솟값을 출력한다.
+
+**핵심 아이디어 (올바른 풀이):** 버블 정렬의 교환 횟수는 배열의 역순 쌍(inversion) 수와 일치한다. 두 원소를 교환하면 인접한 인버전이 변화하므로, 세그먼트 트리로 인버전 수를 관리하고 분할 정복 최적화로 최적 교환 쌍을 구한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day02BOJ5531notClear버블정렬 { // 4년전 문제인데, 자바로 맞은사람이 없는 문제... 1/3이 시간초과...나도...
+	public static void main(String[] args) throws Exception{ // 5531 버블 정렬
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(br.readLine());
+		}
+//		int cnt = bubble_sort(arr, N);
+//		System.out.println("정렬된 배열 : " + Arrays.toString(arr) + " 변경된 횟수 : " + cnt);
+		System.out.println(minSwapCntArr(arr, N));
+		br.close();
+	}
+
+	public static int bubble_sort(int[] arr, int n) {
+		int i, j;
+		int result = 0;
+		for (i = 0; i < n - 1; ++i) {
+			for (j = 0; j < n - 1; ++j) {
+				if (arr[j] > arr[j + 1]) {
+					int temp = arr[j];
+					arr[j] = arr[j + 1];
+					arr[j + 1] = temp;
+					result++;
+				}
+			}
+		}
+		return result;
+	}
+
+	public static int minSwapCntArr(int[] arr, int n) {
+		int[] minArr = arr.clone();
+		int minCnt = Integer.MAX_VALUE;
+		for (int i = 0; i < n - 1; i++) {
+			for (int j = i + 1; j < n; j++) {
+//				System.out.println(Arrays.toString(minArr));
+				int temp = minArr[j];
+				minArr[j] = minArr[i];
+				minArr[i] = temp;
+				int cNum = bubble_sort(minArr, n);
+//				System.out.println(j + "번 " + cNum + " " + minCnt);
+				if (minCnt > cNum) {
+					minCnt = cNum;
+				}
+//				System.out.println(Arrays.toString(minArr));
+				minArr = arr.clone();
+			}
+		}
+		return minCnt;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N⁴) — 이중 루프 O(N²)로 스왑 쌍 탐색 × 버블 정렬 O(N²). 시간 초과 발생
+- 공간: O(N) — 배열 복사본

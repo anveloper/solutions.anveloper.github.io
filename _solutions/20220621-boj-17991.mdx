@@ -1,0 +1,139 @@
+---
+title: "BOJ 17991 - Carryless Square Root"
+date: "2022-06-21"
+description: "백트래킹 문제"
+tags: ["백트래킹"]
+platform: "boj"
+problem_number: "17991"
+problem_url: "https://www.acmicpc.net/problem/17991"
+difficulty: "플래티넘 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17991 - Carryless Square Root](https://www.acmicpc.net/problem/17991)
+
+자릿수 올림(carry)이 없는 곱셈 체계에서 제곱근을 구하는 문제이다. 각 자릿수의 연산 결과는 10으로 나눈 나머지만 사용한다. 즉, `7 × 7 = 9`(49에서 올림 없이 9만), `2 × 6 = 2`(12에서 올림 없이 2만) 식으로 계산된다.
+
+입력으로 숫자 문자열이 주어지며, 자릿수가 홀수인 경우에만 제곱근이 존재할 수 있다. carryless 제곱근이 존재하면 출력하고, 없으면 `-1`을 출력한다.
+
+### 입력
+
+한 줄에 숫자 문자열 S가 주어진다. S의 길이는 홀수일 수도 있고 짝수일 수도 있다.
+
+### 출력
+
+carryless 제곱근이 존재하면 그 값을 출력한다. 존재하지 않으면 `-1`을 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `9`   | `3`  |
+| `441` | `21` |
+| `6`   | `-1` |
+
+## 풀이
+
+결과의 각 자릿수를 앞에서부터 하나씩 결정하는 백트래킹 방식으로 풀이한다. 각 자릿수(0~9)를 시도하면서 현재까지의 carryless 제곱 결과가 목표 값의 해당 자릿수와 일치하는지 확인한다.
+
+1. 입력 길이가 짝수이면 즉시 `-1`을 반환한다(짝수 길이의 carryless 제곱근은 없음).
+2. 결과 배열 `cur`를 길이 `(len+1)/2`로 설정하고, 합 배열 `sum`을 관리한다.
+3. `go(cur, sum, k)`에서 k번째 자릿수를 0~9로 시도하며, `cur[k] * cur[k]`와 이전 자릿수들과의 교차곱 `2 * cur[k] * cur[z]`를 sum에 누적한다(mod 10).
+4. 현재 자릿수 `sum[k]`가 목표 `sqr[k]`와 일치할 때만 재귀 진행, 불일치 시 가지치기한다.
+5. 모든 자릿수 결정 후 최종 sum이 sqr와 완전히 일치하면 성공이다.
+
+**핵심 아이디어**: 자릿수를 앞에서부터 확정해 나가면서 각 단계에서 불가능한 가지를 미리 제거하는 백트래킹이다. carryless 곱의 성질상, k번째 자릿수의 계산 결과는 0~k번 자릿수에만 영향을 주므로 조기 가지치기가 가능하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.util.Scanner;
+
+public class Day134BOJ17991CarrylessSquareRootCal { // 17991 carryless square root 자력아님
+	public static int len;
+	public static int[] sqr;
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String s = sc.next();
+		sqr = new int[s.length()];
+		len = sqr.length;
+		for (int i = 0; i < len; i++)
+			sqr[i] = s.charAt(i) - '0';
+
+		int[] res = wrapper();
+
+		if (res == null)
+			System.out.println(-1);
+		else {
+			for (int i = 0; i < res.length; i++)
+				System.out.print(res[i]);
+			System.out.println();
+		}
+	} // 구선생님 도움
+
+	public static int[] wrapper() {
+		if (len % 2 == 0)
+			return null;
+
+		int[] cur = new int[(len + 1) / 2];
+		int[] sum = new int[len];
+		boolean res = go(cur, sum, 0);
+
+		if (!res)
+			return null;
+
+		return cur;
+	}
+
+	public static boolean go(int[] cur, int[] sum, int k) {
+		if (k == cur.length)
+			return isSqr(sum);
+
+		int s = k == 0 ? 1 : 0;
+
+		for (int d = s; d < 10; d++) {
+			int[] cpy = copy(sum);
+			cur[k] = d;
+
+			int cLen = cur.length - 1;
+			cpy[2 * k] = (cpy[2 * k] + cur[k] * cur[k]) % 10;
+			for (int z = k - 1; z >= 0; z--)
+				cpy[k + z] = (cpy[k + z] + 2 * cur[k] * cur[z]) % 10;
+
+			if (cpy[k] != sqr[k])
+				continue;
+
+			boolean res = go(cur, cpy, k + 1);
+			if (res)
+				return true;
+		}
+
+		return false;
+	}
+
+	public static int[] copy(int[] a) {
+		int[] res = new int[a.length];
+		for (int i = 0; i < res.length; i++)
+			res[i] = a[i];
+		return res;
+	}
+
+	public static boolean isSqr(int[] arr) {
+		for (int i = 0; i < sqr.length; i++)
+			if (arr[i] != sqr[i])
+				return false;
+		return true;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(10^(N/2)) — 최악의 경우 각 자릿수마다 10가지를 시도하나, 가지치기로 실제 탐색은 훨씬 적음
+- 공간: O(N)

@@ -1,0 +1,64 @@
+---
+title: "BOJ 3507 - Automated Telephone Exchange"
+date: "2025-10-05"
+description: "수학, 브루트포스 알고리즘 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "3507"
+problem_url: "https://www.acmicpc.net/problem/3507"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3507 - Automated Telephone Exchange](https://www.acmicpc.net/problem/3507)
+
+N명의 가입자에게 전화번호를 부여할 때, 필요한 최소 자릿수를 구하라. 2자리 번호(00~99)를 사용하는 경우 수용 가능한 추가 번호 수를 출력한다.
+
+### 입력
+
+양의 정수 N이 주어진다.
+
+### 출력
+
+2자리 번호 체계(100개)에서 N명을 수용한 뒤 남는 번호 수를 출력한다. 수용 불가능하면 0을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `99` | `1`  |
+
+## 풀이
+
+2자리 번호의 총 개수(00~99 = 100개, 코드에서는 99 기준)에서 필요한 수를 뺀다.
+
+1. N이 198보다 크면 수용 불가이므로 0을 출력한다
+2. 그렇지 않으면 `99 - (N - 99) + 1 = 200 - N`을 출력한다
+
+**핵심 아이디어**: 고정된 번호 체계에서 남는 번호 수를 단순 뺄셈으로 구한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int n;
+int main()
+{
+  cin >> n;
+  if (n > 198)
+    cout << 0;
+  else
+    cout << 99 - (n - 99) + 1;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

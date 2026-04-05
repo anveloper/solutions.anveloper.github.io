@@ -1,0 +1,66 @@
+---
+title: "BOJ 8393 - 합"
+date: "2023-06-19"
+description: "구현, 수학 문제"
+tags: ["구현", "수학"]
+platform: "boj"
+problem_number: "8393"
+problem_url: "https://www.acmicpc.net/problem/8393"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8393 - 합](https://www.acmicpc.net/problem/8393)
+
+자연수 n이 주어졌을 때, 1부터 n까지의 합을 구한다.
+
+### 입력
+
+첫째 줄에 n이 주어진다 (1 이상 10,000 이하).
+
+### 출력
+
+1부터 n까지의 합을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `3`  | `6`  |
+
+## 풀이
+
+1부터 n까지 반복문으로 누적 합산하여 결과를 출력한다.
+
+1. 정수 n을 입력받는다
+2. 변수 s를 0으로 초기화한다
+3. 1부터 n까지 반복하며 s에 누적한다
+4. 최종 합 s를 출력한다
+
+**핵심 아이디어**: 단순 반복 합산이다. n\*(n+1)/2 공식으로도 O(1)에 풀 수 있지만, 여기서는 반복문을 사용한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+
+public class Day498BOJ8393합 {
+  public static void main(String[] args) throws Exception {
+    int N = Integer.parseInt(new BufferedReader(new InputStreamReader(System.in)).readLine());
+    int s = 0;
+    for (int i = 1; i <= N; i++)
+      s += i;
+    System.out.println(s);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

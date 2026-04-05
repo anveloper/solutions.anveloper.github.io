@@ -1,0 +1,75 @@
+---
+title: "BOJ 1487 - 물건 팔기"
+date: "2024-06-12"
+description: "모든 가격 후보에 대해 순이익을 계산하여 최대 이익을 구하는 문제"
+tags: ["브루트포스"]
+platform: "boj"
+problem_number: "1487"
+problem_url: "https://www.acmicpc.net/problem/1487"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1487 - 물건 팔기](https://www.acmicpc.net/problem/1487)
+
+N명의 고객이 각각 최대 지불 금액과 배송비를 가진다. 물건 가격을 정해 순이익(가격 - 배송비)의 합을 최대화하는 가격을 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 고객의 최대 지불 금액과 배송비가 주어진다.
+
+### 출력
+
+순이익을 최대화하는 가격을 출력한다. 이익을 얻을 수 없으면 0을 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `4` `1 1` `2 2` `3 1` `4 3` | `3`  |
+
+## 풀이
+
+가격 후보를 고객의 최대 지불 금액 집합으로 설정하고, 각 가격에서 순이익을 계산한다.
+
+1. 고객의 최대 지불 금액을 중복 제거하여 가격 후보로 사용한다
+2. 각 가격 i에 대해, i 이상 지불 가능하고 배송비가 i보다 작은 고객만 대상으로 순이익을 합산한다
+3. 모든 가격 후보 중 최대 순이익을 달성하는 가격을 출력한다
+
+**핵심 아이디어**: 최적 가격은 반드시 어떤 고객의 최대 지불 금액과 같으므로, 후보가 최대 N개로 제한되어 O(N^2) 브루트포스로 해결 가능하다.
+
+## 코드
+
+```python
+n = int(input())
+c_list = []
+d_list = []
+for i in range(n):
+    cost, deli = map(int, input().split())
+    c_list.append(cost)
+    d_list.append(deli)
+
+c_set = sorted(set(c_list))
+
+max_m = 0
+ans = 0
+for i in c_set:
+    money = 0
+    for j in range(n):
+        if i <= c_list[j] and i > d_list[j]:
+            money += i - d_list[j]
+
+    if max_m < money:
+        max_m = money
+        ans = i
+
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(N)

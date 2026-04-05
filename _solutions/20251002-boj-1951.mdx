@@ -1,0 +1,84 @@
+---
+title: "BOJ 1951 - 활자"
+date: "2025-10-02"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1951"
+problem_url: "https://www.acmicpc.net/problem/1951"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1951 - 활자](https://www.acmicpc.net/problem/1951)
+
+1부터 N까지의 모든 정수를 차례로 이어 붙인 문자열을 만들 때, 이 문자열에서 1번째 글자부터 N번째 글자까지 총 몇 개의 활자(글자 수)가 사용되었는지 1234567로 나눈 나머지를 구한다.
+
+예를 들어, N=12이면 문자열은 `123456789101112`이고 15자리다.
+
+### 입력
+
+첫째 줄에 정수 N이 주어진다.
+
+### 출력
+
+1부터 N까지의 모든 정수를 이어 붙인 문자열의 총 길이를 1234567로 나눈 나머지를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `12` | `15` |
+
+## 풀이
+
+자릿수별 기여를 합산하는 수학적 공식으로 계산한다.
+
+1. 입력 N을 문자열로 받아 자릿수(len)를 구한다.
+2. N이 한 자리(len=1)이면 그대로 출력한다.
+3. N이 두 자리 이상이면 다음 공식을 적용한다:
+   - `10^(len-1)` 미만의 정수들(1자리 ~ len-1자리)이 기여하는 총 글자 수를 먼저 구한다: `(10^(len-1) * (9*(len-1) - 1) + 1) / 9`
+   - len자리 정수들(10^(len-1)부터 N까지)의 기여: `len * (N - 10^(len-1) + 1)`
+4. 두 값을 합산하고 1234567로 나눈 나머지를 출력한다.
+
+**핵심 아이디어**: 자릿수가 d인 정수는 `9 * 10^(d-1)`개 존재하며 각각 d글자씩 기여한다. 이를 자릿수별로 묶어 등차수열 합 공식으로 계산한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+int main()
+{
+
+  string num;
+  long long result = 0;
+  cin >> num;
+  int len = num.length();
+
+  if (len <= 1)
+  {
+    cout << num << '\n';
+  }
+  else
+  {
+    result += (pow(10, len - 1) * (9 * (len - 1) - 1) + 1) / 9;
+    result += len * (stoi(num) - pow(10, len - 1) + 1);
+    cout << result % 1234567;
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(D) — D는 N의 자릿수 (실질적으로 O(1))
+- 공간: O(D) — 문자열로 입력받은 N 저장

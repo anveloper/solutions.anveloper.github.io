@@ -1,0 +1,115 @@
+---
+title: "BOJ 1119 - 그래프"
+date: "2024-03-16"
+description: "자료 구조, 그래프 이론, 그래프 탐색 문제"
+tags: ["자료 구조", "그래프 이론", "그래프 탐색", "깊이 우선 탐색", "분리 집합"]
+platform: "boj"
+problem_number: "1119"
+problem_url: "https://www.acmicpc.net/problem/1119"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1119 - 그래프](https://www.acmicpc.net/problem/1119)
+
+N개의 노드와 간선이 인접 행렬로 주어질 때, 간선의 한쪽 끝을 바꾸는 연산을 최소 몇 번 하면 연결 그래프가 되는지 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 인접 행렬이 주어진다 ('Y': 연결, 'N': 미연결).
+
+### 출력
+
+최소 연산 횟수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `NYN` `YNY` `NYN` | `0`  |
+
+## 풀이
+
+DFS로 연결 컴포넌트를 찾고, 여분의 간선(사이클에 포함된 간선)이 충분한지 확인한다.
+
+1. 간선이 없는 노드가 있으면 연결 불가(-1)이다
+2. DFS로 연결 컴포넌트 수와 여분의 간선 수(트리 간선 외의 추가 간선)를 세뎌
+3. 여분 간선이 (컴포넌트 수 - 1) 이상이면 컴포넌트 수 - 1이 답이다
+
+**핵심 아이디어**: 컴포넌트를 연결하려면 여분의 간선을 끊어서 다른 컴포넌트로 연결하면 되며, 여분이 부족하면 불가능하다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day774BOJ1119그래프 {
+  static int count = 0;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+    int N = Integer.parseInt(bufferedReader.readLine());
+    if (N == 1) {
+      System.out.println(0);
+      System.exit(0);
+    }
+    boolean[][] visited = new boolean[N][N];
+    for (int i = 0; i < N; i++) {
+      String temp = bufferedReader.readLine();
+      int tempCount = 0;
+      for (int j = 0; j < N; j++) {
+        visited[i][j] = temp.charAt(j) == 'Y' ? false : true;
+        if (!visited[i][j]) {
+          tempCount++;
+        }
+      }
+      if (tempCount == 0) {
+        System.out.println(-1);
+        System.exit(0);
+      }
+    }
+    boolean[] nodeVisited = new boolean[N];
+    int road = 0;
+    for (int i = 0; i < N; i++) {
+      if (nodeVisited[i])
+        continue;
+      road++;
+      dfs(i, new HashSet<>(), nodeVisited, visited);
+    }
+    if (count + 1 < road) {
+      System.out.println(-1);
+    } else {
+      System.out.println(road - 1);
+    }
+  }
+
+  static void dfs(int cur, HashSet<Integer> hashSet, boolean[] nodeVisited, boolean[][] visited) {
+    nodeVisited[cur] = true;
+    if (hashSet.contains(cur)) {
+      count++;
+    } else {
+      hashSet.add(cur);
+    }
+    for (int i = 0; i < visited.length; i++) {
+      if (!visited[cur][i]) {
+
+        visited[cur][i] = true;
+        visited[i][cur] = true;
+        dfs(i, hashSet, nodeVisited, visited);
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N²)

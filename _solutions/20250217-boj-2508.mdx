@@ -1,0 +1,71 @@
+---
+title: "BOJ 2508 - 사탕 박사 고창영"
+date: "2025-02-17"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2508"
+problem_url: "https://www.acmicpc.net/problem/2508"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2508 - 사탕 박사 고창영](https://www.acmicpc.net/problem/2508)
+
+r×c 격자에서 포장된 사탕을 찾는다. 가로 사탕은 `>o<` 패턴, 세로 사탕은 위에서 아래로 `v`, `o`, `^` 패턴이다. 사탕의 총 개수를 구하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 r, c와 격자가 주어진다.
+
+### 출력
+
+각 케이스마다 사탕 개수를 출력한다.
+
+### 예제
+
+| 입력                                       | 출력 |
+| ------------------------------------------ | ---- |
+| `1` `` `3 7` `.>o<...` `..>o<..` `...>o<.` | `3`  |
+
+## 풀이
+
+격자를 순회하며 가로 `>o<` 패턴과 세로 `v`/`o`/`^` 패턴을 찾아 센다.
+
+1. 각 행에서 연속 3칸이 `>o<`인 경우를 센다
+2. 각 열에서 연속 3행이 위에서 아래로 `v`, `o`, `^`인 경우를 센다
+3. 두 카운트를 합산하여 출력한다
+
+**핵심 아이디어**: 고정된 3칸 패턴 매칭이므로, 격자 전체를 한 번씩만 순회하면 된다.
+
+## 코드
+
+```python
+import sys
+
+T = int(sys.stdin.readline())
+for _ in range(T):
+    sys.stdin.readline()
+    A = []
+    count = 0
+    r, c = map(int, sys.stdin.readline().split())
+    for _ in range(r):
+        A.append(sys.stdin.readline())
+    for i in range(r):
+        for j in range(c - 2):
+            if A[i][j] == ">" and A[i][j + 1] == "o" and A[i][j + 2] == "<":
+                count += 1
+    for i in range(r - 2):
+        for j in range(c):
+            if A[i][j] == "v" and A[i + 1][j] == "o" and A[i + 2][j] == "^":
+                count += 1
+    print(count)
+```
+
+## 복잡도
+
+- 시간: O(r \* c) — 격자 전체 순회
+- 공간: O(r \* c) — 격자 저장

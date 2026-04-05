@@ -1,0 +1,92 @@
+---
+title: "BOJ 2133 - 타일 채우기"
+date: "2022-05-06"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "2133"
+problem_url: "https://www.acmicpc.net/problem/2133"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2133 - 타일 채우기](https://www.acmicpc.net/problem/2133)
+
+3×n 크기의 직사각형을 1×2 또는 2×1 도미노 타일로 채우는 방법의 수를 구한다.
+
+### 입력
+
+- 첫째 줄: 정수 n (1 ≤ n ≤ 30)
+
+### 출력
+
+3×n 직사각형을 채우는 방법의 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `2`  | `3`  |
+| `4`  | `11` |
+
+## 풀이
+
+3×n 직사각형은 n이 홀수이면 채울 수 없어 0이다. n이 짝수일 때의 점화식을 수학적으로 유도하면 `d[n] = 4*d[n-2] - d[n-4]`가 된다. 기존의 `d[n] = 3*d[n-2] + 2*(d[n-4] + ... + d[0])` 점화식에서 누적 합 항을 제거한 간결한 형태이다.
+
+1. n이 홀수이면 0을 반환하고, n이 0이면 1을 반환한다.
+2. n이 2이면 `d[2] = 3`으로 초기화한다.
+3. n이 4 이상 짝수이면 `d[n] = 4*d[n-2] - d[n-4]`를 메모이제이션으로 계산한다.
+4. 최종적으로 `d[N]`을 출력한다.
+
+**핵심 아이디어**: `d[n] = 3*d[n-2] + 2*(d[n-4] + ... + d[0])`에서 `d[n-2] = 3*d[n-4] + 2*(d[n-6] + ... + d[0])`을 빼면 누적 합 항이 사라진다. `d[n] - d[n-2] = 4*d[n-2] - d[n-4]`가 되어 for 루프 없이 O(1)로 각 부분 문제를 계산할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.util.Scanner;
+
+public class Day90BOJ2133타일채우기DP개선 {
+	static int N;
+	static Integer[] d;
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		N = sc.nextInt();
+		d = new Integer[N + 1];
+		System.out.println(recur(N));
+		sc.close();
+	}
+
+	private static int recur(int n) {
+		if (n % 2 == 1) return 0;
+		if (n == 0) return 1;
+		if (n == 2) return d[2] = 3;
+		if (d[n] == null)
+			d[n] = 4 * recur(n - 2) - recur(n - 4); // for문이 사라짐..
+		return d[n];
+	}
+}
+//dp[n] = dp[n-2]*3 + 2(dp[n-4] ~ dp[n-n])
+//d[4] = 3*d[2] + 2*d[0]
+//d[6] = 3*d[4] + 2*d[2] + 2*d[0]
+//---- = 3*d[4] + 2*d[2] + 2*d[0] + d[2] - d[2]
+//---- = 3*d[4] + 3*d[2] + 2*d[0] - d[2]
+//---- = 3*d[4] + d[4] - d[2]
+//---- = 4*d[4] - d[2] (4*d[n-2] - d[n-4])
+//d[8] = 3*d[6] + 2*d[4] + 2*d[2] + 2*d[0]
+//---- = 3*d[6] + 2*d[4] + 2*d[2] + 2*d[0] + d[4] - d[4]
+//---- = 3*d[6] + 3*d[4] + 2*d[2] + 2*d[0] - d[4]
+//---- = 3*d[6] + d[6] - d[4]
+//---- = 4*d[6] - d[4]
+//d[n] = 4d[n-2] - d[n-4] <<-- 최종식
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 짝수 부분 문제를 1회만 계산
+- 공간: O(N) — dp 배열 및 재귀 스택

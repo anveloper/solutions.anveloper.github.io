@@ -1,0 +1,116 @@
+---
+title: "BOJ 10866 - 덱"
+date: "2022-03-13"
+description: "구현, 자료 구조, 덱 문제"
+tags: ["구현", "자료 구조", "덱"]
+platform: "boj"
+problem_number: "10866"
+problem_url: "https://www.acmicpc.net/problem/10866"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10866 - 덱](https://www.acmicpc.net/problem/10866)
+
+정수를 저장하는 덱(Deque)을 구현하고, push_front, push_back, pop_front, pop_back, size, empty, front, back 8가지 명령을 처리하는 프로그램을 작성하라.
+
+### 입력
+
+첫째 줄에 명령 수 N (1 이상 10,000 이하)이 주어진다. 이후 N줄에 명령이 하나씩 주어진다.
+
+### 출력
+
+출력이 필요한 명령마다 한 줄에 하나씩 결과를 출력한다. 비어있을 때 pop/front/back은 -1을 출력한다.
+
+### 예제
+
+| 입력                                                                                                                                                        | 출력                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `15` `push_back 1` `push_front 2` `front` `back` `size` `empty` `pop_front` `pop_back` `pop_front` `size` `empty` `pop_back` `push_front 3` `empty` `front` | `2` `1` `2` `0` `2` `1` `-1` `0` `1` `-1` `0` `3` |
+
+## 풀이
+
+Java의 ArrayDeque를 사용하여 8가지 덱 명령을 처리한다.
+
+1. 명령 문자열을 공백으로 분리하고 switch-case로 분기한다
+2. push_front/push_back: addFirst/addLast로 원소를 삽입한다
+3. pop_front/pop_back: 비어있으면 -1, 아니면 pollFirst/pollLast로 제거 후 출력한다
+4. front/back: 비어있으면 -1, 아니면 peekFirst/peekLast로 조회한다
+5. size/empty: 덱의 크기와 비어있는지 여부를 출력한다
+
+**핵심 아이디어**: ArrayDeque는 양쪽 끝 삽입/삭제가 O(1)이므로 모든 명령을 효율적으로 처리할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.ArrayDeque;
+
+public class Day32BOJ10866데큐덱 { // 10866 덱
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		ArrayDeque<Integer> dq = new ArrayDeque<Integer>();
+		StringBuilder sb = new StringBuilder();
+		int N = Integer.parseInt(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			String[] s = br.readLine().split(" ");
+			switch (s[0]) {
+			case "push_front":
+				dq.addFirst(Integer.parseInt(s[1]));
+				break;
+			case "push_back":
+				dq.addLast(Integer.parseInt(s[1]));
+				break;
+
+			case "pop_front":
+				if (dq.isEmpty())
+					sb.append(-1).append('\n');
+				else
+					sb.append(dq.pollFirst()).append('\n');
+				break;
+			case "pop_back":
+				if (dq.isEmpty())
+					sb.append(-1).append('\n');
+				else
+					sb.append(dq.pollLast()).append('\n');
+				break;
+			case "size":
+				sb.append(dq.size()).append('\n');
+				break;
+			case "empty":
+				if (dq.isEmpty())
+					sb.append(1).append('\n');
+				else
+					sb.append(0).append('\n');
+				break;
+			case "front":
+				if (dq.isEmpty())
+					sb.append(-1).append('\n');
+				else
+					sb.append(dq.peekFirst()).append('\n');
+				break;
+			case "back":
+				if (dq.isEmpty())
+					sb.append(-1).append('\n');
+				else
+					sb.append(dq.peekLast()).append('\n');
+				break;
+			}
+		}
+		System.out.println(sb);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

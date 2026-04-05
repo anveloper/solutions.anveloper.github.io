@@ -1,0 +1,80 @@
+---
+title: "BOJ 1247 - 부호"
+date: "2024-03-03"
+description: "수학, 사칙연산, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["수학", "사칙연산", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "1247"
+problem_url: "https://www.acmicpc.net/problem/1247"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1247 - 부호](https://www.acmicpc.net/problem/1247)
+
+3개의 테스트 케이스에서 N개의 정수 합의 부호(+, -, 0)를 구하라. 정수는 매우 클 수 있다.
+
+### 입력
+
+3개의 테스트 케이스가 주어지며, 각 케이스의 첫 줄에 N, 이후 N줄에 정수가 주어진다.
+
+### 출력
+
+각 케이스마다 합이 양수면 "+", 음수면 "-", 0이면 "0"을 출력한다.
+
+### 예제
+
+| 입력                       | 출력           |
+| -------------------------- | -------------- |
+| `3` `0` `0` `0` (+ 2개 더) | `0` (+ 2개 더) |
+
+## 풀이
+
+BigInteger로 모든 수를 합산한 뒤 부호를 판별한다.
+
+1. 각 테스트 케이스에서 N개의 정수를 BigInteger로 합산한다
+2. `compareTo(BigInteger.ZERO)`로 부호를 판별한다
+3. 양수면 "+", 음수면 "-", 0이면 "0"을 출력한다
+
+**핵심 아이디어**: 값이 매우 클 수 있으므로 `BigInteger`를 사용하여 오버플로 없이 합산한다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.math.BigInteger;
+
+public class Day761BOJ1247부호 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    for (int i = 0; i < 3; i++) {
+      BigInteger S = new BigInteger("0");
+      int N = Integer.parseInt(br.readLine());
+
+      for (int j = 0; j < N; j++) {
+        BigInteger N2 = new BigInteger(br.readLine());
+        S = S.add(N2);
+      }
+
+      if (S.compareTo(BigInteger.ZERO) == -1) {
+        System.out.println("-");
+      } else if (S.compareTo(BigInteger.ZERO) == 1) {
+        System.out.println("+");
+      } else {
+        System.out.println(0);
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,82 @@
+---
+title: "BOJ 9325 - 얼마?"
+date: "2026-01-07"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "9325"
+problem_url: "https://www.acmicpc.net/problem/9325"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9325 - 얼마?](https://www.acmicpc.net/problem/9325)
+
+자동차 기본 가격과 옵션 목록이 주어질 때, 총 가격을 구하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 기본 가격, 옵션 수 N, 이후 각 옵션의 개수와 단가가 주어진다.
+
+### 출력
+
+각 케이스마다 총 가격을 출력한다.
+
+### 예제
+
+| 입력                             | 출력    |
+| -------------------------------- | ------- |
+| `1` `10000` `2` `2 1000` `3 500` | `13500` |
+
+## 풀이
+
+기본 가격에 각 옵션의 `개수 * 단가`를 합산한다.
+
+1. 기본 가격을 읽는다
+2. 각 옵션에 대해 `개수 * 단가`를 계산하여 누적한다
+3. 총 가격을 출력한다
+
+**핵심 아이디어**: 단순 합산 문제로, 각 옵션의 비용을 누적하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int t;
+  cin >> t;
+
+  while (t--)
+  {
+    int price, n;
+    cin >> price >> n;
+
+    while (n--)
+    {
+      int q, p;
+      cin >> q >> p;
+
+      price += q * p;
+    }
+
+    cout << price << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

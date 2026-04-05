@@ -1,0 +1,82 @@
+---
+title: "BOJ 1919 - 애너그램 만들기"
+date: "2023-11-07"
+description: "구현, 문자열, 집합과 맵 문제"
+tags: ["구현", "문자열", "집합과 맵"]
+platform: "boj"
+problem_number: "1919"
+problem_url: "https://www.acmicpc.net/problem/1919"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1919 - 애너그램 만들기](https://www.acmicpc.net/problem/1919)
+
+두 영단어가 주어질 때, 각 단어에서 최소 개수의 문자를 제거하여 애너그램 관계로 만들려면 총 몇 개의 문자를 제거해야 하는지 구하라.
+
+### 입력
+
+첫째 줄과 둘째 줄에 각각 영소문자로 이루어진 단어가 주어진다.
+
+### 출력
+
+제거해야 하는 최소 문자 수를 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `aabbcc` `xxyybb` | `8`  |
+
+## 풀이
+
+두 단어의 알파벳 빈도를 각각 세고, 각 알파벳별 빈도 차이의 절댓값을 합산한다.
+
+1. 크기 26인 배열 두 개로 각 문자열의 알파벳 빈도를 센다
+2. 26개 알파벳 각각에 대해 두 배열의 값 차이의 절댓값을 구한다
+3. 모든 절댓값을 합산하면 제거해야 하는 최소 문자 수이다
+
+**핵심 아이디어**: 애너그램이 되려면 두 문자열의 알파벳 빈도가 동일해야 하므로, 빈도 차이의 합이 곧 제거 횟수이다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day641BOJ1919애너그램만들기 {
+  public static void main(String[] agrs) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String str1 = br.readLine();
+    String str2 = br.readLine();
+    int cnt = 0;
+    int[] countStr1 = new int[26];
+    int[] countStr2 = new int[26];
+
+    for (int i = 0; i < str1.length(); i++) {
+      countStr1[str1.charAt(i) - 'a']++;
+    }
+
+    for (int i = 0; i < str2.length(); i++) {
+      countStr2[str2.charAt(i) - 'a']++;
+    }
+
+    for (int i = 0; i < 26; i++) {
+      int compare = countStr1[i] - countStr2[i];
+      if (compare != 0)
+        cnt += Math.abs(compare);
+    }
+
+    System.out.println(cnt);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N + M) — N, M은 각 문자열의 길이
+- 공간: O(1) — 크기 26 고정 배열

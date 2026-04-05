@@ -1,0 +1,115 @@
+---
+title: "BOJ 3432 - Game"
+date: "2026-02-09"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "3432"
+problem_url: "https://www.acmicpc.net/problem/3432"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3432 - Game](https://www.acmicpc.net/problem/3432)
+
+두 플레이어 A와 B가 5×5 격자 위에서 3목(틱택토 변형) 게임을 진행한다. 게임이 끝난 상태의 5×5 보드가 주어졌을 때, A가 이겼는지, B가 이겼는지, 아니면 무승부인지 판단한다. 가로, 세로, 대각선 방향으로 3개가 연속으로 같은 문자이면 해당 플레이어가 이긴 것으로 본다.
+
+### 입력
+
+- 첫 줄에 테스트 케이스 수 T가 주어진다.
+- 각 케이스마다 5×5 격자의 문자(`A`, `B`)가 주어진다.
+
+### 출력
+
+각 케이스마다 `A wins`, `B wins`, 또는 `draw`를 출력한다. 양쪽 모두 3목이 성립하거나 아무도 3목이 없으면 `draw`를 출력한다.
+
+### 예제
+
+| 입력                                        | 출력     |
+| ------------------------------------------- | -------- |
+| `1` `AABBA` `BABAB` `AABBA` `BABAB` `AABBA` | `A wins` |
+
+## 풀이
+
+5×5 보드의 모든 셀에서 4방향(우, 하, 우하, 좌하)으로 3칸 연속 같은 문자 여부를 검사하는 완전 탐색 구현 문제이다.
+
+1. 5×5 보드를 입력받는다.
+2. 중복 없이 4방향(우: `(0,1)`, 하: `(1,0)`, 우하: `(1,1)`, 좌하: `(1,-1)`)에 대한 델타 배열을 정의한다.
+3. 모든 셀 `(r, c)`에서 4방향 각각으로 3칸 연속 여부를 확인한다:
+   - 범위 내에 있고 3칸이 모두 같은 문자이면 해당 플레이어의 승리 플래그를 세운다.
+4. 두 플래그 모두 참이거나 모두 거짓이면 `draw`, A만 참이면 `A wins`, B만 참이면 `B wins`를 출력한다.
+
+**핵심 아이디어**: 8방향 중 반대 방향과 중복되므로 4방향(우, 하, 우하, 좌하)만 검사하면 충분하다. 보드 크기가 5×5로 고정되어 있으므로 O(1) 시간에 검사를 완료할 수 있다. 양쪽 모두 이긴 상황도 `draw`로 처리하는 것이 핵심이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// 5x5 판이므로 고정 크기 배열 사용
+char board[5][5];
+
+void solve() {
+    for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            cin >> board[i][j];
+        }
+    }
+
+    bool a_wins = false;
+    bool b_wins = false;
+
+    // 8방향 중 중복을 제외한 4방향(우, 하, 우하, 좌하) 탐색을 위한 델타값
+    int dr[] = {0, 1, 1, 1};
+    int dc[] = {1, 0, 1, -1};
+
+    for (int r = 0; r < 5; ++r) {
+        for (int c = 0; c < 5; ++c) {
+            char curr = board[r][c];
+
+            for (int d = 0; d < 4; ++d) {
+                int r2 = r + dr[d], c2 = c + dc[d];
+                int r3 = r + 2 * dr[d], c3 = c + 2 * dc[d];
+
+                // 판 범위 내에 있는지 확인 후 3목 체크
+                if (r3 >= 0 && r3 < 5 && c3 >= 0 && c3 < 5) {
+                    if (curr == board[r2][c2] && curr == board[r3][c3]) {
+                        if (curr == 'A') a_wins = true;
+                        else if (curr == 'B') b_wins = true;
+                    }
+                }
+            }
+        }
+    }
+
+    // 결과 출력 조건
+    if (a_wins && b_wins) cout << "draw\n";
+    else if (a_wins) cout << "A wins\n";
+    else if (b_wins) cout << "B wins\n";
+    else cout << "draw\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int t;
+    if (!(cin >> t)) return 0;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T × 25 × 4) = O(T) — 보드 크기가 5×5로 고정이므로 케이스 수에 비례
+- 공간: O(1) — 5×5 고정 크기 배열만 사용

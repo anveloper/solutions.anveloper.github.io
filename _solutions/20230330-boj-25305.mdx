@@ -1,0 +1,73 @@
+---
+title: "BOJ 25305 - 커트라인"
+date: "2023-03-30"
+description: "구현, 정렬 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "25305"
+problem_url: "https://www.acmicpc.net/problem/25305"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 25305 - 커트라인](https://www.acmicpc.net/problem/25305)
+
+N명의 학생 점수 중 상위 k명이 수상할 때, 커트라인(수상자 중 최저 점수)을 구하라.
+
+### 입력
+
+첫째 줄에 N, k, 둘째 줄에 N명의 점수가 주어진다.
+
+### 출력
+
+커트라인 점수를 출력한다.
+
+### 예제
+
+| 입력                    | 출력 |
+| ----------------------- | ---- |
+| `5 2` `100 76 85 93 98` | `93` |
+
+## 풀이
+
+점수를 오름차순 정렬한 뒤, 뒤에서 k번째 값을 출력한다.
+
+1. N명의 점수를 배열에 저장한다
+2. 오름차순 정렬한다
+3. `arr[N-k]`가 상위 k번째 점수(커트라인)이므로 출력한다
+
+**핵심 아이디어**: 오름차순 정렬 시 인덱스 N-k가 정확히 상위 k번째 원소이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day417BOJ25305커트라인 {
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int n = Integer.parseInt(st.nextToken());
+    int k = Integer.parseInt(st.nextToken());
+    int[] arr = new int[n];
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < n; i++) {
+      arr[i] = Integer.parseInt(st.nextToken());
+    }
+    Arrays.sort(arr);
+    System.out.print(arr[n - k]);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

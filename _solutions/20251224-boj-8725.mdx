@@ -1,0 +1,82 @@
+---
+title: "BOJ 8725 - Szachy"
+date: "2025-12-24"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "8725"
+problem_url: "https://www.acmicpc.net/problem/8725"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8725 - Szachy](https://www.acmicpc.net/problem/8725)
+
+N×N 크기의 체스판이 주어진다. 각 칸에는 정수가 적혀 있으며, 각 행에서 최댓값 하나씩을 선택하여 모두 합산한다. 단, 같은 열에서 두 번 선택할 수 없다는 조건이 있지만, 행마다 독립적으로 최댓값을 구하면 항상 최적이 된다.
+
+### 입력
+
+첫 번째 줄에 N이 주어진다. 이후 N×N 크기의 정수 행렬이 주어진다.
+
+### 출력
+
+각 행의 최댓값의 합을 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `3` `1 2 3` `4 5 6` `7 8 9` | `18` |
+
+## 풀이
+
+N×N 행렬을 입력받으면서 각 행의 최댓값을 누적 합산한다.
+
+1. N을 입력받는다.
+2. N개의 행을 순회하면서 각 행에서 N개의 값을 읽어 최댓값을 갱신한다.
+3. 각 행의 최댓값을 합산한다.
+4. 최종 합을 출력한다.
+
+**핵심 아이디어**: 각 행에서 독립적으로 최댓값을 선택하는 것이 전체 최적해가 된다. 행렬을 한 번 순회하면서 행 단위로 최댓값을 추적하면 O(N²) 시간에 해결 가능하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(0);
+  cout.tie(0);
+
+  int n, a, S = 0;
+
+  cin >> n;
+
+  for (int i = 0; i < n; ++i)
+  {
+    int Max = 0;
+
+    for (int j = 0; j < n; ++j)
+      cin >> a, Max = max(Max, a);
+
+    S += Max;
+  }
+
+  cout << S;
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — N×N 행렬 전체를 1회 순회
+- 공간: O(1) — 최댓값과 합계만 저장

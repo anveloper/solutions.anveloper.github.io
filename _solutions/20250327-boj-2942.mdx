@@ -1,0 +1,73 @@
+---
+title: "BOJ 2942 - 퍼거슨과 사과"
+date: "2025-03-27"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "2942"
+problem_url: "https://www.acmicpc.net/problem/2942"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2942 - 퍼거슨과 사과](https://www.acmicpc.net/problem/2942)
+
+빨간 사과 R개와 초록 사과 G개를 같은 수의 그룹으로 균등 분배할 수 있는 모든 경우를 구하라.
+
+### 입력
+
+빨간 사과 수 R과 초록 사과 수 G가 주어진다.
+
+### 출력
+
+가능한 그룹 수를 오름차순으로 한 줄에 하나씩 출력하며, 각 줄에 그룹 수, 빨간 사과 수, 초록 사과 수를 공백으로 구분한다.
+
+### 예제
+
+| 입력  | 출력            |
+| ----- | --------------- |
+| `6 3` | `1 6 3` `3 2 1` |
+
+## 풀이
+
+GCD의 약수를 구하여 가능한 그룹 수를 열거한다.
+
+1. R과 G의 최대공약수(GCD)를 구한다
+2. GCD의 약수가 가능한 그룹 수이다
+3. 각 약수 i에 대해 그룹 수 i, 빨간 사과 `R/i`, 초록 사과 `G/i`를 출력한다
+4. `sqrt(GCD)`까지만 순회하며 약수 쌍을 함께 처리한다
+
+**핵심 아이디어**: 두 종류의 사과를 균등 분배하려면 그룹 수가 R과 G 모두의 약수여야 하므로, GCD의 약수만 확인하면 된다.
+
+## 코드
+
+```python
+a, b = map(int, input().split())
+
+
+def gcd(a, b):
+    while a:
+        a, b = b % a, a
+    return b
+
+
+g = gcd(a, b)
+a = a // g
+b = b // g
+
+for i in range(1, int(g**0.5) + 1):
+    if g % i:
+        continue
+    h = g // i
+    print(i, h * a, h * b)
+    if h != i:
+        print(h, i * a, i * b)
+```
+
+## 복잡도
+
+- 시간: O(sqrt(GCD) + log(min(R, G)))
+- 공간: O(1)

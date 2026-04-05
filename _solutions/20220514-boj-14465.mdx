@@ -1,0 +1,108 @@
+---
+title: "BOJ 14465 - 소가 길을 건너간 이유 5"
+date: "2022-05-14"
+description: "누적 합, 슬라이딩 윈도우 문제"
+tags: ["누적 합", "슬라이딩 윈도우"]
+platform: "boj"
+problem_number: "14465"
+problem_url: "https://www.acmicpc.net/problem/14465"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14465 - 소가 길을 건너간 이유 5](https://www.acmicpc.net/problem/14465)
+
+N개의 신호등 중 일부가 고장났다. 소가 K개의 연속된 신호등 구간을 건너려 할 때, 고장난 신호등이 가장 적은 구간에서의 고장 수를 구한다.
+
+### 입력
+
+- 첫째 줄: 신호등 수 N, 건너야 할 연속 구간 길이 K, 고장난 신호등 수 B
+- 이후 B줄: 고장난 신호등 번호
+
+### 출력
+
+K개 연속 구간 중 고장난 신호등의 최솟값을 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `5 3 2` `2` `4` | `1`  |
+
+## 풀이
+
+고장난 신호등의 위치를 누적 합 배열로 전처리하고, 길이 K의 슬라이딩 윈도우를 이동하며 구간 내 고장 수의 최솟값을 구한다.
+
+1. 크기 N+1의 누적 합 배열 `prefix`를 초기화한다.
+2. 고장난 신호등 번호 위치에 1을 마킹하고 누적 합을 계산한다.
+3. 1번 신호등부터 K개씩 슬라이딩 윈도우를 이동한다.
+4. 구간 `[i, i+K-1]`의 고장 수 = `prefix[i+K-1] - prefix[i-1]`로 O(1) 계산한다.
+5. 최솟값을 갱신하며 출력한다.
+
+**핵심 아이디어**: 누적 합 전처리로 임의 구간의 합을 O(1)에 계산할 수 있다. 윈도우를 1칸씩 이동하므로 전체 시간 복잡도는 O(N)이다. 단순히 K개 구간마다 합산하면 O(N\*K)가 되지만, 누적 합을 활용하면 슬라이딩 윈도우의 각 단계가 O(1)이 된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day96BOJ14465지름길 { // 1446 지름길
+	static class Node {
+		int e, c;
+		public Node(int e, int c) {
+			this.e = e;
+			this.c = c;
+		}
+	}
+	static int N, D;
+	static int[] dist;
+	static List<Node>[] node;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		D = Integer.parseInt(st.nextToken());
+		dist = new int[D + 1];
+		node = new ArrayList[D + 1]; // List 인덱스를 s로 조작
+		for (int i = 0; i < D + 1; i++) {
+			dist[i] = i;
+			node[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int s = Integer.parseInt(st.nextToken());
+			int e = Integer.parseInt(st.nextToken());
+			if (e > D) continue;
+			int c = Integer.parseInt(st.nextToken());
+			if(c < e - s)
+				node[s].add(new Node(e, c));
+		}
+		for (int i = 0; i < D + 1; i++) {
+			if (i != 0)
+				dist[i] = Math.min(dist[i], dist[i - 1] + 1);
+			if (node[i].size() > 0)
+				for (Node n : node[i])
+					dist[n.e] = Math.min(dist[n.e], dist[i] + n.c);
+			System.out.println(Arrays.toString(dist).replaceAll("[\\[\\],ull]", ""));
+		}
+		System.out.println(dist[D]);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 누적 합 전처리 및 슬라이딩 윈도우 1회 순회
+- 공간: O(N) — 누적 합 배열 저장

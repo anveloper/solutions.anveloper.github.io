@@ -1,0 +1,132 @@
+---
+title: "BOJ 10828 - 스택"
+date: "2022-03-13"
+description: "구현, 자료 구조, 스택 문제"
+tags: ["구현", "자료 구조", "스택"]
+platform: "boj"
+problem_number: "10828"
+problem_url: "https://www.acmicpc.net/problem/10828"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10828 - 스택](https://www.acmicpc.net/problem/10828)
+
+정수를 저장하는 스택을 직접 구현하고, `push X`, `pop`, `size`, `empty`, `top` 명령어를 처리하는 문제다. 스택 자료구조의 기본 연산을 구현하는 전형적인 구현 문제다.
+
+### 입력
+
+- 첫째 줄: 명령 수 N (1 이상 10,000 이하)
+- 이후 N개 줄: 명령어 (push X / pop / size / empty / top)
+
+### 출력
+
+`pop`, `size`, `empty`, `top` 명령에 대한 결과를 각 줄에 출력
+
+### 예제
+
+| 입력                                                                                                      | 출력                                          |
+| --------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `14` `push 1` `push 2` `top` `size` `empty` `pop` `pop` `pop` `size` `empty` `pop` `push 3` `empty` `top` | `2` `2` `0` `2` `1` `-1` `0` `1` `-1` `0` `3` |
+
+## 풀이
+
+스택을 직접 배열로 구현한다. `top` 포인터를 -1로 초기화하고, push 시 증가, pop 시 감소시켜 스택의 현재 상태를 추적한다. pop/top은 스택이 비었을 때(`top == -1`) -1을 반환한다.
+
+1. 크기 N의 int 배열과 `top = -1` 포인터로 스택을 초기화한다.
+2. N개의 명령을 switch-case로 파싱한다.
+3. `push X`: `stack[++top] = X`
+4. `pop`: `top == -1`이면 -1 반환, 아니면 `stack[top--]` 반환
+5. `size`: `top + 1` 반환
+6. `empty`: `top == -1`이면 1, 아니면 0 반환
+7. `top`: `top == -1`이면 -1, 아니면 `stack[top]` 반환
+8. 모든 결과를 StringBuilder에 모아 한 번에 출력한다.
+
+**핵심 아이디어**: 배열 기반 스택 구현에서 `top` 포인터 하나로 push/pop/size/empty/peek를 모두 O(1)에 처리할 수 있다. BufferedReader + StringBuilder로 I/O를 최적화해 시간 초과를 방지한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day15BOJ10828스택 { // 10828
+	public static int[] stack;
+	public static int top = -1;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+
+		StringTokenizer st = null;
+
+		int N = Integer.parseInt(br.readLine());
+
+		stack = new int[N];
+		while (N-- > 0) {
+			st = new StringTokenizer(br.readLine());
+			switch (st.nextToken()) {
+			case "push":
+				push(Integer.parseInt(st.nextToken()));
+				break;
+			case "pop":
+				sb.append(pop()).append('\n');
+				break;
+			case "size":
+				sb.append(size()).append('\n');
+				break;
+			case "empty":
+				sb.append(empty()).append('\n');
+				break;
+			case "top":
+				sb.append(peek()).append('\n');
+				break;
+			}
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	public static void push(int item) {
+		stack[top++] = item;
+	}
+
+	public static int pop() {
+		if (top == -1) {
+			return -1;
+		}
+		int res = stack[top];
+		stack[top--] = 0;
+		return res;
+	}
+
+	public static int size() {
+		return top + 1;
+	}
+
+	public static int empty() {
+		if (top == -1) {
+			return 1;
+		}
+		return 0;
+	}
+
+	public static int peek() {
+		if (top == -1) {
+			return -1;
+		}
+		return stack[top];
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

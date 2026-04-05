@@ -1,0 +1,124 @@
+---
+title: "BOJ 1082 - 방 번호"
+date: "2023-12-17"
+description: "다이나믹 프로그래밍, 그리디 알고리즘 문제"
+tags: ["다이나믹 프로그래밍", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "1082"
+problem_url: "https://www.acmicpc.net/problem/1082"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1082 - 방 번호](https://www.acmicpc.net/problem/1082)
+
+0부터 N-1까지의 숫자 스티커가 각각 다른 가격으로 주어질 때, M원 이하로 만들 수 있는 가장 큰 방 번호를 구하라. 선행 0은 허용되지 않는다.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 각 숫자의 가격, 셋째 줄에 예산 M이 주어진다.
+
+### 출력
+
+만들 수 있는 가장 큰 방 번호를 출력한다.
+
+### 예제
+
+| 입력             | 출력  |
+| ---------------- | ----- |
+| `3` `6 7 8` `21` | `210` |
+
+## 풀이
+
+그리디하게 가장 싼 숫자로 최대 자릿수를 확보한 뒤, 앞자리부터 더 큰 숫자로 교체한다.
+
+1. 가장 저렴한 숫자를 찾아 예산으로 살 수 있는 최대 개수만큼 채운다
+2. 앞자리부터 가장 큰 숫자(N-1)를 시도하며, 차액이 남은 예산 이내이면 교체한다
+3. 선행 0이 발생하면 해당 자리를 건너뛰고 예산을 회수한다
+4. 모든 자리가 0이면 "0"을 출력한다
+
+**핵심 아이디어**: 큰 수를 만들려면 자릿수가 많아야 하므로, 먼저 최대 자릿수를 확보하고 앞에서부터 가능한 한 큰 숫자로 교체하는 그리디가 최적이다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day680BOJ1082방번호 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringTokenizer st;
+
+    int N = Integer.parseInt(br.readLine());
+
+    int[] stationery = new int[N];
+    int min = 50;
+    int index = -1;
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++) {
+      int temp = Integer.parseInt(st.nextToken());
+      stationery[i] = temp;
+
+      if (min >= stationery[i]) {
+        min = stationery[i];
+        index = i;
+      }
+    }
+
+    int money = Integer.parseInt(br.readLine());
+    char[] digits = new char[51];
+    int cnt = 0;
+    while (money >= min) {
+      digits[cnt++] = (char) (index + '0');
+      money -= min;
+    }
+
+    int start = 0;
+    for (int i = 0; i < cnt; i++) {
+      for (int j = N - 1; j >= 0; j--) {
+
+        if (stationery[j] <= money + min) {
+          digits[i] = (char) (j + '0');
+          money += min - stationery[j];
+          break;
+        }
+      }
+
+      if (digits[start] == '0') {
+        start++;
+        money += min;
+      }
+    }
+
+    if (start == cnt) {
+      bw.write("0\n");
+      bw.close();
+      br.close();
+      return;
+    }
+
+    String ans = "";
+    for (int i = start; i < cnt; i++) {
+      ans += digits[i];
+    }
+
+    bw.write(ans + "\n");
+    bw.flush();
+    bw.close();
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D\*N) - D는 최대 자릿수(M/최소가격)
+- 공간: O(D)

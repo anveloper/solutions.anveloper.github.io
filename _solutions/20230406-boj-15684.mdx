@@ -1,0 +1,144 @@
+---
+title: "BOJ 15684 - 사다리 조작"
+date: "2023-04-06"
+description: "구현, 브루트포스 알고리즘, 백트래킹 문제"
+tags: ["구현", "브루트포스 알고리즘", "백트래킹"]
+platform: "boj"
+problem_number: "15684"
+problem_url: "https://www.acmicpc.net/problem/15684"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15684 - 사다리 조작](https://www.acmicpc.net/problem/15684)
+
+N개의 세로선과 H개의 가로선 위치가 있는 사다리에서, 가로선을 최소 몇 개 추가하면 모든 i번째 세로선이 i번째로 도착하는지 구하라. 3개 이하로 불가능하면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 세로선 N, 가로선 M, 가로줄 H가 주어지고, M개의 가로선 위치가 주어진다.
+
+### 출력
+
+추가해야 할 최소 가로선 수를 출력한다 (3 초과 시 -1).
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `2 0 3` | `0`  |
+
+## 풀이
+
+0개부터 3개까지 추가하는 경우를 백트래킹으로 탐색하며, 각 경우에 사다리 시뮬레이션으로 유효성을 검증한다.
+
+1. 추가할 가로선 수를 0부터 3까지 시도한다
+2. 백트래킹으로 빈 위치에 가로선을 놓는 조합을 탐색한다
+3. 각 조합에서 모든 세로선에 대해 사다리를 타고 내려가 `i→i` 도착하는지 확인한다
+4. 유효한 경우를 찾으면 즉시 flag를 세워 탐색을 중단한다
+
+**핵심 아이디어**: 최대 3개만 추가하므로 가로선 조합은 C(H*(N-1), 3) 이하이며, 각 검증은 O(N*H)이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day424BOJ15684사다리조작 {
+  static int N, M, H, ans = 0;
+  static int[][] arr;
+  static boolean flag = false;
+
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+    H = Integer.parseInt(st.nextToken());
+
+    arr = new int[H + 1][N + 1];
+
+    if (M != 0) {
+      for (int i = 0; i < M; i++) {
+        st = new StringTokenizer(br.readLine());
+        int a = Integer.parseInt(st.nextToken());
+        int b = Integer.parseInt(st.nextToken());
+
+        arr[a][b] = 1;
+        arr[a][b + 1] = 2;
+      }
+    }
+    for (int i = 0; i <= 3; i++) {
+      ans = i;
+      dfs(1, 0);
+      if (flag) {
+        break;
+      }
+    }
+
+    if (flag) {
+      System.out.println(ans);
+      return;
+    }
+    if (ans > 3) {
+      System.out.println(-1);
+    } else {
+      System.out.println(-1);
+    }
+  }
+
+  private static void dfs(int x, int depth) {
+    if (ans == depth) {
+      if (check()) {
+        flag = true;
+      }
+      return;
+    }
+
+    for (int i = x; i <= H; i++) {
+      for (int j = 1; j < N; j++) {
+        if (arr[i][j] == 0 && arr[i][j + 1] == 0) {
+          arr[i][j] = 1;
+          arr[i][j + 1] = 2;
+
+          dfs(i, depth + 1);
+
+          arr[i][j] = 0;
+          arr[i][j + 1] = 0;
+        }
+      }
+    }
+  }
+
+  private static boolean check() {
+    for (int i = 1; i <= N; i++) {
+      int nx = i;
+      int ny = 1;
+      while (ny <= H) {
+        if (arr[ny][nx] == 1) {
+          nx++;
+        } else if (arr[ny][nx] == 2) {
+          nx--;
+        }
+        ny++;
+      }
+      if (nx != i) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O((H*N)³ * N\*H) - 최대 3개 조합 × 검증
+- 공간: O(H\*N)

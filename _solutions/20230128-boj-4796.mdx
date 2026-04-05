@@ -1,0 +1,74 @@
+---
+title: "BOJ 4796 - 캠핑"
+date: "2023-01-28"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "4796"
+problem_url: "https://www.acmicpc.net/problem/4796"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4796 - 캠핑](https://www.acmicpc.net/problem/4796)
+
+연속 P일 중 L일만 캠핑장을 사용할 수 있다. 총 V일의 휴가 동안 최대 캠핑 가능 일수를 구하라. 0 0 0이 입력되면 종료.
+
+### 입력
+
+여러 테스트 케이스, 각 줄에 L, P, V가 주어진다.
+
+### 출력
+
+각 케이스마다 `Case N: 결과` 형태로 출력한다.
+
+### 예제
+
+| 입력                      | 출력                      |
+| ------------------------- | ------------------------- |
+| `5 8 20` `5 8 17` `0 0 0` | `Case 1: 14` `Case 2: 11` |
+
+## 풀이
+
+나누기와 나머지 연산으로 최대 캠핑 일수를 계산한다.
+
+1. 전체 주기 수 `V / P`에 L일씩 캠핑 가능: `L * (V / P)`
+2. 나머지 `V % P`일 중 L일까지만 캠핑 가능: `min(L, V % P)`
+3. 두 값을 합산하여 출력한다
+
+**핵심 아이디어**: P일 단위 주기에서 최대 L일 사용 가능하므로, 완전 주기와 나머지를 분리하면 O(1)에 해결된다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Day355BOJ4796캠핑 {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+        while (true) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int l = Integer.parseInt(st.nextToken());
+            int p = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            if (l == 0 && p == 0 && v == 0)
+                break;
+            int total = l * (v / p) + Math.min(l, v % p);
+            sb.append("Case " + i + ": " + total + "\n");
+            i++;
+        }
+        System.out.print(sb);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(T) - 테스트 케이스 수
+- 공간: O(1)

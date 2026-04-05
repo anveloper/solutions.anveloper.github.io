@@ -1,0 +1,84 @@
+---
+title: "BOJ 3448 - 문자 인식"
+date: "2025-03-13"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "3448"
+problem_url: "https://www.acmicpc.net/problem/3448"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3448 - 문자 인식](https://www.acmicpc.net/problem/3448)
+
+문자 인식 장치가 출력한 그리드에서 전체 문자 수 대비 공백(`.`) 문자 수의 비율(효율 비율)을 계산하는 문제이다.
+`#`는 채워진 픽셀, `.`는 빈 픽셀이며, 빈 픽셀의 비율을 소수점 한 자리로 출력한다.
+소수점 이하가 `.0`이면 정수로 출력한다.
+
+### 입력
+
+첫 줄에 테스트 케이스 수 N이 주어진다.
+각 테스트 케이스는 빈 줄로 구분되며, `#`와 `.`로 이루어진 그리드가 주어진다.
+
+### 출력
+
+각 테스트 케이스에 대해 `Efficiency ratio is X%.` 형식으로 출력한다.
+X는 소수점 한 자리이며, `.0`이면 정수만 출력한다.
+
+### 예제
+
+| 입력            | 출력                         |
+| --------------- | ---------------------------- |
+| `1` `##.` `.##` | `Efficiency ratio is 33.3%.` |
+
+## 풀이
+
+그리드를 줄 단위로 읽으며 전체 문자 수(`A`)와 공백 문자 수(`R`)를 세고, 비율을 계산한다.
+
+1. 테스트 케이스 수 N을 입력받는다.
+2. 각 케이스에서 빈 줄이 나올 때까지 한 줄씩 읽는다.
+3. 각 줄의 모든 문자에 대해 `A`를 1 증가시키고, `.`이면 추가로 `R`도 1 증가시킨다.
+4. `ratio = round(R / A * 100, 1)`으로 소수점 한 자리 비율을 계산한다.
+5. 소수점 부분이 `0`이면 정수로 변환하여 `Efficiency ratio is X%.` 형식으로 출력한다.
+
+**핵심 아이디어**: 출력 형식에서 `.0` 제거 조건을 문자열 분리로 판별하면 간단히 처리된다.
+
+## 코드
+
+```python
+import sys
+
+N = int(sys.stdin.readline())
+
+for _ in range(N):
+    R, A = 0, 0
+
+    while True:
+        line = sys.stdin.readline().rstrip()
+
+        if line == "":
+            break
+
+        for char in line:
+            if char == "#":
+                A += 1
+            else:
+                A += 1
+                R += 1
+
+    ratio = round(R / A * 100, 1)
+
+    if str(ratio).split(".")[-1] == "0":
+        ratio = int(ratio)
+
+    print(f"Efficiency ratio is {ratio}%.")
+```
+
+## 복잡도
+
+- 시간: O(N _ R _ C) — N개 케이스, 각 R행 C열 그리드 순회
+- 공간: O(1) — 카운터 변수만 사용

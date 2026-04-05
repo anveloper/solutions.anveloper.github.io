@@ -1,0 +1,84 @@
+---
+title: "BOJ 2446 - 별 찍기 - 9"
+date: "2022-11-29"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2446"
+problem_url: "https://www.acmicpc.net/problem/2446"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2446 - 별 찍기 - 9](https://www.acmicpc.net/problem/2446)
+
+N이 주어졌을 때, 첫째 줄에 별 (2\*N-1)개로 시작하여 한 줄에 2개씩 줄어들다가 1개가 된 후, 다시 2개씩 늘어나는 모래시계 모양을 출력하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 100)이 주어진다.
+
+### 출력
+
+총 (2\*N-1)줄에 걸쳐 모래시계 모양의 별을 출력한다. 각 줄의 별 앞에 적절한 공백을 추가한다.
+
+### 예제
+
+| 입력 | 출력                                                                                        |
+| ---- | ------------------------------------------------------------------------------------------- |
+| `5`  | `*********` ` *******` `  *****` `   ***` `    *` `   ***` `  *****` ` *******` `*********` |
+
+## 풀이
+
+상단 역삼각형과 하단 삼각형을 별도의 반복문으로 출력한다.
+
+1. 상단 N줄: i번째 줄에 공백 i개, 별 (2*N-1-2*i)개를 출력한다
+2. 하단 (N-1)줄: i번째 줄에 공백 (N-2-i)개, 별 (3+2\*i)개를 출력한다
+3. 상단에서 별이 1개가 되는 지점이 중간이며, 하단은 3개부터 시작하여 증가한다
+
+**핵심 아이디어**: 줄 번호에 따라 공백과 별의 개수를 수식으로 계산하여 두 파트로 나누어 출력한다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day294BOJ2446별찍기9 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int N = Integer.parseInt(br.readLine());
+		for (int i = 0; i < N; i++) { // 1 ~ N
+			for (int j = 0; j < i; j++) {
+				System.out.print(" ");
+			}
+			for (int k = 0; k < (2 * N - 1) - (2 * i); k++) {
+				System.out.print("*");
+			}
+
+			System.out.println();
+		}
+		for (int i = 0; i < N - 1; i++) { // N+1 ~ 2N-1
+			for (int j = 1; j < (N - 1) - i; j++) {
+				System.out.print(" ");
+			}
+			for (int k = 0; k < 3 + 2 * i; k++) {
+				System.out.print("*");
+			}
+			System.out.println();
+		}
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(1)

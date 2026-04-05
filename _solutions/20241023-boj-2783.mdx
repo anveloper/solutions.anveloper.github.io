@@ -1,0 +1,72 @@
+---
+title: "BOJ 2783 - 삼각 김밥"
+date: "2024-10-23"
+description: "여러 삼각 김밥 중 1000g당 최소 가격을 구하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "2783"
+problem_url: "https://www.acmicpc.net/problem/2783"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2783 - 삼각 김밥](https://www.acmicpc.net/problem/2783)
+
+여러 삼각 김밥의 가격과 무게가 주어질 때, 1000g당 가장 저렴한 가격을 구하라.
+
+### 입력
+
+첫째 줄에 가격 a와 무게 b, 둘째 줄에 추가 삼각 김밥 수 n, 이후 n개의 가격/무게 쌍이 주어진다.
+
+### 출력
+
+1000g당 최소 가격을 출력한다.
+
+### 예제
+
+| 입력                                 | 출력   |
+| ------------------------------------ | ------ |
+| `2000 200` `2` `3000 400` `4000 500` | `8000` |
+
+## 풀이
+
+각 삼각 김밥의 g당 가격을 비교하여 최솟값을 구한다.
+
+1. 첫 번째 삼각 김밥의 g당 가격 `a/b`를 최솟값으로 초기화한다
+2. n개의 추가 삼각 김밥에 대해 g당 가격을 비교하여 더 작으면 갱신한다
+3. 최종 최솟값에 1000을 곱하여 출력한다
+
+**핵심 아이디어**: 단가 비교 문제로 g당 가격의 최솟값을 찾은 뒤 1000을 곱하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  double S_25;
+  int a, b;
+  cin >> a >> b;
+  double min = ((double)a / b);
+
+  int n;
+  cin >> n;
+
+  for (int i = 0; i < n; i++)
+  {
+    cin >> a >> b;
+    min = min > ((double)a / b) ? ((double)a / b) : min;
+  }
+
+  cout << min * 1000 << "\n";
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

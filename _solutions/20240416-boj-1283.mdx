@@ -1,0 +1,94 @@
+---
+title: "BOJ 1283 - 단축키 지정"
+date: "2024-04-16"
+description: "단어의 첫 글자 우선으로 단축키를 지정하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1283"
+problem_url: "https://www.acmicpc.net/problem/1283"
+difficulty: "실버 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1283 - 단축키 지정](https://www.acmicpc.net/problem/1283)
+
+N개의 옵션에 대해 각 단어의 첫 글자를 우선으로 단축키를 지정하라. 불가능하면 나머지 글자를 순서대로 시도한다.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 옵션 문자열이 주어진다.
+
+### 출력
+
+단축키로 지정된 글자를 대괄호로 감싸서 출력한다.
+
+### 예제
+
+| 입력             | 출력             |
+| ---------------- | ---------------- |
+| `2` `New` `Open` | `[N]ew` `[O]pen` |
+
+## 풀이
+
+두 단계 우선순위로 단축키를 지정한다.
+
+1. 먼저 각 단어의 첫 글자 중 미사용인 것을 단축키로 지정한다
+2. 첫 글자가 모두 사용 중이면 전체 글자를 왼쪽부터 순서대로 확인하여 미사용인 것을 선택한다
+3. 대소문자를 구분하지 않고 사용 여부를 추적한다
+4. 단축키로 지정된 글자를 대괄호로 감싸서 출력한다
+
+**핵심 아이디어**: 단어 첫 글자 우선, 전체 글자 순차 탐색의 2단계 규칙을 순서대로 적용한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  const used = new Set();
+  const result = [];
+
+  for (let i = 1; i <= N; i++) {
+    const words = input[i].trim().split(" ");
+    let found = false;
+
+    for (let w = 0; w < words.length; w++) {
+      if (words[w][0] && !used.has(words[w][0].toLowerCase())) {
+        used.add(words[w][0].toLowerCase());
+        words[w] = `[${words[w][0]}]${words[w].slice(1)}`;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      for (let w = 0; w < words.length; w++) {
+        for (let c = 1; c < words[w].length; c++) {
+          if (!used.has(words[w][c].toLowerCase())) {
+            used.add(words[w][c].toLowerCase());
+            words[w] = `${words[w].slice(0, c)}[${words[w][c]}]${words[w].slice(c + 1)}`;
+            found = true;
+            break;
+          }
+        }
+        if (found) break;
+      }
+    }
+
+    result.push(words.join(" "));
+  }
+
+  return result.join("\n");
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N × L) (L: 문자열 길이)
+- 공간: O(26)

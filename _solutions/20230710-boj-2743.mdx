@@ -1,0 +1,62 @@
+---
+title: "BOJ 2743 - 단어 길이 재기"
+date: "2023-07-10"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2743"
+problem_url: "https://www.acmicpc.net/problem/2743"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2743 - 단어 길이 재기](https://www.acmicpc.net/problem/2743)
+
+알파벳으로만 이루어진 단어가 주어질 때, 그 단어의 길이를 출력한다.
+
+### 입력
+
+첫째 줄에 알파벳으로만 이루어진 단어가 주어진다 (길이 1 이상 100 이하).
+
+### 출력
+
+단어의 길이를 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `pulljima` | `8`  |
+
+## 풀이
+
+입력 문자열의 length() 메서드를 호출하여 길이를 출력한다.
+
+1. Scanner로 한 줄을 읽는다
+2. 문자열의 length()를 출력한다
+
+**핵심 아이디어**: Java String의 length() 메서드 하나로 해결되는 기초 문자열 문제이다.
+
+## 코드
+
+```java
+package day549;
+
+import java.util.Scanner;
+
+public class Day531BOJ2743단어길이 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    System.out.println(sc.nextLine().length());
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(N) — 입력 문자열 저장

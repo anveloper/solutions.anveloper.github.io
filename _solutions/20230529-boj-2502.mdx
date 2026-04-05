@@ -1,0 +1,108 @@
+---
+title: "BOJ 2502 - 떡 먹는 호랑이"
+date: "2023-05-29"
+description: "수학, 다이나믹 프로그래밍, 브루트포스 알고리즘 문제"
+tags: ["수학", "다이나믹 프로그래밍", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2502"
+problem_url: "https://www.acmicpc.net/problem/2502"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2502 - 떡 먹는 호랑이](https://www.acmicpc.net/problem/2502)
+
+산을 넘을 때마다 호랑이에게 떡을 준다. 첫째 날과 둘째 날에 각각 A, B개를 주고, 셋째 날부터는 전날과 전전날의 합을 준다. D일에 총 K개를 줄 때 A와 B를 구하라.
+
+### 입력
+
+첫째 줄에 D와 K가 주어진다.
+
+### 출력
+
+첫째 줄에 A, 둘째 줄에 B를 출력한다.
+
+### 예제
+
+| 입력   | 출력    |
+| ------ | ------- |
+| `6 41` | `2` `7` |
+
+## 풀이
+
+D일의 떡 개수를 A와 B의 일차결합으로 표현하고, 브루트포스로 A를 찾는다.
+
+1. D일의 떡 개수는 피보나치 구조로 `A1[D]*A + A2[D]*B`로 표현된다
+2. `A1[i]`는 첫째 날 기여 계수, `A2[i]`는 둘째 날 기여 계수이다
+3. A를 1부터 증가시키며 `K - A1[D]*A`가 `A2[D]`로 나누어떨어지는 값을 찾는다
+4. D=3 특수 케이스는 별도 처리한다
+
+**핵심 아이디어**: 피보나치 점화식에서 D일의 값을 첫째/둘째 날의 선형 결합으로 분리하여, 하나의 변수를 브루트포스하면 나머지가 결정된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day477BOJ2502떡먹는호랑이 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    int D = Integer.parseInt(st.nextToken());
+    int K = Integer.parseInt(st.nextToken());
+
+    if (D == 3) {
+      bw.write("1\n" + (K - 1) + "\n");
+      bw.flush();
+      br.close();
+      bw.close();
+      return;
+    }
+
+    int[] A1 = new int[D + 1];
+    int[] A2 = new int[D + 1];
+
+    A1[3] = A2[3] = 1;
+    A1[4] = 1;
+    A2[4] = 2;
+
+    for (int i = 5; i <= D; i++) {
+      A1[i] = A1[i - 1] + A1[i - 2];
+      A2[i] = A2[i - 1] + A2[i - 2];
+    }
+
+    int first = 0;
+    int second = 0;
+
+    for (int i = 1;; i++) {
+      int res = K - A1[D] * i;
+
+      if (res % A2[D] == 0) {
+        first = i;
+        second = res / A2[D];
+        break;
+      }
+
+    }
+
+    bw.write(first + "\n" + second + "\n");
+    bw.flush();
+    bw.close();
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D + K)
+- 공간: O(D)

@@ -1,0 +1,92 @@
+---
+title: "BOJ 4404 - Dog & Gopher"
+date: "2026-02-23"
+description: "수학, 기하학 문제"
+tags: ["수학", "기하학", "피타고라스 정리"]
+platform: "boj"
+problem_number: "4404"
+problem_url: "https://www.acmicpc.net/problem/4404"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4404 - Dog & Gopher](https://www.acmicpc.net/problem/4404)
+
+들쥐(gopher)와 개(dog)가 평면 위에 있다. 들쥐는 여러 구멍 중 하나로 도망칠 수 있는데, 들쥐의 속도는 개의 절반이다. 들쥐가 개보다 먼저 도착할 수 있는 구멍이 있으면 탈출 성공이다.
+
+### 입력
+
+- 첫 줄: 들쥐 좌표, 개 좌표 (실수 4개)
+- 이후 각 줄: 구멍의 좌표 (실수 2개)
+- EOF까지 입력
+
+### 출력
+
+- 탈출 가능하면 `The gopher can escape through the hole at ({x},{y}).`
+- 불가능하면 `The gopher cannot escape.`
+
+## 풀이
+
+들쥐 속도가 개의 절반이므로, 들쥐가 구멍에 먼저 도착하려면 들쥐-구멍 거리가 개-구멍 거리의 절반 이하여야 한다.
+
+거리 비교 조건: `gopher_dist <= dog_dist / 2`, 즉 `2 * gopher_dist <= dog_dist`
+
+제곱 비교로 루트 연산을 생략한다: `4 * gopher_dist² <= dog_dist²`
+
+첫 번째로 탈출 가능한 구멍을 찾으면 즉시 출력하고 이후 입력은 소진만 한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <iomanip>
+
+using namespace std;
+
+struct Point {
+  double x, y;
+};
+
+double getDistSq(Point p1, Point p2) {
+  return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+}
+
+int main() {
+  Point gopher, dog;
+  if (!(cin >> gopher.x >> gopher.y >> dog.x >> dog.y)) return 0;
+
+  Point hole;
+  bool escaped = false;
+
+  cout << fixed << setprecision(3);
+
+  while (cin >> hole.x >> hole.y) {
+    if (escaped) continue;
+
+    double gDistSq = getDistSq(gopher, hole);
+    double dDistSq = getDistSq(dog, hole);
+
+    if (4 * gDistSq <= dDistSq) {
+      cout << "The gopher can escape through the hole at ("
+           << hole.x << "," << hole.y << ")." << endl;
+      escaped = true;
+    }
+  }
+
+  if (!escaped) {
+    cout << "The gopher cannot escape." << endl;
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 구멍 개수만큼 거리 비교
+- 공간: O(1) — 상수 변수만 사용

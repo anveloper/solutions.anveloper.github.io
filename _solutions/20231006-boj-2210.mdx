@@ -1,0 +1,98 @@
+---
+title: "BOJ 2210 - 숫자판 점프"
+date: "2023-10-06"
+description: "그래프 이론, 브루트포스 알고리즘, 그래프 탐색 문제"
+tags: ["그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "깊이 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "2210"
+problem_url: "https://www.acmicpc.net/problem/2210"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2210 - 숫자판 점프](https://www.acmicpc.net/problem/2210)
+
+5x5 숫자판에서 임의의 칸에서 출발하여 상하좌우로 5번 이동하여 만들 수 있는 서로 다른 6자리 수의 개수를 구하라.
+
+### 입력
+
+5줄에 5x5 숫자판이 주어진다.
+
+### 출력
+
+만들 수 있는 서로 다른 6자리 수의 개수를 출력한다.
+
+### 예제
+
+| 입력                                                        | 출력 |
+| ----------------------------------------------------------- | ---- |
+| `1 1 1 1 1` `1 1 1 1 1` `1 1 1 1 1` `1 1 1 2 1` `1 1 1 1 1` | `15` |
+
+## 풀이
+
+모든 시작점에서 DFS로 6자리 수를 생성하고, 리스트로 중복을 제거하여 개수를 센다.
+
+1. 25개의 시작점 각각에서 DFS를 수행한다
+2. 깊이 6(5번 이동)까지 문자열을 이어붙이며 탐색한다
+3. 같은 칸을 다시 방문할 수 있으므로 visited 체크 없이 진행한다
+4. 완성된 6자리 문자열을 리스트에 중복 없이 추가한다
+
+**핵심 아이디어**: 격자 크기가 5x5, 이동 횟수가 5회로 고정이므로 전체 경우의 수가 제한적이다 (최대 25 \* 4^5 = 25,600).
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day609BOJ2210숫자팜점프 {
+  static List<String> list = new ArrayList<>();
+  static int[] dx = { -1, 1, 0, 0 };
+  static int[] dy = { 0, 0, -1, 1 };
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+    String[][] map = new String[5][5];
+
+    for (int i = 0; i < 5; i++) {
+      st = new StringTokenizer(br.readLine());
+      for (int j = 0; j < 5; j++) {
+        map[i][j] = st.nextToken();
+      }
+    }
+    for (int i = 0; i < 5; i++) {
+      for (int j = 0; j < 5; j++) {
+        dfs(map, i, j, 0, map[i][j]);
+      }
+    }
+    System.out.println(list.size());
+  }
+
+  public static void dfs(String[][] m, int x, int y, int cnt, String tmp) {
+    if (cnt == 5) {
+      if (!list.contains(tmp)) {
+        list.add(tmp);
+      }
+      return;
+    }
+    for (int i = 0; i < 4; i++) {
+      int nowx = x + dx[i];
+      int nowy = y + dy[i];
+      if ((0 <= nowx && nowx < 5) && (0 <= nowy && nowy < 5)) {
+        dfs(m, nowx, nowy, cnt + 1, tmp + m[nowx][nowy]);
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(25 \* 4^5) - 고정 크기 격자에서 전수 탐색
+- 공간: O(4^5) - 생성되는 문자열 수

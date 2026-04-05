@@ -1,0 +1,58 @@
+---
+title: "BOJ 2993 - 세 부분"
+date: "2025-04-07"
+description: "구현, 문자열, 브루트포스 알고리즘 문제"
+tags: ["구현", "문자열", "브루트포스 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "2993"
+problem_url: "https://www.acmicpc.net/problem/2993"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2993 - 세 부분](https://www.acmicpc.net/problem/2993)
+
+문자열을 세 부분으로 나누어 각 부분을 뒤집은 후 이어붙인 결과 중 사전순으로 가장 빠른 것을 구하라.
+
+### 입력
+
+소문자로 이루어진 문자열이 주어진다 (길이 3 이상 100 이하).
+
+### 출력
+
+사전순으로 가장 빠른 결과를 출력한다.
+
+### 예제
+
+| 입력   | 출력   |
+| ------ | ------ |
+| `dcba` | `abcd` |
+
+## 풀이
+
+가능한 모든 분할 위치를 시도하여 최소 결과를 찾는다.
+
+1. 두 분할점 i, j를 이중 반복으로 순회한다 (1 이상 len-1 미만)
+2. 문자열을 `s[:i]`, `s[i:j]`, `s[j:]` 세 부분으로 나눈다
+3. 각 부분을 뒤집어 이어붙인 결과 중 사전순 최솟값을 갱신한다
+
+**핵심 아이디어**: 분할점 조합이 O(N²)개이고 문자열 길이가 최대 100이므로 브루트포스로 충분하다.
+
+## 코드
+
+```python
+s = input()
+result = s
+for i in range(1, len(s)):
+    for j in range(i + 1, len(s)):
+        result = min(result, s[:i][::-1] + s[i:j][::-1] + s[j:][::-1])
+print(result)
+```
+
+## 복잡도
+
+- 시간: O(N³)
+- 공간: O(N)

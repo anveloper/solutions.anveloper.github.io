@@ -1,0 +1,86 @@
+---
+title: "BOJ 16926 - 배열 돌리기 1"
+date: "2024-06-22"
+description: "2차원 배열을 바깥 테두리부터 반시계 방향으로 R번 회전시키는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "16926"
+problem_url: "https://www.acmicpc.net/problem/16926"
+difficulty: "골드 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16926 - 배열 돌리기 1](https://www.acmicpc.net/problem/16926)
+
+N×M 배열을 반시계 방향으로 R번 회전시킨 결과를 출력하라.
+
+### 입력
+
+첫째 줄에 N, M, R, 이후 N줄에 배열이 주어진다.
+
+### 출력
+
+R번 회전한 배열을 출력한다.
+
+### 예제
+
+| 입력                                                   | 출력                                           |
+| ------------------------------------------------------ | ---------------------------------------------- |
+| `4 4 2` `1 2 3 4` `5 6 7 8` `9 10 11 12` `13 14 15 16` | `3 4 8 12` `2 11 10 16` `1 7 6 15` `5 9 13 14` |
+
+## 풀이
+
+배열을 바깥 테두리부터 안쪽 테두리까지 독립적인 고리로 분리한 뒤, 각 고리를 deque.rotate로 회전시킨다.
+
+1. min(N, M) // 2개의 고리를 바깥부터 안쪽 순으로 분리한다
+2. 각 고리의 원소를 위→오른쪽→아래→왼쪽 순서로 deque에 넣는다
+3. `deque.rotate(-R)`로 반시계 방향 R칸 회전한다
+4. 회전된 deque에서 원소를 꺼내 결과 배열에 다시 채운다
+
+**핵심 아이디어**: 각 고리는 독립적으로 회전하므로 deque의 rotate를 사용하면 O(1)에 회전 가능하다.
+
+## 코드
+
+```python
+from sys import stdin
+from collections import deque
+
+N, M, R = map(int, stdin.readline().split())
+
+matrix = []
+ans = [[0] * M for _ in range(N)]
+deq = deque()
+
+for i in range(N):
+    matrix.append(list(stdin.readline().split()))
+
+loops = min(N, M) // 2
+for i in range(loops):
+    deq.clear()
+    deq.extend(matrix[i][i : M - i])
+    deq.extend([row[M - i - 1] for row in matrix[i + 1 : N - i - 1]])
+    deq.extend(matrix[N - i - 1][i : M - i][::-1])
+    deq.extend([row[i] for row in matrix[i + 1 : N - i - 1]][::-1])
+
+    deq.rotate(-R)
+
+    for j in range(i, M - i):
+        ans[i][j] = deq.popleft()
+    for j in range(i + 1, N - i - 1):
+        ans[j][M - i - 1] = deq.popleft()
+    for j in range(M - i - 1, i - 1, -1):
+        ans[N - i - 1][j] = deq.popleft()
+    for j in range(N - i - 2, i, -1):
+        ans[j][i] = deq.popleft()
+
+for line in ans:
+    print(" ".join(line))
+```
+
+## 복잡도
+
+- 시간: O(N \* M)
+- 공간: O(N \* M)

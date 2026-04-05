@@ -1,0 +1,89 @@
+---
+title: "BOJ 6721 - Backward numbers"
+date: "2025-12-17"
+description: "두 수를 각각 뒤집어 더한 후 결과를 다시 뒤집어 출력하는 수학/구현 문제"
+tags: ["수학", "구현", "문자열", "사칙연산"]
+platform: "boj"
+problem_number: "6721"
+problem_url: "https://www.acmicpc.net/problem/6721"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6721 - Backward numbers](https://www.acmicpc.net/problem/6721)
+
+두 양의 정수 a, b가 주어질 때, 각각을 뒤집은 수를 더하고, 그 합을 다시 뒤집은 결과를 출력한다. 즉 `reverse(reverse(a) + reverse(b))`를 계산한다.
+
+예를 들어 a=12, b=34이면 reverse(12)=21, reverse(34)=43, 21+43=64, reverse(64)=46이 된다.
+
+N개의 테스트 케이스가 주어진다.
+
+### 입력
+
+첫 번째 줄에 테스트 케이스 수 N이 주어진다. 이후 N개의 줄에 각각 두 정수 a, b가 주어진다.
+
+### 출력
+
+각 테스트 케이스에 대해 `reverse(reverse(a) + reverse(b))`의 결과를 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                  | 출력     |
+| --------------------- | -------- |
+| `2` `12 34` `100 200` | `46` `3` |
+
+## 풀이
+
+정수를 뒤집는 함수를 구현하고, 이를 조합하여 계산한다.
+
+1. `reverse(x)` 함수: `x % 10`으로 끝자리를 추출하여 `ret = ret * 10 + x % 10`으로 뒤집힌 수를 누적한다.
+2. 각 테스트 케이스에서 a, b를 읽어 `reverse(reverse(a) + reverse(b))`를 계산한다.
+3. 결과를 출력한다.
+
+**핵심 아이디어**: 수를 뒤집을 때 앞쪽 0은 자동으로 무시된다. 예를 들어 `reverse(100) = 1`이다. 이 성질 덕분에 100 + 200 = 1 + 2 = 3을 구한 뒤 reverse(3) = 3이 올바르게 출력된다. 별도 문자열 변환 없이 산술 연산만으로 뒤집기가 가능하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int reverse(int x)
+{
+  int ret = 0;
+  while (x)
+  {
+    ret = ret * 10 + x % 10;
+    x /= 10;
+  }
+  return ret;
+}
+
+void solve(void)
+{
+  int a, b;
+  cin >> a >> b;
+
+  cout << reverse(reverse(a) + reverse(b)) << "\n";
+}
+
+int main(void)
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int n;
+  cin >> n;
+  while (n--)
+    solve();
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* D) — N은 테스트 케이스 수, D는 정수의 자릿수 (최대 10)
+- 공간: O(1) — 함수 호출 스택 외 추가 자료구조 없음

@@ -1,0 +1,110 @@
+---
+title: "BOJ 24479 - 알고리즘 수업 - 깊이 우선 탐색 1"
+date: "2023-04-22"
+description: "그래프 이론, 그래프 탐색, 정렬 문제"
+tags: ["그래프 이론", "그래프 탐색", "정렬", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "24479"
+problem_url: "https://www.acmicpc.net/problem/24479"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 24479 - 알고리즘 수업 - 깊이 우선 탐색 1](https://www.acmicpc.net/problem/24479)
+
+N개의 정점, M개의 간선인 무방향 그래프에서 정점 R부터 DFS를 수행할 때, 각 정점의 방문 순서를 구하라. 인접 정점은 오름차순으로 방문한다.
+
+### 입력
+
+첫째 줄에 N, M, R, 이후 M줄에 간선이 주어진다.
+
+### 출력
+
+각 정점의 방문 순서를 출력한다 (방문하지 않으면 0).
+
+### 예제
+
+| 입력                                  | 출력                |
+| ------------------------------------- | ------------------- |
+| `5 5 1` `1 4` `1 2` `2 3` `2 4` `3 4` | `1` `2` `3` `4` `0` |
+
+## 풀이
+
+인접 리스트를 오름차순 정렬한 뒤 DFS로 방문 순서를 기록한다.
+
+1. 인접 리스트를 구성하고 각 리스트를 오름차순 정렬한다
+2. 시작 정점 R의 방문 순서를 1로 설정하고 DFS를 시작한다
+3. 미방문 인접 정점을 순서대로 방문하며 카운터를 증가시켜 순서를 기록한다
+
+**핵심 아이디어**: 인접 리스트 정렬 후 DFS를 수행하면 오름차순 방문이 보장된다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day440BOJ24479알고리즘수업 {
+  static int N, M, R, cnt;
+  static int[] arr;
+  static boolean[] visited;
+  static ArrayList<ArrayList<Integer>> graph;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+    R = Integer.parseInt(st.nextToken());
+
+    graph = new ArrayList<>();
+    arr = new int[N + 1];
+    visited = new boolean[N + 1];
+
+    for (int i = 0; i <= N; i++)
+      graph.add(new ArrayList<>());
+
+    for (int i = 0; i < M; i++) {
+      st = new StringTokenizer(br.readLine());
+      int u = Integer.parseInt(st.nextToken());
+      int v = Integer.parseInt(st.nextToken());
+      graph.get(u).add(v);
+      graph.get(v).add(u);
+    }
+
+    for (int i = 1; i <= N; i++)
+      Collections.sort(graph.get(i));
+
+    arr[R] = 1;
+    visited[R] = true;
+    cnt = 2;
+    dfs(R);
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 1; i <= N; i++)
+      sb.append(arr[i] + "\n");
+    System.out.println(sb);
+  }
+
+  public static void dfs(int st) {
+    for (int n : graph.get(st)) {
+      if (!visited[n]) {
+        arr[n] = cnt++;
+        visited[n] = true;
+        dfs(n);
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O((N + M) log N) - 정렬 + DFS
+- 공간: O(N + M)

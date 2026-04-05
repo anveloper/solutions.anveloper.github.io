@@ -1,0 +1,175 @@
+---
+title: "BOJ 4991 - 로봇 청소기"
+date: "2023-07-19"
+description: "그래프 이론, 브루트포스 알고리즘, 그래프 탐색 문제"
+tags: ["그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "너비 우선 탐색", "비트마스킹"]
+platform: "boj"
+problem_number: "4991"
+problem_url: "https://www.acmicpc.net/problem/4991"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4991 - 로봇 청소기](https://www.acmicpc.net/problem/4991)
+
+R x C 격자에서 로봇 청소기가 모든 먼지(`*`)를 청소하는 최소 이동 횟수를 구하라.
+
+### 입력
+
+여러 테스트 케이스가 주어지며, 각 케이스에 C, R과 격자가 주어진다. `o`는 시작점, `*`는 먼지, `.`은 빈 칸, `x`는 벽이다.
+
+### 출력
+
+각 테스트 케이스마다 최소 이동 횟수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                                                        | 출력 |
+| ----------------------------------------------------------- | ---- |
+| `7 5` `......*` `*.....*` `.o....` `..*...` `...*...` `0 0` | `8`  |
+
+## 풀이
+
+시작점과 먼지 간의 BFS로 거리를 구한 뒤, 순열 탐색으로 최소 방문 순서를 찾는다.
+
+1. 시작점과 모든 먼지 쌍 사이의 BFS 최단 거리를 구한다
+2. 인접 리스트로 거리 그래프를 구성한다
+3. DFS(백트래킹)로 모든 먼지를 방문하는 순열 중 최소 비용을 찾는다
+
+**핵심 아이디어**: 먼지 개수가 최대 10개이므로, BFS로 거리를 전처리한 뒤 10! 순열 탐색이 가능하다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day528BOJ4991로봇청소기 {
+  static int[] dr = { 0, 1, 0, -1 }, dc = { -1, 0, 1, 0 };
+  static int ans = Integer.MAX_VALUE;
+  static boolean[] check;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    while (true) {
+      ans = Integer.MAX_VALUE;
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      int C = Integer.parseInt(st.nextToken());
+      int R = Integer.parseInt(st.nextToken());
+      if (R + C == 0)
+        break;
+
+      char[][] map = new char[R][C];
+      Dot[] dusts = new Dot[11];
+      int idx = 1;
+
+      for (int i = 0; i < R; i++) {
+        String str = br.readLine();
+        for (int j = 0; j < C; j++) {
+          map[i][j] = str.charAt(j);
+          if (map[i][j] == 'o') {
+            dusts[0] = new Dot(j, i);
+          } else if (map[i][j] == '*') {
+            dusts[idx++] = new Dot(j, i);
+          }
+        }
+      }
+      ArrayList<Node>[] list = new ArrayList[idx];
+      for (int i = 0; i < idx; i++) {
+        list[i] = new ArrayList<Node>();
+      }
+
+      for (int start = 0; start < idx - 1; start++) {
+        for (int end = start + 1; end < idx; end++) {
+          int weight = BFS(dusts[start], dusts[end], R, C, map);
+          if (weight == -1)
+            continue;
+          list[start].add(new Node(end, weight));
+          list[end].add(new Node(start, weight));
+        }
+      }
+      check = new boolean[idx];
+      check[0] = true;
+      Permutation(0, 0, list, 0, idx);
+      System.out.println(ans == Integer.MAX_VALUE ? -1 : ans);
+    }
+  }
+
+  static void Permutation(int start, int depth, ArrayList<Node>[] adj_list, int sum, int dusts) {
+    if (depth == dusts - 1) {
+      ans = Math.min(ans, sum);
+      return;
+    }
+
+    for (Node next : adj_list[start]) {
+      if (check[next.end])
+        continue;
+      check[next.end] = true;
+      Permutation(next.end, depth + 1, adj_list, sum + next.weight, dusts);
+      check[next.end] = false;
+    }
+  }
+
+  static int BFS(Dot start, Dot end, int R, int C, char[][] map) {
+    Queue<Dot> q = new LinkedList<>();
+    boolean[][] visit = new boolean[R][C];
+    q.offer(new Dot(start.r, start.c, 0));
+    visit[start.c][start.r] = true;
+
+    while (!q.isEmpty()) {
+      Dot d = q.poll();
+
+      if (d.c == end.c && d.r == end.r) {
+        return d.cnt;
+      }
+      for (int i = 0; i < 4; i++) {
+        int nr = d.r + dr[i];
+        int nc = d.c + dc[i];
+        if (nr < 0 || nr >= C || nc < 0 || nc >= R || visit[nc][nr] || map[nc][nr] == 'x')
+          continue;
+        q.offer(new Dot(nr, nc, d.cnt + 1));
+        visit[nc][nr] = true;
+      }
+    }
+    return -1;
+  }
+
+  static class Dot {
+    int r;
+    int c;
+    int cnt;
+
+    Dot(int r, int c) {
+      this.r = r;
+      this.c = c;
+    }
+
+    Dot(int r, int c, int cnt) {
+      this.r = r;
+      this.c = c;
+      this.cnt = cnt;
+    }
+  }
+
+  static class Node {
+    int end;
+    int weight;
+
+    Node(int end, int weight) {
+      this.end = end;
+      this.weight = weight;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D² _ R _ C + D!) - D는 먼지 수
+- 공간: O(R \* C)

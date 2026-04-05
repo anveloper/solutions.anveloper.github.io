@@ -1,0 +1,88 @@
+---
+title: "BOJ 4890 - Tiles of Tetris, NOT!"
+date: "2025-11-29"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "4890"
+problem_url: "https://www.acmicpc.net/problem/4890"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4890 - Tiles of Tetris, NOT!](https://www.acmicpc.net/problem/4890)
+
+W x H 크기의 직사각형을 동일한 직사각형 타일로 빈틈없이 채울 때, 필요한 최소 타일 수를 구하라.
+
+### 입력
+
+여러 테스트 케이스에 W와 H가 주어지며, 둘 다 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 최소 타일 수를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `6 3` `0 0` | `2`  |
+
+## 풀이
+
+가로와 세로의 관계에 따라 경우를 나누어 최소 타일 수를 계산한다.
+
+1. W와 H를 큰 쪽이 W가 되도록 정규화한다
+2. W == H이면 1개 타일로 충분하다
+3. W가 H의 배수이면 `W / H`개이다
+4. 그 외에는 1 x 1 타일만 가능하므로 `W * H`개이다
+
+**핵심 아이디어**: 직사각형 타일링의 최소 분할은 한 변이 다른 변의 배수인지에 따라 결정된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int main(void)
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  while (1)
+  {
+    long long W, H;
+    cin >> W >> H;
+    if (W == 0 && H == 0)
+    {
+      break;
+    }
+    if (W < H)
+    {
+      swap(W, H);
+    }
+    if (W == H)
+    {
+      cout << 1 << "\n";
+      continue;
+    }
+    if (W % H == 0)
+    {
+      cout << W / H << "\n";
+    }
+    else
+    {
+      cout << W * H << "\n";
+    }
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

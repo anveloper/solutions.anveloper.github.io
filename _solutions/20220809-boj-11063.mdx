@@ -1,0 +1,121 @@
+---
+title: "BOJ 11063 - Consecutive Ordering"
+date: "2022-08-09"
+description: "자료 구조, 세그먼트 트리 문제"
+tags: ["자료 구조", "세그먼트 트리"]
+platform: "boj"
+problem_number: "11063"
+problem_url: "https://www.acmicpc.net/problem/11063"
+difficulty: "플래티넘 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11063 - Consecutive Ordering](https://www.acmicpc.net/problem/11063)
+
+체스판에서 킹(King)과 스톤(Stone)의 초기 위치가 주어진다. 여러 번의 이동 명령이 주어지는데, 각 명령은 방향 문자들의 조합이다. 킹이 이동하면서 스톤 위치와 겹치면 스톤도 밀리며, 체스판 밖으로 나가면 이동 불가. 최종 위치를 출력하는 시뮬레이션 문제이다.
+
+### 입력
+
+첫째 줄에 킹의 위치, 스톤의 위치, 이동 횟수가 주어진다.
+
+다음 줄부터 이동 명령이 주어진다. 각 명령은 B(아래), T(위), L(왼쪽), R(오른쪽)의 조합이다.
+
+### 출력
+
+킹과 스톤의 최종 위치를 출력한다.
+
+### 예제
+
+**입력:**
+
+```
+A1 H8 1
+TR
+```
+
+**출력:**
+
+```
+B2
+H8
+```
+
+## 풀이
+
+**핵심 아이디어:** 각 이동 명령의 방향 문자들을 합산하여 이동 벡터를 계산하고, 킹의 이동 가능 여부와 스톤 충돌을 시뮬레이션한다.
+
+단계별 풀이:
+
+1. 방향 딕셔너리로 B(-1,0), L(0,-1), R(0,1), T(1,0)를 저장한다.
+2. 각 이동 명령마다 방향 문자들을 합산하여 `(moveX, moveY)` 벡터를 계산한다.
+3. 킹의 새 위치가 체스판(0~7) 내부인지 확인:
+   - 킹이 스톤 위치로 이동하면, 스톤도 같은 벡터로 밀 수 있는지 확인.
+   - 스톤이 체스판 범위 내라면 킹과 스톤 모두 이동, 아니면 이동 불가.
+4. 최종 위치를 열은 알파벳, 행은 숫자로 변환하여 출력한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Day183BOJ11063킹구현 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String[] rawData = br.readLine().split(" ");
+		int kx = rawData[0].charAt(0) - 'A';
+		int ky = rawData[0].charAt(1) - '1';
+		int sx = rawData[1].charAt(0) - 'A';
+		int sy = rawData[1].charAt(1) - '1';
+		int movenum = Integer.parseInt(rawData[2]);
+		Map<Character, int[]> moveDic = new HashMap<>();
+		int[] moveB = { -1, 0 };
+		moveDic.put('B', moveB);
+		int[] moveL = { 0, -1 };
+		moveDic.put('L', moveL);
+		int[] moveR = { 0, 1 };
+		moveDic.put('R', moveR);
+		int[] moveT = { 1, 0 };
+		moveDic.put('T', moveT);
+		for (int i = 0; i < movenum; i++) {
+			String rawMove = br.readLine();
+			int moveX = 0;
+			int moveY = 0;
+			for (int j = 0; j < rawMove.length(); j++) {
+				int[] moveTemp = moveDic.get(rawMove.charAt(j));
+				moveX += moveTemp[1];
+				moveY += moveTemp[0];
+			}
+			if (kx + moveX >= 0 && kx + moveX < 8 && ky + moveY >= 0 && ky + moveY < 8) {
+				if (sx == kx + moveX && sy == ky + moveY) {
+					if (sx + moveX >= 0 && sx + moveX < 8 && sy + moveY >= 0 && sy + moveY < 8) {
+						sx += moveX;
+						sy += moveY;
+						kx += moveX;
+						ky += moveY;
+					}
+				} else {
+					kx += moveX;
+					ky += moveY;
+				}
+			}
+		}
+		System.out.print((char) (kx + 'A'));
+		System.out.println((int) (ky + 1));
+		System.out.print((char) (sx + 'A'));
+		System.out.println((int) (sy + 1));
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(M × L) — M번의 이동 명령, 각 명령의 길이 L
+- 공간: O(1) — 킹/스톤 위치와 방향 딕셔너리만 사용

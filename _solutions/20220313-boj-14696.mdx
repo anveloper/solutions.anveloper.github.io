@@ -1,0 +1,97 @@
+---
+title: "BOJ 14696 - 딱지놀이"
+date: "2022-03-13"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "14696"
+problem_url: "https://www.acmicpc.net/problem/14696"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14696 - 딱지놀이](https://www.acmicpc.net/problem/14696)
+
+두 사람이 딱지놀이를 N라운드 진행한다. 각 딱지에는 별(4), 동그라미(3), 네모(2), 세모(1) 모양이 있으며, 별 개수를 먼저 비교하고, 같으면 동그라미, 네모, 세모 순으로 비교하여 승자를 결정한다. 모든 모양의 수가 같으면 무승부이다.
+
+### 입력
+
+첫째 줄에 라운드 수 N이 주어진다. 이후 각 라운드마다 두 줄씩, 각 줄의 첫 번째 수는 딱지에 그려진 모양의 수이고 나머지는 각 모양의 종류(1~4)이다.
+
+### 출력
+
+각 라운드의 결과를 한 줄씩 A, B, D 중 하나로 출력한다.
+
+### 예제
+
+| 입력                                                                                  | 출력            |
+| ------------------------------------------------------------------------------------- | --------------- |
+| `4` `1 4` `4 3 3 2 1` `5 2 4 3 2 1` `4 4 3 2 1` `5 4 4 2 3 1` `4 3 2 1 1` `1 1` `1 1` | `B` `A` `A` `D` |
+
+## 풀이
+
+각 라운드에서 두 딱지의 모양별 개수를 세어 높은 등급(별→동그라미→네모→세모)부터 비교한다.
+
+1. 각 딱지의 모양을 크기 5의 배열에 집계한다 (인덱스 1~4)
+2. 인덱스 4(별)부터 0까지 역순으로 비교한다
+3. 먼저 차이가 나는 모양에서 많은 쪽이 승리한다
+4. 모든 모양의 수가 같으면 무승부(D)이다
+
+**핵심 아이디어**: `별(4) > 동그라미(3) > 네모(2) > 세모(1)` 우선순위로 비교하므로, 배열 인덱스를 역순으로 순회하며 첫 번째 차이점에서 승부가 결정된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day08BOJ14696딱지놀이 { // 14696
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("data/an/input14696.txt")));
+//		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = null;
+		int N = Integer.parseInt(br.readLine());
+		for (int tc = 0; tc < N; tc++) {
+			String ans = "D";
+
+			st = new StringTokenizer(br.readLine());
+			int[] a = new int[5];
+			Integer.parseInt(st.nextToken()); // 횟수 미사용
+			while (st.hasMoreTokens())
+				a[Integer.parseInt(st.nextToken())]++;
+
+			st = new StringTokenizer(br.readLine());
+			int[] b = new int[5];
+			Integer.parseInt(st.nextToken()); // 횟수 미사용
+			while (st.hasMoreTokens())
+				b[Integer.parseInt(st.nextToken())]++;
+
+			if (a[4] == b[4]) {
+				for (int n = 3; n >= 0; n--) {
+					if (a[n] == b[n]) // continue로 최종 조건 맞추기
+						continue;
+					ans = a[n] > b[n] ? "A" : "B";
+					break;
+				}
+			} else // 우선 조건을 else로 넣기
+				ans = a[4] > b[4] ? "A" : "B";
+			sb.append(ans).append("\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* K) — N라운드, 각 라운드 K개 모양 집계 (비교는 O(4) 상수)
+- 공간: O(1) — 고정 크기 배열 2개

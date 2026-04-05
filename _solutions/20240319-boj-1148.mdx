@@ -1,0 +1,125 @@
+---
+title: "BOJ 1148 - 단어 만들기"
+date: "2024-03-19"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1148"
+problem_url: "https://www.acmicpc.net/problem/1148"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1148 - 단어 만들기](https://www.acmicpc.net/problem/1148)
+
+3×3 격자에 알파벳 9개가 주어진다. 사전의 단어 중 격자의 글자만으로 만들 수 있는 단어를 찾고, 격자의 각 글자가 필수 글자(가운데)일 때 만들 수 있는 단어 수를 구한다. 가장 적게/많이 만드는 글자와 그 수를 출력한다.
+
+### 입력
+
+사전 단어들이 줄 단위로 주어지고 `-`로 끝난다. 이후 3×3 격자가 줄 단위로 주어지고 `#`으로 끝난다.
+
+### 출력
+
+각 격자에 대해 최소 글자들과 최소값, 최대 글자들과 최대값을 출력한다.
+
+### 예제
+
+| 입력                         | 출력      |
+| ---------------------------- | --------- |
+| `ABACUS` `-` `ABCAUDSIG` `#` | `D 0 A 1` |
+
+## 풀이
+
+사전 단어를 알파벳 빈도 배열로 변환하고, 각 격자에 대해 만들 수 있는 단어를 필터링한다.
+
+1. 사전의 각 단어를 알파벳 26개 빈도 배열로 저장한다
+2. 각 격자에 대해 9글자의 빈도 배열을 만든다
+3. 사전 단어의 빈도가 격자 빈도 이하인 단어를 찾는다 (해당 글자만으로 구성 가능)
+4. 유효한 단어에 포함된 알파벳별 등장 횟수를 센다
+5. 격자에 있는 글자 중 최소/최대 등장 횟수의 글자를 출력한다
+
+**핵심 아이디어**: 알파벳 빈도 배열 비교로 단어 구성 가능 여부를 O(26)에 판별하고, 레이블 기준 카운팅으로 최소/최대를 구한다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+
+public class Day777BOJ1148단어만들기 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int[][] TotChar = new int[200000][26];
+    int idx = 0;
+    while (true) {
+      String s = br.readLine();
+      if (s.equals("-"))
+        break;
+      for (int z = 0; z < s.length(); z++) {
+        TotChar[idx][s.charAt(z) - 'A']++;
+      }
+      idx++;
+    }
+
+    while (true) {
+      String s = br.readLine();
+      int[] ans = new int[26];
+      if (s.equals("#"))
+        break;
+
+      int[] map = new int[26];
+      for (int z = 0; z < 9; z++)
+        map[s.charAt(z) - 'A']++;
+
+      case1: for (int k = 0; k < idx; k++) {
+        for (int z = 0; z < 26; z++) {
+          if (map[z] < TotChar[k][z])
+            continue case1;
+        }
+        for (int z = 0; z < 26; z++) {
+          if (TotChar[k][z] > 0)
+            ans[z]++;
+        }
+
+      }
+
+      int min = Integer.MAX_VALUE;
+      int max = Integer.MIN_VALUE;
+      for (int i = 0; i < 26; i++) {
+        if (ans[i] != 0)
+          min = Math.min(min, ans[i]);
+        if (ans[i] == 0 && map[i] > 0)
+          min = 0;
+        max = Math.max(max, ans[i]);
+      }
+
+      StringBuffer minsb = new StringBuffer();
+      StringBuffer maxsb = new StringBuffer();
+
+      for (int i = 0; i < 26; i++) {
+        if (min != 0 && min == ans[i]) {
+          minsb.append((char) ('A' + i));
+        } else if (min == 0 && map[i] > 0 && ans[i] == 0)
+          minsb.append((char) (i + 'A'));
+
+        if (max == ans[i] && map[i] > 0) {
+          maxsb.append((char) ('A' + i));
+        }
+      }
+
+      System.out.println(minsb + " " + min + " " + maxsb + " " + max);
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D \* 26) — 격자당 사전 전체 순회, 각 단어 26글자 비교
+- 공간: O(D \* 26) — 사전 단어별 빈도 배열

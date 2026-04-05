@@ -1,0 +1,104 @@
+---
+title: "BOJ 3512 - Flat"
+date: "2026-01-19"
+description: "수학, 구현, 문자열 문제"
+tags: ["수학", "구현", "문자열", "사칙연산"]
+platform: "boj"
+problem_number: "3512"
+problem_url: "https://www.acmicpc.net/problem/3512"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3512 - Flat](https://www.acmicpc.net/problem/3512)
+
+아파트에 n개의 방이 있고 각 방의 면적(a)과 타입(t)이 주어진다. 임대료 계수 c가 주어질 때 다음 세 가지를 계산하여 출력하는 문제이다.
+
+1. **총 면적**: 모든 방의 면적 합
+2. **침실 면적**: 타입이 `bedroom`인 방들의 면적 합
+3. **임대료**: 각 방의 임대료 합
+   - `balcony` 타입: 면적 \* c / 2
+   - 그 외 모든 타입: 면적 \* c
+
+### 입력
+
+- 첫 번째 줄에 방의 수 n과 임대료 계수 c가 주어진다.
+- 다음 n개의 줄에 각 방의 면적 a와 타입 t가 주어진다. 타입은 `bedroom`, `balcony`, 기타 문자열이다.
+
+### 출력
+
+세 값을 순서대로 출력한다. 첫 두 줄은 정수, 세 번째 줄은 소수점 6자리 실수로 출력한다.
+
+### 예제
+
+| 입력                                          | 출력                    |
+| --------------------------------------------- | ----------------------- |
+| `3 100` `20 bedroom` `10 balcony` `15 living` | `45` `20` `4000.000000` |
+
+## 풀이
+
+각 방의 타입에 따라 세 가지 누적합을 계산하는 단순 구현 문제이다.
+
+1. 방의 수 n과 임대료 계수 c를 입력받는다.
+2. n개의 방을 순서대로 처리한다.
+3. 총 면적에 a를 누적한다.
+4. 타입이 `bedroom`이면 침실 면적에 a를 누적한다.
+5. 타입이 `balcony`이면 임대료에 `a * c / 2`를 누적하고, 아니면 `a * c`를 누적한다.
+6. 총 면적, 침실 면적, 임대료를 순서대로 출력한다. 임대료는 소수점 6자리로 출력한다.
+
+**핵심 아이디어**: 타입 문자열을 직접 비교하여 분기 처리한다. `balcony` 타입의 임대료가 절반이므로 `else if` 없이 `balcony`가 아닌 경우를 `else`로 처리하면 `bedroom` 등 나머지 타입에도 자연스럽게 c 배율이 적용된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int n, c;
+
+double a;
+string t;
+
+double res[3] = {
+    0,
+};
+
+int main()
+{
+  cin >> n >> c;
+
+  for (int i = 0; i < n; i++)
+  {
+    cin >> a >> t;
+
+    res[0] += a;
+
+    if (t == "bedroom")
+      res[1] += a;
+
+    if (t == "balcony")
+      res[2] += a * c / 2;
+    else
+      res[2] += a * c;
+  }
+
+  cout << res[0] << '\n'
+       << res[1] << '\n';
+
+  cout.precision(6);
+  cout << fixed;
+
+  cout << res[2];
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) - n개의 방을 순서대로 처리
+- 공간: O(1) - 크기 3의 고정 배열만 사용

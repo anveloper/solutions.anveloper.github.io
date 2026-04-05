@@ -1,0 +1,72 @@
+---
+title: "BOJ 10812 - 바구니 순서 바꾸기"
+date: "2024-10-04"
+description: "배열의 구간을 회전시키는 연산을 반복하는 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "10812"
+problem_url: "https://www.acmicpc.net/problem/10812"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10812 - 바구니 순서 바꾸기](https://www.acmicpc.net/problem/10812)
+
+N개의 바구니가 순서대로 있을 때, M번의 회전 연산(구간 `[i, j]`를 k번째 위치 기준으로 회전)을 수행한 결과를 출력하라.
+
+### 입력
+
+첫째 줄에 N, M이 주어지고, 이후 M줄에 i, j, k가 주어진다.
+
+### 출력
+
+최종 바구니 배열을 출력한다.
+
+### 예제
+
+| 입력                            | 출력                   |
+| ------------------------------- | ---------------------- |
+| `10 3` `1 6 4` `3 9 8` `2 10 5` | `1 4 6 2 5 3 9 10 7 8` |
+
+## 풀이
+
+STL `rotate` 함수로 구간 회전을 수행한다.
+
+1. 배열을 `{1, 2, ..., N}`으로 초기화한다
+2. 각 연산에서 `rotate(arr+i-1, arr+k-1, arr+j)`를 호출한다
+3. k 위치의 원소가 구간의 새로운 시작점이 된다
+4. M번 연산 후 최종 배열을 출력한다
+
+**핵심 아이디어**: STL `rotate`는 `[first, last)` 구간에서 `middle`을 새 시작점으로 회전시키므로, 인덱스 변환만 정확하면 O(구간 크기)에 수행된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+int main()
+{
+  int n, m, i, j, k;
+  cin >> n >> m;
+  int arr[100];
+  for (int p = 0; p < 100; p++)
+    arr[p] = p + 1;
+  while (m-- > 0)
+  {
+    cin >> i >> j >> k;
+    rotate(arr + i - 1, arr + k - 1, arr + j);
+  }
+  for (int p = 0; p < n; p++)
+    cout << arr[p] << " ";
+}
+```
+
+## 복잡도
+
+- 시간: O(M \* N) (M: 연산 횟수, N: 바구니 수)
+- 공간: O(N)

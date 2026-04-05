@@ -1,0 +1,80 @@
+---
+title: "BOJ 5566 - 주사위 게임"
+date: "2025-06-29"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "5566"
+problem_url: "https://www.acmicpc.net/problem/5566"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5566 - 주사위 게임](https://www.acmicpc.net/problem/5566)
+
+N칸짜리 보드와 M번의 주사위 결과가 주어진다. 말은 1번 칸에서 시작하며, 주사위만큼 전진한 뒤 해당 칸에 적힌 이동 수만큼 추가로 이동한다. 목표 칸(N 이상)에 도달하는 데 필요한 최소 주사위 던지기 횟수를 구한다.
+
+### 입력
+
+- 첫 줄: 칸 수 N, 주사위 던지기 횟수 M
+- 다음 줄: 보드의 각 칸에 적힌 이동 수 (N개)
+- 다음 줄: 주사위 결과 M개
+
+### 출력
+
+목표 칸에 처음 도달하는 주사위 던지기 횟수를 출력한다.
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `5 3` `0 0 0 0 0` `3 1 1` | `2`  |
+
+## 풀이
+
+주사위 결과를 순서대로 적용하며 보드 위치를 시뮬레이션하고, N 이상에 도달하는 순간 즉시 답을 출력한다.
+
+1. 현재 위치 `pos`를 1로 초기화한다.
+2. 각 주사위 결과를 순서대로 적용하여 `pos`를 이동한다.
+3. 이동 후 `pos >= N`이면 현재 주사위 횟수를 출력하고 종료한다.
+4. 아직 도달하지 않은 경우 현재 칸의 보드 값을 추가로 더한다. 추가 이동 후에도 `pos >= N`이면 출력하고 종료한다.
+
+**핵심 아이디어**: 주사위 이동 직후와 보드 칸 이동 직후, 두 번 모두 도달 여부를 확인해야 한다. 순서에 주의하지 않으면 도달 시점을 잘못 계산할 수 있다.
+
+## 코드
+
+```python
+def main():
+    import sys
+
+    input = sys.stdin.read
+    data = input().split()
+
+    N = int(data[0])
+    M = int(data[1])
+    board = list(map(int, data[2 : 2 + N]))
+    dice = list(map(int, data[2 + N :]))
+
+    pos = 1
+    for i in range(M):
+        pos += dice[i]
+        if pos >= N:
+            print(i + 1)
+            return
+        pos += board[pos - 1]
+        if pos >= N:
+            print(i + 1)
+            return
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

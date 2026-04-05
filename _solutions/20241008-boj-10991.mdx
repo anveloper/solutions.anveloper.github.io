@@ -1,0 +1,73 @@
+---
+title: "BOJ 10991 - 별 찍기 - 16"
+date: "2024-10-08"
+description: "N줄에 걸쳐 좌측 정렬된 별 삼각형을 출력하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10991"
+problem_url: "https://www.acmicpc.net/problem/10991"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10991 - 별 찍기 - 16](https://www.acmicpc.net/problem/10991)
+
+N이 주어질 때, 별과 공백을 번갈아 출력하여 삼각형 패턴을 만들어라. i번째 줄에는 별을 i개 출력한다.
+
+### 입력
+
+정수 N이 주어진다 (1 이상 100 이하).
+
+### 출력
+
+N줄에 걸쳐 별 삼각형을 출력한다.
+
+### 예제
+
+| 입력 | 출력                 |
+| ---- | -------------------- |
+| `3`  | `  *` ` * *` `* * *` |
+
+## 풀이
+
+각 줄마다 앞쪽 공백과 "별+공백" 패턴을 출력한다.
+
+1. i번째 줄에 앞쪽 공백 `N-i`개를 출력한다
+2. `"* "`를 i번 반복 출력한다
+
+**핵심 아이디어**: 별 사이에 공백을 넣어 정삼각형 모양을 만드는 패턴이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  int n;
+  cin >> n;
+
+  for (int i = 1; i <= n; i++)
+  {
+    for (int j = n - i; j > 0; j--)
+    {
+      cout << " ";
+    }
+    for (int k = 1; k <= i; k++)
+    {
+      cout << "*" << " ";
+    }
+    cout << endl;
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(1)

@@ -1,0 +1,79 @@
+---
+title: "BOJ 4850 - Baskets of Gold Coins"
+date: "2025-10-17"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "4850"
+problem_url: "https://www.acmicpc.net/problem/4850"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4850 - Baskets of Gold Coins](https://www.acmicpc.net/problem/4850)
+
+N개의 바구니에 금화가 있고, 하나의 바구니만 정상 무게와 d만큼 다르다. 바구니 1에서 1개, 2에서 2개, ..., N에서 N개를 꺼내 총 무게를 재서 어떤 바구니인지 찾아라.
+
+### 입력
+
+여러 테스트 케이스에 N, 정상 무게 w, 차이 d, 총 무게가 주어진다.
+
+### 출력
+
+각 케이스마다 불량 바구니 번호를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `3 10 1 59` | `2`  |
+
+## 풀이
+
+정상 총 무게와 실제 총 무게의 차이로 불량 바구니를 식별한다.
+
+1. 정상 총 무게 = `w * N(N+1)/2` (코드에서 `w * (N-1)*N/2`로 계산)
+2. 정상 무게에서 실제 무게를 빼고 d로 나누면 불량 바구니 번호가 나온다
+3. 차이가 0이면 마지막 바구니(N)가 불량이다
+
+**핵심 아이디어**: 각 바구니에서 서로 다른 개수를 꺼내므로, 총 무게의 편차가 불량 바구니 번호에 비례한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  while (true)
+  {
+    int n, w, d, totalWeight;
+    cin >> n >> w >> d >> totalWeight;
+    if (cin.eof())
+      break;
+
+    int standardWeight = w * ((n - 1) * n) / 2;
+    int numBasket = (standardWeight - totalWeight) / d;
+
+    if (numBasket == 0)
+      cout << n << "\n";
+    else
+      cout << numBasket << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

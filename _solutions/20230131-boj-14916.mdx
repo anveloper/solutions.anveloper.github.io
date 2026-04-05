@@ -1,0 +1,79 @@
+---
+title: "BOJ 14916 - 거스름돈"
+date: "2023-01-31"
+description: "수학, 다이나믹 프로그래밍, 그리디 알고리즘 문제"
+tags: ["수학", "다이나믹 프로그래밍", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "14916"
+problem_url: "https://www.acmicpc.net/problem/14916"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14916 - 거스름돈](https://www.acmicpc.net/problem/14916)
+
+거스름돈 N원을 2원과 5원짜리 동전으로 거슬러줄 때, 최소 동전 개수를 구하라. 거슬러줄 수 없으면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N (1 이상 100,000 이하)이 주어진다.
+
+### 출력
+
+최소 동전 수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `13` | `5`  |
+
+## 풀이
+
+그리디 방식으로 2원을 하나씩 빼면서 5원으로 나눠떨어지는 시점을 찾는다.
+
+1. N에서 2를 반복해서 빼며 ans를 1씩 증가시킨다
+2. 매 단계에서 남은 금액이 5로 나눠떨어지면 `ans += N/5`로 5원 동전 수를 더하고 종료한다
+3. N이 0이 되면 성공, 음수가 되면 거슬러줄 수 없으므로 -1을 출력한다
+
+**핵심 아이디어**: 2원을 하나씩 빼다가 5의 배수가 되면 나머지를 5원으로 채우는 그리디. 최대 5번만 2원을 빼면 5의 배수 여부가 결정되므로 사실상 O(1)이다.
+
+## 코드
+
+```java
+import java.io.*;
+
+public class Day358BOJ14916거스름돈 {
+    static int N, ans;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+
+        while (N > 0) {
+            if (N % 5 == 0) {
+                ans += N / 5;
+                N = 0;
+                break;
+            }
+            N -= 2;
+            ans++;
+        }
+
+        if (N == 0) {
+            System.out.println(ans);
+        } else {
+            System.out.println(-1);
+        }
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) - 최대 5회 반복
+- 공간: O(1)

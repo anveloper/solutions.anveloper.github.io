@@ -1,0 +1,110 @@
+---
+title: "BOJ 1068 - 트리"
+date: "2022-06-25"
+description: "그래프 이론, 그래프 탐색, 트리 문제"
+tags: ["그래프 이론", "그래프 탐색", "트리", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "1068"
+problem_url: "https://www.acmicpc.net/problem/1068"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1068 - 트리](https://www.acmicpc.net/problem/1068)
+
+N개의 노드로 이루어진 트리가 주어진다. 특정 노드를 삭제할 때, 그 노드의 서브트리 전체가 함께 제거된다. 남은 트리에서 리프 노드(자식이 없는 노드)의 개수를 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 노드의 개수 N(1 ≤ N ≤ 50)이 주어진다.
+둘째 줄에 각 노드의 부모 번호가 주어진다. 루트 노드의 부모는 `-1`로 표시된다.
+셋째 줄에 삭제할 노드의 번호가 주어진다.
+
+### 출력
+
+삭제 후 남은 트리의 리프 노드 개수를 출력한다.
+
+### 예제
+
+| 입력                 | 출력 |
+| -------------------- | ---- |
+| `5` `2 -1 2 2 2` `2` | `2`  |
+| `5` `-1 0 0 1 1` `2` | `2`  |
+
+## 풀이
+
+삭제 노드의 자식 목록을 비워 연결을 끊은 뒤, 루트에서 DFS를 수행하여 리프 노드를 카운트한다.
+
+1. 각 노드의 부모 정보로 인접 리스트(자식 목록) `arr[]`를 구성하고, 부모가 `-1`인 노드를 루트로 설정한다.
+2. 삭제할 노드 c의 자식 목록 `arr[c]`를 `clear()`하여 해당 노드의 서브트리로의 연결을 차단한다.
+3. 루트가 삭제 노드인 경우 리프 수는 0이다.
+4. `dfs()`에서 삭제 노드에 도달하면 즉시 반환한다. 자식이 없거나 남은 자식 중 삭제 노드만 있으면 리프로 카운트한다.
+
+**핵심 아이디어**: 삭제 노드의 자식 목록만 비우면 해당 서브트리 전체가 DFS 탐색에서 제외된다. 삭제 노드가 어떤 노드의 유일한 자식이었다면 그 부모가 새 리프가 되는 엣지 케이스를 처리해야 한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day138BOJ1068트리DFS {
+	static int N, rt, ans;
+	static List<Integer>[] arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+		rt = 0;
+		arr = new ArrayList[N];
+		for (int i = 0; i < N; i++)
+			arr[i] = new ArrayList<>();
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			int p = Integer.parseInt(st.nextToken());
+			if (p != -1)
+				arr[p].add(i);
+			else
+				rt = i;
+		}
+		int c = Integer.parseInt(br.readLine());
+
+		arr[c].clear();
+		dfs(rt, c);
+
+		if (rt == c)
+			System.out.println(0);
+		else if (c != 0 && ans == 0)
+			System.out.println(1);
+		else
+			System.out.println(ans);
+	}
+
+	private static void dfs(int idx, int c) {
+		if (idx == c)
+			return;
+		if (arr[idx].isEmpty() || (arr[idx].size() == 1 && arr[idx].get(0) == c))
+			ans++;
+		for (int n : arr[idx]) {
+			if (n == c)
+				continue;
+			dfs(n, c);
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(V + E)
+- 공간: O(V + E)

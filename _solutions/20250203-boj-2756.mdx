@@ -1,0 +1,88 @@
+---
+title: "BOJ 2756 - 다트"
+date: "2025-02-03"
+description: "수학, 구현, 기하학 문제"
+tags: ["수학", "구현", "기하학", "피타고라스 정리"]
+platform: "boj"
+problem_number: "2756"
+problem_url: "https://www.acmicpc.net/problem/2756"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2756 - 다트](https://www.acmicpc.net/problem/2756)
+
+다트 게임에서 두 플레이어가 각각 3개의 다트를 던진다. 다트가 꽂힌 좌표가 주어질 때, 과녁 중심으로부터의 거리에 따라 점수를 매기고 승자를 결정하라.
+
+### 입력
+
+테스트 케이스 수 T, 이후 각 케이스에 12개의 실수(플레이어 1의 x1,y1,x2,y2,x3,y3과 플레이어 2의 x1,y1,x2,y2,x3,y3)가 주어진다.
+
+### 출력
+
+각 케이스마다 두 플레이어의 점수와 승자를 출력한다.
+
+### 예제
+
+| 입력                                                        | 출력                                |
+| ----------------------------------------------------------- | ----------------------------------- |
+| `1` `2.0 3.0 -4.0 -5.0 7.0 8.0 -1.0 -2.0 3.0 4.0 -5.0 -6.0` | `SCORE: 120 to 160, PLAYER 2 WINS.` |
+
+## 풀이
+
+과녁 중심(0,0)으로부터의 거리 제곱을 기준으로 점수를 매기는 구현 문제이다.
+
+1. 각 다트의 좌표 `(x, y)`에 대해 거리의 제곱 `x^2 + y^2`을 계산한다
+2. 거리의 제곱에 따라 점수를 부여한다: `<= 9` → 100점, `<= 36` → 80점, `<= 81` → 60점, `<= 144` → 40점, `<= 225` → 20점, 그 외 → 0점
+3. 플레이어 1과 2의 총점을 비교하여 승자를 출력한다
+
+**핵심 아이디어**: 거리를 직접 구하지 않고 거리의 제곱을 비교하면 `sqrt` 연산 없이 정확한 판정이 가능하다. 과녁 반지름이 3, 6, 9, 12, 15이므로 제곱하면 9, 36, 81, 144, 225이 된다.
+
+## 코드
+
+```python
+def cal_score(x, y):
+    score = 0
+    distance = x**2 + y**2
+    if distance <= 9:
+        score = 100
+    elif distance <= 36:
+        score = 80
+    elif distance <= 81:
+        score = 60
+    elif distance <= 144:
+        score = 40
+    elif distance <= 225:
+        score = 20
+    else:
+        score = 0
+    return score
+
+
+def sol(nums):
+    p1_score, p2_score = 0, 0
+    for i in range(3):
+        p1_score += cal_score(nums[2 * i], nums[2 * i + 1])
+    for i in range(3, 6):
+        p2_score += cal_score(nums[2 * i], nums[2 * i + 1])
+
+    if p1_score > p2_score:
+        print("SCORE: %d to %d, PLAYER 1 WINS." % (p1_score, p2_score))
+    elif p1_score == p2_score:
+        print("SCORE: %d to %d, TIE." % (p1_score, p2_score))
+    else:
+        print("SCORE: %d to %d, PLAYER 2 WINS." % (p1_score, p2_score))
+
+
+for _ in range(int(input())):
+    nums = list(map(float, input().split()))
+    sol(nums)
+```
+
+## 복잡도
+
+- 시간: O(T) — 테스트 케이스 수만큼 순회, 각 케이스는 상수 시간
+- 공간: O(1) — 입력 좌표 외 추가 공간 불필요

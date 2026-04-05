@@ -1,0 +1,91 @@
+---
+title: "BOJ 1322 - X와 K"
+date: "2024-07-16"
+description: "X와 K가 주어질 때 X+Y=X|Y를 만족하는 K번째 Y를 비트마스킹으로 구하는 문제"
+tags: ["수학", "비트마스킹"]
+platform: "boj"
+problem_number: "1322"
+problem_url: "https://www.acmicpc.net/problem/1322"
+difficulty: "골드 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1322 - X와 K](https://www.acmicpc.net/problem/1322)
+
+`X + Y = X OR Y`를 만족하는 Y 중 K번째로 작은 수를 구하라.
+
+### 입력
+
+X와 K가 주어진다.
+
+### 출력
+
+K번째로 작은 Y를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `5 1` | `2`  |
+
+## 풀이
+
+`X + Y = X | Y`가 성립하려면 `X & Y = 0`이어야 한다. Y는 X의 비트가 0인 위치에만 1을 배치할 수 있으므로, K의 이진 표현을 해당 위치에 매핑한다.
+
+1. X의 비트를 0번째부터 64번째까지 순회한다
+2. X의 해당 비트가 1이면 건너뛴다 (Y에 1을 넣을 수 없음)
+3. X의 해당 비트가 0이면, K의 현재 비트 인덱스의 값을 해당 위치에 배치한다
+4. K의 비트 인덱스를 1씩 증가시키며 모든 비트를 매핑한다
+
+**핵심 아이디어**: X의 0비트 위치들이 Y의 자유도를 결정하므로, K번째 수는 K의 이진수를 이 자유 위치들에 순서대로 매핑하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+typedef long long ll;
+
+using namespace std;
+
+ll X, K;
+
+void input()
+{
+  cin >> X >> K;
+}
+
+void solve()
+{
+  ll Y = 0;
+  int kidx = 0;
+  for (int i = 0; i < 65; i++)
+  {
+    if ((X >> i) & 1LL)
+      continue;
+    if ((K >> kidx) & 1LL)
+    {
+      Y |= (1LL << i);
+    }
+    kidx++;
+  }
+
+  cout << Y;
+}
+
+int main()
+{
+  input();
+  solve();
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(64) ≈ O(1)
+- 공간: O(1)

@@ -1,0 +1,96 @@
+---
+title: "BOJ 12015 - 가장 긴 증가하는 부분 수열 2"
+date: "2022-05-22"
+description: "이분 탐색, 가장 긴 증가하는 부분 수열 문제"
+tags: ["이분 탐색", "가장 긴 증가하는 부분 수열"]
+platform: "boj"
+problem_number: "12015"
+problem_url: "https://www.acmicpc.net/problem/12015"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 12015 - 가장 긴 증가하는 부분 수열 2](https://www.acmicpc.net/problem/12015)
+
+수열 A가 주어졌을 때, 가장 긴 증가하는 부분 수열(LIS)의 길이를 구하라. (N이 최대 1,000,000이므로 O(N log N) 풀이 필요)
+
+### 입력
+
+첫째 줄에 N (1 이상 1,000,000 이하), 둘째 줄에 수열 A가 주어진다.
+
+### 출력
+
+가장 긴 증가하는 부분 수열의 길이를 출력한다.
+
+### 예제
+
+| 입력                    | 출력 |
+| ----------------------- | ---- |
+| `6` `10 20 10 30 20 50` | `4`  |
+
+## 풀이
+
+이분 탐색 기반 LIS 알고리즘으로 O(N log N)에 해결한다.
+
+1. dp 배열을 LIS의 마지막 원소를 관리하는 배열로 사용한다
+2. 새 원소가 dp의 마지막 값보다 크면 뒤에 추가하여 LIS 길이를 늘린다
+3. 그렇지 않으면 이분 탐색으로 dp에서 해당 원소 이상인 첫 위치를 찾아 교체한다
+4. dp의 길이(idx + 1)가 LIS 길이이다
+
+**핵심 아이디어**: dp 배열은 실제 LIS가 아니라, 각 길이의 LIS를 만들 수 있는 가장 작은 끝 값을 유지한다. 이분 탐색으로 교체 위치를 찾으므로 O(N log N)에 동작한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day362BOJ12015LIS2 {
+    static int N, num, idx = 0;
+    static int[] dp;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+
+        dp = new int[N];
+        dp[0] = Integer.parseInt(st.nextToken());
+
+        for (int i = 1; i < N; i++) {
+            num = Integer.parseInt(st.nextToken());
+            if (num > dp[idx])
+                dp[++idx] = num;
+            else
+                dp[find(0, idx)] = num;
+        }
+        System.out.println(idx + 1);
+        br.close();
+    }
+
+    private static int find(int st, int ed) {
+        while (st <= ed) {
+            int mid = (st + ed) / 2;
+            if (dp[mid] == num)
+                return mid;
+            if (dp[mid] < num)
+                st = mid + 1;
+            else
+                ed = mid - 1;
+        }
+        return st;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) - 각 원소마다 이분 탐색
+- 공간: O(N)

@@ -1,0 +1,71 @@
+---
+title: "BOJ 9498 - 시험 성적"
+date: "2023-06-05"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "9498"
+problem_url: "https://www.acmicpc.net/problem/9498"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9498 - 시험 성적](https://www.acmicpc.net/problem/9498)
+
+시험 점수가 주어졌을 때, 90점 이상 A, 80점 이상 B, 70점 이상 C, 60점 이상 D, 나머지 F를 출력하라.
+
+### 입력
+
+첫째 줄에 시험 점수 (0 이상 100 이하)가 주어진다.
+
+### 출력
+
+학점을 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `100` | `A`  |
+
+## 풀이
+
+삼항 연산자를 중첩하여 점수 구간별 학점을 판별한다.
+
+1. 90점 이상이면 A, 80점 이상이면 B, 70점 이상이면 C, 60점 이상이면 D, 나머지 F
+2. 삼항 연산자(? :)를 체이닝하여 한 줄로 표현한다
+
+**핵심 아이디어**: if-else 대신 삼항 연산자 체이닝으로 간결하게 표현할 수 있다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+
+public class Day484BOJ9498시험성적 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int A = Integer.parseInt(br.readLine());
+    System.out.print(
+        (A >= 90)
+            ? "A"
+            : (A >= 80)
+                ? "B"
+                : (A >= 70)
+                    ? "C"
+                    : (A >= 60)
+                        ? "D"
+                        : "F");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

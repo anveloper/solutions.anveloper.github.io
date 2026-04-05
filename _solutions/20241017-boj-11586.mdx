@@ -1,0 +1,104 @@
+---
+title: "BOJ 11586 - 지영 공주님의 마법 거울"
+date: "2024-10-17"
+description: "거울 반사 방식에 따라 문자열을 변환하여 출력하는 구현 문제"
+tags: ["문자열", "구현"]
+platform: "boj"
+problem_number: "11586"
+problem_url: "https://www.acmicpc.net/problem/11586"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11586 - 지영 공주님의 마법 거울](https://www.acmicpc.net/problem/11586)
+
+N줄의 문자열로 이루어진 그림이 주어지고, k값에 따라 원본(1), 좌우 반전(2), 상하 반전(3)으로 출력하라.
+
+### 입력
+
+N, N줄의 문자열, k가 주어진다.
+
+### 출력
+
+k에 따라 변환된 그림을 출력한다.
+
+### 예제
+
+| 입력                      | 출력              |
+| ------------------------- | ----------------- |
+| `3` `abc` `def` `ghi` `2` | `cba` `fed` `ihg` |
+
+## 풀이
+
+k값에 따라 세 가지 변환을 분기 처리한다.
+
+1. k=1: 입력을 그대로 출력한다
+2. k=2: 각 줄의 문자열을 `reverse`로 뒤집어 출력한다 (좌우 반전)
+3. k=3: 줄의 순서를 역순으로 출력한다 (상하 반전)
+
+**핵심 아이디어**: 좌우 반전은 각 줄 내 문자 순서, 상하 반전은 줄 순서를 바꾸면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+
+  int test;
+  cin >> test;
+
+  string str;
+
+  vector<string> vec;
+
+  for (int i = 0; i < test; i++)
+  {
+    cin >> str;
+    vec.push_back(str);
+  }
+
+  int k;
+  cin >> k;
+  if (k == 1)
+  {
+    for (int i = 0; i < test; i++)
+    {
+      cout << vec[i] << "\n";
+    }
+  }
+
+  else if (k == 2)
+  {
+    for (int i = 0; i < test; i++)
+    {
+      reverse(vec[i].begin(), vec[i].end());
+      cout << vec[i] << "\n";
+    }
+  }
+
+  else
+  {
+    for (int i = test - 1; i >= 0; i--)
+    {
+      cout << vec[i] << "\n";
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (N: 줄 수, L: 문자열 길이)
+- 공간: O(N \* L)

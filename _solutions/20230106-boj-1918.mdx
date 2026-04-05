@@ -1,0 +1,106 @@
+---
+title: "BOJ 1918 - 후위 표기식"
+date: "2023-01-06"
+description: "자료 구조, 스택 문제"
+tags: ["자료 구조", "스택"]
+platform: "boj"
+problem_number: "1918"
+problem_url: "https://www.acmicpc.net/problem/1918"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1918 - 후위 표기식](https://www.acmicpc.net/problem/1918)
+
+중위 표기식이 주어졌을 때 후위 표기식으로 변환하라. 피연산자는 A~Z, 연산자는 `+`, `-`, `*`, `/`이며 괄호를 포함할 수 있다.
+
+### 입력
+
+첫째 줄에 중위 표기식이 주어진다 (길이 1 이상 100 이하).
+
+### 출력
+
+후위 표기식을 출력한다.
+
+### 예제
+
+| 입력      | 출력    |
+| --------- | ------- |
+| `A*(B+C)` | `ABC+*` |
+
+## 풀이
+
+연산자 우선순위 맵과 스택을 이용한 Shunting-yard 알고리즘으로 변환한다.
+
+1. `HashMap`으로 연산자 우선순위를 정의한다 (`(`:0, `+/-`:1, `*//`:2)
+2. 피연산자(A~Z)는 바로 출력에 추가한다
+3. `(`이면 스택에 넣는다
+4. `)`이면 `(`을 만날 때까지 스택에서 꺼내 출력에 추가한다
+5. 연산자이면 스택 맨 위의 우선순위가 자신 이상인 동안 꺼내 출력에 추가한 뒤 자신을 넣는다
+6. 순회 완료 후 스택에 남은 연산자를 모두 출력에 추가한다
+
+**핵심 아이디어**: 스택에는 항상 우선순위 오름차순으로 연산자가 쌓인다. 새 연산자가 들어올 때 자신보다 우선순위가 높거나 같은 연산자를 먼저 처리(출력)한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Stack;
+
+public class Day333BOJ1918후위표기식 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        HashMap<Character, Integer> pMap = new HashMap<>();
+        pMap.put('(', 0);
+        pMap.put(')', 0);
+        pMap.put('+', 1);
+        pMap.put('-', 1);
+        pMap.put('*', 2);
+        pMap.put('/', 2);
+
+        Stack<Character> st = new Stack<>();
+        StringBuffer sb = new StringBuffer();
+        String s = br.readLine();
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if ('A' <= c && c <= 'Z') {
+                sb.append(c);
+                continue;
+            }
+            if (c == '(') {
+                st.add(c);
+                continue;
+            }
+            if (c == ')') {
+                while (st.peek() != '(') {
+                    sb.append(st.pop());
+                }
+                st.pop();
+                continue;
+            }
+            while (!st.isEmpty() && pMap.get(st.peek()) >= pMap.get(c)) {
+                sb.append(st.pop());
+            }
+            st.add(c);
+        }
+        while (!st.isEmpty()) {
+            sb.append(st.pop());
+        }
+        System.out.println(sb);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

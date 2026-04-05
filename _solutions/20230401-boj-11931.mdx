@@ -1,0 +1,77 @@
+---
+title: "BOJ 11931 - 수 정렬하기 4"
+date: "2023-04-01"
+description: "정렬 문제"
+tags: ["정렬"]
+platform: "boj"
+problem_number: "11931"
+problem_url: "https://www.acmicpc.net/problem/11931"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11931 - 수 정렬하기 4](https://www.acmicpc.net/problem/11931)
+
+N개의 수가 주어질 때, 내림차순으로 정렬하여 출력하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 수가 주어진다.
+
+### 출력
+
+N개의 수를 내림차순으로 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                    | 출력                |
+| ----------------------- | ------------------- |
+| `5` `2` `1` `3` `4` `5` | `5` `4` `3` `2` `1` |
+
+## 풀이
+
+최대 힙(역순 우선순위 큐)을 사용하여 입력받은 수를 내림차순으로 출력한다.
+
+1. 역순 정렬된 PriorityQueue를 생성한다
+2. N개의 수를 큐에 삽입한다
+3. 큐에서 하나씩 꺼내면 자동으로 내림차순이 된다
+
+**핵심 아이디어**: `Collections.reverseOrder()`로 최대 힙을 구성하면 poll 순서가 내림차순이 된다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day419BOJ11931수정렬하기4 {
+  static int N;
+  static PriorityQueue<Integer> pq;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    N = Integer.parseInt(br.readLine());
+    pq = new PriorityQueue<>(Collections.reverseOrder());
+
+    for (int i = 0; i < N; i++)
+      pq.add(Integer.parseInt(br.readLine()));
+
+    while (!pq.isEmpty())
+      sb.append(pq.poll()).append("\n");
+
+    System.out.println(sb);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

@@ -1,0 +1,125 @@
+---
+title: "BOJ 2665 - 미로만들기"
+date: "2023-02-10"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "최단 경로", "데이크스트라", "격자 그래프", "0-1 너비 우선 탐색"]
+platform: "boj"
+problem_number: "2665"
+problem_url: "https://www.acmicpc.net/problem/2665"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2665 - 미로만들기](https://www.acmicpc.net/problem/2665)
+
+n×n 바둑판 모양의 격자가 주어진다. 각 칸은 흰 방(`1`) 또는 검은 방(`0`)으로 구성된다. 왼쪽 위 칸 `(1,1)`에서 오른쪽 아래 칸 `(n,n)`으로 이동할 때, 검은 방을 흰 방으로 바꾸는 최솟값을 구하는 문제이다. 이동은 상하좌우 4방향으로 인접한 칸으로만 가능하다.
+
+### 입력
+
+첫째 줄에 n이 주어진다 `(2 ≤ n ≤ 50)`. 다음 n개의 줄에 각각 n개의 숫자가 주어지며, 각 숫자는 흰 방이면 `1`, 검은 방이면 `0`이다.
+
+### 출력
+
+첫째 줄에 검은 방을 흰 방으로 바꿔야 하는 최솟값을 출력한다.
+
+### 예제
+
+**입력**
+
+```
+8
+11100110
+11010010
+10011010
+11101010
+01001011
+10101100
+01000001
+11001011
+```
+
+**출력**
+
+```
+1
+```
+
+## 풀이
+
+**핵심 아이디어**: 흰 방에서 흰 방으로 이동하는 비용은 0, 검은 방으로 이동하는 비용은 1로 설정하면 **0-1 BFS(Dijkstra)** 문제로 변환된다. 출발점 `(0,0)`에서 도착점 `(n-1,n-1)`까지의 최소 비용(=바꿔야 할 검은 방 수)을 구한다.
+
+1. `dist[i][j]`를 `(0,0)`에서 `(i,j)`까지 검은 방을 흰 방으로 바꾸는 최소 횟수로 정의한다.
+2. 우선순위 큐(최소 힙)에 `(0, 0, 0)`(행, 열, 비용)을 넣고 시작한다.
+3. 현재 위치의 인접 칸을 탐색할 때:
+   - 흰 방(`1`)이면 비용 `+0`으로 이동 가능
+   - 검은 방(`0`)이면 비용 `+1`로 이동 가능
+4. 도착점에 처음 도달했을 때의 비용이 정답이다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Day368BOJ2665미로만들기 {
+    static int N;
+    static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+    static int[][] dist;
+    static boolean[][] map;
+    static PriorityQueue<int[]> pq;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+        map = new boolean[N][N];
+        dist = new int[N][N];
+
+        for (int i = 0; i < N; i++) {
+            String str = br.readLine();
+            for (int j = 0; j < N; j++) {
+                map[i][j] = str.charAt(j) == '0';
+                dist[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+        pq = new PriorityQueue<>((o1, o2) -> o1[2] - o2[2]);
+        dist[0][0] = 0;
+        pq.add(new int[] { 0, 0, 0 });
+
+        while (!pq.isEmpty()) {
+            int[] cur = pq.poll();
+            int r = cur[0], c = cur[1], d = cur[2];
+            if (r == N - 1 && c == N - 1)
+                break;
+            for (int dir = 0; dir < 4; dir++) {
+                int nr = r + dr[dir];
+                int nc = c + dc[dir];
+                if (index(nr, nc))
+                    continue;
+                if (map[nr][nc]) { // black
+                    if (dist[nr][nc] > d + 1)
+                        pq.add(new int[] { nr, nc, dist[nr][nc] = d + 1 });
+                } else { // white
+                    if (dist[nr][nc] > d)
+                        pq.add(new int[] { nr, nc, dist[nr][nc] = d });
+                }
+            }
+        }
+
+        System.out.println(dist[N - 1][N - 1]);
+        br.close();
+    }
+
+    private static boolean index(int nr, int nc) {
+        return nr < 0 || nc < 0 || nr >= N || nc >= N;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N² log N²) — 격자의 칸 수 V = N²이고 각 칸은 최대 4개의 간선을 가지므로 O((V+E) log V) = O(N² log N²)
+- 공간: O(N²) — dist 배열과 우선순위 큐

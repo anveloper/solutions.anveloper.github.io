@@ -1,0 +1,107 @@
+---
+title: "BOJ 1992 - 쿼드트리"
+date: "2022-04-02"
+description: "분할 정복, 재귀 문제"
+tags: ["분할 정복", "재귀"]
+platform: "boj"
+problem_number: "1992"
+problem_url: "https://www.acmicpc.net/problem/1992"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1992 - 쿼드트리](https://www.acmicpc.net/problem/1992)
+
+N x N 크기의 0과 1로 이루어진 이미지를 쿼드트리로 압축하는 문제이다. 영역의 모든 값이 동일하면 그 값 하나로 표현하고, 그렇지 않으면 네 영역으로 분할하여 `(` 영역1 영역2 영역3 영역4 `)`로 표현한다. N은 2의 제곱수이다.
+
+### 입력
+
+- 첫 번째 줄: N (1 이상 64 이하, 2의 제곱수)
+- 이후 N줄: 0과 1로 이루어진 N길이의 문자열
+
+### 출력
+
+쿼드트리 압축 결과를 한 줄로 출력한다.
+
+### 예제
+
+| 입력                            | 출력                         |
+| ------------------------------- | ---------------------------- |
+| `4` `1110` `1100` `1000` `0001` | `((110(0101))(0010)1(0001))` |
+
+## 풀이
+
+분할 정복으로 현재 영역이 단일 값이면 그대로 출력하고, 그렇지 않으면 4분할하여 재귀 호출한다.
+
+1. `recur(idx, jdx, size)`를 호출하여 (idx, jdx)에서 시작하는 size x size 영역을 처리한다.
+2. `check()`로 해당 영역의 모든 값이 동일한지 확인한다. 동일하면 `arr[idx][jdx]` 값을 출력하고 반환한다.
+3. 동일하지 않으면 `sb.append("(")`를 추가하고 4개 사분면(좌상, 우상, 좌하, 우하)으로 분할하여 재귀 호출한다.
+4. 4개의 재귀가 완료되면 `sb.append(")")`로 닫는다.
+
+**핵심 아이디어**: 각 호출마다 영역 크기를 절반으로 줄이므로 재귀 깊이는 log2(N)이다. 분할 시 좌상→우상→좌하→우하 순서로 처리하며, 괄호로 4개의 부분 결과를 하나의 노드로 묶는다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day54BOJ1992쿼드트리재귀 {
+	static int[][] arr;
+	static StringBuilder sb;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		arr = new int[N][N];
+		sb = new StringBuilder();
+
+		for (int i = 0; i < N; i++) {
+			String tmp = br.readLine();
+			for (int j = 0; j < N; j++) {
+				arr[i][j] = tmp.charAt(j) - '0';
+			}
+		}
+		recur(0, 0, N);
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void recur(int idx, int jdx, int size) {
+		if (check(idx, jdx, size)) {
+			sb.append(arr[idx][jdx]);
+			return;
+		}
+		int dsize = size / 2;
+		sb.append("(");
+
+		recur(idx, jdx, dsize);
+		recur(idx, jdx + dsize, dsize);
+		recur(idx + dsize, jdx, dsize);
+		recur(idx + dsize, jdx + dsize, dsize);
+
+		sb.append(")");
+	}
+
+	private static boolean check(int idx, int jdx, int size) {
+		int c = arr[idx][jdx];
+		for (int i = idx; i < idx + size; i++) {
+			for (int j = jdx; j < jdx + size; j++) {
+				if (arr[i][j] != c)
+					return false;
+			}
+		}
+		return true;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N² log N) — 각 분할 레벨에서 check()가 O(N²) 수행, 재귀 깊이 log N
+- 공간: O(N²) — 입력 배열 및 재귀 스택 (깊이 log N)

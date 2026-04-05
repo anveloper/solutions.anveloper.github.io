@@ -1,0 +1,104 @@
+---
+title: "BOJ 1431 - 시리얼 번호"
+date: "2022-12-14"
+description: "문자열, 정렬 문제"
+tags: ["문자열", "정렬"]
+platform: "boj"
+problem_number: "1431"
+problem_url: "https://www.acmicpc.net/problem/1431"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1431 - 시리얼 번호](https://www.acmicpc.net/problem/1431)
+
+알파벳 대문자와 숫자로 이루어진 시리얼 번호들을 다음 기준으로 정렬하라: (1) 길이 오름차순, (2) 같으면 숫자 합 오름차순, (3) 같으면 사전순.
+
+### 입력
+
+첫째 줄에 N (1 이상 50 이하), 둘째 줄부터 N개의 시리얼 번호가 주어진다 (길이 1 이상 50 이하).
+
+### 출력
+
+정렬된 시리얼 번호를 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                                | 출력                            |
+| ----------------------------------- | ------------------------------- |
+| `5` `ABCD` `145C` `A` `A910` `Z321` | `A` `ABCD` `Z321` `145C` `A910` |
+
+## 풀이
+
+커스텀 Comparator로 세 가지 기준을 순차적으로 비교하여 정렬한다.
+
+1. 길이가 다르면 짧은 것이 앞에 온다
+2. 길이가 같으면 `getSum()` 함수로 각 문자열의 숫자 합을 구해 비교한다
+3. 숫자 합도 같으면 `compareTo()`로 사전순 비교한다
+4. `getSum()`은 문자열에서 `0~9` 문자만 추출하여 합산한다
+
+**핵심 아이디어**: 세 가지 정렬 기준을 우선순위대로 비교기에 구현하면, 한 번의 정렬로 해결된다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class Day310BOJ1431시리얼정렬 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        String[] arr = new String[N];
+
+        for (int i = 0; i < N; i++) {
+            arr[i] = br.readLine();
+        }
+
+        Arrays.sort(arr, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                if (o1.length() < o2.length()) {
+                    return -1;
+                } else if (o1.length() == o2.length()) {
+                    if (getSum(o1) == getSum(o2)) {
+                        return o1.compareTo(o2);
+                    } else {
+                        return Integer.compare(getSum(o1), getSum(o2));
+                    }
+                } else {
+                    return 1;
+                }
+
+            }
+        });
+
+        for (String i : arr) {
+            System.out.println(i);
+        }
+
+    }
+
+    public static int getSum(String s) {
+        int sum = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+                sum += s.charAt(i) - '0';
+            }
+        }
+        return sum;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

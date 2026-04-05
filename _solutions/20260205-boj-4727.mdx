@@ -1,0 +1,78 @@
+---
+title: "BOJ 4727 - Close Enough Computations"
+date: "2026-02-05"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "4727"
+problem_url: "https://www.acmicpc.net/problem/4727"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4727 - Close Enough Computations](https://www.acmicpc.net/problem/4727)
+
+세 가지 근사 계산 결과(a, b, c)의 합산 범위가 주어진 값 n을 포함하는지 판별하라.
+
+### 입력
+
+여러 테스트 케이스에 n, a, b, c가 주어지며, n이 0이면 종료한다.
+
+### 출력
+
+n이 가능한 합산 범위 내이면 `yes`, 아니면 `no`를 출력한다.
+
+### 예제
+
+| 입력            | 출력  |
+| --------------- | ----- |
+| `100 5 10 10 0` | `yes` |
+
+## 풀이
+
+각 값의 반올림 오차 범위를 계산하여 합산 구간이 n을 포함하는지 확인한다.
+
+1. 각 값 a, b, c에 대해 가능한 최솟값과 최댓값을 계산한다
+2. a는 `[9a-4, 9a+4]`, b와 c는 `[4x-2, 4x+2]` 범위를 가진다 (0이면 하한은 0)
+3. 세 범위의 합인 `[L, R]`을 구한다
+4. `L <= n <= R`이면 `yes`, 아니면 `no`를 출력한다
+
+**핵심 아이디어**: 반올림 오차의 누적 범위를 구간으로 표현하고, 주어진 값이 해당 구간에 포함되는지 확인한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main(void) {
+	cin.tie(0);
+	ios::sync_with_stdio(0);
+
+	while (1) {
+		int n, a, b, c; cin >> n >> a >> b >> c; if (!n) break;
+		int L = 0, R = 0;
+
+		if (a) L += (9 * a - 4), R += (9 * a + 4);
+		else R += 4;
+
+		if (b) L += (4 * b - 2), R += (4 * b + 2);
+		else R += 2;
+
+		if (c) L += (4 * c - 2), R += (4 * c + 2);
+		else R += 2;
+
+		if (L <= n && n <= R) cout << "yes\n";
+		else cout << "no\n";
+	}
+	return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

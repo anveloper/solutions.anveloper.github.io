@@ -1,0 +1,72 @@
+---
+title: "BOJ 1183 - 약속"
+date: "2024-02-25"
+description: "수학, 정렬 문제"
+tags: ["수학", "정렬"]
+platform: "boj"
+problem_number: "1183"
+problem_url: "https://www.acmicpc.net/problem/1183"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1183 - 약속](https://www.acmicpc.net/problem/1183)
+
+N명이 각각 제안 시각과 원래 시각의 차이가 주어질 때, 모든 사람의 불만(차이 절댓값 합)을 최소화하는 정수 시각의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 제안 시각과 원래 시각이 주어진다.
+
+### 출력
+
+최적 시각의 개수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `1 2` `4 3` `8 5` | `1`  |
+
+## 풀이
+
+각 사람의 차이(제안 - 원래)를 정렬하면, 중앙값이 최적이다.
+
+1. 각 사람에 대해 `(제안 시각 - 원래 시각)`을 계산한다
+2. 차이 배열을 정렬한다
+3. N이 홀수이면 중앙값이 유일하므로 1, 짝수이면 두 중앙값 사이의 정수 개수를 출력한다
+
+**핵심 아이디어**: 절댓값 합의 최솟값은 중앙값에서 달성되며, 짝수 개일 때는 두 중앙값 사이 모든 정수가 최적이다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day754BOJ1183약속 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(in.readLine());
+    int[] input = new int[N];
+    StringTokenizer st;
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(in.readLine());
+      input[i] = Integer.parseInt(st.nextToken()) - Integer.parseInt(st.nextToken());
+    }
+    Arrays.sort(input);
+
+    System.out.println((N % 2 == 1) ? 1 : Math.abs(input[N / 2] - input[N / 2 - 1]) + 1);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

@@ -1,0 +1,85 @@
+---
+title: "BOJ 2563 - 색종이"
+date: "2022-03-13"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2563"
+problem_url: "https://www.acmicpc.net/problem/2563"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2563 - 색종이](https://www.acmicpc.net/problem/2563)
+
+가로, 세로 100cm인 흰 도화지 위에 가로, 세로 10cm인 검은 색종이 N장을 붙였을 때, 검은 색종이가 붙은 영역의 총 넓이를 구하라.
+
+### 입력
+
+첫째 줄에 색종이 수 N (100 이하)이 주어진다. 이후 N줄에 각 색종이의 왼쪽 아래 꼭짓점 좌표가 주어진다.
+
+### 출력
+
+검은 영역의 총 넓이를 출력한다.
+
+### 예제
+
+| 입력                   | 출력  |
+| ---------------------- | ----- |
+| `3` `3 7` `15 7` `5 2` | `260` |
+
+## 풀이
+
+101×101 크기의 2차원 배열을 도화지로 사용하여, 색종이가 놓인 칸을 마킹하고 전체를 세어 넓이를 구한다.
+
+1. 101×101 배열을 0으로 초기화한다
+2. 각 색종이에 대해 (r, c)부터 (r+9, c+9)까지 10×10 영역을 1로 마킹한다
+3. 배열 전체를 순회하며 1인 칸의 수를 합산하여 출력한다
+
+**핵심 아이디어**: 색종이가 겹치더라도 배열에 1로 마킹하므로 중복 계산이 자동으로 방지된다. 1칸 = 1cm^2이므로 1의 개수가 곧 넓이이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day12BOJ2563색종이 { // 2563
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		int N = Integer.parseInt(br.readLine());
+		int size = 101;
+		int[][] arr = new int[size][size];
+		int ans = 0;
+		for (int n = 0; n < N; n++) {
+			st = new StringTokenizer(br.readLine());
+			int r = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+			for (int i = r; i < r + 10; i++) {
+				for (int j = c; j < c + 10; j++) {
+					arr[i][j] = 1;
+				}
+			}
+		}
+		for (int i = 1; i < size; i++) {
+			for (int j = 1; j < size; j++) {
+				ans += arr[i][j];
+			}
+		}
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* 100 + 100^2) — 색종이 마킹 + 전체 배열 순회
+- 공간: O(100^2) — 101×101 고정 크기 배열

@@ -1,0 +1,107 @@
+---
+title: "BOJ 11724 - 연결 요소의 개수"
+date: "2022-04-14"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "11724"
+problem_url: "https://www.acmicpc.net/problem/11724"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11724 - 연결 요소의 개수](https://www.acmicpc.net/problem/11724)
+
+방향 없는 그래프가 주어졌을 때, 연결 요소(Connected Component)의 개수를 구하는 문제다. 연결 요소란 그래프에서 서로 연결된 노드들의 묶음으로, 서로 다른 연결 요소에 속한 노드들 사이에는 경로가 존재하지 않는다. 단, 자기 자신으로의 간선(self-loop)이 존재할 수 있다.
+
+### 입력
+
+- 첫째 줄: 노드 수 N, 간선 수 M (1 ≤ N ≤ 1000, 0 ≤ M ≤ N\*(N-1)/2)
+- 다음 M개의 줄: 간선 정보 `u v` (u와 v를 연결하는 양방향 간선)
+
+### 출력
+
+연결 요소의 개수를 출력한다.
+
+### 예제
+
+| 입력                                | 출력 |
+| ----------------------------------- | ---- |
+| `6 5` `1 2` `2 5` `5 1` `3 4` `4 6` | `2`  |
+
+## 풀이
+
+모든 노드를 순회하면서 아직 방문하지 않은 노드를 발견할 때마다 DFS를 수행하여 연결된 모든 노드를 방문 처리하고, DFS 호출 횟수를 세어 연결 요소의 개수를 구한다.
+
+1. 인접 리스트 `list[]`를 생성하고 M개의 양방향 간선을 입력받아 저장한다.
+2. 모든 노드 1번부터 N번까지 순서대로 확인한다.
+3. 방문하지 않은 노드 `i`를 발견하면 `dfs(i)`를 호출하고 `ans`를 1 증가시킨다.
+4. `dfs()`는 현재 노드를 방문 표시한 뒤, 인접한 미방문 노드를 재귀적으로 모두 방문한다.
+5. N번 노드까지 확인을 마치면 `ans`가 연결 요소의 총 개수다.
+
+**핵심 아이디어**: DFS를 시작할 때마다 하나의 연결 요소를 완전히 탐색하게 된다. 방문하지 않은 노드의 수만큼 DFS를 호출하게 되고, 이 호출 횟수가 곧 연결 요소의 개수와 같다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day66BOJ11724연결요소DFS { // 11724 연결요소, 크루스칼도 가능할 듯
+	static int N, M, ans;
+	static boolean[] visited;
+	static List<Integer>[] list;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		ans = 0;
+
+		visited = new boolean[N + 1];
+		list = new ArrayList[N + 1];
+
+		for (int i = 1; i < N + 1; i++)
+			list[i] = new ArrayList<>();
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int s = Integer.parseInt(st.nextToken());
+			int e = Integer.parseInt(st.nextToken());
+			list[s].add(e);
+			list[e].add(s);
+		}
+		for (int i = 1; i < N + 1; i++) {
+			if (!visited[i]) {
+				dfs(i);
+				ans++;
+			}
+		}
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static void dfs(int idx) {
+		if (visited[idx])
+			return;
+		visited[idx] = true;
+		for (int i : list[idx])
+			dfs(i);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(V + E) — 모든 노드와 간선을 한 번씩 방문
+- 공간: O(V + E) — 인접 리스트와 방문 배열 저장

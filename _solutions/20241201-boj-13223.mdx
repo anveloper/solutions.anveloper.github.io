@@ -1,0 +1,67 @@
+---
+title: "BOJ 13223 - 소금 폭탄"
+date: "2024-12-01"
+description: "현재 시각과 목표 시각의 차이를 구하는 시간 계산 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "13223"
+problem_url: "https://www.acmicpc.net/problem/13223"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13223 - 소금 폭탄](https://www.acmicpc.net/problem/13223)
+
+현재 시각과 폭탄이 터지는 시각이 주어질 때, 남은 시간을 HH:MM:SS 형식으로 출력하라.
+
+### 입력
+
+현재 시각과 목표 시각이 HH:MM:SS 형식으로 주어진다.
+
+### 출력
+
+남은 시간을 HH:MM:SS 형식으로 출력한다. 두 시각이 같으면 24:00:00을 출력한다.
+
+### 예제
+
+| 입력                  | 출력       |
+| --------------------- | ---------- |
+| `20:00:00` `04:00:00` | `08:00:00` |
+
+## 풀이
+
+두 시각을 초 단위로 변환하여 차이를 구한다.
+
+1. 현재 시각과 목표 시각을 각각 초 단위로 변환한다
+2. 목표 시각이 현재 시각 이하이면 24시간(86400초)을 더해 다음 날로 계산한다
+3. 차이를 시, 분, 초로 역변환하여 출력한다
+
+**핵심 아이디어**: 시간을 초 단위로 통일하면 날짜 경계 처리가 24시간 더하기로 간단해진다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int st[3], et[3], sTotal, eTotal, ans;
+
+int main()
+{
+  scanf("%d:%d:%d", st, st + 1, st + 2);
+  scanf("%d:%d:%d", et, et + 1, et + 2);
+  sTotal = st[0] * 3600 + st[1] * 60 + st[2];
+  eTotal = et[0] * 3600 + et[1] * 60 + et[2];
+  if (sTotal >= eTotal)
+    eTotal += 24 * 3600;
+  ans = eTotal - sTotal;
+  printf("%02d:%02d:%02d", ans / 3600, (ans % 3600) / 60, ans % 60);
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

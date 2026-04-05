@@ -1,0 +1,87 @@
+---
+title: "BOJ 1003 - 피보나치 함수"
+date: "2022-03-24"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "1003"
+problem_url: "https://www.acmicpc.net/problem/1003"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1003 - 피보나치 함수](https://www.acmicpc.net/problem/1003)
+
+피보나치 수를 구하는 재귀 함수 `fibonacci(n)`을 호출했을 때, `fibonacci(0)`과 `fibonacci(1)`이 각각 몇 번 출력되는지 구하는 문제이다. 입력으로 테스트 케이스 수 T와 각 케이스마다 정수 N이 주어지며, 각 케이스에 대해 `fibonacci(0)`과 `fibonacci(1)`의 호출 횟수를 출력한다.
+
+### 입력
+
+- 첫 번째 줄: 테스트 케이스 수 T
+- 각 줄: 정수 N (0 이상 40 이하)
+
+### 출력
+
+각 테스트 케이스마다 `fibonacci(0)`과 `fibonacci(1)`의 호출 횟수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력            | 출력              |
+| --------------- | ----------------- |
+| `3` `0` `1` `3` | `1 0` `0 1` `1 2` |
+
+## 풀이
+
+`fibonacci(n)` 호출 시 `fibonacci(0)`과 `fibonacci(1)`의 출력 횟수는 피보나치 수열 패턴을 따른다. 메모이제이션 방식의 DP로 중복 계산 없이 각 N에 대한 두 값을 미리 계산하여 저장한다.
+
+1. `dp[n][0]`은 `fibonacci(n)` 호출 시 0이 출력되는 횟수, `dp[n][1]`은 1이 출력되는 횟수로 정의한다.
+2. 기저 조건: `dp[0] = {1, 0}`, `dp[1] = {0, 1}`로 초기화한다.
+3. 재귀 호출 시 `dp[n]`이 null이면 `dp[n-1]`과 `dp[n-2]`를 합산하여 메모이제이션한다.
+4. 각 테스트 케이스마다 `recur(N)`을 호출해 결과를 가져온다.
+
+**핵심 아이디어**: `fibonacci(n)`의 0/1 출력 횟수도 피보나치 수열과 동일한 점화식 `f(n) = f(n-1) + f(n-2)`를 따른다. `Integer[][]`를 null 체크 기반의 메모이제이션 캐시로 활용해 중복 재귀를 방지한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day45BOJ1003피보나치호출DP연습 { // 1003 피보나치수열 호출 DP
+	static StringBuilder sb;
+	static Integer[][] dp = new Integer[41][2];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		sb = new StringBuilder();
+		dp[0][0] = dp[1][1] = 1;
+		dp[0][1] = dp[1][0] = 0;
+
+		int T = Integer.parseInt(br.readLine());
+		for (int i = 0; i < T; i++) {
+			int N = Integer.parseInt(br.readLine());
+			recur(N);
+			sb.append(dp[N][0]).append(" ").append(dp[N][1]).append("\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static Integer[] recur(int n) {
+		if (dp[n][0] == null || dp[n][1] == null) {
+			dp[n][0] = recur(n - 1)[0] + recur(n - 2)[0];
+			dp[n][1] = recur(n - 1)[1] + recur(n - 2)[1];
+		}
+		return dp[n];
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 N에 대해 dp 값을 한 번만 계산 (`N <= 40`)
+- 공간: O(N) — dp 배열 크기 41 x 2

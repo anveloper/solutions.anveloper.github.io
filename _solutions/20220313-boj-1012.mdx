@@ -1,0 +1,119 @@
+---
+title: "BOJ 1012 - 유기농 배추"
+date: "2022-03-13"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색", "격자 그래프", "플러드 필"]
+platform: "boj"
+problem_number: "1012"
+problem_url: "https://www.acmicpc.net/problem/1012"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1012 - 유기농 배추](https://www.acmicpc.net/problem/1012)
+
+M×N 크기의 배추밭에 배추들이 심어져 있을 때, 배추흰지렁이 한 마리가 인접한 배추들을 모두 먹을 수 있다. 서로 인접한 배추들의 묶음(연결 컴포넌트) 개수를 구하면, 필요한 배추흰지렁이의 수를 알 수 있다.
+
+### 입력
+
+- 첫째 줄: 테스트 케이스 수 T
+- 각 테스트 케이스 첫째 줄: 가로 M, 세로 N, 배추 개수 K
+- 이후 K개 줄: 배추의 위치 `(x, y)`
+
+### 출력
+
+각 테스트 케이스마다 필요한 배추흰지렁이의 수 출력
+
+### 예제
+
+| 입력                                                                                                                | 출력 |
+| ------------------------------------------------------------------------------------------------------------------- | ---- |
+| `1` `10 8 17` `0 0` `1 0` `1 1` `4 2` `4 3` `4 5` `2 4` `3 4` `7 4` `8 4` `9 4` `7 5` `8 5` `9 5` `7 6` `8 6` `9 6` | `5`  |
+
+## 풀이
+
+M×N 격자에서 배추가 심어진 칸들의 연결 컴포넌트 수를 DFS로 세는 문제다. 방문하지 않은 배추 칸을 찾으면 DFS를 실행해 인접한 모든 배추를 방문 처리하고, 실행 횟수가 곧 지렁이 수가 된다.
+
+1. 테스트 케이스마다 M×N 배열과 방문 배열을 초기화한다.
+2. K개의 배추 위치를 입력받아 `arr[x][y] = 1`로 표시한다.
+3. 전체 배열을 순회하며 배추가 있고(`arr[i][j] == 1`) 미방문인 칸을 발견하면 DFS를 호출한다.
+4. DFS 내부에서 현재 칸을 방문 처리 후, 상하좌우 4방향의 인접 배추 칸을 재귀 탐색한다.
+5. DFS 호출 횟수(cnt)를 출력한다.
+
+**핵심 아이디어**: DFS 호출 횟수 = 연결 컴포넌트 수 = 필요한 지렁이 수. 방향 벡터 배열(`dx`, `dy`)로 4방향 탐색을 간결하게 처리한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day28BOJ1012유기농배추 { // 1012 유기농배추
+	static int M, N, K;
+	static int[][] arr;
+	static boolean[][] visit;
+	static int cnt;
+	static int[] dx = { 0, -1, 0, 1 };
+	static int[] dy = { 1, 0, -1, 0 };
+
+	public static void main(String[] args) throws NumberFormatException, IOException {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int T = Integer.parseInt(br.readLine());
+
+		for (int tc = 1; tc <= T; tc++) {
+			cnt = 0;
+			StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+			M = Integer.parseInt(st.nextToken());
+			N = Integer.parseInt(st.nextToken());
+			arr = new int[M][N];
+			visit = new boolean[M][N];
+
+			K = Integer.parseInt(st.nextToken());
+			for (int j = 0; j < K; j++) {
+				st = new StringTokenizer(br.readLine(), " ");
+				int p1 = Integer.parseInt(st.nextToken());
+				int p2 = Integer.parseInt(st.nextToken());
+				arr[p1][p2] = 1;
+			}
+
+			for (int i = 0; i < M; i++) {
+				for (int j = 0; j < N; j++) {
+					if (arr[i][j] == 1 && !visit[i][j]) {
+						dfs(i, j);
+						cnt++;
+					}
+				}
+			}
+
+			System.out.println(cnt);
+		}
+	}
+
+	static void dfs(int i, int j) {
+		visit[i][j] = true;
+
+		for (int idx = 0; idx < 4; idx++) {
+			int cx = i + dx[idx];
+			int cy = j + dy[idx];
+			if (cx >= 0 && cy >= 0 && cx < M && cy < N) {
+				if (!visit[cx][cy] && arr[cx][cy] == 1) {
+					dfs(cx, cy);
+				}
+			}
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(NM)
+- 공간: O(NM)

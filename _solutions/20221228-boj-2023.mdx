@@ -1,0 +1,94 @@
+---
+title: "BOJ 2023 - 신기한 소수"
+date: "2022-12-28"
+description: "수학, 정수론, 백트래킹 문제"
+tags: ["수학", "정수론", "백트래킹", "소수 판정"]
+platform: "boj"
+problem_number: "2023"
+problem_url: "https://www.acmicpc.net/problem/2023"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2023 - 신기한 소수](https://www.acmicpc.net/problem/2023)
+
+N자리 소수 중에서, 왼쪽부터 1자리, 2자리, ..., N자리 수가 모두 소수인 수를 오름차순으로 출력하라.
+
+### 입력
+
+첫째 줄에 N이 주어진다 (1 이상 8 이하).
+
+### 출력
+
+조건을 만족하는 N자리 소수를 한 줄에 하나씩 오름차순으로 출력한다.
+
+### 예제
+
+| 입력 | 출력                                                                                                            |
+| ---- | --------------------------------------------------------------------------------------------------------------- |
+| `4`  | `2333` `2339` `2393` `2399` `2939` `3119` `3137` `3733` `3739` `3793` `3797` `5939` `7193` `7331` `7333` `7393` |
+
+## 풀이
+
+1자리 소수에서 시작하여 한 자리씩 뒤에 추가하며, 소수인 경우만 DFS로 확장한다.
+
+1. 1자리 소수 `{2, 3, 5, 7}`에서 탐색을 시작한다
+2. 현재 수에 1~9를 뒤에 붙여 새 수를 만든다
+3. 새 수가 소수이면 다음 단계로 재귀한다
+4. N자리에 도달하면 소수 여부를 확인하고 결과에 추가한다
+5. `isPrime()` 함수는 2부터 `sqrt(p)`까지 나누어 소수를 판정한다
+
+**핵심 아이디어**: 모든 접두사가 소수여야 하므로, 한 자리씩 추가하면서 소수가 아닌 경우를 즉시 가지치기한다. 이로 인해 탐색 공간이 크게 줄어든다.
+
+## 코드
+
+```java
+package day349;
+
+import java.util.Scanner;
+
+public class Day324BOJ2023신기한소수 {
+    static int N;
+    static int[] pre = { 2, 3, 5, 7 };
+    static StringBuilder sb = new StringBuilder();
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        for (int i : pre)
+            dfs(i, 1);
+
+        System.out.println(sb);
+        sc.close();
+    }
+
+    private static void dfs(int p, int n) {
+        if (n == N) {
+            if (isPrime(p))
+                sb.append(p + "\n");
+            return;
+        }
+        for (int i = 1; i < 10; i++) {
+            int t = p * 10 + i;
+            if (isPrime(t))
+                dfs(t, n + 1);
+        }
+    }
+
+    private static boolean isPrime(int p) {
+        for (int i = 2; i <= Math.sqrt(p); i++) {
+            if (p % i == 0)
+                return false;
+        }
+        return true;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(4 _ 9^(N-1) _ sqrt(10^N)) - 최대 분기 × 소수 판정 비용 (가지치기로 실제는 훨씬 적음)
+- 공간: O(N) - 재귀 스택 깊이

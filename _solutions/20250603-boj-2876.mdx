@@ -1,0 +1,72 @@
+---
+title: "BOJ 2876 - 그래픽스 퀴즈"
+date: "2025-06-03"
+description: "구현, 다이나믹 프로그래밍 문제"
+tags: ["구현", "다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "2876"
+problem_url: "https://www.acmicpc.net/problem/2876"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2876 - 그래픽스 퀴즈](https://www.acmicpc.net/problem/2876)
+
+N명의 학생이 한 줄로 앉아 있고 각 학생은 두 개의 성적(1~5)을 가진다. 연속된 학생 구간에서 같은 성적을 가진 학생만으로 이루어진 최대 구간을 구하라.
+
+### 입력
+
+첫째 줄에 학생 수 N, 이후 N줄에 각 학생의 두 성적이 주어진다.
+
+### 출력
+
+최대 구간의 길이와 해당 성적을 출력한다 (길이가 같으면 성적이 작은 것).
+
+### 예제
+
+| 입력                  | 출력  |
+| --------------------- | ----- |
+| `3` `1 2` `2 3` `2 4` | `2 2` |
+
+## 풀이
+
+각 성적(1~5)별로 연속 카운트를 관리하며 최대 구간을 추적한다.
+
+1. 성적 1~5 각각에 대해 연속 카운트 배열을 유지한다
+2. 각 학생의 두 성적에 해당하는 카운트를 증가시키고, 해당하지 않는 성적은 0으로 초기화한다
+3. 카운트가 갱신될 때마다 최대값과 해당 성적을 비교하여 결과를 업데이트한다
+
+**핵심 아이디어**: 5개 성적 각각에 대해 독립적으로 연속 구간을 추적하면 O(5N) = O(N)에 해결된다.
+
+## 코드
+
+```python
+input = open(0).readline
+
+
+def solve():
+    N = int(input())
+    cnt = [0] * 5
+    res = (0, 5)
+    for _ in range(N):
+        A, B = map(int, input().split())
+        for i in range(1, 6):
+            if i in (A, B):
+                cnt[i - 1] += 1
+                if res[0] < cnt[i - 1] or (res[0] == cnt[i - 1] and res[1] > i):
+                    res = (cnt[i - 1], i)
+            else:
+                cnt[i - 1] = 0
+    print(*res)
+
+
+solve()
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

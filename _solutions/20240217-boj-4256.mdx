@@ -1,0 +1,103 @@
+---
+title: "BOJ 4256 - 트리"
+date: "2024-02-17"
+description: "트리, 분할 정복, 재귀 문제"
+tags: ["트리", "분할 정복", "재귀"]
+platform: "boj"
+problem_number: "4256"
+problem_url: "https://www.acmicpc.net/problem/4256"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4256 - 트리](https://www.acmicpc.net/problem/4256)
+
+이진 트리의 전위 순회와 중위 순회 결과가 주어질 때, 후위 순회 결과를 구하라.
+
+### 입력
+
+첫째 줄에 T, 각 케이스의 첫 줄에 N, 이후 두 줄에 전위와 중위 순회 결과가 주어진다.
+
+### 출력
+
+각 케이스마다 후위 순회 결과를 출력한다.
+
+### 예제
+
+| 입력                        | 출력      |
+| --------------------------- | --------- |
+| `1` `4` `3 2 1 4` `2 3 1 4` | `2 4 1 3` |
+
+## 풀이
+
+전위 순회의 첫 원소가 루트이고, 중위 순회에서 루트 위치로 좌/우 서브트리를 분할하여 재귀적으로 후위 순회를 출력한다.
+
+1. 전위 순회의 r번째 원소가 현재 서브트리의 루트이다
+2. 중위 순회에서 루트의 인덱스를 찾아 좌/우 서브트리 범위를 결정한다
+3. 좌 서브트리 → 우 서브트리 → 루트 순서로 재귀 호출하여 후위 순회를 구성한다
+
+**핵심 아이디어**: 전위의 루트와 중위의 분할 지점을 이용해 좌/우 서브트리 크기를 알 수 있고, 이를 재귀적으로 반복한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day746BOJ4256트리 {
+  static StringBuilder sb = new StringBuilder();
+  static int[] pre;
+  static int[] in;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+    int T = Integer.parseInt(br.readLine());
+
+    for (int tc = 1; tc <= T; tc++) {
+      int n = Integer.parseInt(br.readLine());
+      pre = new int[n];
+      in = new int[n];
+
+      st = new StringTokenizer(br.readLine());
+      for (int i = 0; i < n; i++) {
+        pre[i] = Integer.parseInt(st.nextToken());
+      }
+      st = new StringTokenizer(br.readLine());
+      for (int i = 0; i < n; i++) {
+        in[i] = Integer.parseInt(st.nextToken());
+      }
+
+      post(0, 0, n - 1);
+      sb.append("\n");
+    }
+    System.out.println(sb);
+  }
+
+  private static void post(int r, int start, int end) {
+    int rootIdx = -1;
+    for (int i = start; i <= end; i++) {
+      if (pre[r] == in[i]) {
+        rootIdx = i;
+        break;
+      }
+    }
+    if (rootIdx == -1) {
+      return;
+    }
+    post(r + 1, start, rootIdx - 1);
+    post(r + rootIdx - start + 1, rootIdx + 1, end);
+    sb.append(pre[r]).append(" ");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) - 중위 순회에서 루트 선형 탐색
+- 공간: O(N)

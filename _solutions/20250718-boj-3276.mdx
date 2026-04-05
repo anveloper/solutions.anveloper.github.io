@@ -1,0 +1,79 @@
+---
+title: "BOJ 3276 - ICONS"
+date: "2025-07-18"
+description: "수학, 구현, 브루트포스 알고리즘 문제"
+tags: ["수학", "구현", "브루트포스 알고리즘", "사칙연산"]
+platform: "boj"
+problem_number: "3276"
+problem_url: "https://www.acmicpc.net/problem/3276"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3276 - ICONS](https://www.acmicpc.net/problem/3276)
+
+N개의 아이콘을 격자(행 x 열) 형태로 배치할 때, 행과 열의 합(row + col)이 최소가 되는 배치를 찾는 문제이다.
+모든 아이콘을 배치해야 하므로 마지막 행이 다 채워지지 않아도 된다.
+행 수와 열 수를 출력한다.
+
+### 입력
+
+첫째 줄에 아이콘의 수 N이 주어진다. (1 이상의 정수)
+
+### 출력
+
+행과 열의 합이 최소가 되는 행 수와 열 수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력 | 출력  |
+| ---- | ----- |
+| `6`  | `2 3` |
+| `1`  | `1 1` |
+
+## 풀이
+
+행의 수를 1부터 N까지 브루트포스로 탐색하여 행+열 합이 최소인 경우를 찾는 문제이다.
+
+1. 행 수 `i`를 1부터 N까지 순회한다.
+2. 열 수 `j`는 `N / i`이며, 나머지가 있으면 `j = N / i + 1`로 올림 처리한다.
+3. `i + j`가 현재 최솟값보다 작으면 갱신한다.
+4. 탐색 완료 후 최소 합을 만드는 `minRow`와 `minCol`을 출력한다.
+
+**핵심 아이디어**: 열 수는 나누기 올림(`ceil`)으로 계산하고, 행+열 합이 최소인 분할을 찾는 것이 핵심이다. N에 가까운 제곱근 근방의 행/열 분할이 최솟값이 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+#define MAX 0x3f3f3f3f
+using namespace std;
+int pebbles, minCol = MAX, minRow = MAX, minSum = MAX;
+int main()
+{
+  cin >> pebbles;
+  for (int i = 1; i <= pebbles; i++)
+  {
+    int j = pebbles % i == 0 ? pebbles / i : pebbles / i + 1;
+    if (i + j < minSum)
+    {
+      minSum = i + j;
+      minRow = i;
+      minCol = j;
+    }
+  }
+  cout << minRow << ' ' << minCol;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (행의 수를 1~N까지 선형 탐색)
+- 공간: O(1)

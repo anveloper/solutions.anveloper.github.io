@@ -1,0 +1,60 @@
+---
+title: "BOJ 8545 - Zadanie próbne"
+date: "2024-09-29"
+description: "문자열을 뒤집어 출력하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "8545"
+problem_url: "https://www.acmicpc.net/problem/8545"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8545 - Zadanie próbne](https://www.acmicpc.net/problem/8545)
+
+문자열이 주어질 때, 뒤집어서 출력하라.
+
+### 입력
+
+문자열 하나가 주어진다.
+
+### 출력
+
+뒤집은 문자열을 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `abc` | `cba` |
+
+## 풀이
+
+문자열을 마지막 인덱스부터 역순으로 출력한다.
+
+1. 문자열을 입력받는다
+2. `size()-1`부터 0까지 역순으로 각 문자를 출력한다
+
+**핵심 아이디어**: 인덱스를 역순으로 순회하면 O(N)에 문자열을 뒤집어 출력할 수 있다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+string s;
+int main()
+{
+  cin >> s;
+  for (int i = s.size() - 1; i >= 0; i--)
+    cout << s[i];
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 문자열 길이)
+- 공간: O(N)

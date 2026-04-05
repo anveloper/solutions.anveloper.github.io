@@ -1,0 +1,63 @@
+---
+title: "BOJ 10998 - A×B"
+date: "2023-06-08"
+description: "구현, 사칙연산, 수학 문제"
+tags: ["구현", "사칙연산", "수학"]
+platform: "boj"
+problem_number: "10998"
+problem_url: "https://www.acmicpc.net/problem/10998"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10998 - A×B](https://www.acmicpc.net/problem/10998)
+
+두 정수 A와 B를 입력받아 A×B를 출력하라.
+
+### 입력
+
+첫째 줄에 A와 B가 주어진다 (`0 < A, B < 10`).
+
+### 출력
+
+A×B를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `1 2` | `2`  |
+
+## 풀이
+
+두 정수를 입력받아 곱을 출력한다.
+
+1. StringTokenizer로 두 정수를 파싱한다
+2. 두 수의 곱을 출력한다
+
+**핵심 아이디어**: 기본 사칙연산 문제로, 입력 파싱과 곱셈 출력만 하면 된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day487BOJ10998AxB {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    System.out.println(Integer.parseInt(st.nextToken()) * Integer.parseInt(st.nextToken()));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

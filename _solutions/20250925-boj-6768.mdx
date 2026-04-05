@@ -1,0 +1,63 @@
+---
+title: "BOJ 6768 - Don’t pass me the ball!"
+date: "2025-09-25"
+description: "수학, 조합론 문제"
+tags: ["수학", "조합론"]
+platform: "boj"
+problem_number: "6768"
+problem_url: "https://www.acmicpc.net/problem/6768"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6768 - Don’t pass me the ball!](https://www.acmicpc.net/problem/6768)
+
+N명의 선수 중 자신을 제외한 3명을 선택하는 조합의 수를 구하라.
+
+### 입력
+
+양의 정수 N이 주어진다.
+
+### 출력
+
+`C(N-1, 3)`의 값을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `5`  | `4`  |
+
+## 풀이
+
+조합 공식 `C(N-1, 3) = (N-1)(N-2)(N-3)/6`을 직접 계산한다.
+
+1. `(N-1) * (N-2) * (N-3)`을 계산한다
+2. 결과를 6으로 나눈다
+
+**핵심 아이디어**: 자신을 제외한 N-1명 중 3명을 고르는 조합이므로 `C(N-1, 3)` 공식을 바로 적용한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int n, ans = 1;
+int main()
+{
+  cin >> n;
+  for (int i = 1; i <= 3; i++)
+    ans *= n - i;
+  cout << ans / 6;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

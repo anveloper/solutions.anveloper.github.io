@@ -1,0 +1,101 @@
+---
+title: "BOJ 2597 - 줄자접기"
+date: "2025-07-23"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2597"
+problem_url: "https://www.acmicpc.net/problem/2597"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2597 - 줄자접기](https://www.acmicpc.net/problem/2597)
+
+줄자에 빨간색(R), 파란색(B), 노란색(Y) 쌍의 눈금이 표시되어 있다.
+같은 색 두 눈금을 포개어 접는 과정을 세 번 반복한다.
+줄자의 원래 길이 Z가 주어질 때 세 번 접은 후의 줄자 길이를 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 줄자의 원래 길이 Z가 주어진다.
+이후 빨간색(R1, R2), 파란색(B1, B2), 노란색(Y1, Y2) 눈금 쌍이 순서대로 주어진다.
+
+### 출력
+
+세 번 접은 후의 줄자 길이를 소수점 첫째 자리까지 출력한다.
+
+### 예제
+
+| 입력                   | 출력  |
+| ---------------------- | ----- |
+| `10` `3 7` `1 2` `4 5` | `3.5` |
+
+## 풀이
+
+같은 색 눈금 쌍이 일치하지 않는 경우에만 해당 색 기준으로 접기를 수행하며, 각 접기마다 줄자 길이와 나머지 눈금 위치를 갱신하는 시뮬레이션이다.
+
+1. 각 색상(R, B, Y) 순서로 처리하며, 두 눈금 값이 다른 경우에만 접기를 수행한다.
+2. 접는 기준선 `line`은 두 눈금의 평균 `0.5 * (A1 + A2)`이다.
+3. 접은 후 줄자 길이 Z는 `max(line, Z - line)`으로 갱신된다.
+4. 나머지 색상 눈금들은 기준선으로부터의 절댓값 거리로 좌표를 변환한다.
+5. 최종 Z를 소수점 첫째 자리까지 포맷하여 출력한다.
+
+**핵심 아이디어**: 접기 기준선을 중심으로 줄자를 반으로 겹치면, Z는 `max(line, Z-line)`이 되고 나머지 눈금들은 `|좌표 - line|`으로 새 좌표계에서 표현된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cmath>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  double Z;
+  cin >> Z;
+
+  double R1, R2;
+  cin >> R1 >> R2;
+  double B1, B2;
+  cin >> B1 >> B2;
+  double Y1, Y2;
+  cin >> Y1 >> Y2;
+
+  double line;
+  if (R1 != R2)
+  {
+    line = 0.5 * (R1 + R2);
+    Z = max(line, Z - line);
+    B1 = abs(B1 - line), B2 = abs(B2 - line);
+    Y1 = abs(Y1 - line), Y2 = abs(Y2 - line);
+  }
+  if (B1 != B2)
+  {
+    line = 0.5 * (B1 + B2);
+    Z = max(line, Z - line);
+    Y1 = abs(Y1 - line), Y2 = abs(Y2 - line);
+  }
+  if (Y1 != Y2)
+  {
+    line = 0.5 * (Y1 + Y2);
+    Z = max(line, Z - line);
+  }
+
+  string Ans = to_string((int)Z);
+  Ans += "." + to_string(((int)(Z * 10)) % 10);
+  cout << Ans << '\n';
+}
+```
+
+## 복잡도
+
+- 시간: O(1) (최대 3번 접기 연산)
+- 공간: O(1)

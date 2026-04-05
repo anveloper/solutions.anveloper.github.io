@@ -1,0 +1,103 @@
+---
+title: "BOJ 6219 - 소수의 자격"
+date: "2025-10-21"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "6219"
+problem_url: "https://www.acmicpc.net/problem/6219"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6219 - 소수의 자격](https://www.acmicpc.net/problem/6219)
+
+구간 `[A, B]`의 소수 중 특정 숫자 D를 포함하는 소수의 개수를 구하라.
+
+### 입력
+
+정수 A, B, D가 주어진다.
+
+### 출력
+
+조건을 만족하는 소수의 개수를 출력한다.
+
+### 예제
+
+| 입력     | 출력 |
+| -------- | ---- |
+| `2 31 2` | `4`  |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 판별하고, 각 소수의 자릿수에 D가 포함되는지 확인한다.
+
+1. 4000000까지의 소수를 에라토스테네스의 체로 미리 구한다
+2. A부터 B까지 순회하며 소수인 수를 찾는다
+3. 각 소수의 각 자릿수를 확인하여 D를 포함하면 카운트를 증가시킨다
+
+**핵심 아이디어**: 체로 소수 판별을 O(N log log N)에 전처리한 뒤, 범위 내 소수에 대해 자릿수 검사를 O(log N)에 수행한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+const int MAX_NUM = 4000001;
+using namespace std;
+
+bool hasDigit(int number, int digit)
+{
+  while (number > 0)
+  {
+    if (number % 10 == digit)
+    {
+      return true;
+    }
+    number /= 10;
+  }
+  return false;
+}
+
+int main(void)
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int A, B, D;
+  cin >> A >> B >> D;
+
+  vector<int> Prime(MAX_NUM + 1, 1);
+  Prime[0] = Prime[1] = 0;
+
+  for (int i = 2; i <= sqrt(MAX_NUM); i++)
+  {
+    for (int j = i * i; j <= MAX_NUM; j += i)
+    {
+      Prime[j] = 0;
+    }
+  }
+
+  int count = 0;
+  for (int i = A; i <= B; i++)
+  {
+    if (Prime[i] == 1 && hasDigit(i, D))
+    {
+      count++;
+    }
+  }
+  cout << count << '\n';
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N)
+- 공간: O(N)

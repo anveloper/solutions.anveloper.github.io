@@ -1,0 +1,161 @@
+---
+title: "BOJ 1327 - 소트 게임"
+date: "2022-12-20"
+description: "자료 구조, 그래프 이론, 그래프 탐색 문제"
+tags:
+  [
+    "자료 구조",
+    "그래프 이론",
+    "그래프 탐색",
+    "집합과 맵",
+    "너비 우선 탐색",
+    "해시를 사용한 집합과 맵",
+    "트리를 사용한 집합과 맵",
+  ]
+platform: "boj"
+problem_number: "1327"
+problem_url: "https://www.acmicpc.net/problem/1327"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1327 - 소트 게임](https://www.acmicpc.net/problem/1327)
+
+1부터 N까지의 수로 이루어진 순열이 주어진다. 한 번의 연산으로 연속한 K개의 원소를 뒤집을 수 있다. 시작 위치를 0부터 N-K까지 선택할 수 있으므로 한 번에 N-K+1가지 연산이 가능하다.
+
+이 순열을 오름차순으로 정렬하기 위해 필요한 최소 연산 횟수를 구하라. 정렬이 불가능하면 -1을 출력한다.
+
+### 입력
+
+첫 번째 줄에 N과 K가 주어진다. (1 ≤ K ≤ N ≤ 8)
+
+두 번째 줄에 N개의 수로 이루어진 순열이 주어진다.
+
+### 출력
+
+최소 연산 횟수를 출력한다. 정렬이 불가능하면 -1을 출력한다.
+
+### 예제
+
+```
+4 2
+4 3 2 1
+```
+
+출력:
+
+```
+4
+```
+
+## 풀이
+
+**핵심 아이디어**: 상태를 문자열로 인코딩하여 BFS로 최단 경로(최소 연산 횟수)를 구한다. N이 최대 8이므로 상태 공간은 8! = 40,320이며, 각 상태에서 N-K+1개의 연산이 가능하다. 방문한 상태는 `HashSet`으로 관리하여 중복 탐색을 방지한다. 목표 상태에 도달하면 현재까지의 BFS 레벨이 정답이다.
+
+1. 초기 순열 A와 목표 순열 B(정렬된 상태)를 각각 문자열로 인코딩한다.
+2. BFS로 A를 시작점으로 탐색하며, 큐에서 꺼낸 상태의 모든 가능한 K-구간 뒤집기 결과를 탐색한다.
+3. 각 상태를 `HashSet`에 저장하여 중복 방문을 방지한다.
+4. 큐를 레벨 단위로 처리하여 목표 상태 B를 발견하면 현재 레벨(연산 횟수)을 반환한다.
+5. 큐가 비어도 B를 찾지 못하면 -1을 반환한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+public class Day316BOJ1327소트게임 {
+    static int N, K, ans;
+    static String A = "", B = ""; // A: 원본, B: 목표
+    static int[] arr;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+        arr = new int[N];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+            A += arr[i] + "";
+        }
+        Arrays.sort(arr);
+        for (int i = 0; i < N; i++) {
+            B += arr[i] + "";
+        }
+
+        System.out.println(bfs() ? ans : -1);
+
+        br.close();
+    }
+
+    static Queue<String> q;
+    static Set<String> visited; // List로 하면 시간초과
+
+    private static boolean bfs() {
+        ans = 0;
+        q = new LinkedList<>();
+        visited = new HashSet<>();
+
+        q.add(A);
+        visited.add(A);
+
+        while (!q.isEmpty()) {
+            int r = q.size();
+            if (find(r))
+                return true;
+            else
+                ans++;
+        }
+        return false;
+    }
+
+    private static boolean find(int r) {
+        while (r-- > 0) {
+            String a = q.poll();
+            if (a.equals(B)) {
+                return true;
+            }
+            for (int i = 0; i <= N - K; i++) {
+                String tmp = swap(a, i);
+                if (!visited.contains(tmp)) {
+                    q.add(tmp);
+                    visited.add(tmp);
+                }
+            }
+        }
+        return false;
+    }
+
+    private static String swap(String s, int i) {
+        StringBuilder sb = new StringBuilder(s);
+        int st = i;
+        int ed = i + K - 1;
+        while (st < ed) {
+            char c = sb.charAt(st);
+            sb.setCharAt(st, sb.charAt(ed));
+            sb.setCharAt(ed, c);
+            st++;
+            ed--;
+        }
+        return sb.toString();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N! × (N-K)) — 상태 공간 최대 N!(=40,320), 각 상태에서 N-K+1개 연산
+- 공간: O(N!) — 방문 상태를 저장하는 HashSet

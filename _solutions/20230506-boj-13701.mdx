@@ -1,0 +1,78 @@
+---
+title: "BOJ 13701 - 중복 제거"
+date: "2023-05-06"
+description: "비트마스킹, 비트 집합 문제"
+tags: ["비트마스킹", "비트 집합"]
+platform: "boj"
+problem_number: "13701"
+problem_url: "https://www.acmicpc.net/problem/13701"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13701 - 중복 제거](https://www.acmicpc.net/problem/13701)
+
+수열에서 이전에 나온 적 없는 수만 순서대로 출력하라. 수의 범위는 0 이상 2^25 미만이다.
+
+### 입력
+
+한 줄에 공백으로 구분된 정수열이 주어진다.
+
+### 출력
+
+중복을 제거한 수열을 순서대로 출력한다.
+
+### 예제
+
+| 입력          | 출력      |
+| ------------- | --------- |
+| `1 2 3 1 2 4` | `1 2 3 4` |
+
+## 풀이
+
+BitSet을 사용하여 이미 출력한 수를 O(1)에 확인하고, 처음 나온 수만 출력한다.
+
+1. 2^25 크기의 BitSet을 생성한다
+2. 입력을 순서대로 읽으며 해당 비트가 설정되지 않은 수만 출력한다
+3. 출력한 수의 비트를 설정한다
+
+**핵심 아이디어**: BitSet은 비트 단위로 존재 여부를 기록하므로 HashSet보다 메모리 효율적이다 (2^25비트 = 4MB).
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day454BOJ13701중복제거 {
+  static final int MAX = 33554432;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    BitSet bs = new BitSet(MAX);
+
+    while (st.hasMoreTokens()) {
+      int tmp = Integer.parseInt(st.nextToken());
+      if (!bs.get(tmp)) {
+        bs.set(tmp);
+        bw.write(tmp + " ");
+      }
+    }
+    bw.flush();
+    bw.close();
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(2^25) - BitSet 고정 크기

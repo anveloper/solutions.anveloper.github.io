@@ -1,0 +1,82 @@
+---
+title: "BOJ 1850 - 최대공약수"
+date: "2023-12-14"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "1850"
+problem_url: "https://www.acmicpc.net/problem/1850"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1850 - 최대공약수](https://www.acmicpc.net/problem/1850)
+
+1이 A개인 수와 1이 B개인 수의 최대공약수를 구하라. 예를 들어 A=3이면 111, B=4이면 1111이다.
+
+### 입력
+
+첫째 줄에 두 자연수 A, B가 주어진다 (1 이상 2^63 미만).
+
+### 출력
+
+두 수의 최대공약수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `3 4` | `1`  |
+
+## 풀이
+
+1이 K개인 수를 `R(K)`라 하면, `GCD(R(A), R(B)) = R(GCD(A, B))`라는 수학적 성질을 이용한다.
+
+1. 두 수 A, B를 입력받는다
+2. 유클리드 호제법으로 GCD(A, B)를 구한다
+3. GCD(A, B)개의 '1'을 이어붙여 출력한다
+
+**핵심 아이디어**: Repunit(1이 반복되는 수)의 GCD 성질에 의해, 자릿수의 GCD만 구하면 답을 바로 알 수 있다.
+
+## 코드
+
+```java
+package day699;
+
+import java.util.*;
+
+public class Day677BOJ1850최대공약수 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    long A = sc.nextLong();
+    long B = sc.nextLong();
+
+    long gcd = getGCD(Math.max(A, B), Math.min(A, B));
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 1; i <= gcd; i++)
+      sb.append("1");
+
+    System.out.println(sb.toString());
+    sc.close();
+  }
+
+  public static long getGCD(long a, long b) {
+    while (b > 0) {
+      long tmp = a;
+      a = b;
+      b = tmp % b;
+    }
+    return a;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log(max(A,B)) + GCD(A,B))
+- 공간: O(GCD(A,B))

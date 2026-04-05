@@ -1,0 +1,81 @@
+---
+title: "BOJ 6780 - Sumac Sequences"
+date: "2026-01-29"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "6780"
+problem_url: "https://www.acmicpc.net/problem/6780"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6780 - Sumac Sequences](https://www.acmicpc.net/problem/6780)
+
+Sumac 수열은 첫 두 항 `t1`, `t2`로 시작하며, `t1 >= t2`인 동안 다음 항을 `t(n-2) - t(n-1)`로 생성한다. 즉, 앞 항에서 바로 뒤 항을 빼는 방식이다. 생성을 멈추는 조건은 현재 항이 이전 항보다 작아질 때이며, 수열의 길이를 출력한다.
+
+### 입력
+
+첫째 줄에 두 양의 정수 `t1`, `t2`가 주어진다. `t1 >= t2`가 보장된다.
+
+### 출력
+
+Sumac 수열의 길이를 출력한다.
+
+### 예제
+
+| 입력     | 출력 |
+| -------- | ---- |
+| `120 71` | `5`  |
+
+(`120`, `71`, `49`, `22`, `27`에서 멈춤. 22 `<` 27이므로 49-22=27을 추가하고 a=22, b=27, 22 `<` 27이므로 종료. 총 5항)
+
+## 풀이
+
+두 변수를 이용해 수열을 직접 시뮬레이션하며 길이를 센다.
+
+1. 첫 두 항 `a = t1`, `b = t2`를 읽고 길이를 2로 초기화한다.
+2. `a >= b`인 동안 반복한다.
+   - 다음 항 `c = a - b`를 계산한다.
+   - `a = b`, `b = c`로 교체한다.
+   - 길이를 1 증가시킨다.
+3. 반복이 끝나면 길이를 출력한다.
+
+**핵심 아이디어:** 수열 생성 규칙이 유클리드 호제법의 뺄셈 기반 변형과 유사하다. 항이 감소하는 방향으로 수렴하므로 반복 횟수가 크지 않다. `long long`을 사용하여 큰 수 입력에 대비한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  long long t1, t2;
+  if (!(cin >> t1))
+    return 0;
+  cin >> t2;
+  int len = 2;
+  long long a = t1, b = t2;
+  while (a >= b)
+  {
+    long long c = a - b;
+    a = b;
+    b = c;
+    ++len;
+  }
+  cout << len << '\n';
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(t1/t2) — 뺄셈 기반 GCD 알고리즘과 유사한 수렴 속도
+- 공간: O(1) — 상수 개의 변수만 사용

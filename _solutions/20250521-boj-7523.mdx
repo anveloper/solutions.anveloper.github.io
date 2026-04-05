@@ -1,0 +1,56 @@
+---
+title: "BOJ 7523 - Gauß"
+date: "2025-05-21"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "7523"
+problem_url: "https://www.acmicpc.net/problem/7523"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7523 - Gauß](https://www.acmicpc.net/problem/7523)
+
+정수 a부터 b까지의 합을 구하라.
+
+### 입력
+
+테스트 케이스 수 T와 각 케이스에 정수 a, b가 주어진다.
+
+### 출력
+
+각 케이스마다 `Scenario #k:` 후 합을 출력한다.
+
+### 예제
+
+| 입력               | 출력                                     |
+| ------------------ | ---------------------------------------- |
+| `2` `1 100` `-3 5` | `Scenario #1:` `5050` `Scenario #2:` `9` |
+
+## 풀이
+
+가우스 등차수열 합 공식을 적용한다.
+
+1. a부터 b까지의 합은 `(b - a + 1) * (a + b) / 2`이다
+2. 정수 나눗셈으로 정확하게 계산한다
+
+**핵심 아이디어**: 가우스의 등차수열 합 공식 `n(첫항+끝항)/2`로 O(1)에 계산한다.
+
+## 코드
+
+```python
+for i in range(int(input())):
+    a, b = map(int, input().split())
+    res = (b - a + 1) * (a + b) // 2
+    print(f"Scenario #{i+1}:")
+    print(f"{res}\n")
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

@@ -1,0 +1,134 @@
+---
+title: "BOJ 2206 - 벽 부수고 이동하기"
+date: "2023-02-02"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "2206"
+problem_url: "https://www.acmicpc.net/problem/2206"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2206 - 벽 부수고 이동하기](https://www.acmicpc.net/problem/2206)
+
+N×M 크기의 맵이 있다. 각 칸은 통로(0) 또는 벽(1)이다. (1,1)에서 (N,M)까지 이동하려 할 때, 최대 1개의 벽을 부수고 이동할 수 있다. 이동은 상하좌우 4방향으로 가능하며, 최단 거리를 구한다.
+
+### 입력
+
+첫째 줄에 N, M(1 ≤ N, M ≤ 1,000)이 주어진다. 다음 N개의 줄에 M개의 숫자(0 또는 1)로 이루어진 맵이 주어진다.
+
+### 출력
+
+최단 거리를 출력한다. 도달할 수 없으면 -1을 출력한다.
+
+### 예제
+
+**입력**
+
+```
+6 4
+0100
+1110
+1000
+0000
+0111
+0000
+```
+
+**출력**
+
+```
+15
+```
+
+## 풀이
+
+**핵심 아이디어**: 3차원 배열 `cnt[N][M][2]`를 사용한다. `cnt[r][c][0]`은 벽을 부수지 않고 해당 칸에 도달한 최단 거리, `cnt[r][c][1]`은 벽을 한 번 부수고 도달한 최단 거리이다.
+
+1. `cnt[0][0][0] = 1`로 초기화하고 시작 상태 `(0, 0, 0)`을 큐에 넣는다.
+2. BFS 탐색 시 인접 칸을 확인한다:
+   - 인접 칸이 통로(0)이고 미방문(`cnt == 0`)이면: `cnt[nr][nc][stroy] = cnt[r][c][stroy] + 1`로 갱신 후 큐에 추가.
+   - 인접 칸이 벽(1)이고, 아직 벽을 부수지 않은 상태(`stroy == 0`)이며, `cnt[nr][nc][1] == 0`이면: 벽을 부수고 `stroy = 1` 상태로 큐에 추가.
+3. `(N-1, M-1)`에 도달하면 현재 거리를 반환한다.
+
+`stroy` 변수가 벽 부수기 사용 여부를 나타낸다. 각 칸을 두 가지 상태로만 방문하므로 시간 복잡도는 O(N·M)이다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Day360BOJ2206벽부수고이동하기 {
+    static int N, M;
+    static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+    static int[][] map;
+    static int[][][] cnt;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        map = new int[N][M];
+        cnt = new int[N][M][2];
+
+        for (int i = 0; i < N; i++) {
+            String str = br.readLine();
+            for (int j = 0; j < M; j++)
+                map[i][j] = str.charAt(j) - '0';
+        }
+
+        System.out.println(bfs());
+        br.close();
+    }
+
+    private static int bfs() {
+        Queue<int[]> q = new LinkedList<>();
+        cnt[0][0][0] = 1;
+        q.add(new int[] { 0, 0, 0 });
+
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            int r = cur[0], c = cur[1], stroy = cur[2];
+
+            if (r == N - 1 && c == M - 1)
+                return cnt[r][c][stroy];
+
+            for (int dir = 0; dir < 4; dir++) {
+                int nr = r + dr[dir];
+                int nc = c + dc[dir];
+
+                if (index(nr, nc))
+                    continue;
+
+                if (map[nr][nc] == 0 && cnt[nr][nc][stroy] == 0) {
+                    cnt[nr][nc][stroy] = cnt[r][c][stroy] + 1;
+                    q.add(new int[] { nr, nc, stroy });
+                }
+
+                else if (map[nr][nc] == 1 && cnt[nr][nc][stroy] == 0 && stroy == 0) {
+                    cnt[nr][nc][1] = cnt[r][c][0] + 1;
+                    q.add(new int[] { nr, nc, 1 });
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    private static boolean index(int nr, int nc) {
+        return nr < 0 || nr >= N || nc < 0 || nc >= M;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N·M) — 각 셀을 최대 2가지 상태로 한 번씩 방문
+- 공간: O(N·M) — 3차원 거리 배열 (2레이어)

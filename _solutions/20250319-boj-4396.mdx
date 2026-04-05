@@ -1,0 +1,107 @@
+---
+title: "BOJ 4396 - 지뢰 찾기"
+date: "2025-03-19"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4396"
+problem_url: "https://www.acmicpc.net/problem/4396"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4396 - 지뢰 찾기](https://www.acmicpc.net/problem/4396)
+
+N×N 크기의 격자판에 지뢰(`*`)가 묻혀 있다. 유저가 열어본 칸(`x`)과 열지 않은 칸(`.`)으로 이루어진 오픈 맵이 주어질 때, 열린 칸에는 인접한 지뢰 수를 표시하고, 지뢰를 밟은 경우 모든 지뢰 위치를 출력한다.
+
+### 입력
+
+- 첫 번째 줄: N (격자 크기)
+- 다음 N줄: 지뢰 맵 (`.` 또는 `*`)
+- 다음 N줄: 오픈 맵 (`.` 또는 `x`, x는 유저가 열어본 칸)
+
+### 출력
+
+- N줄: 결과 격자
+  - 열린 칸: 인접 지뢰 수 (0~8)
+  - 지뢰를 밟은 경우: 모든 지뢰 위치를 `*`로 표시
+  - 열지 않은 칸: `.` 그대로 출력
+
+### 예제
+
+| 입력                                                        | 출력                        |
+| ----------------------------------------------------------- | --------------------------- |
+| `4` `*...` `....` `.*..` `....` `x...` `xx..` `....` `....` | `1...` `11..` `....` `....` |
+
+## 풀이
+
+지뢰 맵과 오픈 맵을 동시에 참조하며 각 칸을 처리하는 구현 문제다. 열린 칸에서 지뢰를 발견하면 즉시 모든 지뢰를 노출시키는 `game_over` 처리가 핵심이다.
+
+1. N×N 지뢰 맵(`pan`)과 오픈 맵(`open`)을 각각 입력받는다.
+2. 8방향 델타(`dx`, `dy`)를 이용해 인접 지뢰 수를 세는 `find_mine_count` 함수를 정의한다.
+3. 오픈 맵을 순회하며 `x`인 칸은 인접 지뢰 수로 교체한다.
+4. 해당 칸이 지뢰(`*`)라면 `game_over`를 호출하여 지뢰 맵의 모든 `*`를 오픈 맵에 반영한다.
+5. 최종 오픈 맵을 출력한다.
+
+**핵심 아이디어**: 지뢰를 밟은 순간 `game_over`를 호출해 모든 지뢰를 공개하되, 이미 순회 중인 나머지 칸도 계속 처리하여 지뢰 수 표시를 완료한다.
+
+## 코드
+
+```python
+import sys
+
+N = int(sys.stdin.readline())
+dx = [0, 0, -1, 1, 1, 1, -1, -1]
+dy = [1, -1, 0, 0, -1, 1, 1, -1]
+
+
+def find_mine_count(x, y):
+    count = 0
+    for i in range(8):
+        nx = x + dx[i]
+        ny = y + dy[i]
+        if nx < 0 or ny < 0 or nx >= N or ny >= N:
+            continue
+
+        if pan[nx][ny] == "*":
+            count += 1
+    return count
+
+
+def game_over():
+    for i in range(N):
+        for j in range(N):
+            if pan[i][j] == "*":
+                open[i][j] = "*"
+
+
+pan = []
+open = []
+
+for i in range(N):
+    line = list(map(str, sys.stdin.readline().strip()))
+    pan.append(line)
+for i in range(N):
+    line = list(map(str, sys.stdin.readline().strip()))
+    open.append(line)
+
+for i in range(N):
+    for j in range(N):
+        if open[i][j] == "x":
+            open[i][j] = find_mine_count(i, j)
+            if pan[i][j] == "*":
+                game_over()
+
+for l in open:
+    for i in l:
+        print(i, end="")
+    print()
+```
+
+## 복잡도
+
+- 시간: O(N^2) — 격자 전체를 순회하며 각 칸마다 8방향 탐색 (상수)
+- 공간: O(N^2) — 지뢰 맵과 오픈 맵 두 배열 저장

@@ -1,0 +1,92 @@
+---
+title: "BOJ 1744 - 수 묶기"
+date: "2022-06-02"
+description: "그리디 알고리즘, 정렬, 많은 조건 분기 문제"
+tags: ["그리디 알고리즘", "정렬", "많은 조건 분기"]
+platform: "boj"
+problem_number: "1744"
+problem_url: "https://www.acmicpc.net/problem/1744"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1744 - 수 묶기](https://www.acmicpc.net/problem/1744)
+
+N개의 수가 주어질 때, 이웃하지 않아도 되는 임의의 두 수를 묶을 수 있다. 두 수를 묶으면 곱하고, 묶지 않으면 그대로 더한다. 수들의 합이 최대가 되도록 묶는 방법을 구하는 문제이다.
+
+### 입력
+
+- 첫째 줄: 수의 개수 N (1 이상 10,000 이하)
+- 다음 N줄: 정수 (절댓값 10,000 이하)
+
+### 출력
+
+- 최대 합
+
+### 예제
+
+| 입력                 | 출력 |
+| -------------------- | ---- |
+| `4` `-1` `2` `1` `3` | `6`  |
+
+## 풀이
+
+배열을 정렬하고 세 가지 그리디 전략을 순서대로 적용한다: 음수끼리 곱하기, 양수 큰 수끼리 곱하기, 나머지 그대로 더하기.
+
+1. 배열을 오름차순 정렬한다.
+2. 왼쪽에서: 두 수 모두 음수이면 곱해서 더한다(음수×음수=양수로 이득). 양수가 나오면 중단한다.
+3. 오른쪽에서: 두 수 모두 1보다 크면 곱해서 더한다(2 이상 × 2 이상이면 곱이 더 큼). 1 이하가 나오면 중단한다.
+4. 나머지 구간(음수 1개, 0, 1 등)은 묶지 않고 그대로 더한다.
+
+**핵심 아이디어**: 묶으면 이득인 경우는 두 경우뿐이다. (1) 음수 두 개를 묶으면 양수가 된다. (2) 2 이상의 양수 두 개를 묶으면 합보다 곱이 크다. 반면 1은 묶어도 이득이 없고(1×x = x), 0과 음수를 묶으면 합이 커진다. 정렬 후 양 끝에서부터 그리디하게 처리한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Day115BOJ1744수묶기 { // 1744 수 묶기
+	static int N, ans;
+	static int[] arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		ans = 0;
+		arr = new int[N];
+		for (int i = 0; i < N; i++)
+			arr[i] = Integer.parseInt(br.readLine());
+		Arrays.sort(arr); // 두수의 곱의 최대값은 큰수끼리의 곱, 음수의 곱 처리, 정렬필요
+
+		int idx = 0;
+		while (idx < N - 1) // N - 2, N - 1 확인 시 인덱스 오류
+			if (arr[idx] < 1 && arr[idx + 1] < 1)
+				ans += arr[idx++] * arr[idx++]; // 둘다 음수면 곱, 하나 남아서 0이랑 짝이면 곱
+			else break;
+
+		int jdx = N - 1;
+		while (jdx > 0)
+			if (arr[jdx] > 1 && arr[jdx - 1] > 1)
+				ans += arr[jdx--] * arr[jdx--];
+			else break;
+
+		while (idx <= jdx)
+			ans += arr[idx++];
+
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

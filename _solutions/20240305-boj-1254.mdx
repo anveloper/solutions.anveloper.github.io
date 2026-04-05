@@ -1,0 +1,82 @@
+---
+title: "BOJ 1254 - 팰린드롬 만들기"
+date: "2024-03-05"
+description: "문자열, 브루트포스 알고리즘 문제"
+tags: ["문자열", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1254"
+problem_url: "https://www.acmicpc.net/problem/1254"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1254 - 팰린드롬 만들기](https://www.acmicpc.net/problem/1254)
+
+문자열 S가 주어질 때, S의 뒤에 문자를 추가하여 만들 수 있는 가장 짧은 팰린드롬의 길이를 구하라.
+
+### 입력
+
+첫째 줄에 문자열 S가 주어진다 (길이 1 이상 50 이하).
+
+### 출력
+
+S를 포함하는 가장 짧은 팰린드롬의 길이를 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `abab` | `5`  |
+
+## 풀이
+
+문자열의 앞부분을 하나씩 제거하면서 나머지가 팰린드롬인 위치를 찾는다.
+
+1. 인덱스 i를 0부터 증가시키며 `str.substring(i)`가 팰린드롬인지 확인한다
+2. 팰린드롬이면 앞의 i글자를 뒤에 뒤집어 붙여야 하므로 답은 `str.length() + i`이다
+3. 처음으로 팰린드롬이 되는 i에서 종료한다
+
+**핵심 아이디어**: 뒤에 문자를 추가하면 앞의 비팰린드롬 부분만 미러링하면 되므로, 가장 긴 팰린드롬 접미사를 찾는 것과 동일하다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+
+public class Day763BOJ1254펠린드롬만들기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    String str = br.readLine();
+    int cnt = str.length();
+
+    for (int i = 0; i < str.length(); i++) {
+      if (isPalindrome(str.substring(i))) {
+        break;
+      }
+      cnt++;
+    }
+    System.out.println(cnt);
+  }
+
+  private static boolean isPalindrome(String str) {
+    char[] list = str.toCharArray();
+    for (int i = 0; i < Math.floor(str.length() / 2); i++) {
+      if (list[i] != list[str.length() - i - 1]) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

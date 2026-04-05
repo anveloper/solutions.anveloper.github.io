@@ -1,0 +1,79 @@
+---
+title: "BOJ 1546 - 평균"
+date: "2023-08-04"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "1546"
+problem_url: "https://www.acmicpc.net/problem/1546"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1546 - 평균](https://www.acmicpc.net/problem/1546)
+
+N개의 시험 점수가 주어질 때, 최댓값 M에 대해 각 점수를 (점수/M)\*100으로 변환한 뒤 새로운 평균을 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 N개의 점수가 주어진다.
+
+### 출력
+
+새로운 평균을 출력한다.
+
+### 예제
+
+| 입력           | 출력   |
+| -------------- | ------ |
+| `3` `40 80 60` | `75.0` |
+
+## 풀이
+
+최댓값을 구한 후 각 점수를 변환하여 평균을 계산한다.
+
+1. 점수를 정렬하여 최댓값을 구한다
+2. 각 점수를 `(점수/최댓값)*100`으로 변환하여 합산한다
+3. 합을 N으로 나누어 평균을 출력한다
+
+**핵심 아이디어**: 변환된 평균 = (원래 합 / 최댓값) \* 100 / N이다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day544BOJ1546평균 {
+  public static void main(String[] args) throws Exception {
+
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    double arr[] = new double[Integer.parseInt(br.readLine())];
+
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+    for (int i = 0; i < arr.length; i++) {
+      arr[i] = Double.parseDouble(st.nextToken());
+    }
+
+    double sum = 0;
+    Arrays.sort(arr);
+
+    for (int i = 0; i < arr.length; i++) {
+      sum += ((arr[i] / arr[arr.length - 1]) * 100);
+    }
+    System.out.print(sum / arr.length);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

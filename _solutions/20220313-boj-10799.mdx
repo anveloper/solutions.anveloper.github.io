@@ -1,0 +1,82 @@
+---
+title: "BOJ 10799 - 쇠막대기"
+date: "2022-03-13"
+description: "자료 구조, 스택 문제"
+tags: ["자료 구조", "스택"]
+platform: "boj"
+problem_number: "10799"
+problem_url: "https://www.acmicpc.net/problem/10799"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10799 - 쇠막대기](https://www.acmicpc.net/problem/10799)
+
+쇠막대기와 레이저를 괄호 문자열로 표현한다. `()`는 레이저, 그 외 괄호 구간은 쇠막대기를 나타낸다. 레이저가 쇠막대기를 잘라 생기는 조각의 총 개수를 구하는 문제다.
+
+### 입력
+
+- 첫째 줄: 괄호 문자열
+
+### 출력
+
+쇠막대기 조각의 총 개수
+
+### 예제
+
+| 입력                 | 출력 |
+| -------------------- | ---- |
+| `()(((()())(())()))` | `17` |
+
+## 풀이
+
+`()`(레이저)를 만났을 때와 일반 `)` 닫힘을 만났을 때의 처리를 구분하면 스택 카운터만으로 해결할 수 있다. 레이저는 현재 쌓인 막대기 수만큼 조각을 추가하고, 막대기 끝은 자기 자신의 마지막 1조각을 추가한다.
+
+1. 현재 열린 괄호 수를 추적하는 `stack` 카운터를 유지한다.
+2. `(`를 만나면 `stack++`한다.
+3. `)`를 만나면 `stack--`한다.
+   - 직전 문자가 `(`이면 레이저(`()`): 현재 `stack` 값만큼 `ans`에 더한다.
+   - 직전 문자가 `)`이면 막대기 끝: `ans`에 1을 더한다.
+4. 최종 `ans`를 출력한다.
+
+**핵심 아이디어**: `c[n-1] == '('`로 레이저와 막대기 끝을 O(1)에 구분한다. 레이저가 발사될 때 현재 열린 막대기 수(stack)가 곧 새로 생기는 조각 수다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day16BOJ10799쇠막대기 { // 10799 쇠막대기
+	public static void main(String[] args) throws Exception {
+//		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("data/input5432.txt")));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		char[] c = br.readLine().toCharArray();
+
+		int ans = 0;
+		int stack = 0;
+
+		for (int n = 0; n < c.length; n++) {
+			if (c[n] == '(') {
+				stack++;
+				continue;
+			}
+			stack--;
+			ans += c[n - 1] == '(' ? stack : 1;
+		}
+
+		System.out.println(ans);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

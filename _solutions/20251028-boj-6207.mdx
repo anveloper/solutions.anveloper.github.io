@@ -1,0 +1,101 @@
+---
+title: "BOJ 6207 - Cow Picnic"
+date: "2025-10-28"
+description: "너비 우선 탐색, 브루트포스 알고리즘, 깊이 우선 탐색 문제"
+tags: ["너비 우선 탐색", "브루트포스 알고리즘", "깊이 우선 탐색", "그래프 이론", "그래프 탐색"]
+platform: "boj"
+problem_number: "6207"
+problem_url: "https://www.acmicpc.net/problem/6207"
+difficulty: "실버 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6207 - Cow Picnic](https://www.acmicpc.net/problem/6207)
+
+K마리 소가 각자의 목초지에서 출발하여 모두 도달할 수 있는 목초지의 수를 구하라.
+
+### 입력
+
+소의 수 K, 목초지 수 N, 경로 수 M, K마리 소의 위치, 이후 M개의 단방향 경로가 주어진다.
+
+### 출력
+
+모든 소가 도달 가능한 목초지의 수를 출력한다.
+
+### 예제
+
+| 입력                                    | 출력 |
+| --------------------------------------- | ---- |
+| `2 4 4` `2` `3` `1 2` `1 4` `2 3` `3 4` | `2`  |
+
+## 풀이
+
+각 소의 위치에서 DFS를 수행하여, 모든 소가 도달 가능한 노드를 센다.
+
+1. 각 소의 시작 위치에서 독립적으로 DFS를 수행한다
+2. 도달한 노드의 카운트를 누적한다 (`cnt[node]++`)
+3. 모든 DFS 완료 후 `cnt[i] == K`인 노드가 모든 소가 도달 가능한 곳이다
+
+**핵심 아이디어**: K번의 독립 DFS를 수행하여, 방문 카운트가 K인 노드만 필터링하면 교집합을 구할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <cstring>
+
+using namespace std;
+
+typedef long long ll;
+
+vector<int> graph[1005];
+int cnt[1005];
+bool v[1005];
+
+void dfs(int cur)
+{
+  v[cur] = 1;
+  cnt[cur]++;
+  for (int nxt : graph[cur])
+  {
+    if (!v[nxt])
+      dfs(nxt);
+  }
+}
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  int k, n, m;
+  cin >> k >> n >> m;
+  vector<int> arr(k);
+  for (int i = 0; i < k; i++)
+    cin >> arr[i];
+  while (m--)
+  {
+    int a, b;
+    cin >> a >> b;
+    graph[a].emplace_back(b);
+  }
+  for (int x : arr)
+  {
+    memset(v, 0, sizeof(v));
+    dfs(x);
+  }
+  int ans = 0;
+  for (int i = 1; i <= n; i++)
+    if (cnt[i] == k)
+      ans++;
+  cout << ans;
+}
+```
+
+## 복잡도
+
+- 시간: O(K \* (V + E))
+- 공간: O(V + E)

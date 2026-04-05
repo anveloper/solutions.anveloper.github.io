@@ -1,0 +1,69 @@
+---
+title: "BOJ 1434 - 책 정리"
+date: "2024-05-05"
+description: "상자에 책을 넣은 후 남는 공간의 합"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "1434"
+problem_url: "https://www.acmicpc.net/problem/1434"
+difficulty: "브론즈 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1434 - 책 정리](https://www.acmicpc.net/problem/1434)
+
+N개의 상자에 각각 용량이 주어지고, M권의 책을 크기에 맞는 상자에 넣을 때, 모든 상자에 남는 공간의 합을 구하라.
+
+### 입력
+
+첫째 줄에 상자 수 N과 책 수 M, 둘째 줄에 각 상자의 용량, 셋째 줄에 각 책의 크기가 주어진다.
+
+### 출력
+
+상자들의 남는 공간의 합을 출력한다.
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `3 5` `3 5 7` `1 2 3 4 5` | `0`  |
+
+## 풀이
+
+각 책을 순서대로 들어갈 수 있는 첫 번째 상자에 넣고, 모든 상자의 남은 용량을 합산한다.
+
+1. 각 책에 대해 상자를 순서대로 탐색하여 책이 들어갈 수 있는 첫 번째 상자를 찾는다
+2. 해당 상자의 남은 용량에서 책 크기를 빼고, 다음 책으로 넘어간다
+3. 모든 책을 넣은 뒤 상자들의 남은 용량을 합산하여 반환한다
+
+**핵심 아이디어**: 문제의 조건대로 각 책을 처음으로 들어갈 수 있는 상자에 넣는 탐욕적 시뮬레이션이다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [N, M] = input[0].split(" ").map(Number);
+  const [boxes, books] = [input[1].split(" ").map(Number), input[2].split(" ").map(Number)];
+  for (let j = 0; j < M; j++) {
+    const book = books[j];
+    for (let i = 0; i < N; i++) {
+      if (book <= boxes[i]) {
+        boxes[i] -= book;
+        break;
+      }
+    }
+  }
+  return boxes.reduce((acc, cur) => (acc += cur), 0);
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N x M)
+- 공간: O(N)

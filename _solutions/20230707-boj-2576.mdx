@@ -1,0 +1,81 @@
+---
+title: "BOJ 2576 - 홀수"
+date: "2023-07-07"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "2576"
+problem_url: "https://www.acmicpc.net/problem/2576"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2576 - 홀수](https://www.acmicpc.net/problem/2576)
+
+7개의 자연수가 주어질 때, 홀수들의 합과 홀수 중 최솟값을 구한다. 홀수가 없으면 -1을 출력한다.
+
+### 입력
+
+7개의 줄에 걸쳐 100 미만의 자연수가 하나씩 주어진다.
+
+### 출력
+
+첫째 줄에 홀수들의 합, 둘째 줄에 홀수 중 최솟값을 출력한다. 홀수가 없으면 -1을 출력한다.
+
+### 예제
+
+| 입력                               | 출력       |
+| ---------------------------------- | ---------- |
+| `12` `77` `38` `41` `53` `92` `85` | `256` `41` |
+
+## 풀이
+
+7개의 수를 순회하며 홀수만 골라 합과 최솟값을 추적한다.
+
+1. sum을 0, min을 100으로 초기화한다
+2. 7번 반복하며 수를 읽고, 홀수이면 sum에 누적하고 min을 갱신한다
+3. sum이 0이면 홀수가 없으므로 -1을 출력한다
+4. 그렇지 않으면 sum과 min을 출력한다
+
+**핵심 아이디어**: 고정된 7개 입력에 대해 홀수 여부를 판별하며 한 번의 순회로 합과 최솟값을 동시에 구한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day516BOJ2576홀수 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int sum = 0;
+    int min = 100;
+
+    for (int i = 0; i < 7; i++) {
+      int N = Integer.parseInt(br.readLine());
+
+      if (N % 2 == 1) {
+        sum += N;
+        min = Math.min(min, N);
+      }
+    }
+
+    if (sum == 0) {
+      System.out.println(-1);
+    } else {
+      System.out.println(sum);
+      System.out.println(min);
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 7회 반복
+- 공간: O(1)

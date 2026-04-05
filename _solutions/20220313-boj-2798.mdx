@@ -1,0 +1,92 @@
+---
+title: "BOJ 2798 - 블랙잭"
+date: "2022-03-13"
+description: "브루트포스 알고리즘 문제"
+tags: ["브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2798"
+problem_url: "https://www.acmicpc.net/problem/2798"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2798 - 블랙잭](https://www.acmicpc.net/problem/2798)
+
+N장의 카드 중 3장을 골라 합이 M을 넘지 않으면서 M에 최대한 가까운 값을 구하라.
+
+### 입력
+
+첫째 줄에 카드 수 N (3 이상 100 이하)과 M (10 이상 300,000 이하)이 주어진다. 둘째 줄에 N개의 카드 값이 주어진다.
+
+### 출력
+
+M을 넘지 않으면서 M에 최대한 가까운 카드 3장의 합을 출력한다.
+
+### 예제
+
+| 입력               | 출력 |
+| ------------------ | ---- |
+| `5 21` `5 6 7 8 9` | `21` |
+
+## 풀이
+
+재귀(DFS)로 카드 3장을 선택하는 모든 조합을 탐색하여, M 이하인 합의 최대값을 구한다.
+
+1. 각 카드에 대해 "선택" 또는 "선택하지 않음"으로 분기하는 재귀를 수행한다
+2. 3장을 선택하고(cnt==3) 합이 M 이하이면 M과의 차이가 가장 작은 값으로 갱신한다
+3. 합이 M을 초과하거나 모든 카드를 확인하면 가지치기로 종료한다
+
+**핵심 아이디어**: N이 최대 100이므로 C(100,3) = 161,700가지를 탐색해도 시간 내에 충분하다. 합이 M을 초과하면 즉시 가지치기하여 불필요한 탐색을 줄인다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day12BOJ2798B블랙잭 { // 2798
+	static int ans, M;
+	static int[] arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		ans = Integer.MAX_VALUE;
+		arr = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for (int n = 0; n < N; n++) {
+			arr[n] = Integer.parseInt(st.nextToken());
+		}
+		// idx, cnt, tmp
+		blackJack(0, 0, 0);
+
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static void blackJack(int idx, int cnt, int sum) { // 정수빈님 재귀
+		if (cnt == 3 && sum <= M) { // cnt값으로 통제, 기본조건 확인
+			ans = Math.abs(M - sum) < Math.abs(M - ans) ? sum : ans;
+			return;
+		}
+		if (sum > M || idx == arr.length)
+			return;
+
+		blackJack(idx + 1, cnt, sum);
+		blackJack(idx + 1, cnt + 1, sum + arr[idx]);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(2^N) — 부분집합 탐색이나 가지치기로 실질적 C(N,3)
+- 공간: O(N) — 카드 배열 + 재귀 스택

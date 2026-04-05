@@ -1,0 +1,90 @@
+---
+title: "BOJ 4349 - Blocks"
+date: "2026-02-20"
+description: "브루트포스, 수학 문제"
+tags: ["브루트포스", "수학"]
+platform: "boj"
+problem_number: "4349"
+problem_url: "https://www.acmicpc.net/problem/4349"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4349 - Blocks](https://www.acmicpc.net/problem/4349)
+
+부피가 N인 직육면체를 만들 때, 세 변의 길이 a, b, c (`a * b * c = N`)를 정해 겉넓이 `2(ab + bc + ca)`가 최소가 되도록 한다. 최소 겉넓이를 구하라.
+
+### 입력
+
+- 첫 줄: 테스트 케이스 수 T
+- 이후 각 줄: 정수 N (직육면체 부피)
+
+### 출력
+
+각 테스트 케이스마다 최소 겉넓이를 출력한다.
+
+### 예제
+
+| 입력          | 출력      |
+| ------------- | --------- |
+| `2` `10` `26` | `34` `82` |
+
+## 풀이
+
+N의 약수 조합 `(a, b, c)`를 완전 탐색하여 겉넓이의 최솟값을 구한다.
+
+1. a를 1부터 `cbrt(N)`까지 순회한다 (`a * a * a <= N`).
+2. N이 a로 나뉘면, 나머지 `N / a`에 대해 b를 1부터 `sqrt(N / a)`까지 순회한다 (`b * b <= N / a`).
+3. `c = N / (a * b)`로 결정하고, `2(ab + bc + ca)`를 계산하여 최솟값을 갱신한다.
+
+**핵심 아이디어**: `a <= b <= c` 조건으로 탐색하면 `a`는 세제곱근까지, `b`는 제곱근까지만 순회하면 되어 효율적이다. 정육면체에 가까운 약수 조합일수록 겉넓이가 작아진다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int T;
+  cin >> T;
+  while (T--) {
+    int N;
+    cin >> N;
+
+    long long min_area = -1;
+
+    for (int a = 1; a * a * a <= N; ++a) {
+      if (N % a == 0) {
+        int remaining_n = N / a;
+        for (int b = 1; b * b <= remaining_n; ++b) {
+          if (remaining_n % b == 0) {
+            int c = remaining_n / b;
+
+            long long current_area = 2LL * (a * b + b * c + c * a);
+
+            if (min_area == -1 || current_area < min_area) {
+              min_area = current_area;
+            }
+          }
+        }
+      }
+    }
+    cout << min_area << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T _ N^(1/3) _ (N/a)^(1/2)) — 약수 쌍 탐색, 실질적으로 약수 개수에 비례
+- 공간: O(1) — 상수 공간만 사용

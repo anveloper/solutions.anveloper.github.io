@@ -1,0 +1,167 @@
+---
+title: "BOJ 2213 - 트리의 독립집합"
+date: "2022-06-15"
+description: "다이나믹 프로그래밍, 트리, 트리에서의 다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍", "트리", "트리에서의 다이나믹 프로그래밍", "역추적"]
+platform: "boj"
+problem_number: "2213"
+problem_url: "https://www.acmicpc.net/problem/2213"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2213 - 트리의 독립집합](https://www.acmicpc.net/problem/2213)
+
+트리에서 서로 인접하지 않은 정점들의 집합(독립 집합)을 선택하여 각 정점의 가중치 합을 최대화하고, 그 최대 독립 집합에 속하는 정점 번호를 오름차순으로 출력하는 문제다. 트리 DP를 적용하여 각 노드를 선택하는 경우와 선택하지 않는 경우로 나눠 최댓값을 구하고, 역추적(traceback)으로 선택된 노드를 확인한다.
+
+### 입력
+
+- 첫째 줄: 정점 수 N (1 이상 10,000 이하)
+- 둘째 줄: 각 정점의 가중치 (1 이상 10,000 이하)
+- 이후 N-1개 줄: 트리의 간선 정보 (a b)
+
+### 출력
+
+- 첫째 줄: 최대 독립 집합의 가중치 합
+- 둘째 줄: 집합에 속하는 정점 번호를 오름차순으로 공백 구분 출력
+
+### 예제
+
+| 입력                            | 출력      |
+| ------------------------------- | --------- |
+| `4` `4 2 3 5` `1 2` `2 3` `3 4` | `9` `1 4` |
+
+## 풀이
+
+트리 DP(Tree DP)를 재귀로 구현하고 역추적으로 선택 노드를 복원한다.
+
+1. 잎이 1개인 노드를 루트로 선택하여 루트 설정
+2. `getDP(parentCon, cur, parent)`: `parentCon=0`이면 현재 노드를 선택/미선택 모두 고려, `parentCon=1`이면 부모가 선택됐으므로 현재 노드는 반드시 미선택
+3. 선택(`contCase`): 현재 가중치 + 자식들의 `getDP(1, child)` 합
+4. 미선택(`noneCase`): 자식들의 `getDP(0, child)` 합, 양쪽 중 큰 값이 이 노드의 DP 값
+5. `selected[]` 배열로 어느 노드가 선택됐는지 표시 후 DFS 역추적으로 결과 수집
+
+**핵심 아이디어:** 독립 집합 제약 조건(인접 불가)은 "부모가 선택됐으면 자식은 선택 불가"로 자연스럽게 표현되므로, DP 상태를 `dp[선택여부][노드]`로 정의하면 트리 구조를 따라 O(N)에 계산된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day128BOJ2213트리독립집합 {
+	static int[] arr;
+	static Integer[][] dp;
+	static List<Integer>[] edges;
+	static List<Integer> path;
+	static boolean[] selected;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		StringBuilder sb = new StringBuilder();
+		int n = Integer.parseInt(br.readLine());
+		arr = new int[n + 1];
+		dp = new Integer[2][n + 1];
+		path = new ArrayList<>();
+		selected = new boolean[n + 1];
+		edges = new List[n + 1];
+		for (int i = 1; i <= n; i++)
+			edges[i] = new ArrayList<>();
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 1; i <= n; i++)
+			arr[i] = Integer.parseInt(st.nextToken());
+
+		for (int i = 0, a, b; i < n - 1; i++) {
+			st = new StringTokenizer(br.readLine());
+			a = Integer.parseInt(st.nextToken());
+			b = Integer.parseInt(st.nextToken());
+			edges[a].add(b);
+			edges[b].add(a);
+		}
+
+		int root = getAnyRoot();
+		sb.append(getDP(0, root, -1)).append("\n");
+
+		findPath(root, -1, false);
+		Collections.sort(path);
+		for (Integer route : path) {
+			sb.append(route).append(" ");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void findPath(int cur, int parent, boolean disabled) {
+		if (selected[cur] && !disabled) {
+			path.add(cur);
+			disabled = true;
+		} else {
+			disabled = false;
+		}
+		for (Integer child : edges[cur]) {
+			if (child == parent) {
+				continue;
+			}
+			findPath(child, cur, disabled);
+		}
+	}
+
+	private static int getAnyRoot() {
+		for (int i = 1; i < edges.length; i++) {
+			if (edges[i].size() == 1) {
+				return i;
+			}
+		}
+		return 1;
+	}
+
+	private static int getDP(int parentCon, int cur, int parent) {
+		if (dp[parentCon][cur] != null) {
+			return dp[parentCon][cur];
+		}
+		int ret = 0;
+		if (parentCon == 0) {
+			int contCase = arr[cur];
+			int noneCase = 0;
+			for (int child : edges[cur]) {
+				if (child == parent) {
+					continue;
+				}
+				contCase += getDP(1, child, cur);
+				noneCase += getDP(0, child, cur);
+			}
+			if (contCase > noneCase) {
+				selected[cur] = true;
+				ret = contCase;
+			} else {
+				ret = noneCase;
+			}
+		} else {
+			for (int child : edges[cur]) {
+				if (child == parent) {
+					continue;
+				}
+				ret += getDP(0, child, cur);
+			}
+		}
+		return dp[parentCon][cur] = ret;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

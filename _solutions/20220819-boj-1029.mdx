@@ -1,0 +1,109 @@
+---
+title: "BOJ 1029 - 그림 교환"
+date: "2022-08-19"
+description: "다이나믹 프로그래밍, 비트마스킹, 비트필드를 이용한 다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍", "비트마스킹", "비트필드를 이용한 다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "1029"
+problem_url: "https://www.acmicpc.net/problem/1029"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1029 - 그림 교환](https://www.acmicpc.net/problem/1029)
+
+N명의 사람이 있고, 0번 사람이 그림을 가지고 있다. 그림은 이 사람에서 저 사람에게 팔 수 있는데, i가 j에게 팔 때 가격은 `map[i][j]`이다. 그림은 구매 가격보다 낮지 않은 가격으로만 팔 수 있다. 최대 몇 명이 그림을 가질 수 있는지 구한다.
+
+- N ≤ 15이므로 비트마스크 DP 적용 가능
+
+### 입력
+
+첫째 줄에 N이 주어진다. (2 ≤ N ≤ 15)
+
+다음 N줄에 N×N 크기의 숫자 행렬이 주어진다. `map[i][j]`는 i가 j에게 팔 때 가격이다.
+
+### 출력
+
+그림을 가질 수 있는 최대 사람 수를 출력한다.
+
+### 예제
+
+입력:
+
+```
+3
+012
+103
+230
+```
+
+출력:
+
+```
+3
+```
+
+## 풀이
+
+**핵심 아이디어**: 비트필드 DP로 상태를 `(방문한 사람 집합, 현재 소유자, 마지막 거래 가격)`으로 정의하고, 최대 소유 인원을 메모이제이션한다.
+
+상태 정의:
+
+- `dp[bit][curr][prev]` = 집합 `bit`에 포함된 사람들이 그림을 거쳐 갔고, 현재 소유자가 `curr`, 마지막 거래 가격이 `prev`일 때 최대 사람 수
+
+전이:
+
+1. 현재 소유자 `curr`에서 아직 방문하지 않은 사람 `i`로 그림을 판다.
+2. `map[curr][i] >= prev`이면 팔 수 있다. (가격이 낮아지지 않아야 함)
+3. `dp[bit | (1<<i)][i][map[curr][i]]`를 재귀 탐색한다.
+4. 결과에 1을 더해(현재 소유자도 포함) 반환한다.
+
+초기 호출: `sol(1, 0, 0)` — 0번 사람이 그림을 가지고, 집합에 0번만 포함, 이전 가격은 0.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Day193BOJ1029그림교환DP {
+	static int N, dp[][][];
+	static char[][] map;
+
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(in.readLine());
+		map = new char[N][];
+		dp = new int[1 << N][N][10];
+
+		for (int i = 0; i < N; i++)
+			map[i] = in.readLine().toCharArray();
+
+		System.out.print(sol(1, 0, 0));
+
+	}
+
+	private static int sol(int bit, int curr, int prev) {
+		if (dp[bit][curr][prev] != 0)
+			return dp[bit][curr][prev];
+
+		for (int i = 1; i < N; i++)
+			if ((bit & (1 << i)) == 0 && map[curr][i] - '0' >= prev)
+				dp[bit][curr][prev] = Math.max(dp[bit][curr][prev], sol(bit | (1 << i), i, map[curr][i] - '0'));
+
+		return ++dp[bit][curr][prev];
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2 × 2^N × 10) — 상태 수 `2^N × N × 10`에 전이 O(N)
+- 공간: O(N × 2^N × 10) — DP 테이블 크기

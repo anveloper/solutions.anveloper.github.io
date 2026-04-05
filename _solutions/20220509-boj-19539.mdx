@@ -1,0 +1,92 @@
+---
+title: "BOJ 19539 - 사과나무"
+date: "2022-05-09"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "19539"
+problem_url: "https://www.acmicpc.net/problem/19539"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 19539 - 사과나무](https://www.acmicpc.net/problem/19539)
+
+N그루의 사과나무가 있고 각 나무의 목표 높이가 주어진다. 매 단계마다 1짜리 물뿌리개 1개와 2짜리 물뿌리개 1개를 동시에 사용해야 한다. 모든 나무를 정확히 목표 높이로 만들 수 있는지 판단한다.
+
+### 입력
+
+- 첫째 줄: 나무의 수 N (1 ≤ N ≤ 300,000)
+- 둘째 줄: 각 나무의 목표 높이 (1 ≤ 높이 ≤ 300,000)
+
+### 출력
+
+가능하면 `YES`, 불가능하면 `NO`를 출력한다.
+
+### 예제
+
+| 입력        | 출력  |
+| ----------- | ----- |
+| `3` `1 2 3` | `YES` |
+| `2` `1 1`   | `NO`  |
+
+## 풀이
+
+수학적 조건 두 가지를 확인한다. 물뿌리개는 항상 1+2=3씩 높이를 증가시키므로 전체 합이 3의 배수여야 한다. 또한 목표 높이가 홀수인 나무는 1짜리 물뿌리개를 홀수 번 사용해야 하므로, 1짜리 사용 총횟수(`tot/3`)가 홀수 목표값의 나무 수 이상이어야 한다.
+
+1. 모든 나무의 목표 높이 합(`tot`)을 계산하고, 홀수 목표값 나무의 수(`mul[1]`)를 센다.
+2. `tot % 3 != 0`이면 `NO`를 출력한다.
+3. `tot / 3 < mul[1]`이면 `NO`를 출력한다.
+4. 두 조건 모두 통과하면 `YES`를 출력한다.
+
+**핵심 아이디어**: 1짜리와 2짜리 물뿌리개의 사용 횟수는 항상 동일하다(`tot/3`번). 목표 높이가 홀수인 나무는 반드시 1짜리 물뿌리개를 홀수 번 사용해야 하므로, 이 나무들의 수가 1짜리 총 사용 횟수를 초과하면 불가능하다. 2짜리 물뿌리개도 같은 횟수이므로 초과되는 분은 2짜리로 보완할 수 없다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day91BOJ19539사과나무f { // 19539 사과나무, 2번째 조건은 생각해내지 못했습니다.
+	static int N, tot;
+	static int[] arr, mul;
+	static boolean ans;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+		tot = 0;
+		arr = new int[N]; // 바라는 높이 배열
+		mul = new int[2]; // 횟수 체크 배열
+		ans = true;
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			tot += arr[i] = Integer.parseInt(st.nextToken());
+			mul[arr[i] % 2]++;
+		} // 1과 2의 물뿌리개 사용 횟수는 같다.
+
+		if (tot % 3 != 0) // 물뿌리개 동시 사용은 항상 3의 배수
+			ans = false;
+		else if (tot / 3 < mul[1])  // 이것
+			ans = false;
+		System.out.println(ans ? "YES" : "NO");
+		br.close();
+	}
+}
+// 1. 항상 3의 배수
+// 2. 목표치가 홀수인 나무는 1뿌리개를 무조건 사용해야 하는데,
+// 그 횟수가 2뿌리개와 동일하기 때문에,
+// 1뿌리개 횟수는 총합/3 보다 작아야 한다.
+```
+
+## 복잡도
+
+- 시간: O(N) — 배열을 1회 순회하여 합과 홀수 개수 계산
+- 공간: O(N) — 목표 높이 배열 저장

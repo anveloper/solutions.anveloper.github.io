@@ -1,0 +1,103 @@
+---
+title: "BOJ 3711 - 학번"
+date: "2025-08-10"
+description: "수학, 브루트포스 알고리즘, 정수론 문제"
+tags: ["수학", "브루트포스 알고리즘", "정수론", "집합과 맵"]
+platform: "boj"
+problem_number: "3711"
+problem_url: "https://www.acmicpc.net/problem/3711"
+difficulty: "실버 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3711 - 학번](https://www.acmicpc.net/problem/3711)
+
+G개의 학번이 주어질 때, 모든 학번을 m으로 나눈 나머지가 서로 다른 최소 양의 정수 m을 구하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 학생 수 G와 G개의 학번이 주어진다.
+
+### 출력
+
+각 케이스마다 최소 m을 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `1` `2` `100` `999` | `2`  |
+
+## 풀이
+
+m을 1부터 증가시키며 모든 학번의 나머지가 서로 다른 최소 m을 찾는다.
+
+1. m을 1부터 순차적으로 시도한다
+2. 각 m에 대해 모든 학번의 `학번 % m` 값이 충돌하는지 확인한다
+3. 충돌이 없는 최초의 m이 답이다
+
+**핵심 아이디어**: 비둘기집 원리에 의해 m은 최소 G 이상이어야 하며, 작은 m부터 시도하면 빠르게 찾을 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  int testCase;
+  cin >> testCase;
+
+  for (int t = 0; t < testCase; t++)
+  {
+    int g;
+    cin >> g;
+
+    int sid[g];
+    for (int i = 0; i < g; i++)
+    {
+      cin >> sid[i];
+    }
+
+    int m = 0;
+    bool redo = true;
+    while (redo)
+    {
+      m++;
+      redo = false;
+
+      bool checked[m];
+      for (int i = 0; i < m; i++)
+      {
+        checked[i] = false;
+      }
+
+      for (int i = 0; i < g; i++)
+      {
+        if (checked[sid[i] % m])
+        {
+          redo = true;
+          break;
+        }
+        checked[sid[i] % m] = true;
+      }
+    }
+
+    cout << m << '\n';
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(m \* G) (m: 최소 해)
+- 공간: O(m)

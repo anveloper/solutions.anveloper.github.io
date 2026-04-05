@@ -1,0 +1,88 @@
+---
+title: "BOJ 18870 - 좌표 압축"
+date: "2022-03-13"
+description: "정렬, 값 / 좌표 압축 문제"
+tags: ["정렬", "값 / 좌표 압축"]
+platform: "boj"
+problem_number: "18870"
+problem_url: "https://www.acmicpc.net/problem/18870"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 18870 - 좌표 압축](https://www.acmicpc.net/problem/18870)
+
+N개의 정수 X가 주어질 때, 각 X[i]를 "X[i]보다 작은 서로 다른 수의 개수"로 치환하는 좌표 압축 문제다. 값의 상대적 순위를 0부터 시작하는 연속 정수로 변환한다.
+
+### 입력
+
+- 첫째 줄: 수의 개수 N (1 이상 1,000,000 이하)
+- 둘째 줄: N개의 정수 X[i] (절댓값 10^9 이하)
+
+### 출력
+
+좌표 압축된 결과를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력               | 출력        |
+| ------------------ | ----------- |
+| `5` `2 4 -10 4 -9` | `2 3 0 3 1` |
+
+## 풀이
+
+원본 배열을 복사하여 정렬하고, 중복을 제거하면서 각 값에 0부터 시작하는 순위를 `HashMap`으로 매핑한 뒤 원본 순서대로 출력한다.
+
+1. 원본 배열 `nums`를 복사하여 `sortNums`를 만들고 오름차순 정렬한다.
+2. `sortNums`를 순회하며 아직 `HashMap`에 없는 값만 추가하고, 삽입 순서(0, 1, 2, ...)를 값으로 저장한다.
+3. 원본 배열 `nums`를 순회하며 `map.get(nums[i])`로 압축된 값을 출력한다.
+
+**핵심 아이디어**: 정렬 후 순차적으로 맵에 등록하면 자동으로 중복이 제거되고 상대 순위가 결정된다. `HashMap`을 활용해 조회를 O(1)로 처리하므로 전체 시간 복잡도는 정렬에 의해 결정된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Day07BOJ18870좌표압축 { // 18870
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+
+		String[] input = br.readLine().split(" ");
+		int[] nums = new int[N];
+		for (int i = 0; i < N; i++)
+			nums[i] = Integer.parseInt(input[i]);
+
+		int[] sortNums = nums.clone();
+		Arrays.sort(sortNums);
+
+		Map<Integer, Integer> map = new HashMap<>();
+		int idx = 0;
+		for (int n : sortNums)
+			if (!map.containsKey(n))
+				map.put(n, idx++);
+
+		StringBuilder sb = new StringBuilder();
+		for (int n : nums)
+			sb.append(map.get(n)).append(' ');
+
+		System.out.println(sb);
+
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) — 정렬 O(N log N), 맵 구성 및 조회 O(N)
+- 공간: O(N) — 정렬 복사본과 HashMap

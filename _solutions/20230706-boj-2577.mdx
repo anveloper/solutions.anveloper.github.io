@@ -1,0 +1,74 @@
+---
+title: "BOJ 2577 - 숫자의 개수"
+date: "2023-07-06"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "2577"
+problem_url: "https://www.acmicpc.net/problem/2577"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2577 - 숫자의 개수](https://www.acmicpc.net/problem/2577)
+
+세 자연수 A, B, C가 주어질 때, A _ B _ C의 결과에서 0부터 9까지 각 숫자가 몇 번 나타나는지 구한다.
+
+### 입력
+
+첫째 줄부터 셋째 줄까지 A, B, C가 한 줄에 하나씩 주어진다 (100 이상 1,000 미만).
+
+### 출력
+
+0부터 9까지 각 숫자의 출현 횟수를 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력              | 출력                                    |
+| ----------------- | --------------------------------------- |
+| `150` `266` `427` | `3` `1` `0` `2` `0` `0` `0` `2` `0` `0` |
+
+## 풀이
+
+세 수의 곱을 구한 뒤, 나머지 연산으로 각 자릿수를 분리하여 카운팅한다.
+
+1. 세 수를 읽어 곱한 값 val을 구한다
+2. 크기 10의 배열 arr을 초기화한다
+3. val이 0이 될 때까지 val % 10으로 마지막 자릿수를 추출하여 해당 인덱스의 카운트를 증가시킨다
+4. val을 10으로 나눠 다음 자릿수로 이동한다
+5. arr의 0~9 인덱스 값을 순서대로 출력한다
+
+**핵심 아이디어**: 나머지와 나눗셈 연산으로 각 자릿수를 분리하는 기본적인 숫자 처리 패턴이다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day515BOJ2577숫자의갯수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int val = Integer.parseInt(br.readLine()) * Integer.parseInt(br.readLine()) * Integer.parseInt(br.readLine());
+    int[] arr = new int[10];
+
+    while (val != 0) {
+      arr[val % 10]++;
+      val /= 10;
+    }
+
+    for (int result : arr) {
+      System.out.println(result);
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D) — D는 곱의 자릿수
+- 공간: O(1) — 고정 크기 배열 10개

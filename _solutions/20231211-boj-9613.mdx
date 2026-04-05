@@ -1,0 +1,97 @@
+---
+title: "BOJ 9613 - GCD 합"
+date: "2023-12-11"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "9613"
+problem_url: "https://www.acmicpc.net/problem/9613"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9613 - GCD 합](https://www.acmicpc.net/problem/9613)
+
+N개의 수가 주어질 때, 모든 쌍의 GCD 합을 구하라.
+
+### 입력
+
+첫째 줄에 T, 이후 T줄에 N과 N개의 수가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 모든 쌍의 GCD 합을 출력한다.
+
+### 예제
+
+| 입력                                         | 출력          |
+| -------------------------------------------- | ------------- |
+| `3` `4 10 20 30 40` `3 7 5 12` `3 125 15 25` | `70` `3` `35` |
+
+## 풀이
+
+모든 쌍에 대해 유클리드 호제법으로 GCD를 구하고 합산한다.
+
+1. 이중 루프로 모든 쌍 (i, j)를 순회한다 (i는 0부터 j는 i+1부터)
+2. 각 쌍의 GCD를 유클리드 호제법으로 구한다
+3. GCD를 합산하여 출력한다
+
+**핵심 아이디어**: N이 최대 100이므로 C(100,2) = 4950쌍, 각 GCD는 O(log M)으로 충분하다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day674BOJ9613GDC합 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int T = Integer.parseInt(br.readLine());
+    while ((T--) != 0) {
+      StringBuilder sb = new StringBuilder();
+      StringTokenizer str = new StringTokenizer(br.readLine());
+      long cnt = 0;
+      int N = Integer.parseInt(str.nextToken());
+      int[] array = new int[N];
+      for (int i = 0; i < N; i++) {
+        array[i] = Integer.parseInt(str.nextToken());
+      }
+      for (int i = 0; i < N - 1; i++) {
+        for (int j = i + 1; j < N; j++) {
+          cnt += GCD(array[i], array[j]);
+        }
+      }
+      sb.append(cnt);
+      System.out.println(sb);
+    }
+  }
+
+  static int GCD(int A, int B) {
+    if (A < B) {
+      B = swap(A, A = B);
+    }
+    int r;
+    while (B != 0) {
+      r = A % B;
+      A = B;
+      B = r;
+    }
+    return A;
+  }
+
+  static int swap(int A, int B) {
+    return A;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N² log M) - M은 최대 원소 값
+- 공간: O(N)

@@ -1,0 +1,84 @@
+---
+title: "BOJ 2476 - 주사위 게임"
+date: "2024-08-06"
+description: "주사위 3개의 눈에 따른 상금 규칙으로 최대 상금을 구하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "2476"
+problem_url: "https://www.acmicpc.net/problem/2476"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2476 - 주사위 게임](https://www.acmicpc.net/problem/2476)
+
+주사위 3개를 던져 상금을 결정한다. 3개 같으면 10000+같은눈×1000, 2개 같으면 1000+같은눈×100, 모두 다르면 최대눈×100이다. N명 중 최대 상금을 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 주사위 3개의 눈이 주어진다.
+
+### 출력
+
+최대 상금을 출력한다.
+
+### 예제
+
+| 입력                        | 출력    |
+| --------------------------- | ------- |
+| `3` `3 3 6` `2 2 2` `6 2 5` | `12000` |
+
+## 풀이
+
+각 참가자의 주사위 눈을 조건 분기하여 상금을 계산하고 최댓값을 구한다.
+
+1. 3개 모두 같으면 `10000 + 같은눈 * 1000`
+2. 2개만 같으면 `1000 + 같은눈 * 100` (x==y 또는 x==z이면 x가 같은 눈, y==z이면 z가 같은 눈)
+3. 모두 다르면 `max(x, y, z) * 100`
+4. 모든 참가자 중 최대 상금을 출력한다
+
+**핵심 아이디어**: 조건 분기가 복잡하지만, 같은 눈이 어느 쌍인지를 정확히 판별하면 O(N)에 해결된다.
+
+## 코드
+
+```cpp
+#include <stdio.h>
+
+int main()
+{
+  int x, y, z, prize[1000], max = 0, n, i, sum = 0, big = 0;
+  scanf("%d", &n);
+
+  for (i = 0; i < n; i++)
+  {
+    scanf("%d %d %d", &x, &y, &z);
+    if (x == y && x == z && y == z)
+      prize[i] = 10000 + x * 1000;
+    else if (x == y || x == z)
+      prize[i] = 1000 + x * 100;
+    else if (y == z)
+      prize[i] = 1000 + z * 100;
+    else
+    {
+      if (x > y && x > z)
+        max = x;
+      else if (y > x && y > z)
+        max = y;
+      else if (z > x && z > y)
+        max = z;
+      prize[i] = max * 100;
+    }
+    if (prize[i] > big)
+      big = prize[i];
+  }
+  printf("%d", big);
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

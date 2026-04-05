@@ -1,0 +1,94 @@
+---
+title: "BOJ 4388 - 받아올림"
+date: "2024-12-17"
+description: "두 수를 더할 때 발생하는 받아올림 횟수를 구하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "4388"
+problem_url: "https://www.acmicpc.net/problem/4388"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4388 - 받아올림](https://www.acmicpc.net/problem/4388)
+
+두 양의 정수를 더할 때 발생하는 받아올림(carry)의 횟수를 구하라.
+
+### 입력
+
+매 줄에 두 정수가 주어지며, `0 0`이 입력되면 종료한다.
+
+### 출력
+
+각 쌍에 대해 받아올림 횟수를 출력한다.
+
+### 예제
+
+| 입력                      | 출력    |
+| ------------------------- | ------- |
+| `123 456` `555 555` `0 0` | `0` `3` |
+
+## 풀이
+
+문자열로 입력받아 뒤에서부터 자리별로 더하며 올림을 추적한다.
+
+1. 두 수를 문자열로 입력받아 긴 수를 기준으로 정렬한다
+2. 뒤에서부터 각 자리를 더하고, 합이 10 이상이면 올림 횟수를 증가시킨다
+3. 올림 값을 다음 자리로 전파하며 반복한다
+
+**핵심 아이디어**: 초등 덧셈처럼 자리별로 더하며 10 이상이면 올림이 발생하는 과정을 시뮬레이션한다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+string a, b;
+int main()
+{
+  while (1)
+  {
+    int carry = 0;
+    int cnt = 0;
+    vector<string> num(2);
+    cin >> num[0] >> num[1];
+    if (num[0] == "0" && num[1] == "0")
+      break;
+    sort(num.rbegin(), num.rend());
+    string a = num[0];
+    string b = num[1];
+    for (int i = 0; i < num[0].size(); i++)
+    {
+      if (b[b.size() - 1 - i] - '0' >= 0)
+      {
+        if (a[a.size() - 1 - i] - '0' + b[b.size() - 1 - i] - '0' + cnt >= 10)
+        {
+          carry++;
+          cnt = 1;
+        }
+        else
+          cnt = 0;
+      }
+      else
+      {
+        if (a[a.size() - 1 - i] - '0' + cnt >= 10)
+        {
+          carry++;
+          cnt = 1;
+        }
+        else
+          cnt = 0;
+      }
+    }
+    cout << carry << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D) (D: 자릿수)
+- 공간: O(D)

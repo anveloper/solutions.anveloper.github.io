@@ -1,0 +1,125 @@
+---
+title: "BOJ 5074 - When Do We Finish?"
+date: "2025-12-07"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "5074"
+problem_url: "https://www.acmicpc.net/problem/5074"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5074 - When Do We Finish?](https://www.acmicpc.net/problem/5074)
+
+작업 시작 시각과 작업 소요 시간이 `HH:MM` 형식으로 주어질 때, 작업이 끝나는 시각을 계산하는 문제이다.
+
+작업이 자정을 넘겨 다음 날로 이어지는 경우에는 `HH:MM +days` 형식으로 며칠 뒤인지도 함께 출력한다.
+
+### 입력
+
+- 여러 줄에 걸쳐 시작 시각과 소요 시간이 주어진다.
+- `00:00 00:00`이 입력되면 종료한다.
+
+### 출력
+
+각 케이스에 대해 작업 완료 시각을 출력한다. 자정을 넘기는 경우 `+일수`도 출력한다.
+
+### 예제
+
+| 입력                        | 출력    |
+| --------------------------- | ------- |
+| `09:00 02:30` `00:00 00:00` | `11:30` |
+
+## 풀이
+
+시작 시각과 소요 시간을 시(hour)와 분(minute)으로 분리해 더한 뒤, 60분 이상이면 시간으로 올림하고, 24시간 이상이면 날짜를 증가시킨다.
+
+1. `getTime()` 함수로 `HH:MM` 문자열에서 `substr()`을 이용해 시와 분을 파싱한다.
+2. 시작 시각과 소요 시간의 분을 더한다.
+3. 60분 이상이면 분에서 60을 빼고 시간을 1 증가시킨다.
+4. 시간을 더한 후, 24시간 이상이면 24를 빼고 날짜를 1 증가시킨다. (이 과정을 반복)
+5. 시간과 분이 10 미만이면 앞에 `0`을 붙여 두 자리로 출력한다.
+6. 날짜 이동이 있으면 ` +days`를 추가 출력한다.
+
+**핵심 아이디어**: `HH:MM` 형식의 문자열을 `substr(0, 2)`와 `substr(3, 2)`로 분리하고, `stoi()`로 정수 변환하면 시간 파싱을 간결하게 처리할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+const int MAX_MINUTE = 60;
+const int MAX_HOUR = 24;
+typedef struct
+{
+  int h, m;
+} Time;
+
+Time getTime(string s)
+{
+  return {stoi(s.substr(0, 2)), stoi(s.substr(3, 2))};
+}
+
+void printResult(Time startTime, Time durationTime)
+{
+  int minute = startTime.m + durationTime.m;
+  int hour = startTime.h + durationTime.h;
+  if (minute >= MAX_MINUTE)
+  {
+    minute -= MAX_MINUTE;
+    hour++;
+  }
+  int days = 0;
+  while (hour >= MAX_HOUR)
+  {
+    hour -= MAX_HOUR;
+    days++;
+  }
+  if (hour < 10)
+  {
+    cout << 0;
+  }
+  cout << hour << ":";
+  if (minute < 10)
+  {
+    cout << 0;
+  }
+  cout << minute;
+  if (days)
+  {
+    cout << " +" << days;
+  }
+  cout << "\n";
+}
+
+int main(void)
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  while (1)
+  {
+    string start, duration;
+    cin >> start >> duration;
+    if (start == "00:00" && duration == "00:00")
+    {
+      break;
+    }
+    Time startTime = getTime(start);
+    Time durationTime = getTime(duration);
+    printResult(startTime, durationTime);
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 입력 케이스 수 N만큼 처리 (각 케이스는 상수 시간)
+- 공간: O(1) — 상수 개의 변수만 사용

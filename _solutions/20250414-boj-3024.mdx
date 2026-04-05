@@ -1,0 +1,100 @@
+---
+title: "BOJ 3024 - 마라톤 틱택토"
+date: "2025-04-14"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "3024"
+problem_url: "https://www.acmicpc.net/problem/3024"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3024 - 마라톤 틱택토](https://www.acmicpc.net/problem/3024)
+
+N x N 크기의 틱택토 판이 주어진다. 같은 문자 3개가 가로, 세로, 또는 대각선으로 연속해서 나타나면 해당 문자가 승리한다. 승자가 있으면 해당 문자를, 없으면 `ongoing`을 출력하라.
+
+### 입력
+
+첫 줄에 N이 주어지고, 이후 N줄에 N개의 문자로 구성된 판이 주어진다. `.`은 빈 칸이다.
+
+### 출력
+
+승자의 문자 또는 `ongoing`을 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `X.O` `.X.` `O.X` | `X`  |
+
+## 풀이
+
+모든 칸에서 가로, 세로, 대각선 방향으로 3개 연속 같은 문자가 있는지 확인한다.
+
+1. 보드의 모든 칸 `(i, j)`를 순회한다
+2. 빈 칸(`.`)이면 건너뛴다
+3. 각 칸에서 4가지 방향을 검사한다:
+   - 가로: `(i, j)`, `(i, j+1)`, `(i, j+2)`
+   - 세로: `(i, j)`, `(i+1, j)`, `(i+2, j)`
+   - 우하 대각선: `(i, j)`, `(i+1, j+1)`, `(i+2, j+2)`
+   - 좌하 대각선: `(i, j)`, `(i+1, j-1)`, `(i+2, j-2)`
+4. 범위 초과를 방지하기 위해 인덱스 경계를 검사한다
+5. 3개가 모두 같은 문자면 해당 문자를 반환한다
+6. 승자가 없으면 `ongoing`을 출력한다
+
+**핵심 아이디어**: 3 x 3 고정이 아닌 N x N 판에서 3개 연속을 찾는 것이므로, 모든 칸에서 4방향을 검사하는 브루트포스 접근이 필요하다.
+
+## 코드
+
+```python
+def check(a, n):
+    for i in range(n):
+        for j in range(n):
+            if a[i][j] == ".":
+                continue
+
+            if j <= n - 3 and a[i][j] == a[i][j + 1] == a[i][j + 2]:
+                return a[i][j]
+
+            if i <= n - 3 and a[i][j] == a[i + 1][j] == a[i + 2][j]:
+                return a[i][j]
+
+            if (
+                i <= n - 3
+                and j <= n - 3
+                and a[i][j] == a[i + 1][j + 1] == a[i + 2][j + 2]
+            ):
+                return a[i][j]
+
+            if i <= n - 3 and j >= 2 and a[i][j] == a[i + 1][j - 1] == a[i + 2][j - 2]:
+                return a[i][j]
+
+    return None
+
+
+def ong(a, n):
+    for i in range(n):
+        for j in range(n):
+            if a[i][j] == ".":
+                return True
+    return False
+
+
+n = int(input())
+a = [input().strip() for _ in range(n)]
+
+ans = check(a, n)
+if ans:
+    print(ans)
+else:
+    print("ongoing")
+```
+
+## 복잡도
+
+- 시간: O(N^2) — 모든 칸에서 상수 방향 검사
+- 공간: O(N^2) — N x N 보드 저장

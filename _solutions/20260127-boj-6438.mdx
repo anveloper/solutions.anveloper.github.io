@@ -1,0 +1,71 @@
+---
+title: "BOJ 6438 - Reverse Text"
+date: "2026-01-27"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "6438"
+problem_url: "https://www.acmicpc.net/problem/6438"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6438 - Reverse Text](https://www.acmicpc.net/problem/6438)
+
+N개의 줄이 주어진다. 각 줄의 문자를 역순으로 뒤집어 출력하는 문제이다.
+
+### 입력
+
+첫째 줄에 줄 수 `N`이 주어진다. 이후 `N`개의 줄이 주어지며, 각 줄은 공백을 포함한 문자열이다.
+
+### 출력
+
+각 줄을 뒤집은 결과를 출력한다.
+
+### 예제
+
+| 입력                      | 출력                  |
+| ------------------------- | --------------------- |
+| `2` `Hello World` `abcde` | `dlroW olleH` `edcba` |
+
+## 풀이
+
+각 줄을 통째로 읽어 STL의 `reverse`로 뒤집은 뒤 출력한다.
+
+1. `N`을 읽은 뒤 `cin.ignore()`로 개행 문자를 제거한다.
+2. `N`번 반복하며 `getline`으로 공백 포함 한 줄을 읽는다.
+3. `reverse(temp.begin(), temp.end())`로 문자열 전체를 제자리에서 뒤집는다.
+4. 뒤집힌 문자열을 출력한다.
+
+**핵심 아이디어:** 공백이 포함된 줄을 올바르게 읽기 위해 `getline`을 사용하며, `cin >> N` 이후 버퍼에 남은 개행 문자를 `cin.ignore()`로 소비해야 한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main()
+{
+  int N;
+  cin >> N;
+  cin.ignore();
+  for (int i = 0; i < N; i++)
+  {
+    string temp;
+    getline(cin, temp);
+    reverse(temp.begin(), temp.end());
+    cout << temp << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) — N개의 줄, 각 줄 길이 L에 대해 선형
+- 공간: O(L) — 한 줄 단위로 처리

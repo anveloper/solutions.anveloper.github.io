@@ -1,0 +1,62 @@
+---
+title: "BOJ 4606 - The Seven Percent Solution"
+date: "2026-03-07"
+description: "URL에서 특수 문자를 퍼센트 인코딩으로 변환하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4606"
+problem_url: "https://www.acmicpc.net/problem/4606"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4606 - The Seven Percent Solution](https://www.acmicpc.net/problem/4606)
+
+> 문자열에서 특수 문자(공백, `!`, `$`, `%`, `(`, `)`, `*`)를 퍼센트 인코딩으로 치환하여 출력하는 문제
+
+## 풀이
+
+각 문자를 순회하며, 지정된 특수 문자에 해당하면 `%XX` 형식으로 치환한다. switch 문으로 7가지 특수 문자를 처리하고, 나머지는 그대로 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  string line;
+  while (getline(cin, line)) {
+    if (line == "#") break;
+
+    string result = "";
+    for (char c : line) {
+      switch (c) {
+        case ' ':  result += "%20"; break;
+        case '!':  result += "%21"; break;
+        case '$':  result += "%24"; break;
+        case '%':  result += "%25"; break;
+        case '(':  result += "%28"; break;
+        case ')':  result += "%29"; break;
+        case '*':  result += "%2a"; break;
+        default:   result += c;     break;
+      }
+    }
+    cout << result << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 문자열 길이)
+- 공간: O(N)

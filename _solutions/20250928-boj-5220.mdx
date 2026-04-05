@@ -1,0 +1,81 @@
+---
+title: "BOJ 5220 - Error Detection"
+date: "2025-09-28"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "5220"
+problem_url: "https://www.acmicpc.net/problem/5220"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5220 - Error Detection](https://www.acmicpc.net/problem/5220)
+
+어떤 수 N을 이진수로 변환하면 특정 패리티 비트 x를 가진다. x는 N의 이진 표현에서 모든 1의 개수를 2로 나눈 나머지(홀수 패리티)다. 입력으로 N과 x가 주어질 때, x가 올바른 패리티 비트인지 판별하여 `Valid` 또는 `Corrupt`를 출력한다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T가 주어진다. 이후 T개의 줄에 정수 N과 패리티 비트 x가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 `Valid` 또는 `Corrupt`를 출력한다.
+
+### 예제
+
+| 입력            | 출력              |
+| --------------- | ----------------- |
+| `2` `5 1` `6 1` | `Valid` `Corrupt` |
+
+## 풀이
+
+N의 이진 표현에서 1의 개수가 홀수인지 짝수인지를 재귀적으로 계산한다.
+
+1. `cal(x)` 함수는 정수 x의 이진 표현에서 1의 개수의 홀짝성(패리티)을 반환한다.
+2. 기저 조건: x가 0이면 0, x가 1이면 1을 반환한다.
+3. 재귀: `(x % 2) + cal(x / 2)`의 합을 2로 나눈 나머지를 반환한다. 이는 최하위 비트의 기여와 나머지 비트들의 패리티를 XOR하는 것과 동일하다.
+4. 계산된 패리티와 입력 x를 비교해 일치하면 `Valid`, 다르면 `Corrupt`를 출력한다.
+
+**핵심 아이디어**: 이진 표현의 각 비트를 재귀적으로 분리해 패리티를 누적하는 방식은 `__builtin_popcount(N) % 2`와 동일한 결과를 산출한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#define ll long long
+using namespace std;
+
+ll cal(ll x)
+{
+  if (x <= 1)
+    return x;
+  return (x + cal(x / 2)) % 2;
+}
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  ll T, N, x;
+
+  cin >> T;
+  while (T--)
+  {
+    cin >> N >> x;
+    if (x == cal(N))
+      cout << "Valid\n";
+    else
+      cout << "Corrupt\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T log N) — 각 테스트 케이스마다 `cal` 재귀 깊이는 O(log N)
+- 공간: O(log N) — 재귀 호출 스택 깊이

@@ -1,0 +1,77 @@
+---
+title: "BOJ 9461 - 파도반 수열"
+date: "2022-04-09"
+description: "수학, 다이나믹 프로그래밍 문제"
+tags: ["수학", "다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "9461"
+problem_url: "https://www.acmicpc.net/problem/9461"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9461 - 파도반 수열](https://www.acmicpc.net/problem/9461)
+
+파도반 수열 P(1), P(2), ... 은 나선형으로 배열된 정삼각형의 변의 길이로 정의된다. P(1) = P(2) = P(3) = 1이며, 이후의 항은 특정 점화식을 따른다. T개의 테스트 케이스로 N이 주어지면 P(N)을 출력한다. N이 최대 100이고 P(100)이 int 범위를 초과하므로 `long`을 사용해야 한다.
+
+### 입력
+
+첫째 줄에 T가 주어진다.
+둘째 줄부터 T개의 줄에 N이 주어진다. (1 ≤ N ≤ 100)
+
+### 출력
+
+각 테스트 케이스마다 P(N)을 출력한다.
+
+### 예제
+
+| 입력         | 출력     |
+| ------------ | -------- |
+| `2` `6` `12` | `4` `16` |
+
+## 풀이
+
+파도반 수열의 점화식 `P(N) = P(N-1) + P(N-5)` (N ≥ 6)을 바텀업 DP로 미리 계산해 두고 쿼리에 O(1)로 답한다.
+
+1. `arr[1] = arr[2] = arr[3] = 1`, `arr[4] = arr[5] = 2`로 초기값을 설정한다.
+2. i = 6부터 100까지 `arr[i] = arr[i-1] + arr[i-5]`로 채운다.
+3. 각 테스트 케이스에서 N을 읽어 `arr[N]`을 출력한다.
+
+**핵심 아이디어**: 파도반 수열은 피보나치 수열과 유사한 선형 점화식이다. `P(N) = P(N-1) + P(N-5)`가 성립하는 이유는 나선형 삼각형 패턴에서 새로 추가되는 삼각형의 변이 1단계 이전과 5단계 이전 변의 합이기 때문이다. 미리 계산(전처리)하여 다수 쿼리를 O(1)에 처리한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.util.Scanner;
+
+public class Day61BOJ9461파도반수열규칙반복 { // 9461 파도반의 수열
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		long[] arr = new long[101];
+		arr[1] = 1;
+		arr[2] = 1;
+		arr[3] = 1;
+		arr[4] = 2;
+		arr[5] = 2;
+		for (int i = 6; i < 101; i++) {
+			arr[i] = arr[i - 1] + arr[i - 5];
+		}
+		int T = sc.nextInt();
+		for (int t = 0; t < T; t++) {
+			int N = sc.nextInt();
+			System.out.println(arr[N]);
+		}
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(100 + T) — 전처리 O(100), 각 쿼리 O(1)
+- 공간: O(100) — 크기 101짜리 배열

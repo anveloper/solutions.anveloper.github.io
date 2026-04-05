@@ -1,0 +1,80 @@
+---
+title: "BOJ 12904 - A와 B"
+date: "2022-11-12"
+description: "구현, 그리디 알고리즘, 문자열 문제"
+tags: ["구현", "그리디 알고리즘", "문자열"]
+platform: "boj"
+problem_number: "12904"
+problem_url: "https://www.acmicpc.net/problem/12904"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 12904 - A와 B](https://www.acmicpc.net/problem/12904)
+
+문자열 S에 두 가지 연산(뒤에 A 추가, 뒤집고 뒤에 B 추가)을 적용하여 문자열 T를 만들 수 있는지 판별하라.
+
+### 입력
+
+첫째 줄에 문자열 S, 둘째 줄에 문자열 T가 주어진다 (길이 1 이상 1,000 이하).
+
+### 출력
+
+S를 T로 만들 수 있으면 1, 없으면 0을 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `A` `BABA` | `1`  |
+
+## 풀이
+
+T에서 S로 역추적하며 연산을 되돌린다.
+
+1. T의 길이가 S와 같아질 때까지 반복한다
+2. T의 마지막 문자가 A이면 마지막 문자를 제거한다 (A 추가의 역연산)
+3. T의 마지막 문자가 B이면 마지막 문자를 제거하고 문자열을 뒤집는다 (뒤집기+B 추가의 역연산)
+4. 최종적으로 S와 T가 같으면 1, 다르면 0을 출력한다
+
+**핵심 아이디어**: 순방향 탐색은 경우의 수가 기하급수적이지만, 역방향은 마지막 문자에 의해 유일하게 결정되므로 O(N)에 해결된다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day278BOJ12904 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String S = br.readLine();
+		String T = br.readLine();
+
+		while (S.length() != T.length()) {
+			char ch = T.charAt(T.length() - 1);
+			T = T.substring(0, T.length() - 1);
+			if (ch == 'B') {
+				StringBuilder sb = new StringBuilder(T);
+				T = (sb.reverse()).toString();
+			}
+		}
+
+		if (S.equals(T)) {
+			System.out.println(1);
+		} else {
+			System.out.println(0);
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

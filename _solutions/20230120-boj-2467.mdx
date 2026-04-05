@@ -1,0 +1,105 @@
+---
+title: "BOJ 2467 - 용액"
+date: "2023-01-20"
+description: "이분 탐색, 두 포인터 문제"
+tags: ["이분 탐색", "두 포인터"]
+platform: "boj"
+problem_number: "2467"
+problem_url: "https://www.acmicpc.net/problem/2467"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2467 - 용액](https://www.acmicpc.net/problem/2467)
+
+N가지 용액이 오름차순으로 정렬되어 있다. 두 용액을 혼합했을 때 특성값의 절댓값이 가장 작은 두 용액을 찾는다. 합이 0이면 (0, 0)과 같이 가장 좋은 경우이다.
+
+### 입력
+
+첫째 줄에 N (2 ≤ N ≤ 100,000), 둘째 줄에 N개의 정수 (-1,000,000,000 이상 1,000,000,000 이하, 오름차순 정렬)가 주어진다.
+
+### 출력
+
+혼합했을 때 특성값이 0에 가장 가까운 두 용액의 특성값을 오름차순으로 공백으로 구분하여 출력한다.
+
+### 예제
+
+**입력**
+
+```
+5
+-2 4 -99 -1 98
+```
+
+**출력**
+
+```
+-99 98
+```
+
+## 풀이
+
+**핵심 아이디어**: 정렬된 배열에서 투 포인터를 양 끝에 놓고, 두 값의 합 절댓값이 최소가 되는 인덱스 쌍을 O(N)에 찾는다. 14921번과 달리 합 자체가 아닌 두 원소의 값을 출력해야 하므로 인덱스를 별도로 기록한다.
+
+1. **초기화**: `s = 0`, `e = N-1`, `ans = MAX_VALUE`, 인덱스 `i = 0`, `j = N-1`.
+2. **반복**: `s < e`인 동안 `tmp = arr[s] + arr[e]`를 계산한다.
+3. **갱신**: `|ans| > |tmp|`이면 `ans = tmp`, 현재 인덱스 `i = s`, `j = e`를 저장한다.
+4. **포인터 이동**:
+   - `tmp == 0`: 최적이므로 즉시 종료.
+   - `tmp < 0`: `s++`로 합을 키운다.
+   - `tmp > 0`: `e--`로 합을 줄인다.
+5. **출력**: 저장된 인덱스 `i`, `j`의 원소를 출력한다. (이미 오름차순이므로 `arr[i] arr[j]` 순)
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day352BOJ2467용액 {
+    static int N, s, e, ans = Integer.MAX_VALUE;
+    static int[] arr;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        s = 0;
+        e = N - 1;
+        arr = new int[N];
+
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++)
+            arr[i] = Integer.parseInt(st.nextToken());
+
+        int i = 0, j = N - 1;
+        while (s < e) {
+            int tmp = arr[s] + arr[e];
+            if (Math.abs(ans) > Math.abs(tmp)) {
+                ans = tmp;
+                i = s;
+                j = e;
+            }
+
+            if (tmp == 0)
+                break;
+            else if (tmp < 0)
+                s++;
+            else if (tmp > 0)
+                e--;
+        }
+        System.out.println(arr[i] + " " + arr[j]);
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 두 포인터가 각각 최대 N번 이동 (정렬된 입력이므로 정렬 불필요)
+- 공간: O(N) — 입력 배열 저장

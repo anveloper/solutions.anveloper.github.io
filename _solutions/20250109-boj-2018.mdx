@@ -1,0 +1,67 @@
+---
+title: "BOJ 2018 - 수들의 합 5"
+date: "2025-01-09"
+description: "수학, 두 포인터 문제"
+tags: ["수학", "두 포인터"]
+platform: "boj"
+problem_number: "2018"
+problem_url: "https://www.acmicpc.net/problem/2018"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2018 - 수들의 합 5](https://www.acmicpc.net/problem/2018)
+
+자연수 N을 연속된 자연수의 합으로 나타내는 방법의 수를 구하라.
+
+### 입력
+
+자연수 N이 주어진다 (1 이상 10,000,000 이하).
+
+### 출력
+
+연속된 자연수의 합으로 나타내는 방법의 수를 출력한다 (N 자체도 포함).
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `15` | `4`  |
+
+## 풀이
+
+1부터 N/2까지 시작점을 잡고 연속 합이 N이 되는 경우를 센다.
+
+1. 시작점 i에서 연속 합을 누적하며 N과 비교한다
+2. 합이 N이면 카운트를 증가시킨다
+3. 합이 N을 초과하면 다음 시작점으로 넘어간다
+4. N 자체도 1가지로 포함하여 result = 1에서 시작한다
+
+**핵심 아이디어**: 시작점은 최대 N/2까지만 확인하면 되고, 합이 초과되면 즉시 중단하여 효율적으로 탐색한다.
+
+## 코드
+
+```python
+n = int(input())
+
+result = 1
+for i in range(1,(n//2)+1):
+  hap = i
+  for j in range(i+1,n):
+    hap += j
+    if hap == n:
+      result += 1
+      break
+    elif hap > n:
+      break
+
+print(result)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,70 @@
+---
+title: "BOJ 2742 - 기찍 N"
+date: "2023-05-25"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2742"
+problem_url: "https://www.acmicpc.net/problem/2742"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2742 - 기찍 N](https://www.acmicpc.net/problem/2742)
+
+자연수 N이 주어졌을 때, N부터 1까지 한 줄에 하나씩 출력하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 100,000)이 주어진다.
+
+### 출력
+
+N부터 1까지 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력 | 출력                |
+| ---- | ------------------- |
+| `5`  | `5` `4` `3` `2` `1` |
+
+## 풀이
+
+N부터 1까지 역순으로 StringBuilder에 모아 한 번에 출력한다.
+
+1. N부터 시작하여 0보다 클 때까지 감소시키며 반복한다
+2. 각 값을 StringBuilder에 줄바꿈과 함께 추가한다
+3. 한 번에 출력하여 I/O 횟수를 줄인다
+
+**핵심 아이디어**: System.out.println을 N번 호출하면 느리므로, StringBuilder로 모아서 한 번에 출력한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day506BOJ2742기찍N {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    br.close();
+    StringBuilder sb = new StringBuilder();
+
+    while (N > 0) {
+      sb.append(N + "\n");
+      N--;
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

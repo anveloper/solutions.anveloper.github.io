@@ -1,0 +1,76 @@
+---
+title: "BOJ 7567 - 그릇"
+date: "2023-11-06"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "7567"
+problem_url: "https://www.acmicpc.net/problem/7567"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7567 - 그릇](https://www.acmicpc.net/problem/7567)
+
+`(` 또는 `)` 로 표현되는 그릇을 쌓을 때, 같은 방향이면 5cm, 다른 방향이면 10cm가 추가된다. 첫 그릇의 높이는 10cm일 때, 전체 높이를 구하라.
+
+### 입력
+
+`(`와 `)`로만 이루어진 문자열이 한 줄로 주어진다.
+
+### 출력
+
+그릇을 쌓았을 때 전체 높이를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `(((` | `20` |
+| `()(` | `30` |
+
+## 풀이
+
+첫 그릇 10cm를 기본값으로 두고, 두 번째 그릇부터 이전 그릇과 비교하여 높이를 누적한다.
+
+1. 첫 그릇의 높이 10cm로 초기화한다
+2. 두 번째 문자부터 순회하며 이전 문자와 비교한다
+3. 같은 방향이면 +5cm, 다른 방향이면 +10cm를 더한다
+4. 최종 누적 높이를 출력한다
+
+**핵심 아이디어**: 인접한 두 그릇의 방향만 비교하면 되므로 한 번의 순회로 해결된다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day640BOJ7567그릇 {
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String str = br.readLine();
+    int ans = 10;
+
+    for (int i = 1; i < str.length(); i++) {
+      if (str.charAt(i) == str.charAt(i - 1)) {
+        ans += 5;
+      } else {
+        ans += 10;
+      }
+    }
+
+    System.out.println(ans);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

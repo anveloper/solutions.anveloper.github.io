@@ -1,0 +1,78 @@
+---
+title: "BOJ 2503 - 숫자 야구"
+date: "2025-01-20"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2503"
+problem_url: "https://www.acmicpc.net/problem/2503"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2503 - 숫자 야구](https://www.acmicpc.net/problem/2503)
+
+1~9로 구성된 서로 다른 3자리 수를 맞추는 숫자 야구 게임이다. N번의 질문과 스트라이크/볼 결과가 주어질 때, 가능한 답의 수를 구하라.
+
+### 입력
+
+첫째 줄에 질문 수 N, 이후 N줄에 질문 수, 스트라이크, 볼이 주어진다.
+
+### 출력
+
+가능한 답의 개수를 출력한다.
+
+### 예제
+
+| 입력                                        | 출력 |
+| ------------------------------------------- | ---- |
+| `4` `123 1 1` `356 1 0` `327 2 0` `489 0 1` | `2`  |
+
+## 풀이
+
+1~9의 모든 3자리 순열을 후보로 시작하여, 각 질문의 스트라이크/볼 결과와 일치하지 않는 후보를 제거한다.
+
+1. `permutations(1~9, 3)`으로 P(9,3) = 504개의 후보를 생성한다
+2. 각 질문에 대해 모든 후보의 스트라이크/볼을 계산한다
+3. 실제 결과와 일치하는 후보만 남긴다
+4. 모든 질문 처리 후 남은 후보 수를 출력한다
+
+**핵심 아이디어**: 후보 수가 504개로 적으므로, 각 질문마다 전수 검사하여 조건에 맞지 않는 후보를 필터링한다.
+
+## 코드
+
+```python
+import sys
+from itertools import permutations
+input = sys.stdin.readline
+
+n = int(input())
+nums = list(permutations(list(range(1, 10)), 3))
+
+for _ in range(n):
+    num, s, b = map(int, input().split())
+    tmp = []
+
+    for check in nums:
+        cnt_s, cnt_b = 0, 0
+
+        for i, str_num in enumerate(str(num)):
+            if int(str_num) == check[i]:
+                cnt_s += 1
+            if int(str_num) != check[i] and int(str_num) in check:
+                cnt_b += 1
+
+        if s == cnt_s and b == cnt_b:
+            tmp.append(check)
+    nums = tmp
+
+print(len(nums))
+```
+
+## 복잡도
+
+- 시간: O(N \* P(9,3) \* 3) — 질문당 504개 후보, 3자리 비교
+- 공간: O(P(9,3)) — 후보 리스트

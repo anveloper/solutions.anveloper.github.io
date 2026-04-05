@@ -1,0 +1,78 @@
+---
+title: "BOJ 1393 - 음하철도 구구팔"
+date: "2024-05-31"
+description: "직선 위를 이동하는 열차에서 역까지 가장 가까운 정수 좌표 지점을 구하는 문제"
+tags: ["수학", "브루트포스", "정수론"]
+platform: "boj"
+problem_number: "1393"
+problem_url: "https://www.acmicpc.net/problem/1393"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1393 - 음하철도 구구팔](https://www.acmicpc.net/problem/1393)
+
+역의 좌표와 열차의 현재 좌표 및 이동 방향이 주어질 때, 열차가 정수 좌표 위치를 지나면서 역에 가장 가까운 지점을 구하라.
+
+### 입력
+
+첫째 줄에 역의 좌표 (xs, ys), 둘째 줄에 열차의 좌표 (xe, ye)와 방향 벡터 (dx, dy)가 주어진다.
+
+### 출력
+
+역에서 가장 가까운 열차의 정수 좌표를 출력한다.
+
+### 예제
+
+| 입력            | 출력  |
+| --------------- | ----- |
+| `3 1` `0 0 1 0` | `3 0` |
+
+## 풀이
+
+방향 벡터를 GCD로 최소 단위로 만든 뒤, 한 칸씩 이동하면서 역까지 거리가 줄어드는 동안 전진한다.
+
+1. 방향 벡터 (dx, dy)를 GCD로 나누어 최소 이동 단위를 구한다
+2. 현재 위치에서 한 칸 전진한 위치가 역에 더 가까운지 확인한다
+3. 더 가까우면 전진을 계속하고, 아니면 현재 위치를 출력한다
+
+**핵심 아이디어**: 직선 위의 점에서 외부 점까지의 거리는 유클리드 거리가 볼록 함수이므로, 거리가 증가하기 시작하면 그 이전 지점이 최근접점이다.
+
+## 코드
+
+```python
+import sys
+import math
+
+
+def get_gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+
+def check_distance(x, y):
+    return math.sqrt((x - xs) ** 2 + (y - ys) ** 2)
+
+
+xs, ys = map(int, sys.stdin.readline().split())
+xe, ye, dx, dy = map(int, sys.stdin.readline().split())
+
+d_gcd = get_gcd(dx, dy)
+dx, dy = dx // d_gcd, dy // d_gcd
+
+curx, cury = xe, ye
+while check_distance(curx, cury) > check_distance(curx + dx, cury + dy):
+    curx += dx
+    cury += dy
+
+print(curx, cury)
+```
+
+## 복잡도
+
+- 시간: O(D) (D는 이동 횟수, 좌표 범위에 비례)
+- 공간: O(1)

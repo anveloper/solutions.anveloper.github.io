@@ -1,0 +1,82 @@
+---
+title: "BOJ 1929 - 소수 구하기"
+date: "2023-04-23"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "1929"
+problem_url: "https://www.acmicpc.net/problem/1929"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1929 - 소수 구하기](https://www.acmicpc.net/problem/1929)
+
+M 이상 N 이하의 모든 소수를 오름차순으로 출력하라.
+
+### 입력
+
+M과 N이 주어진다 (1 이상 1,000,000 이하).
+
+### 출력
+
+한 줄에 하나씩 소수를 출력한다.
+
+### 예제
+
+| 입력   | 출력                  |
+| ------ | --------------------- |
+| `3 16` | `3` `5` `7` `11` `13` |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 판별한다.
+
+1. 크기 N+1의 boolean 배열을 생성한다 (true = 합성수)
+2. 2부터 N까지 순회하며 합성수가 아닌 수의 배수를 모두 합성수로 표시한다
+3. M 이상인 소수를 순서대로 출력한다
+
+**핵심 아이디어**: 에라토스테네스의 체는 O(N log log N)에 범위 내 모든 소수를 구할 수 있는 효율적인 알고리즘이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day441BOJ1929소수구하기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int M = Integer.parseInt(st.nextToken());
+    int N = Integer.parseInt(st.nextToken());
+
+    boolean[] prime = new boolean[N + 1];
+
+    for (int i = 2; i <= N; i++) {
+      if (prime[i])
+        continue;
+
+      if (i >= M)
+        sb.append(i).append('\n');
+
+      for (int j = i + i; j <= N; j += i) {
+        prime[j] = true;
+      }
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N)
+- 공간: O(N)

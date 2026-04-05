@@ -1,0 +1,75 @@
+---
+title: "BOJ 3460 - 이진수"
+date: "2024-07-31"
+description: "양의 정수를 이진수로 변환하여 1인 비트의 위치를 출력하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "3460"
+problem_url: "https://www.acmicpc.net/problem/3460"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3460 - 이진수](https://www.acmicpc.net/problem/3460)
+
+양의 정수 N의 이진 표현에서 1이 있는 비트 위치를 오름차순으로 출력하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T, 이후 T줄에 N이 주어진다.
+
+### 출력
+
+각 N에 대해 1인 비트 위치를 공백으로 구분하여 출력한다 (0번 비트부터).
+
+### 예제
+
+| 입력     | 출력    |
+| -------- | ------- |
+| `1` `13` | `0 2 3` |
+
+## 풀이
+
+N을 2로 나누며 나머지가 1인 자릿수를 출력한다.
+
+1. N을 2로 나누며 나머지를 확인한다
+2. 나머지가 1이면 현재 자릿수(0부터 시작)를 출력한다
+3. N이 0이 될 때까지 반복하며 자릿수를 1씩 증가시킨다
+
+**핵심 아이디어**: 2진법 변환의 나머지 연산으로 각 비트 값을 확인하므로, 낮은 비트부터 자연스럽게 오름차순으로 출력된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  int T, n;
+  cin >> T;
+
+  while (T--)
+  {
+    cin >> n;
+    int digit = 0;
+    while (n > 0)
+    {
+      if (n % 2 == 1)
+      {
+        cout << digit << " ";
+      }
+      n /= 2;
+      digit++;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* log N)
+- 공간: O(1)

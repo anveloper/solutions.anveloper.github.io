@@ -1,0 +1,121 @@
+---
+title: "BOJ 1208 - 부분수열의 합 2"
+date: "2022-08-18"
+description: "이분 탐색, 집합과 맵, 중간에서 만나기 문제"
+tags: ["이분 탐색", "집합과 맵", "중간에서 만나기"]
+platform: "boj"
+problem_number: "1208"
+problem_url: "https://www.acmicpc.net/problem/1208"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1208 - 부분수열의 합 2](https://www.acmicpc.net/problem/1208)
+
+N개의 정수로 이루어진 수열이 있다. 이 수열의 부분 수열(공집합 제외)의 합이 S가 되는 경우의 수를 구한다.
+
+- 부분 수열의 합: 수열에서 일부 원소를 골라 더한 값
+- N이 최대 40이므로 완전 탐색 `2^40`은 불가능하다.
+
+### 입력
+
+첫째 줄에 N과 S가 주어진다. (1 ≤ N ≤ 40, |S| ≤ 1,000,000)
+
+둘째 줄에 N개의 정수가 주어진다. (각 원소의 절댓값 ≤ 100,000)
+
+### 출력
+
+합이 S가 되는 부분 수열의 개수를 출력한다.
+
+### 예제
+
+입력:
+
+```
+5 0
+-7 -3 -2 5 8
+```
+
+출력:
+
+```
+1
+```
+
+## 풀이
+
+**핵심 아이디어**: Meet in the Middle(중간에서 만나기) 기법으로 수열을 절반으로 나누고, 왼쪽 절반의 모든 부분합을 해시맵에 저장한 뒤, 오른쪽 절반의 부분합과 합산하여 S가 되는 경우를 센다.
+
+1. 수열을 절반(`arr`, `brr`)으로 나눈다.
+2. 왼쪽 절반 `arr`의 모든 부분합(2^(N/2)개)을 `sumCnt` 해시맵에 `합 -> 등장 횟수`로 저장한다.
+3. 오른쪽 절반 `brr`의 모든 부분합을 순회하면서, `S - 현재합`이 `sumCnt`에 있으면 해당 횟수만큼 답에 더한다.
+4. 공집합(왼쪽 0, 오른쪽 0)이 합산되면 S가 0일 때 1이 추가로 더해지므로, `k == 0`이면 최종 답에서 1을 뺀다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Day192BOJ1208부분수열의합 {
+	static Map<Long, Integer> sumCnt = new HashMap<>();
+	static int arrN, brrN, k;
+	static int[] arr, brr;
+	static long ans = 0;
+
+	static void f(int idx, long sum) {
+		if (idx == arrN) {
+			int x = sumCnt.getOrDefault(sum, 0);
+			sumCnt.put(sum, x + 1);
+			return;
+		}
+
+		f(idx + 1, sum);
+		f(idx + 1, sum + arr[idx]);
+
+	}
+
+	static void f2(int idx, long sum) {
+		if (idx == brrN) {
+			ans += sumCnt.getOrDefault(k - sum, 0);
+			return;
+		}
+
+		f2(idx + 1, sum);
+		f2(idx + 1, sum + brr[idx]);
+	}
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		k = sc.nextInt();
+
+		arrN = n / 2;
+		arr = new int[arrN];
+		for (int i = 0; i < arrN; ++i)
+			arr[i] = sc.nextInt();
+
+		brrN = n - arrN;
+		brr = new int[brrN];
+		for (int i = 0; i < brrN; ++i)
+			brr[i] = sc.nextInt();
+
+		f(0, 0);
+		f2(0, 0);
+
+		System.out.println(ans - (k == 0 ? 1 : 0));
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(2^(N/2)) — 각 절반을 완전 탐색하여 2^20 ≈ 100만 연산
+- 공간: O(2^(N/2)) — 해시맵에 왼쪽 절반의 모든 부분합 저장

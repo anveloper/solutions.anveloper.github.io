@@ -1,0 +1,71 @@
+---
+title: "BOJ 1474 - 밑 줄"
+date: "2024-07-14"
+description: "밑줄로 단어를 연결하여 길이 M의 사전순 가장 앞선 문자열을 만드는 그리디 문제"
+tags: ["그리디", "문자열"]
+platform: "boj"
+problem_number: "1474"
+problem_url: "https://www.acmicpc.net/problem/1474"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1474 - 밑 줄](https://www.acmicpc.net/problem/1474)
+
+N개의 단어를 밑줄(\_)로 연결하여 총 길이가 M이 되도록 할 때, 사전순으로 가장 앞서는 문자열을 구하라. 단어 사이에는 최소 1개의 밑줄이 필요하다.
+
+### 입력
+
+첫째 줄에 N과 M, 이후 N줄에 단어가 주어진다.
+
+### 출력
+
+사전순으로 가장 앞서는 결과 문자열을 출력한다.
+
+### 예제
+
+| 입력                      | 출력                   |
+| ------------------------- | ---------------------- |
+| `3 20` `nice` `to` `meet` | `nice___to_______meet` |
+
+## 풀이
+
+밑줄 총 개수를 (N-1)개 슬롯에 배분할 때, 사전순 최소를 위해 소문자 앞에는 밑줄을 늘리고 대문자 앞에는 줄이는 그리디 전략을 사용한다.
+
+1. 총 밑줄 수를 (N-1)로 나누어 기본 길이와 나머지를 구한다
+2. 각 슬롯을 순회하며, 다음 단어가 소문자로 시작하면 밑줄 1개를 추가 배분한다 (\_가 소문자보다 앞이므로)
+3. 남은 나머지가 뒤쪽 슬롯 수와 같아지면 강제로 배분한다
+4. 기본 밑줄 + 추가 밑줄 + 단어를 결합하여 출력한다
+
+**핵심 아이디어**: ASCII에서 \_는 소문자보다 앞이고 대문자보다 뒤이므로, 소문자 앞에 밑줄을 많이 넣으면 사전순으로 유리하다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+n, m = map(int, input().split())
+data = [input().rstrip() for _ in range(n)]
+default_len, r = divmod(m - sum(map(len, data)), n - 1)
+result = data[0]
+
+for idx in range(1, n):
+    if data[idx][0].islower() and r != 0:
+        r -= 1
+        result += "_" * (default_len + 1) + data[idx]
+    elif idx + r == n:
+        r -= 1
+        result += "_" * (default_len + 1) + data[idx]
+    else:
+        result += "_" * default_len + data[idx]
+print(result)
+```
+
+## 복잡도
+
+- 시간: O(M)
+- 공간: O(M)

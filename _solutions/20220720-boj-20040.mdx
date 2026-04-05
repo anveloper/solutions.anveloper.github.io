@@ -1,0 +1,106 @@
+---
+title: "BOJ 20040 - 사이클 게임"
+date: "2022-07-20"
+description: "자료 구조, 분리 집합 문제"
+tags: ["자료 구조", "분리 집합"]
+platform: "boj"
+problem_number: "20040"
+problem_url: "https://www.acmicpc.net/problem/20040"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 20040 - 사이클 게임](https://www.acmicpc.net/problem/20040)
+
+두 플레이어가 번갈아 가며 0번부터 n-1번까지의 점 중 두 점을 선분으로 연결하는 게임이다. 사이클이 처음 만들어지는 차례 번호를 구하라. 게임이 끝날 때까지 사이클이 없으면 0을 출력한다.
+
+### 입력
+
+첫째 줄에 점의 수 n과 차례 수 m이 주어진다. (3 ≤ n ≤ 500,000, 3 ≤ m ≤ 1,000,000)
+이후 m개의 줄에 걸쳐 각 차례에 연결하는 두 점의 번호가 주어진다.
+
+### 출력
+
+사이클이 처음 생기는 차례 번호를 출력한다. 사이클이 생기지 않으면 0을 출력한다.
+
+### 예제
+
+| 입력                                | 출력 |
+| ----------------------------------- | ---- |
+| `6 5` `0 1` `1 2` `2 3` `3 4` `4 0` | `5`  |
+
+## 풀이
+
+Union-Find를 사용하여 각 차례마다 사이클 생성 여부를 확인한다.
+
+1. n개의 점을 각자 자신을 부모로 초기화한다
+2. 매 차례마다 두 점 a, b를 입력받는다
+3. `union(a, b)` 시도:
+   - `find(a) == find(b)`이면 이미 같은 집합 → 사이클 발생 → 현재 차례 번호 출력 후 종료
+   - 다른 집합이면 union 수행 후 계속 진행
+4. 모든 차례가 끝날 때까지 사이클이 없으면 0 출력
+5. 경로 압축(Path Compression)으로 find 연산을 최적화
+
+**핵심 아이디어**: Union-Find에서 두 노드의 find 결과가 같으면 같은 연결 성분에 있고, 거기에 간선을 추가하면 사이클이 생기는 원리를 이용한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day163BOJ20040unionfind { // 20040 Union find
+	static int N, M, ans;
+	static int[] p;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		p = new int[N];
+		for (int i = 0; i < N; i++)
+			p[i] = i;
+
+		for (int i = 1; i < M + 1; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			if (!union(a, b)) {
+				ans = i;
+				break;
+			}
+		}
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static boolean union(int a, int b) {
+		a = find(a);
+		b = find(b);
+		if (a == b)
+			return false;
+		p[b] = a;
+		return true;
+	}
+
+	private static int find(int n) {
+		if (n == p[n])
+			return n;
+		return p[n] = find(p[n]);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N α(N))
+- 공간: O(N)

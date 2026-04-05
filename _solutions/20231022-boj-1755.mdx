@@ -1,0 +1,111 @@
+---
+title: "BOJ 1755 - 숫자놀이"
+date: "2023-10-22"
+description: "문자열, 정렬 문제"
+tags: ["문자열", "정렬"]
+platform: "boj"
+problem_number: "1755"
+problem_url: "https://www.acmicpc.net/problem/1755"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1755 - 숫자놀이](https://www.acmicpc.net/problem/1755)
+
+M부터 N까지의 수를 영어로 읽었을 때의 사전순으로 정렬하여 출력하라 (1 이상 99 이하).
+
+### 입력
+
+M과 N이 주어진다.
+
+### 출력
+
+영어 읽기 기준 사전순으로 정렬된 수를 한 줄에 10개씩 출력한다.
+
+### 예제
+
+| 입력   | 출력                                                                  |
+| ------ | --------------------------------------------------------------------- |
+| `8 28` | `8 9 18 15 14 19 11 17 16 13` `12 10 28 25 24 29 21 27 26 23` `22 20` |
+
+## 풀이
+
+각 숫자를 영어 문자열로 변환한 뒤 문자열 기준으로 정렬한다.
+
+1. 0~9를 대응하는 영어 단어 배열을 준비한다
+2. M~N의 각 숫자를 영어 문자열로 변환한다 (2자리 수는 "ten이름 자릿수이름")
+3. 문자열 기준으로 우선순위 큐에 넣어 사전순 정렬한다
+4. 10개씩 줄바꿈하며 출력한다
+
+**핵심 아이디어**: 숫자를 영어 표현으로 변환 후 문자열 비교로 정렬하면 영어 읽기 사전순이 된다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day625BOJ1755숫자놀이 {
+
+  public static void main(String[] args) throws Exception {
+    String[] num = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+    StringBuilder sb = new StringBuilder();
+
+    st = new StringTokenizer(br.readLine());
+    int m = Integer.parseInt(st.nextToken());
+    int n = Integer.parseInt(st.nextToken());
+
+    PriorityQueue<Comp> q = new PriorityQueue<>();
+
+    for (int i = m; i <= n; i++) {
+      String s = "";
+      if (i < 10) {
+        s = num[i];
+      } else {
+        s += num[i / 10];
+        s += " ";
+        s += num[i % 10];
+      }
+      q.add(new Comp(s, i));
+    }
+    int cnt = 0;
+    while (!q.isEmpty()) {
+      Comp c = q.poll();
+      cnt++;
+      sb.append(c.n).append(" ");
+      if (cnt % 10 == 0) {
+        sb.append("\n");
+      }
+    }
+    System.out.println(sb);
+  }
+}
+
+class Comp implements Comparable<Comp> {
+  String s;
+  int n;
+
+  public Comp(String s, int n) {
+    super();
+    this.s = s;
+    this.n = n;
+  }
+
+  @Override
+  public int compareTo(Comp o) {
+    return s.compareTo(o.s);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

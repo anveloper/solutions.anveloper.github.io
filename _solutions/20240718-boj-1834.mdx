@@ -1,0 +1,72 @@
+---
+title: "BOJ 1834 - 나머지와 몫이 같은 수"
+date: "2024-07-18"
+description: "N으로 나눈 나머지와 몫이 같은 모든 자연수의 합을 구하는 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "1834"
+problem_url: "https://www.acmicpc.net/problem/1834"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1834 - 나머지와 몫이 같은 수](https://www.acmicpc.net/problem/1834)
+
+자연수 N이 주어질 때, A를 N으로 나눈 몫과 나머지가 같은 모든 자연수 A의 합을 구하라.
+
+### 입력
+
+자연수 N이 주어진다 (2 이상).
+
+### 출력
+
+조건을 만족하는 모든 A의 합을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `3`  | `12` |
+
+## 풀이
+
+A = N*q + r에서 q = r이면 A = (N+1)*q이다. 나머지 r은 0부터 N-1까지이므로 q도 1부터 N-1까지 가능하다.
+
+1. q를 1부터 N-1까지 순회한다 (q=0이면 A=0이므로 자연수 조건 불만족)
+2. 각 q에 대해 `(N+1) * q`를 누적한다
+3. 최종 합을 출력한다
+
+**핵심 아이디어**: A = (N+1)\*q로 변환하면 조건을 만족하는 수가 등차수열을 이루어, 단순 합산으로 O(N)에 해결된다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  long long num;
+  long long result = 0;
+  cin >> num;
+  for (long long i = 1; i < num; i++)
+    result += (num + 1) * i;
+
+  cout << result;
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

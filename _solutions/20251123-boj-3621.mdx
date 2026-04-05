@@ -1,0 +1,82 @@
+---
+title: "BOJ 3621 - 족보"
+date: "2025-11-23"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "3621"
+problem_url: "https://www.acmicpc.net/problem/3621"
+difficulty: "골드 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3621 - 족보](https://www.acmicpc.net/problem/3621)
+
+N명의 부모 번호가 주어지고, 한 부모가 최대 D명의 자식을 가질 수 있을 때, 제거해야 하는 최소 간선 수를 구하라.
+
+### 입력
+
+자식 수 N과 최대 자식 수 D, 이후 각 자식의 부모 번호가 주어진다.
+
+### 출력
+
+제거해야 하는 최소 간선 수를 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `5 2` `0 0 0 1 1` | `1`  |
+
+## 풀이
+
+각 부모의 자식 수가 D를 초과하면 서브트리를 분리해야 한다.
+
+1. 각 부모의 자식 수를 카운트한다
+2. 자식 수가 D를 초과하는 부모에 대해 `(자식수 - 2) / (D - 1)`만큼 간선을 제거한다
+3. 모든 부모에 대해 제거 횟수를 합산한다
+
+**핵심 아이디어**: 자식이 D개를 초과하면 서브트리로 분할해야 하며, 한 번 분리할 때 D-1개의 자식을 처리할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+
+  int n,
+      d;
+  cin >> n >> d;
+  vector<int> cnt(n + 1);
+  for (int i = 0; i < n; i++)
+  {
+    int p;
+    cin >> p;
+    cnt[p]++;
+  }
+
+  int ans = 0;
+  for (int i = 0; i <= n; i++)
+    if (cnt[i] > d)
+      ans += (cnt[i] - 2) / (d - 1);
+  cout << ans;
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

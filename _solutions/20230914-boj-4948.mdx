@@ -1,0 +1,92 @@
+---
+title: "BOJ 4948 - 베르트랑 공준"
+date: "2023-09-14"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "4948"
+problem_url: "https://www.acmicpc.net/problem/4948"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4948 - 베르트랑 공준](https://www.acmicpc.net/problem/4948)
+
+자연수 n이 주어질 때, n보다 크고 2n 이하인 소수의 개수를 구하라 (베르트랑 공준: 항상 1개 이상 존재).
+
+### 입력
+
+여러 줄에 n이 주어지며, 0이 입력되면 종료한다 (1 이상 123456 이하).
+
+### 출력
+
+각 n에 대해 (n, 2n] 범위의 소수 개수를 출력한다.
+
+### 예제
+
+| 입력                                            | 출력                                 |
+| ----------------------------------------------- | ------------------------------------ |
+| `1` `10` `13` `100` `1000` `10000` `100000` `0` | `1` `4` `3` `21` `135` `1033` `8392` |
+
+## 풀이
+
+에라토스테네스의 체로 246912까지의 소수를 미리 구한 뒤, 각 쿼리마다 범위 내 소수를 센다.
+
+1. 최대 범위 246912(=123456\*2)까지 에라토스테네스의 체를 수행한다
+2. 각 n에 대해 n+1부터 2n까지 소수가 아닌 수(`!prime[i]`)를 센다
+3. 0이 입력될 때까지 반복한다
+
+**핵심 아이디어**: 체를 한 번만 전처리하면 각 쿼리는 O(N)에 응답할 수 있다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day587BOJ4948베르트랑공준 {
+  public static boolean[] prime = new boolean[246913];
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    get_prime();
+
+    while (true) {
+      int n = Integer.parseInt(br.readLine());
+      if (n == 0)
+        break;
+
+      int count = 0;
+
+      for (int i = n + 1; i <= 2 * n; i++) {
+        if (!prime[i])
+          count++;
+      }
+      System.out.println(count);
+    }
+  }
+
+  public static void get_prime() {
+
+    prime[0] = prime[1] = true;
+
+    for (int i = 2; i <= Math.sqrt(prime.length); i++) {
+      if (prime[i])
+        continue;
+      for (int j = i * i; j < prime.length; j += i) {
+        prime[j] = true;
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N)
+- 공간: O(N)

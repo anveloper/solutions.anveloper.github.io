@@ -1,0 +1,76 @@
+---
+title: "BOJ 10101 - 삼각형 외우기"
+date: "2024-01-15"
+description: "구현, 기하학 문제"
+tags: ["구현", "기하학"]
+platform: "boj"
+problem_number: "10101"
+problem_url: "https://www.acmicpc.net/problem/10101"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10101 - 삼각형 외우기](https://www.acmicpc.net/problem/10101)
+
+세 각도가 주어질 때 삼각형의 종류를 판별하라. 합이 180이 아니면 Error, 세 각이 모두 60이면 Equilateral, 두 각이 같으면 Isosceles, 모두 다르면 Scalene이다.
+
+### 입력
+
+세 줄에 걸쳐 각도가 주어진다.
+
+### 출력
+
+삼각형의 종류를 출력한다.
+
+### 예제
+
+| 입력           | 출력      |
+| -------------- | --------- |
+| `60` `70` `50` | `Scalene` |
+
+## 풀이
+
+세 각의 합과 동일 여부를 조건 분기로 판별한다.
+
+1. 세 각의 합이 180이 아니면 "Error"를 출력한다
+2. 세 각이 모두 60이면 "Equilateral"(정삼각형)이다
+3. 두 각이 같은 쌍이 있으면 "Isosceles"(이등변삼각형)이다
+4. 모두 다르면 "Scalene"(부등변삼각형)이다
+
+**핵심 아이디어**: 합 검증 후 등호 비교로 삼각형 종류를 분류한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+
+public class Day713BOJ10101삼각형외우기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int a = Integer.parseInt(br.readLine());
+    int b = Integer.parseInt(br.readLine());
+    int c = Integer.parseInt(br.readLine());
+    if (a + b + c != 180) {
+      System.out.print("Error");
+    } else {
+      if (a == 60 && b == 60 && c == 60) {
+        System.out.print("Equilateral");
+      } else if (a == b || b == c || c == a) {
+        System.out.print("Isosceles");
+      } else {
+        System.out.print("Scalene");
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 3개 입력 비교
+- 공간: O(1) — 상수 변수만 사용

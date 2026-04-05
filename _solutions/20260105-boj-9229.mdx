@@ -1,0 +1,95 @@
+---
+title: "BOJ 9229 - 단어 사다리"
+date: "2026-01-05"
+description: "구현, 문자열, 브루트포스 알고리즘 문제"
+tags: ["구현", "문자열", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "9229"
+problem_url: "https://www.acmicpc.net/problem/9229"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9229 - 단어 사다리](https://www.acmicpc.net/problem/9229)
+
+단어 사다리(Word Ladder)란 연속된 단어들이 다음 두 조건을 모두 만족하는 수열이다.
+
+- 인접한 두 단어의 길이가 같다.
+- 인접한 두 단어는 정확히 한 글자만 다르다.
+
+단어 목록이 주어질 때 이 수열이 올바른 단어 사다리인지 판별한다. `#` 두 개로 구분된 여러 테스트 케이스가 주어진다.
+
+### 입력
+
+단어가 한 줄에 하나씩 주어진다. `#`은 단어 목록의 끝을 의미하고, 첫 번째 `#`만 단어 목록 종료, 또 다른 `#`은 전체 입력 종료를 나타낸다.
+
+### 출력
+
+각 테스트 케이스에 대해 올바른 단어 사다리이면 `Correct`, 그렇지 않으면 `Incorrect`를 출력한다.
+
+### 예제
+
+| 입력                      | 출력      |
+| ------------------------- | --------- |
+| `cat` `bat` `bad` `#` `#` | `Correct` |
+
+## 풀이
+
+연속된 두 단어를 비교하면서 사다리 조건 위반 여부를 확인한다.
+
+1. 첫 번째 단어를 읽는다. `#`이면 전체 종료한다.
+2. 다음 단어를 읽는다. `#`이면 현재 테스트 케이스를 종료한다.
+3. 이전 단어와 현재 단어를 비교한다: 길이가 다르거나 다른 문자 수가 1이 아니면 `isCorrect = false`로 설정한다.
+4. 현재 단어를 이전 단어로 갱신하고 2번으로 돌아간다.
+5. `isCorrect` 값에 따라 `Correct` 또는 `Incorrect`를 출력한다.
+
+**핵심 아이디어**: `isCorrect` 플래그를 사용하여 조건 위반 시 이후 비교는 건너뛰되, 나머지 단어는 계속 읽어 파싱을 완료한다. 단어 비교는 같은 위치의 문자가 다른 개수를 세는 방식으로 O(L) (L: 단어 길이)에 처리한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+
+  string s, a;
+
+  while (cin >> s, s != "#")
+  {
+    bool isCorrect = 1;
+
+    while (cin >> a, a != "#")
+    {
+      if (isCorrect)
+      {
+        if (s.length() != a.length())
+          isCorrect = 0;
+        else
+        {
+          int cnt = 0;
+          for (int i = 0; i < a.size(); i++)
+            cnt += (a[i] != s[i]);
+          if (cnt != 1)
+            isCorrect = 0;
+        }
+      }
+      s = a;
+    }
+
+    cout << ((isCorrect) ? "Correct" : "Incorrect") << endl;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) — N개 단어 각각에 대해 길이 L의 문자 비교
+- 공간: O(L) — 현재 단어와 이전 단어 두 개만 저장

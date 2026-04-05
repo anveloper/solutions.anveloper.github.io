@@ -1,0 +1,80 @@
+---
+title: "BOJ 2697 - 다음수 구하기"
+date: "2025-02-09"
+description: "그리디 알고리즘, 문자열 문제"
+tags: ["그리디 알고리즘", "문자열"]
+platform: "boj"
+problem_number: "2697"
+problem_url: "https://www.acmicpc.net/problem/2697"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2697 - 다음수 구하기](https://www.acmicpc.net/problem/2697)
+
+주어진 수와 같은 자릿수를 사용하여 만들 수 있는 수 중, 다음으로 큰 수를 구하라.
+
+### 입력
+
+테스트 케이스 수와 각 수가 주어진다.
+
+### 출력
+
+다음으로 큰 수를 출력한다. 불가능하면 "BIGGEST"를 출력한다.
+
+### 예제
+
+| 입력        | 출력    |
+| ----------- | ------- |
+| `1` `12345` | `12354` |
+
+## 풀이
+
+뒤에서부터 감소 시작점을 찾아 최소한의 교환으로 다음 수를 만든다.
+
+1. 뒤에서부터 `data[i] > data[i-1]`인 위치 i를 찾는다
+2. i-1 이후 부분을 정렬한다
+3. 정렬된 부분에서 `data[i-1]`보다 큰 가장 작은 수와 교환한다
+4. 이미 최대이면 "BIGGEST"를 출력한다
+
+**핵심 아이디어**: Next Permutation 알고리즘으로 사전순 다음 순열을 구한다.
+
+## 코드
+
+```python
+from sys import stdin
+
+for _ in range(int(stdin.readline())):
+    data = list(map(int, list(stdin.readline().rstrip())))
+    length, idx = len(data), 0
+    for i in range(length - 1, 0, -1):
+        if data[i] > data[i - 1]:
+            if i == length - 1:
+                idx = length - 2
+            else:
+                idx = i - 1
+            break
+
+    a = data[:idx]
+    b = data[idx:]
+
+    if not a or not b:
+        print("BIGGEST")
+    else:
+        b.sort()
+        for i in range(len(b)):
+            if b[i] > data[idx]:
+                a.append(b.pop(i))
+                a.extend(b)
+                break
+
+        print("".join(map(str, a)))
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

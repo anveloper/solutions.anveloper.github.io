@@ -1,0 +1,82 @@
+---
+title: "BOJ 3533 - Explicit Formula"
+date: "2026-01-15"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "3533"
+problem_url: "https://www.acmicpc.net/problem/3533"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3533 - Explicit Formula](https://www.acmicpc.net/problem/3533)
+
+10개의 정수가 주어질 때, 특정 수학적 조건에 따라 0 또는 1을 출력하는 문제이다.
+
+입력된 10개의 수 중 값이 0인 수의 개수를 z라 할 때:
+
+- `z % 4 == 2`이면 `0`을 출력
+- 그 외에는 `1`을 출력
+
+### 입력
+
+- 한 줄에 10개의 정수가 주어진다. 입력이 없으면 종료한다.
+
+### 출력
+
+각 테스트케이스마다 조건에 따라 0 또는 1을 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `0 0 1 1 2 3 4 5 6 7` | `1`  |
+| `0 0 1 1 0 0 2 3 4 5` | `0`  |
+
+## 풀이
+
+10개의 수를 읽어 0의 개수를 세고, 그 개수의 mod 4 값에 따라 결과를 출력하는 수학 구현 문제이다.
+
+1. 10개의 정수를 입력받는다. 입력 실패 시 종료한다.
+2. 값이 0인 수의 개수 z를 카운트한다.
+3. `z % 4 == 2`이면 0을 출력하고, 아니면 1을 출력한다.
+4. 다음 테스트케이스를 처리한다.
+
+**핵심 아이디어**: 0의 개수를 4로 나눈 나머지가 2인지 확인하는 수학적 조건이 핵심이다. `cin`이 실패할 때까지 반복 처리하여 여러 테스트케이스를 자동으로 처리한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <iomanip>
+#include <vector>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int z = 0;
+  for (int i = 0; i < 10; ++i)
+  {
+    int x;
+    cin >> x;
+    if (!cin)
+      return 0;
+    if (x == 0)
+      ++z;
+  }
+  cout << (z % 4 == 2 ? 0 : 1) << '\n';
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1) - 항상 10개의 수를 읽음 (상수)
+- 공간: O(1) - 추가 메모리 불필요

@@ -1,0 +1,109 @@
+---
+title: "BOJ 14492 - 부울행렬의 부울곱"
+date: "2023-03-28"
+description: "수학, 구현, 선형대수학 문제"
+tags: ["수학", "구현", "선형대수학"]
+platform: "boj"
+problem_number: "14492"
+problem_url: "https://www.acmicpc.net/problem/14492"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14492 - 부울행렬의 부울곱](https://www.acmicpc.net/problem/14492)
+
+두 N x N 부울 행렬 A, B가 주어질 때, 부울곱 C = A \* B에서 값이 1인 원소의 개수를 구하라. C[i][j]는 A의 i행과 B의 j열에서 하나라도 둘 다 1인 쌍이 있으면 1이다.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 200), 이후 N줄에 행렬 A, N줄에 행렬 B가 주어진다.
+
+### 출력
+
+부울곱에서 1인 원소의 개수를 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `2` `1 0` `0 1` `0 1` `1 0` | `2`  |
+
+## 풀이
+
+3중 반복문으로 부울 행렬곱을 계산하되, 1인 원소를 찾으면 즉시 다음으로 넘어간다.
+
+1. 두 행렬을 boolean 배열로 입력받는다
+2. C[i][j]에 대해 A[i][k]와 B[k][j]가 모두 true인 k가 하나라도 있으면 카운트 증가
+3. 해당 k를 찾으면 즉시 내부 루프를 종료하여 불필요한 탐색을 방지한다
+
+**핵심 아이디어**: 일반 행렬곱과 달리 부울곱은 하나라도 1-1 쌍이 발견되면 결과가 1이므로, 조기 종료로 평균 시간을 줄일 수 있다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day415BOJ14492부울행렬곱 {
+  static int N, cnt = 0;
+  static boolean[][] arr1, arr2;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = null;
+
+    N = Integer.parseInt(br.readLine());
+    arr1 = new boolean[N][N];
+    arr2 = new boolean[N][N];
+
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(br.readLine());
+      int j = 0;
+      while (st.hasMoreTokens()) {
+        if (st.nextToken().equals("0")) {
+          arr1[i][j] = false;
+        } else {
+          arr1[i][j] = true;
+        }
+        j++;
+      }
+    }
+
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(br.readLine());
+      int j = 0;
+      while (st.hasMoreTokens()) {
+        if (st.nextToken().equals("0")) {
+          arr2[i][j] = false;
+        } else {
+          arr2[i][j] = true;
+        }
+        j++;
+      }
+    }
+
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < N; j++) {
+        for (int k = 0; k < N; k++) {
+          if (arr1[i][k] == true && arr2[k][j] == true) {
+            cnt++;
+            k = N;
+          }
+        }
+      }
+    }
+    System.out.println(cnt);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N³)
+- 공간: O(N²)

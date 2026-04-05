@@ -1,0 +1,99 @@
+---
+title: "BOJ 14713 - 앵무새"
+date: "2023-07-30"
+description: "구현, 자료 구조, 문자열 문제"
+tags: ["구현", "자료 구조", "문자열", "집합과 맵", "큐"]
+platform: "boj"
+problem_number: "14713"
+problem_url: "https://www.acmicpc.net/problem/14713"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14713 - 앵무새](https://www.acmicpc.net/problem/14713)
+
+N마리 앵무새가 각각 문장을 외웠을 때, 주어진 문장 L이 앵무새들의 문장 순서를 유지하며 합쳐서 만들 수 있는지 판별한다.
+
+### 입력
+
+첫째 줄에 앵무새 수 N이 주어진다. 다음 N줄에 각 앵무새가 외운 문장이 주어진다. 마지막 줄에 확인할 문장 L이 주어진다.
+
+### 출력
+
+가능하면 "Possible", 불가능하면 "Impossible"을 출력한다.
+
+### 예제
+
+| 입력                                              | 출력       |
+| ------------------------------------------------- | ---------- |
+| `2` `i am happy` `i am sad` `i i am am happy sad` | `Possible` |
+
+## 풀이
+
+문장 L의 각 단어를 순서대로 처리하며, N마리 앵무새 중 현재 단어와 일치하는 앵무새의 인덱스를 증가시킨다.
+
+1. 각 앵무새의 문장을 2차원 배열에 저장하고, 전체 단어 수를 센다
+2. L의 단어 수가 앵무새들의 총 단어 수와 다르면 즉시 "Impossible"
+3. L의 각 단어에 대해 N마리 앵무새를 순회하며 현재 위치의 단어와 일치하는 앵무새를 찾는다
+4. 일치하면 해당 앵무새의 인덱스를 증가시키고 다음 단어로 넘어간다
+5. 어떤 앵무새와도 일치하지 않으면 "Impossible"
+
+**핵심 아이디어**: 각 앵무새의 문장 내 순서를 유지하면서 L을 구성할 수 있는지 그리디하게 확인한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day539BOJ14713앵무새 {
+  static int N, cnt = 0;
+  static String[] L;
+  static String[][] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+
+    arr = new String[N][];
+    for (int i = 0; i < N; i++) {
+      arr[i] = br.readLine().split(" ");
+      cnt += arr[i].length;
+    }
+    L = br.readLine().split(" ");
+
+    if (L.length != cnt)
+      System.out.print("Impossible");
+    else
+      System.out.print(isPossible());
+  }
+
+  static String isPossible() {
+    int[] idx = new int[N];
+    for (String w : L) {
+      boolean flag = false;
+      for (int j = 0; j < N; j++) {
+        if (idx[j] == arr[j].length)
+          continue;
+        if (w.equals(arr[j][idx[j]])) {
+          idx[j]++;
+          flag = true;
+          break;
+        }
+      }
+      if (!flag)
+        return "Impossible";
+    }
+    return "Possible";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(L \* N) — L은 문장의 단어 수, N은 앵무새 수
+- 공간: O(L + N)

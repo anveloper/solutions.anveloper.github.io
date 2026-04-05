@@ -1,0 +1,89 @@
+---
+title: "BOJ 6221 - The Bale Tower"
+date: "2025-10-29"
+description: "다이나믹 프로그래밍, 브루트포스 알고리즘, 정렬 문제"
+tags: ["다이나믹 프로그래밍", "브루트포스 알고리즘", "정렬", "가장 긴 증가하는 부분 수열"]
+platform: "boj"
+problem_number: "6221"
+problem_url: "https://www.acmicpc.net/problem/6221"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6221 - The Bale Tower](https://www.acmicpc.net/problem/6221)
+
+N개의 건초 더미가 가로와 세로 크기를 가질 때, 아래에서 위로 두 차원 모두 순감소하도록 쌓을 수 있는 최대 높이를 구하라.
+
+### 입력
+
+건초 더미 수 N과 각 더미의 가로, 세로 크기가 주어진다.
+
+### 출력
+
+최대 쌓기 가능한 더미 수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `1 1` `2 2` `3 3` | `3`  |
+
+## 풀이
+
+2차원 LIS(최장 증가 부분 수열) 변형 문제를 DP로 해결한다.
+
+1. 건초 더미를 (가로, 세로) 기준으로 내림차순 정렬한다
+2. `dp[i]`를 i번째 더미를 맨 위에 놓을 때의 최대 높이로 정의한다
+3. j번째 더미가 i번째보다 가로, 세로 모두 크면 `dp[i] = max(dp[i], dp[j] + 1)`
+4. 모든 dp 값 중 최댓값이 답이다
+
+**핵심 아이디어**: 2차원 조건의 LIS 문제로, 정렬 후 O(N²) DP로 해결한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <utility>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+using pii = pair<int, int>;
+
+vector<pii> v;
+
+int dp[21];
+int main()
+{
+  int N;
+  cin >> N;
+  int res = 1;
+  for (int i = 0; i < N; ++i)
+  {
+    int x1, x2;
+    cin >> x1 >> x2;
+    v.push_back({x1, x2});
+  }
+  sort(v.begin(), v.end(), greater<pii>());
+  dp[0] = 1;
+  for (int i = 1; i < N; ++i)
+  {
+    dp[i] = 1;
+    for (int j = 0; j < i; ++j)
+    {
+      if (v[i].first < v[j].first && v[i].second < v[j].second)
+        dp[i] = max(dp[i], dp[j] + 1);
+      res = max(res, dp[i]);
+    }
+  }
+  cout << res << '\n';
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

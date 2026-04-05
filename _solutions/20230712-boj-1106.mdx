@@ -1,0 +1,86 @@
+---
+title: "BOJ 1106 - 호텔"
+date: "2023-07-12"
+description: "다이나믹 프로그래밍, 배낭 문제"
+tags: ["다이나믹 프로그래밍", "배낭"]
+platform: "boj"
+problem_number: "1106"
+problem_url: "https://www.acmicpc.net/problem/1106"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1106 - 호텔](https://www.acmicpc.net/problem/1106)
+
+호텔에서 고객을 최소 C명 늘리려 한다. N개 도시에 대해 홍보 비용과 확보 고객 수가 주어질 때, 최소 비용을 구하라.
+
+### 입력
+
+첫째 줄에 C, N, 이후 N줄에 비용과 고객 수가 주어진다.
+
+### 출력
+
+고객을 C명 이상 늘리기 위한 최소 비용을 출력한다.
+
+### 예제
+
+| 입력               | 출력 |
+| ------------------ | ---- |
+| `12 2` `3 5` `1 1` | `8`  |
+
+## 풀이
+
+완전 배낭(Unbounded Knapsack) DP로 각 고객 수를 달성하는 최소 비용을 구한다.
+
+1. `dp[j]` = j명의 고객을 확보하는 최소 비용으로 정의한다
+2. 각 도시에 대해 `dp[j] = min(dp[j], dp[j-people] + cost)`로 갱신한다
+3. C 이상 C+100까지의 최솟값이 답이다 (한 도시에서 최대 100명 확보)
+
+**핵심 아이디어**: 같은 도시에 여러 번 투자할 수 있으므로 완전 배낭 문제이며, C 이상의 범위를 탐색해야 정확한 최소 비용을 구할 수 있다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day521BOJ1106호텔 {
+  static int c, n;
+  static int[] dp;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String[] s = br.readLine().split(" ");
+    c = Integer.parseInt(s[0]);
+    n = Integer.parseInt(s[1]);
+
+    dp = new int[c + 101];
+    Arrays.fill(dp, 987654321);
+    dp[0] = 0;
+
+    for (int i = 0; i < n; i++) {
+      String[] s1 = br.readLine().split(" ");
+      int cost = Integer.parseInt(s1[0]);
+      int people = Integer.parseInt(s1[1]);
+      for (int j = people; j < c + 101; j++) {
+        dp[j] = Math.min(dp[j], cost + dp[j - people]);
+      }
+    }
+    int result = Integer.MAX_VALUE;
+    for (int i = c; i < c + 101; i++) {
+      result = Math.min(result, dp[i]);
+    }
+    System.out.println(result);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* C)
+- 공간: O(C)

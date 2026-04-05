@@ -1,0 +1,69 @@
+---
+title: "BOJ 3135 - 라디오"
+date: "2025-03-14"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "3135"
+problem_url: "https://www.acmicpc.net/problem/3135"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3135 - 라디오](https://www.acmicpc.net/problem/3135)
+
+현재 주파수 A에서 목표 주파수 B로 이동할 때, 즐겨찾기 버튼을 활용하여 최소 버튼 누름 횟수를 구하라. 직접 이동은 주파수 차이만큼, 즐겨찾기 이동은 1회 + 차이만큼 누른다.
+
+### 입력
+
+현재 주파수 A, 목표 주파수 B, 즐겨찾기 수 N과 각 즐겨찾기 주파수가 주어진다.
+
+### 출력
+
+최소 버튼 누름 횟수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `1 15` `3` `10 20 30` | `6`  |
+
+## 풀이
+
+직접 이동과 각 즐겨찾기 경유 이동 중 최솟값을 선택한다.
+
+1. 직접 이동 비용: `|A - B|`
+2. 각 즐겨찾기 f를 경유하는 비용: `1 + |f - B|` (즐겨찾기 버튼 1회 + 미세 조정)
+3. 모든 경우 중 최솟값을 출력한다
+
+**핵심 아이디어**: 즐겨찾기 버튼은 1회 누름으로 해당 주파수에 바로 갈 수 있으므로, 목표에 가장 가까운 즐겨찾기를 경유하는 것이 유리할 수 있다.
+
+## 코드
+
+```python
+a, b = map(int, input().split())
+n = int(input())
+favorites = []
+for _ in range(n):
+    favorites.append(int(input()))
+
+how_many1 = []
+how_many2 = []
+how_many1.append(abs(a - b))
+
+for i in range(len(favorites)):
+    how_many2.append(abs(favorites[i] - b))
+
+if min(how_many1) <= min(how_many2):
+    print(min(how_many1))
+else:
+    print(min(how_many2) + 1)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

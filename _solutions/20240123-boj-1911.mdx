@@ -1,0 +1,98 @@
+---
+title: "BOJ 1911 - 흙길 보수하기"
+date: "2024-01-23"
+description: "그리디 알고리즘, 정렬, 스위핑 문제"
+tags: ["그리디 알고리즘", "정렬", "스위핑"]
+platform: "boj"
+problem_number: "1911"
+problem_url: "https://www.acmicpc.net/problem/1911"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1911 - 흙길 보수하기](https://www.acmicpc.net/problem/1911)
+
+N개의 웅덩이 구간이 주어질 때, 길이 L의 널빤지로 모든 웅덩이를 덮는 데 필요한 최소 널빤지 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, L, 이후 N줄에 웅덩이의 시작과 끝 위치가 주어진다.
+
+### 출력
+
+필요한 최소 널빤지 수를 출력한다.
+
+### 예제
+
+| 입력                       | 출력 |
+| -------------------------- | ---- |
+| `3 3` `1 6` `13 17` `8 12` | `5`  |
+
+## 풀이
+
+웅덩이를 시작 위치 기준으로 정렬한 뒤, 왼쪽부터 스위핑하며 널빤지를 놓는다.
+
+1. 웅덩이를 시작 위치 기준으로 정렬한다
+2. 현재 덮인 범위(range)를 추적하며 각 웅덩이를 순회한다
+3. 웅덩이 시작이 range보다 크면 range를 웅덩이 시작으로 갱신한다
+4. 웅덩이 끝까지 L씩 널빤지를 놓으며 카운트를 증가시킨다
+
+**핵심 아이디어**: 정렬 후 스위핑하면 이전 널빤지가 다음 웅덩이를 부분적으로 덮는 경우도 자연스럽게 처리된다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day721BOJ1911흙길보수하기 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int N = Integer.parseInt(st.nextToken());
+    int L = Integer.parseInt(st.nextToken());
+    int[][] arr = new int[N][2];
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(br.readLine());
+      arr[i][0] = Integer.parseInt(st.nextToken());
+      arr[i][1] = Integer.parseInt(st.nextToken());
+    }
+
+    Arrays.sort(arr, new Comparator<int[]>() {
+      @Override
+      public int compare(int[] o1, int[] o2) {
+        if (o1[0] == o2[0])
+          return Integer.compare(o1[1], o2[1]);
+        return Integer.compare(o1[0], o2[0]);
+      }
+    });
+
+    int ans = 0;
+    int range = 0;
+    for (int i = 0; i < N; i++) {
+      if (arr[i][0] > range)
+        range = arr[i][0];
+      if (arr[i][1] >= range) {
+        while (arr[i][1] > range) {
+          range += L;
+          ans++;
+        }
+      }
+    }
+
+    System.out.println(ans);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

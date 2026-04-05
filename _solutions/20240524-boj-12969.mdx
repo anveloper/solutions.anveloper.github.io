@@ -1,0 +1,85 @@
+---
+title: "BOJ 12969 - ABC"
+date: "2024-05-24"
+description: "A, B, C로 구성된 길이 N 문자열에서 i<j이고 S[i]<S[j]인 쌍이 정확히 K개인 문자열을 찾는 문제"
+tags: ["DP"]
+platform: "boj"
+problem_number: "12969"
+problem_url: "https://www.acmicpc.net/problem/12969"
+difficulty: "골드 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 12969 - ABC](https://www.acmicpc.net/problem/12969)
+
+길이 N인 A, B, C로만 이루어진 문자열 중, `i < j`이면서 `S[i] < S[j]`인 쌍의 수가 정확히 K인 문자열을 하나 구하라. 없으면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N과 K가 주어진다 (`1 <= N <= 30`, `0 <= K <= N(N-1)/2`).
+
+### 출력
+
+조건을 만족하는 문자열을 출력한다. 없으면 -1을 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `3 3` | `ABC` |
+
+## 풀이
+
+DFS + 메모이제이션으로 (A 개수, B 개수, 위치, 현재 쌍 수) 상태를 탐색하며 조건을 만족하는 문자열을 구성한다.
+
+1. 각 위치에서 A, B, C 중 하나를 배치한다
+2. B를 놓으면 앞에 있는 A 개수만큼 쌍이 추가된다 (A `<` B)
+3. C를 놓으면 앞에 있는 A+B 개수만큼 쌍이 추가된다 (A `<` C, B `<` C)
+4. 길이 N에 도달했을 때 쌍 수가 K이면 해당 문자열을 출력하고 종료한다
+5. 이미 방문한 (a, b, l, t) 상태는 딕셔너리로 가지치기한다
+
+**핵심 아이디어**: 상태 (a, b, l, t)에서 `a+b <= N`이고 `t <= K`이므로 상태 수가 O(N^3 \* K)로 제한되어, 메모이제이션으로 효율적 탐색이 가능하다.
+
+## 코드
+
+```python
+import sys
+
+
+def dfs(a, b, l, t):
+    global n, p
+    if l == n:
+        if t == p:
+            print("".join(s))
+            sys.exit()
+        else:
+            return
+
+    if memo.get((a, b, l, t)) is None:
+        memo[(a, b, l, t)] = True
+    else:
+        return
+
+    s[l] = "A"
+    dfs(a + 1, b, l + 1, t)
+    s[l] = "B"
+    dfs(a, b + 1, l + 1, t + a)
+    s[l] = "C"
+    dfs(a, b, l + 1, t + a + b)
+
+
+n, p = map(int, sys.stdin.readline().rstrip().split())
+memo = {}
+s = [""] * n
+
+dfs(0, 0, 0, 0)
+print(-1)
+```
+
+## 복잡도
+
+- 시간: O(N^3 \* K)
+- 공간: O(N^3 \* K)

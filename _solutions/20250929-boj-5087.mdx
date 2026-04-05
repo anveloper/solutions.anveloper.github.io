@@ -1,0 +1,87 @@
+---
+title: "BOJ 5087 - Card Cutting"
+date: "2025-09-29"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5087"
+problem_url: "https://www.acmicpc.net/problem/5087"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5087 - Card Cutting](https://www.acmicpc.net/problem/5087)
+
+카드 게임에서 두 명의 플레이어(Cheryl과 Tania)가 숫자 카드를 나눠 갖는다. 카드에 적힌 숫자가 홀수이면 Cheryl이 가져가고, 짝수이면 Tania가 가져간다. 단, `A`는 숫자 1로 취급하므로 Cheryl이 가져간다.
+
+한 게임의 카드 목록은 `*`로, 전체 입력은 `#`으로 구분한다. 각 게임마다 더 많은 카드를 가진 플레이어를 출력하고, 같으면 `Draw`를 출력한다.
+
+### 입력
+
+카드 번호(`A` 또는 정수) 또는 구분자(`*`, `#`)를 한 줄씩 입력받는다. `#`이 입력되면 종료한다.
+
+### 출력
+
+`*`가 나올 때마다 게임 결과(`Cheryl`, `Tania`, `Draw`)를 출력한다.
+
+### 예제
+
+| 입력                | 출력     |
+| ------------------- | -------- |
+| `A` `2` `3` `*` `#` | `Cheryl` |
+
+## 풀이
+
+카드를 하나씩 읽으며 Cheryl과 Tania의 카드 수를 누적하고, 게임 구분자마다 승자를 결정한다.
+
+1. 문자열로 입력을 받는다.
+2. `#`이면 전체 입력 종료.
+3. `*`이면 현재 게임 결과를 비교해 출력한 뒤 두 카운터를 0으로 초기화한다.
+4. 카드 번호인 경우, `A`는 1(홀수)로 처리해 Cheryl 카운터를 증가시키고, 나머지는 `stoi()`로 변환 후 홀짝을 판별해 카운터를 증가시킨다.
+
+**핵심 아이디어**: `A`를 숫자 1로 특수 처리한 뒤 홀짝 판별로 통일하면 단순한 카운팅 문제가 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+  string s;
+  int C = 0, T = 0;
+  while (1)
+  {
+    cin >> s;
+    if (s == "#")
+      break;
+    else if (s == "*")
+    {
+      cout << (C == T ? "Draw" : (C > T ? "Cheryl" : "Tania")) << "\n";
+      C = 0, T = 0;
+    }
+    else
+    {
+      int num;
+      if (s == "A")
+        num = 1;
+      else
+        num = stoi(s);
+      if (num % 2 == 0)
+        T++;
+      else
+        C++;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 입력 토큰 수 N에 비례
+- 공간: O(1) — 카운터 변수만 사용

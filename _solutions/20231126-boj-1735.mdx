@@ -1,0 +1,81 @@
+---
+title: "BOJ 1735 - 분수 합"
+date: "2023-11-26"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "1735"
+problem_url: "https://www.acmicpc.net/problem/1735"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1735 - 분수 합](https://www.acmicpc.net/problem/1735)
+
+두 분수가 주어질 때, 합을 기약분수로 나타내라.
+
+### 입력
+
+두 줄에 각 분수의 분자와 분모가 주어진다.
+
+### 출력
+
+합의 기약분수 분자와 분모를 출력한다.
+
+### 예제
+
+| 입력        | 출력    |
+| ----------- | ------- |
+| `2 7` `3 5` | `31 35` |
+
+## 풀이
+
+통분 후 분자와 분모를 GCD로 나누어 기약분수를 만든다.
+
+1. a/b + c/d = (a*d + c*b) / (b\*d)로 통분한다
+2. 분자와 분모의 GCD를 유클리드 호제법으로 구한다
+3. 분자와 분모를 GCD로 나누어 기약분수를 출력한다
+
+**핵심 아이디어**: 통분 후 GCD로 약분하면 기약분수가 된다.
+
+## 코드
+
+```java
+package day699;
+
+import java.util.*;
+
+public class Day659BOJ1735분수합 {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int c1, c2, p1, p2;
+
+    c1 = sc.nextInt();
+    p1 = sc.nextInt();
+    c2 = sc.nextInt();
+    p2 = sc.nextInt();
+
+    c1 = c1 * p2 + c2 * p1;
+    p1 = p1 * p2;
+    int gcd = getGcd(c1, p1);
+
+    System.out.println(c1 / gcd + " " + p1 / gcd);
+    sc.close();
+  }
+
+  public static int getGcd(int a, int b) {
+    if (a % b == 0)
+      return b;
+    return getGcd(b, a % b);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

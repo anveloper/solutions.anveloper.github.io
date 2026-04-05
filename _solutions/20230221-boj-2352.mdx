@@ -1,0 +1,97 @@
+---
+title: "BOJ 2352 - 반도체 설계"
+date: "2023-02-21"
+description: "이분 탐색, 가장 긴 증가하는 부분 수열 문제"
+tags: ["이분 탐색", "가장 긴 증가하는 부분 수열"]
+platform: "boj"
+problem_number: "2352"
+problem_url: "https://www.acmicpc.net/problem/2352"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2352 - 반도체 설계](https://www.acmicpc.net/problem/2352)
+
+N개의 포트가 있는 두 반도체를 연결한다. 왼쪽 i번 포트가 오른쪽 `arr[i]`번 포트에 연결될 때, 교차하지 않는 최대 연결 수를 구하라.
+
+### 입력
+
+첫째 줄에 N (1 이상 40,000 이하), 둘째 줄에 연결 정보가 주어진다.
+
+### 출력
+
+교차하지 않는 최대 연결 수를 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `6` `4 2 6 3 1 5` | `3`  |
+
+## 풀이
+
+이분 탐색 기반 LIS 알고리즘으로 교차하지 않는 최대 연결을 구한다.
+
+1. 왼쪽 포트 순서대로 오른쪽 포트 번호의 LIS를 구한다 (교차하지 않는 연결 = LIS)
+2. lis 배열에 현재까지의 LIS 끝 값을 유지한다
+3. 새 값이 lis의 마지막보다 크면 뒤에 추가한다
+4. 아니면 이분 탐색으로 lis에서 해당 값 이상인 첫 위치를 찾아 교체한다
+5. lis 배열의 길이가 답이다
+
+**핵심 아이디어**: 전깃줄 문제와 동일한 구조로, 교차하지 않는 최대 연결은 LIS 길이와 같다. 이분 탐색으로 O(N log N)에 해결한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day379BOJ2352반도체설계 {
+  static int N, ans = 0;
+  static int[] arr, lis;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = null;
+
+    N = Integer.parseInt(br.readLine());
+    arr = new int[N + 1];
+    lis = new int[N + 1];
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 1; i < N + 1; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    lis[1] = arr[1];
+    for (int i = 1; i < N + 1; i++) {
+      if (i == 1 || arr[i] > lis[ans - 1])
+        lis[ans++] = arr[i];
+      else {
+        int l = 0, r = ans, idx = ans;
+        while (l < r) {
+          int mid = (l + r) / 2;
+          if (lis[mid] < arr[i])
+            l = mid + 1;
+          else {
+            idx = Math.min(idx, mid);
+            r = mid;
+          }
+        }
+        lis[idx] = arr[i];
+      }
+    }
+    System.out.println(ans);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) - 각 원소마다 이분 탐색
+- 공간: O(N)

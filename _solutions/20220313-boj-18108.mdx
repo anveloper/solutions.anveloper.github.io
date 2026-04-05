@@ -1,0 +1,67 @@
+---
+title: "BOJ 18108 - 1998년생인 내가 태국에서는 2541년생?!"
+date: "2022-03-13"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "18108"
+problem_url: "https://www.acmicpc.net/problem/18108"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 18108 - 1998년생인 내가 태국에서는 2541년생?!](https://www.acmicpc.net/problem/18108)
+
+태국은 불교력(佛紀)을 사용하여, 서력(그레고리력) 연도에 543을 더한 값을 사용한다. 태국 불교력 연도 Y가 주어졌을 때, 이를 서력 연도로 변환하여 출력하는 문제다.
+
+### 입력
+
+- 첫째 줄: 태국 불교력 연도 Y (1 이상 3000 이하)
+
+### 출력
+
+서력 연도(그레고리력)를 출력한다.
+
+### 예제
+
+| 입력   | 출력   |
+| ------ | ------ |
+| `2541` | `1998` |
+
+## 풀이
+
+불교력과 서력의 차이 543을 이용한 단순 사칙연산으로 변환한다.
+
+1. 태국 불교력 연도 Y를 입력받는다.
+2. 서력 = 불교력 - 543, 즉 `Y - (2541 - 1998)` = `Y - 543`을 계산한다.
+3. 결과를 출력한다.
+
+**핵심 아이디어**: 서력과 불교력의 차이는 항상 543년이다. 코드에서는 `2541 - 1998 = 543`을 직접 계산하여 상수로 사용한다.
+
+## 코드
+
+```java
+package ASP_study.day049;
+
+import java.util.Scanner;
+
+public class Day01BOJ18108태국년생 { // 18108 날먹...
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(System.in);
+		int y = Integer.parseInt(sc.nextLine());
+		int gap = 2541 - 1998;
+		System.out.println(y - gap);
+		sc.close();
+	}
+	// 백준 시스템 확인중..
+	// class는 무조건 Main, package명 제거, 확인..
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 상수 연산
+- 공간: O(1) — 상수 공간

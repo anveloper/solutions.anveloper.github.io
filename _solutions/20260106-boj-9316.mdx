@@ -1,0 +1,69 @@
+---
+title: "BOJ 9316 - Hello Judge"
+date: "2026-01-06"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "9316"
+problem_url: "https://www.acmicpc.net/problem/9316"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9316 - Hello Judge](https://www.acmicpc.net/problem/9316)
+
+N이 주어질 때, 1부터 N까지 번호를 붙여 `Hello World, Judge i!` 형식의 문자열을 출력한다.
+
+### 입력
+
+정수 N이 주어진다.
+
+### 출력
+
+`Hello World, Judge 1!`부터 `Hello World, Judge N!`까지 N줄을 출력한다.
+
+### 예제
+
+| 입력 | 출력                                                                    |
+| ---- | ----------------------------------------------------------------------- |
+| `3`  | `Hello World, Judge 1!` `Hello World, Judge 2!` `Hello World, Judge 3!` |
+
+## 풀이
+
+1부터 N까지 반복하면서 정해진 형식의 문자열을 출력한다.
+
+1. N을 입력받는다.
+2. i를 1부터 N까지 증가시키며 반복한다.
+3. 각 반복에서 `Hello World, Judge i!` 형식으로 출력한다.
+
+**핵심 아이디어**: 형식 문자열 출력 문제로, `printf`의 `%d` 서식을 활용하면 번호를 간결하게 삽입할 수 있다. 조건 없이 단순 반복 출력하는 가장 기본적인 구현 문제이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main(void)
+{
+  int N;
+
+  cin >> N;
+
+  for (int i = 1; i <= N; i++)
+  {
+    printf("Hello World, Judge %d!\n", i);
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 1부터 N까지 N회 반복
+- 공간: O(1) — 추가 자료구조 없음

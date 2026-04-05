@@ -1,0 +1,67 @@
+---
+title: "BOJ 5565 - 영수증"
+date: "2024-01-27"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "5565"
+problem_url: "https://www.acmicpc.net/problem/5565"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5565 - 영수증](https://www.acmicpc.net/problem/5565)
+
+10권의 책 총 가격과 9권의 개별 가격이 주어질 때, 나머지 1권의 가격을 구하라.
+
+### 입력
+
+첫째 줄에 총 가격, 이후 9줄에 각 책의 가격이 주어진다.
+
+### 출력
+
+나머지 1권의 가격을 출력한다.
+
+### 예제
+
+| 입력                                                            | 출력  |
+| --------------------------------------------------------------- | ----- |
+| `9850` `1050` `800` `420` `380` `600` `820` `2400` `1800` `980` | `600` |
+
+## 풀이
+
+총 가격에서 9권의 가격을 차례로 빼면 나머지 1권의 가격이 된다.
+
+1. 총 가격을 읽는다
+2. 9번 반복하며 각 책의 가격을 총 가격에서 뺀다
+3. 남은 값이 나머지 책의 가격이다
+
+**핵심 아이디어**: 단순 뺄셈으로 미지의 값을 구한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+
+public class Day725BOJ5565영수증 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int ans = Integer.parseInt(br.readLine());
+
+    for (int i = 1; i <= 9; i++) {
+      ans -= Integer.parseInt(br.readLine());
+    }
+    System.out.print(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 9번 뺄셈
+- 공간: O(1) — 상수 변수만 사용

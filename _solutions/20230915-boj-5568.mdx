@@ -1,0 +1,94 @@
+---
+title: "BOJ 5568 - 카드 놓기"
+date: "2023-09-15"
+description: "자료 구조, 브루트포스 알고리즘, 집합과 맵 문제"
+tags: ["자료 구조", "브루트포스 알고리즘", "집합과 맵", "해시를 사용한 집합과 맵", "백트래킹"]
+platform: "boj"
+problem_number: "5568"
+problem_url: "https://www.acmicpc.net/problem/5568"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5568 - 카드 놓기](https://www.acmicpc.net/problem/5568)
+
+N장의 카드에서 K장을 뽑아 나열하여 만들 수 있는 서로 다른 정수의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 K, 이후 N줄에 각 카드의 수가 주어진다.
+
+### 출력
+
+만들 수 있는 서로 다른 정수의 개수를 출력한다.
+
+### 예제
+
+| 입력                     | 출력 |
+| ------------------------ | ---- |
+| `4` `2` `1` `2` `12` `1` | `7`  |
+
+## 풀이
+
+비트마스크 백트래킹으로 K장의 순열을 생성하고, `HashSet`으로 중복을 제거한다.
+
+1. 비트마스크로 사용한 카드를 표시하며 K장을 뽑는 순열을 생성한다
+2. 각 순열에서 카드 숫자를 문자열로 이어붙여 정수를 만든다
+3. `HashSet`에 넣어 중복을 자동으로 제거한다
+4. 최종 `HashSet`의 크기가 답이다
+
+**핵심 아이디어**: 카드 "1"과 "12"를 이어붙이면 "112"가 되는데, "12"와 "1"을 이어붙여도 "121"로 다른 수가 된다. 순열로 모든 배치를 생성하고 Set으로 중복을 처리한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day588BOJ5568카드놓기 {
+  private String[] arr;
+  private int n, k, v;
+  private HashSet<String> chk = new HashSet<>();
+
+  private void bf(int cnt, String cur) {
+    if (cnt == k) {
+      chk.add(cur);
+      return;
+    }
+    for (int i = 0; i < n; i++) {
+      if ((v & 1 << i) != 0)
+        continue;
+      v |= 1 << i;
+      bf(cnt + 1, cur + arr[i]);
+      v ^= 1 << i;
+    }
+  }
+
+  private void solution() throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    n = Integer.parseInt(br.readLine());
+    k = Integer.parseInt(br.readLine());
+    arr = new String[n];
+    for (int i = 0; i < n; i++)
+      arr[i] = br.readLine();
+
+    bf(0, "");
+
+    System.out.println(chk.size());
+  }
+
+  public static void main(String[] args) throws Exception {
+    new Day588BOJ5568카드놓기().solution();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(P(N,K)) - N개에서 K개를 뽑는 순열
+- 공간: O(P(N,K))

@@ -1,0 +1,97 @@
+---
+title: "BOJ 5235 - Even Sum More Than Odd Sum"
+date: "2025-07-30"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "5235"
+problem_url: "https://www.acmicpc.net/problem/5235"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5235 - Even Sum More Than Odd Sum](https://www.acmicpc.net/problem/5235)
+
+N개의 정수가 주어질 때, 짝수들의 합과 홀수들의 합을 각각 구해 비교하는 문제다. 짝수 합이 더 크면 `EVEN`, 홀수 합이 더 크면 `ODD`, 같으면 `TIE`를 출력한다.
+
+### 입력
+
+- 첫 줄에 테스트 케이스 수 T가 주어진다.
+- 각 테스트 케이스의 첫 줄에 N, 다음 줄에 N개의 정수가 주어진다.
+
+### 출력
+
+- 각 테스트 케이스마다 `EVEN`, `ODD`, `TIE` 중 하나를 출력한다.
+
+### 예제
+
+| 입력            | 출력   |
+| --------------- | ------ |
+| `3` `4 2 3 4 5` | `ODD`  |
+| `3` `4 6 8`     | `EVEN` |
+| `2` `3 3`       | `TIE`  |
+
+## 풀이
+
+입력받은 수를 짝수와 홀수로 분류하여 각각 합산하고 비교한다.
+
+1. 테스트 케이스 수 T를 입력받는다.
+2. 각 테스트 케이스에서 N개의 정수를 입력받는다.
+3. 각 수가 짝수이면 `sumEven`, 홀수이면 `sumOdd`에 누적한다.
+4. 두 합을 비교하여 `EVEN`, `ODD`, `TIE` 중 하나를 출력한다.
+
+**핵심 아이디어**: `num % 2 == 0`으로 짝홀 분류 후 단순 합산 비교.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int cntCase;
+  cin >> cntCase;
+
+  for (int t = 0; t < cntCase; t++)
+  {
+    int n;
+    cin >> n;
+
+    int sumEven = 0, sumOdd = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+      int num;
+      cin >> num;
+
+      if (num % 2 == 0)
+        sumEven += num;
+      else
+        sumOdd += num;
+    }
+
+    if (sumEven > sumOdd)
+      cout << "EVEN\n";
+    else if (sumEven < sumOdd)
+      cout << "ODD\n";
+    else
+      cout << "TIE\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N) — 각 테스트 케이스마다 N개 순회
+- 공간: O(1) — 합산 변수만 사용

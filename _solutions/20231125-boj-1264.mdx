@@ -1,0 +1,91 @@
+---
+title: "BOJ 1264 - 모음의 개수"
+date: "2023-11-25"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1264"
+problem_url: "https://www.acmicpc.net/problem/1264"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1264 - 모음의 개수](https://www.acmicpc.net/problem/1264)
+
+영문 문장이 주어질 때, 모음(a, e, i, o, u)의 개수를 구하라. 대소문자를 구분하지 않는다. `#`이 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 영문 문장이 주어지며, 마지막 줄에 `#`이 주어진다.
+
+### 출력
+
+각 문장에 대해 모음의 개수를 출력한다.
+
+### 예제
+
+| 입력                     | 출력 |
+| ------------------------ | ---- |
+| `How are you today?` `#` | `7`  |
+
+## 풀이
+
+`HashSet`에 모음 문자를 미리 등록하고, 각 줄의 문자를 순회하며 모음 포함 여부를 확인한다.
+
+1. 대소문자 모음 10개를 `HashSet`에 저장한다
+2. 입력이 `#` 한 글자일 때까지 반복하며 각 줄을 읽는다
+3. 각 문자가 `HashSet`에 포함되어 있으면 카운트를 증가시킨다
+4. 줄마다 카운트를 출력한다
+
+**핵심 아이디어**: `HashSet`의 O(1) 탐색으로 각 문자가 모음인지 빠르게 판별한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day658BOJ1264모음의개수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    HashSet<Character> set = new HashSet<Character>() {
+      {
+        add('a');
+        add('A');
+        add('e');
+        add('E');
+        add('i');
+        add('I');
+        add('o');
+        add('O');
+        add('u');
+        add('U');
+      }
+    };
+
+    while (true) {
+      char[] input = (br.readLine()).toCharArray();
+      if (input[0] == '#' && input.length == 1)
+        break;
+      int cnt = 0;
+      for (int i = 0; i < input.length; i++) {
+        if (set.contains(input[i]))
+          ++cnt;
+      }
+      sb.append(cnt).append("\n");
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

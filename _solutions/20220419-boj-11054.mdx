@@ -1,0 +1,104 @@
+---
+title: "BOJ 11054 - 가장 긴 바이토닉 부분 수열"
+date: "2022-04-19"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "11054"
+problem_url: "https://www.acmicpc.net/problem/11054"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11054 - 가장 긴 바이토닉 부분 수열](https://www.acmicpc.net/problem/11054)
+
+수열 A가 주어질 때, 가장 긴 바이토닉 부분 수열의 길이를 구하는 문제다. 바이토닉 수열이란 어떤 위치를 기준으로 왼쪽은 순증가하고 오른쪽은 순감소하는 수열이다. 예를 들어 `1 5 2`가 바이토닉 수열이며, 길이 1인 수열도 바이토닉으로 취급한다.
+
+### 입력
+
+- 첫째 줄: 수열의 크기 N (1 ≤ N ≤ 1000)
+- 둘째 줄: N개의 정수 (1 이상 1000 이하)
+
+### 출력
+
+가장 긴 바이토닉 부분 수열의 길이를 출력한다.
+
+### 예제
+
+| 입력                       | 출력 |
+| -------------------------- | ---- |
+| `10` `1 5 2 1 4 3 4 5 2 1` | `7`  |
+
+## 풀이
+
+각 위치 i를 바이토닉 수열의 꼭대기(최댓값 위치)로 보고, i를 기준으로 왼쪽 LIS(Longest Increasing Subsequence)와 오른쪽 LDS(Longest Decreasing Subsequence) 길이를 합산한다. 모든 위치에 대해 계산하여 최댓값을 구한다.
+
+1. `dp[n][0]`은 n을 끝점으로 하는 LIS 길이, `dp[n][1]`은 n을 시작점으로 하는 LDS 길이를 저장한다.
+2. `LIS(n)`: arr[n]보다 작은 arr[i] (`i < n`)에 대해 `max(LIS(i) + 1)`을 재귀적으로 계산한다.
+3. `LDS(n)`: arr[n]보다 작은 arr[i] (`i > n`)에 대해 `max(LDS(i) + 1)`을 재귀적으로 계산한다.
+4. 모든 n에 대해 `LIS(n) + LDS(n)`을 계산하고 최댓값을 구한다.
+5. i 위치를 꼭대기로 공유하므로 1이 중복 카운트되어, 최종 답은 `max - 1`이다.
+
+**핵심 아이디어**: 바이토닉 수열은 LIS와 LDS를 결합한 형태다. 각 원소를 꼭대기로 가정하고 양방향 LIS/LDS를 계산하면 O(N^2) 시간에 가장 긴 바이토닉 부분 수열을 구할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day71BOJ11054가장긴바이토닉부분수열DP { // 11054 가장 긴 바이토닉 수열
+	static int N, ans;
+	static int[] arr;
+	static Integer[][] dp;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+		ans = -1;
+		arr = new int[N];
+		dp = new Integer[N][2]; // 0: LIS(), 1: LDS()
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++)
+			arr[i] = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < N; i++)
+			ans = Math.max(LIS(i) + LDS(i), ans);
+		System.out.println(ans - 1);
+		br.close();
+	} // 이걸 자력으로 짤 수 있는 가..
+
+	private static int LIS(int n) {
+		if (dp[n][0] == null) {
+			dp[n][0] = 1;
+			for (int i = n - 1; i >= 0; i--) {
+				if (arr[i] < arr[n])
+					dp[n][0] = Math.max(dp[n][0], LIS(i) + 1);
+			}
+		}
+		return dp[n][0];
+	}
+
+	private static int LDS(int n) {
+		if (dp[n][1] == null) {
+			dp[n][1] = 1;
+			for (int i = n + 1; i < dp.length; i++) {
+				if (arr[i] < arr[n])
+					dp[n][1] = Math.max(dp[n][1], LDS(i) + 1);
+			}
+		}
+		return dp[n][1];
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) — 각 원소마다 LIS, LDS를 계산하며 내부 반복이 최대 N번
+- 공간: O(N) — dp 배열 N x 2 크기

@@ -1,0 +1,96 @@
+---
+title: "BOJ 2615 - 오목"
+date: "2025-01-25"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2615"
+problem_url: "https://www.acmicpc.net/problem/2615"
+difficulty: "골드 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2615 - 오목](https://www.acmicpc.net/problem/2615)
+
+19×19 바둑판에 흑(1)과 백(2)이 놓여 있다. 정확히 5개가 연속(6목 이상 불가)인 돌이 있으면 승자와 연속의 가장 왼쪽(위) 돌 좌표를 출력한다.
+
+### 입력
+
+19줄에 바둑판 상태가 주어진다.
+
+### 출력
+
+승자 번호를 출력하고, 이긴 경우 5개 돌 중 가장 왼쪽(같은 열이면 가장 위) 돌의 좌표를 출력한다. 무승부면 0.
+
+### 예제
+
+| 입력           | 출력      |
+| -------------- | --------- |
+| (19×19 바둑판) | `1` `3 2` |
+
+## 풀이
+
+4방향(→, ↓, ↘, ↗)으로 연속된 같은 색 돌을 세되, 양 끝을 확인하여 정확히 5개인지 검증한다.
+
+1. 각 칸에서 4방향으로 같은 색 돌의 연속 개수를 센다
+2. 5개 연속이면, 반대 방향의 이전 칸도 같은 색인지 확인한다 (6목 이상 방지)
+3. 정방향 다음 칸도 확인하여 정확히 5목인 경우만 승리로 판정한다
+4. 탐색 방향이 →, ↓, ↘, ↗이므로 시작 좌표가 자동으로 가장 왼쪽(위)이 된다
+
+**핵심 아이디어**: 4방향만 탐색하면 중복 없이 모든 줄을 검사하며, 양 끝 검사로 6목 이상을 정확히 걸러낸다.
+
+## 코드
+
+```python
+board = [ list(map(int, input().split())) for _ in range(19) ]
+
+dx = [0, 1, 1, -1]
+dy = [1, 0, 1, 1]
+
+winner = 0
+win_x, win_y = 0, 0
+
+for x in range(19):
+  for y in range(19):
+    if board[x][y] == 0:
+      continue
+
+    for i in range(4):
+      nx = x
+      ny = y
+      cnt = 1
+
+      px = x - dx[i]
+      py = y - dy[i]
+
+      while True:
+        nx += dx[i]
+        ny += dy[i]
+        if nx < 0 or nx >= 19 or ny < 0 or ny >= 19:
+          break
+        if board[nx][ny] != board[x][y]:
+          break
+        cnt += 1
+
+      if cnt == 5:
+        if 0 <= px < 19 and 0 <= py < 19 and board[px][py] == board[x][y]:
+          continue
+        if 0 <= nx < 19 and 0 <= ny < 19 and board[nx][ny] == board[x][y]:
+          continue
+
+        winner = board[x][y]
+        win_x = x + 1
+        win_y = y + 1
+
+print(winner)
+if winner != 0:
+  print(win_x, win_y)
+```
+
+## 복잡도
+
+- 시간: O(19² \* 4 \* 19) — 각 칸에서 4방향, 최대 19칸 탐색
+- 공간: O(19²) — 바둑판 배열

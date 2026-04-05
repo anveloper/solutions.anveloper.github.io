@@ -1,0 +1,74 @@
+---
+title: "BOJ 5063 - TGN"
+date: "2024-08-31"
+description: "광고 수익과 비용을 비교하여 광고 여부를 결정하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5063"
+problem_url: "https://www.acmicpc.net/problem/5063"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5063 - TGN](https://www.acmicpc.net/problem/5063)
+
+광고 없을 때 수익 R, 광고 시 수익 E, 광고 비용 C가 주어지면 광고 여부를 결정하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 N, 이후 N줄에 R, E, C가 주어진다.
+
+### 출력
+
+각각 advertise, does not matter, do not advertise 중 하나를 출력한다.
+
+### 예제
+
+| 입력                                      | 출력                                             |
+| ----------------------------------------- | ------------------------------------------------ |
+| `3` `0 100 70` `100 130 30` `-100 -70 40` | `advertise` `does not matter` `do not advertise` |
+
+## 풀이
+
+광고 이익 `(E - C)`과 비광고 이익 R을 비교한다.
+
+1. 광고 순이익 = E - C, 비광고 순이익 = R
+2. `E - C > R`이면 advertise
+3. `E - C == R`이면 does not matter
+4. `E - C < R`이면 do not advertise
+
+**핵심 아이디어**: `R - E + C`의 부호로 세 경우를 O(1)에 판별한다.
+
+## 코드
+
+```cpp
+#include <stdio.h>
+
+int main()
+{
+  int n, r, e, c, i;
+  scanf("%d", &n);
+  for (i = 1; i <= n; i++)
+  {
+    scanf("%d %d %d", &r, &e, &c);
+    if (r - e + c < 0)
+    {
+      printf("advertise\n");
+    }
+    else if (r - e + c == 0)
+    {
+      printf("does not matter\n");
+    }
+    else
+      printf("do not advertise\n");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

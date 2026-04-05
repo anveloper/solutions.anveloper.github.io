@@ -1,0 +1,88 @@
+---
+title: "BOJ 3038 - 완전 이진 트리"
+date: "2022-07-07"
+description: "애드 혹, 트리, 해 구성하기 문제"
+tags: ["애드 혹", "트리", "해 구성하기"]
+platform: "boj"
+problem_number: "3038"
+problem_url: "https://www.acmicpc.net/problem/3038"
+difficulty: "플래티넘 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3038 - 완전 이진 트리](https://www.acmicpc.net/problem/3038)
+
+레벨 N인 완전 이진 트리의 2^N - 1개 노드에 1부터 2^N - 1까지 수를 하나씩 배치하되, 각 노드에서 왼쪽 서브트리의 합과 오른쪽 서브트리의 합의 차이가 해당 레벨에서 정해진 값이 되도록 구성하라.
+
+### 입력
+
+정수 N (1 ≤ N ≤ 20)이 주어진다.
+
+### 출력
+
+완전 이진 트리의 전위 순회(preorder) 순서로 노드에 배치된 수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력 | 출력    |
+| ---- | ------- |
+| `2`  | `2 1 3` |
+
+## 풀이
+
+DFS로 트리를 전위 순회하며 각 노드에 배치할 값을 계산한다.
+
+1. `dfs(c, h, n)`: 현재 서브트리의 시작 번호 c, 현재 높이 h, 목표 레벨 n
+2. 리프 노드(h == n)이면 c를 그대로 출력한다
+3. 내부 노드에서는 서브트리 크기와 시작 위치를 이용하여 노드 값을 계산한다
+4. 왼쪽 자식은 `dfs(c, h+1, n)`, 오른쪽 자식은 `dfs(c + 2^(h-1), h+1, n)`으로 재귀한다
+
+**핵심 아이디어**: 각 레벨의 노드 값을 `(1<<n) - (1<<h) + 1`(서브트리 범위의 시작)과 `(1<<(h-1))`(서브트리 크기)로부터 산술적으로 결정하여, 조건을 만족하는 해를 직접 구성한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.List;
+
+public class Day150BOJ3038완전이진트리 { // 3038 완전이진트리 구
+	static int N;
+	static StringBuilder sb;
+	static List<Integer>[] list;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		sb = new StringBuilder();
+		N = Integer.parseInt(br.readLine());
+		dfs(1, 1, N);
+		System.out.println(sb);
+		br.close();
+	}
+
+	static void dfs(int c, int h, int n) {
+		if (h == n) {
+			sb.append(c).append(" ");
+			return;
+		}
+
+		int s = (1 << n) - (1 << h) + 1;
+		int l = (1 << (h - 1));
+		sb.append(l - c + s).append(" ");
+
+		dfs(c, h + 1, n);
+		dfs(c + (1 << h - 1), h + 1, n);
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(2^N)
+- 공간: O(N) (재귀 스택)

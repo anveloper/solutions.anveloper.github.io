@@ -1,0 +1,72 @@
+---
+title: "BOJ 6749 - Next in line"
+date: "2025-09-09"
+description: "구현, 수학 문제"
+tags: ["구현", "수학"]
+platform: "boj"
+problem_number: "6749"
+problem_url: "https://www.acmicpc.net/problem/6749"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6749 - Next in line](https://www.acmicpc.net/problem/6749)
+
+등차수열에서 두 연속된 항 `a`, `b`가 주어졌을 때, 다음 항을 출력한다. 공차는 `b - a`이며, 다음 항은 `b + (b - a)`이다.
+
+### 입력
+
+두 정수 `a`, `b`가 한 줄에 공백으로 구분되어 주어진다.
+
+```
+3 7
+```
+
+### 출력
+
+수열의 다음 항을 출력한다.
+
+```
+11
+```
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `3 7`  | `11` |
+| `10 7` | `4`  |
+
+## 풀이
+
+두 수의 차(공차)를 구하고 두 번째 수에 공차를 더하여 다음 항을 구한다.
+
+1. 두 정수 `a`, `b`를 입력받는다.
+2. 공차 `differ = b - a`를 계산한다.
+3. 다음 항 `b + differ`를 출력한다.
+
+**핵심 아이디어**: 등차수열의 정의에 따라 공차가 일정하므로, 인접한 두 항만 알면 다음 항을 O(1)에 결정할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main(void)
+{
+  int a, b, differ;
+  cin >> a >> b;
+  differ = b - a;
+  cout << b + differ;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 입력 2개에 대한 단일 연산
+- 공간: O(1) — 변수 3개만 사용

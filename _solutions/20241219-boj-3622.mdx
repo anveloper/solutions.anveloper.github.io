@@ -1,0 +1,65 @@
+---
+title: "BOJ 3622 - 어떤 호박의 할로윈 여행"
+date: "2024-12-19"
+description: "할로윈 호박의 무게와 가격 조건을 분기하여 결과를 출력하는 문제"
+tags: ["기하학", "구현"]
+platform: "boj"
+problem_number: "3622"
+problem_url: "https://www.acmicpc.net/problem/3622"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3622 - 어떤 호박의 할로윈 여행](https://www.acmicpc.net/problem/3622)
+
+두 물건의 가격과 허용 무게, 소지금이 주어질 때 구매 가능 여부를 판별하라.
+
+### 입력
+
+물건 A의 가격과 무게, 물건 B의 가격과 무게, 소지금 P가 주어진다.
+
+### 출력
+
+구매 가능하면 "Yes", 불가능하면 "No"를 출력한다.
+
+### 예제
+
+| 입력           | 출력  |
+| -------------- | ----- |
+| `10 5 20 3 30` | `Yes` |
+
+## 풀이
+
+3가지 구매 조건 중 하나라도 만족하면 구매 가능하다.
+
+1. 두 물건 가격 합이 P 이하인 경우 (둘 다 구매)
+2. B 가격만 P 이하이고 A 무게가 B의 허용 무게 이내인 경우
+3. A 가격만 P 이하이고 B 무게가 A의 허용 무게 이내인 경우
+
+**핵심 아이디어**: 무게 조건을 만족하면 무료로 가져갈 수 있으므로, 가격 조건과 무게 조건을 조합하여 판별한다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  int A, a, B, b, P;
+  cin >> A >> a >> B >> b >> P;
+  cout << ((A + B <= P) || (B <= P && A <= b) || (A <= P && B <= a) ? "Yes" : "No");
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

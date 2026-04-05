@@ -1,0 +1,64 @@
+---
+title: "BOJ 7891 - Can you add this?"
+date: "2024-09-26"
+description: "두 수의 합을 출력하는 기본 입출력 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "7891"
+problem_url: "https://www.acmicpc.net/problem/7891"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7891 - Can you add this?](https://www.acmicpc.net/problem/7891)
+
+T개의 테스트 케이스에 대해 두 정수의 합을 출력하라.
+
+### 입력
+
+첫째 줄에 T, 이후 T줄에 걸쳐 두 정수 A, B가 주어진다.
+
+### 출력
+
+각 줄마다 A + B를 출력한다.
+
+### 예제
+
+| 입력            | 출력    |
+| --------------- | ------- |
+| `2` `1 2` `3 4` | `3` `7` |
+
+## 풀이
+
+테스트 케이스만큼 반복하며 두 수의 합을 출력한다.
+
+1. T를 입력받는다
+2. T번 반복하며 두 수 A, B를 입력받아 `A + B`를 출력한다
+
+**핵심 아이디어**: 기본 입출력과 덧셈만으로 해결되는 문제이다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int t;
+int main()
+{
+  cin >> t;
+  while (t--)
+  {
+    int a, b;
+    cin >> a >> b;
+    cout << a + b << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

@@ -1,0 +1,142 @@
+---
+title: "BOJ 1991 - 트리 순회"
+date: "2022-03-29"
+description: "트리, 재귀 문제"
+tags: ["트리", "재귀"]
+platform: "boj"
+problem_number: "1991"
+problem_url: "https://www.acmicpc.net/problem/1991"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1991 - 트리 순회](https://www.acmicpc.net/problem/1991)
+
+이진 트리의 노드 정보가 주어질 때, 전위 순회(preorder), 중위 순회(inorder), 후위 순회(postorder) 결과를 각각 출력하라.
+
+### 입력
+
+첫째 줄에 노드 수 N (1 이상 26 이하)이 주어진다. 이후 N줄에 각 노드와 왼쪽/오른쪽 자식이 주어진다 (없으면 .).
+
+### 출력
+
+전위, 중위, 후위 순회 결과를 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                                                        | 출력                          |
+| ----------------------------------------------------------- | ----------------------------- |
+| `7` `A B C` `B D .` `C E F` `D . .` `E . .` `F . G` `G . .` | `ABDCEFG` `DBAECFG` `DBEGFCA` |
+
+## 풀이
+
+인접 리스트로 트리를 구성하고, 세 가지 순회를 재귀로 구현한다.
+
+1. 각 노드의 왼쪽/오른쪽 자식을 Node 객체로 저장한다 (.은 'A'-65=-19로 변환되어 센티넬 역할)
+2. 전위 순회: 현재 노드 출력 → 왼쪽 재귀 → 오른쪽 재귀
+3. 중위 순회: 왼쪽 재귀 → 현재 노드 출력 → 오른쪽 재귀
+4. 후위 순회: 왼쪽 재귀 → 오른쪽 재귀 → 현재 노드 출력
+
+**핵심 아이디어**: 노드를 'A'-'A'=0 방식으로 정수 인덱스로 변환하여 배열 기반 인접 리스트에 저장한다. '.'의 경우 '.'-'A'=-19가 되어 자식이 없음을 나타내는 센티넬 값으로 활용한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day50BOJ1991트리순회 { // 1991 트리 순회
+	static List<Node>[] list;
+	static StringBuilder sb;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		sb = new StringBuilder();
+		StringTokenizer st = null;
+		int N = Integer.parseInt(br.readLine());
+
+		list = new ArrayList[N];
+		for (int i = 0; i < N; i++) {
+			list[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int idx = st.nextToken().charAt(0) - 'A';
+			int left = st.nextToken().charAt(0) - 'A';
+			int right = st.nextToken().charAt(0) - 'A';
+			list[idx].add(new Node(left, right));
+		}
+		preorder(0);
+		sb.append("\n");
+		inorder(0);
+		sb.append("\n");
+		postorder(0);
+		sb.append("\n");
+
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void preorder(int st) {
+		for (Node node : list[st]) {
+			int l = node.left;
+			int r = node.right;
+
+			sb.append((char) (st + 'A'));
+			if (l != -19)
+				preorder(l);
+			if (r != -19)
+				preorder(r);
+		}
+	}
+
+	private static void inorder(int st) {
+		for (Node node : list[st]) {
+			int l = node.left;
+			int r = node.right;
+
+			if (l != -19)
+				inorder(l);
+			sb.append((char) (st + 'A'));
+			if (r != -19)
+				inorder(r);
+		}
+	}
+
+	private static void postorder(int st) {
+		for (Node node : list[st]) {
+			int l = node.left;
+			int r = node.right;
+
+			if (l != -19)
+				postorder(l);
+			if (r != -19)
+				postorder(r);
+			sb.append((char) (st + 'A'));
+		}
+	}
+
+	static class Node {
+		int left;
+		int right;
+
+		public Node(int left, int right) {
+			this.left = left;
+			this.right = right;
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

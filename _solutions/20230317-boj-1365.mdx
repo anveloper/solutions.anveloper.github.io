@@ -1,0 +1,111 @@
+---
+title: "BOJ 1365 - 꼬인 전깃줄"
+date: "2023-03-17"
+description: "이분 탐색, 가장 긴 증가하는 부분 수열 문제"
+tags: ["이분 탐색", "가장 긴 증가하는 부분 수열"]
+platform: "boj"
+problem_number: "1365"
+problem_url: "https://www.acmicpc.net/problem/1365"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1365 - 꼬인 전깃줄](https://www.acmicpc.net/problem/1365)
+
+N개의 전봇대가 1대1로 연결되어 있다. 교차하지 않도록 하기 위해 제거해야 하는 최소 전깃줄 수를 구하라.
+
+### 입력
+
+첫째 줄에 N (1 이상 100,000 이하), 둘째 줄에 연결 정보가 주어진다.
+
+### 출력
+
+제거해야 하는 최소 전깃줄 수를 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `4` `2 3 4 1` | `2`  |
+
+## 풀이
+
+교차하지 않는 최대 전깃줄 수 = LIS 길이이므로, `N - LIS`가 답이다.
+
+1. lis 배열에 현재까지의 LIS 끝 값을 유지한다
+2. 새 값이 lis의 마지막보다 크면 뒤에 추가한다
+3. 같거나 작으면 이분 탐색으로 lis에서 해당 값 이상인 첫 위치를 찾아 교체한다
+4. 같은 값이 이미 있으면 교체하지 않는다 (순증가 조건)
+5. `N - (max + 1)`을 출력한다
+
+**핵심 아이디어**: BOJ 2565(전깃줄)과 동일한 구조. 이분 탐색 LIS로 O(N log N)에 해결한다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day404BOJ1365꼬인전깃줄 {
+    static int n, max;
+    static int arr[], lis[];
+
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        n = Integer.parseInt(br.readLine());
+
+        arr = new int[n];
+        lis = new int[n];
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        max = 0;
+        lis[0] = arr[0];
+
+        for (int i = 1; i < n; i++) {
+            if (lis[max] < arr[i]) {
+                lis[++max] = arr[i];
+            } else {
+                fn(arr[i]);
+            }
+        }
+
+        System.out.println(n - (max + 1));
+
+    }
+
+    public static void fn(int key) {
+        int s = 0;
+        int e = max;
+
+        while (s <= e) {
+            int m = (s + e) / 2;
+
+            if (lis[m] < key) {
+                s = m + 1;
+            } else {
+                if (lis[m] == key) {
+                    return;
+                }
+                e = m - 1;
+            }
+        }
+        lis[s] = key;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) - 각 원소마다 이분 탐색
+- 공간: O(N)

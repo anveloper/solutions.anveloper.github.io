@@ -1,0 +1,134 @@
+---
+title: "BOJ 14938 - 서강그라운드"
+date: "2023-02-28"
+description: "그래프 이론, 최단 경로, 데이크스트라 문제"
+tags: ["그래프 이론", "최단 경로", "데이크스트라", "플로이드–워셜"]
+platform: "boj"
+problem_number: "14938"
+problem_url: "https://www.acmicpc.net/problem/14938"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14938 - 서강그라운드](https://www.acmicpc.net/problem/14938)
+
+N개의 지역에 아이템이 있고, 수색 범위 M 이내의 지역만 방문할 수 있다. 어디에 떨어져야 가장 많은 아이템을 얻는지 구하라.
+
+### 입력
+
+첫째 줄에 N, M, R(간선 수), 둘째 줄에 각 지역의 아이템 수, 이후 R개의 양방향 간선이 주어진다.
+
+### 출력
+
+얻을 수 있는 최대 아이템 수를 출력한다.
+
+### 예제
+
+| 입력                                                | 출력 |
+| --------------------------------------------------- | ---- |
+| `5 5 4` `5 7 8 2 3` `1 4 5` `5 2 4` `3 2 3` `1 2 3` | `18` |
+
+## 풀이
+
+모든 정점에서 다익스트라를 실행하여 각 출발점에서 수색 범위 내의 아이템 합을 구한다.
+
+1. 각 정점 i에서 다익스트라로 모든 정점까지의 최단 거리를 구한다
+2. 거리가 M 이하인 정점의 아이템을 합산한다
+3. 모든 출발점 중 최대 아이템 합을 출력한다
+
+**핵심 아이디어**: N이 작으므로(100 이하) 다익스트라를 N번 실행해도 충분하다. 우선순위 큐 기반 다익스트라로 각 출발점에서의 접근 가능 영역을 구한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.util.*;
+import java.io.*;
+
+public class Day386BOJ14938서강그라운드 {
+  static class Node implements Comparable<Node> {
+    int to, weigth;
+
+    public Node(int to, int weigth) {
+      this.to = to;
+      this.weigth = weigth;
+    }
+
+    @Override
+    public int compareTo(Node o) {
+      return weigth - o.weigth;
+    }
+  }
+
+  static List<List<Node>> list;
+  static int[] items;
+  static int n, m, answer;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+    n = Integer.parseInt(st.nextToken()); // 정점개수
+    m = Integer.parseInt(st.nextToken()); // 탐색가능범위
+    int r = Integer.parseInt(st.nextToken()); // 간선개수
+    items = new int[n + 1];
+    answer = 0;
+    st = new StringTokenizer(br.readLine(), " ");
+    for (int i = 1; i < n + 1; i++)
+      items[i] = Integer.parseInt(st.nextToken());
+    list = new ArrayList<>();
+    for (int i = 0; i < n + 1; i++)
+      list.add(new ArrayList<>());
+    for (int i = 0; i < r; i++) {
+      st = new StringTokenizer(br.readLine(), " ");
+      int from = Integer.parseInt(st.nextToken());
+      int to = Integer.parseInt(st.nextToken());
+      int weight = Integer.parseInt(st.nextToken());
+      list.get(from).add(new Node(to, weight));
+      list.get(to).add(new Node(from, weight));
+    }
+
+    for (int i = 1; i <= n; i++)
+      dij(i);
+    System.out.println(answer);
+  }
+
+  static void dij(int start) {
+    int[] dist = new int[n + 1];
+    boolean[] visited = new boolean[n + 1];
+    Arrays.fill(dist, 987654321);
+    dist[start] = 0;
+    PriorityQueue<Node> pq = new PriorityQueue<>();
+    pq.offer(new Node(start, 0));
+    while (!pq.isEmpty()) {
+      Node now = pq.poll();
+      if (visited[now.to])
+        continue;
+      visited[now.to] = true;
+      for (Node next : list.get(now.to)) {
+        if (visited[next.to])
+          continue;
+
+        if (dist[next.to] > dist[now.to] + next.weigth) {
+          dist[next.to] = dist[now.to] + next.weigth;
+          pq.offer(new Node(next.to, dist[next.to]));
+        }
+      }
+    }
+
+    int tmp = 0;
+    for (int i = 1; i < n + 1; i++)
+      if (dist[i] <= m)
+        tmp += items[i];
+    answer = Math.max(answer, tmp);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* (N + R) log N) - N번 다익스트라
+- 공간: O(N + R) - 인접 리스트 및 거리 배열

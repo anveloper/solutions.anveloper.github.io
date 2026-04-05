@@ -1,0 +1,81 @@
+---
+title: "BOJ 1235 - 학생 번호"
+date: "2024-03-02"
+description: "구현, 자료 구조, 문자열 문제"
+tags: ["구현", "자료 구조", "문자열", "브루트포스 알고리즘", "집합과 맵"]
+platform: "boj"
+problem_number: "1235"
+problem_url: "https://www.acmicpc.net/problem/1235"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1235 - 학생 번호](https://www.acmicpc.net/problem/1235)
+
+N명의 학생 번호가 주어질 때, 뒤에서부터 최소 몇 자리를 비교해야 모든 학생을 구별할 수 있는지 구하라.
+
+### 입력
+
+첫째 줄에 학생 수 N, 이후 N줄에 학생 번호 문자열이 주어진다 (모두 같은 길이).
+
+### 출력
+
+모든 학생을 구별할 수 있는 최소 뒷자리 수를 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `3` `1212345` `1212356` `1212367` | `2`  |
+
+## 풀이
+
+뒤에서부터 자릿수를 1부터 늘려가며, 해당 길이의 접미사가 모두 고유해지는 최소 길이를 찾는다.
+
+1. k를 1부터 전체 길이까지 증가시킨다
+2. 각 k에 대해 모든 학생 번호의 뒤 k자리를 HashSet에 넣는다
+3. Set 크기가 N과 같으면 모두 구별 가능하므로 k를 출력하고 종료한다
+4. 아니면 Set을 비우고 다음 k로 진행한다
+
+**핵심 아이디어**: 접미사 길이를 작은 것부터 시도하므로 처음으로 중복이 사라지는 길이가 최소 답이다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day760BOJ1235학생번호 {
+  public static void main(String[] args) throws IOException {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(in.readLine());
+    Set<String> set = new HashSet<>();
+
+    String[] input = new String[N];
+    for (int i = 0; i < N; i++)
+      input[i] = in.readLine();
+    int len = input[0].length();
+
+    for (int k = 1; k <= len; k++) {
+      for (int i = 0; i < N; i++) {
+        set.add(input[i].substring(len - k));
+      }
+      if (set.size() == N) {
+        System.out.println(k);
+        return;
+      }
+      set.clear();
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(L \* N \* L) — 최대 L번 반복, 매번 N개 문자열의 substring 생성
+- 공간: O(N \* L) — HashSet에 저장되는 접미사 문자열

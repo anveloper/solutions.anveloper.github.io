@@ -1,0 +1,78 @@
+---
+title: "BOJ 6198 - 옥상 정원 꾸미기"
+date: "2023-04-09"
+description: "자료 구조, 스택 문제"
+tags: ["자료 구조", "스택"]
+platform: "boj"
+problem_number: "6198"
+problem_url: "https://www.acmicpc.net/problem/6198"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6198 - 옥상 정원 꾸미기](https://www.acmicpc.net/problem/6198)
+
+N개의 건물 높이가 주어질 때, 각 건물 옥상에서 오른쪽으로 볼 수 있는 다른 건물 옥상의 수의 합을 구하라. 자기보다 낮은 건물만 볼 수 있고, 같거나 높은 건물이 나오면 그 뒤는 볼 수 없다.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 건물 높이가 주어진다.
+
+### 출력
+
+모든 건물에서 볼 수 있는 옥상 수의 합을 출력한다.
+
+### 예제
+
+| 입력                          | 출력 |
+| ----------------------------- | ---- |
+| `6` `10` `3` `7` `4` `12` `2` | `5`  |
+
+## 풀이
+
+스택에 현재까지의 건물 높이를 유지하며, 새 건물이 들어올 때 자기보다 낮거나 같은 건물을 pop하여 볼 수 있는 관계를 계산한다.
+
+1. 각 건물을 순서대로 처리한다
+2. 스택에서 현재 건물 높이 이하인 원소를 모두 pop한다
+3. 현재 건물을 push한다
+4. 스택 크기 - 1이 현재 건물을 볼 수 있는 왼쪽 건물 수이므로 ans에 더한다
+
+**핵심 아이디어**: 스택에는 현재 건물보다 높은 건물만 남으며, 이들이 현재 건물의 옥상을 볼 수 있는 건물이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day427BOJ6198옥상정원꾸미기 {
+  static int N;
+  static long ans = 0;
+  static Stack<Integer> stack;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    stack = new Stack<>();
+    for (int i = 0; i < N; i++) {
+      int tmp = Integer.parseInt(br.readLine());
+      while (!stack.isEmpty() && stack.peek() <= tmp)
+        stack.pop();
+      stack.push(tmp);
+      ans += stack.size() - 1;
+    }
+    System.out.println(ans);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

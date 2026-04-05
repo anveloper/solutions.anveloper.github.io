@@ -1,0 +1,84 @@
+---
+title: "BOJ 10990 - 별 찍기 - 15"
+date: "2024-10-09"
+description: "삼각형 테두리만 별로 출력하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10990"
+problem_url: "https://www.acmicpc.net/problem/10990"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10990 - 별 찍기 - 15](https://www.acmicpc.net/problem/10990)
+
+N이 주어질 때, 역삼각형 테두리 패턴으로 별을 출력하라. 첫 줄은 별 하나, 이후 줄은 양 끝에만 별을 출력한다.
+
+### 입력
+
+정수 N이 주어진다 (1 이상 100 이하).
+
+### 출력
+
+N줄에 걸쳐 별을 출력한다.
+
+### 예제
+
+| 입력 | 출력                 |
+| ---- | -------------------- |
+| `3`  | `  *` ` * *` `*   *` |
+
+## 풀이
+
+첫 줄과 나머지 줄을 분기하여 처리한다.
+
+1. 첫 줄은 앞쪽 공백 `N-1`개 후 별 하나를 출력한다
+2. 2번째 줄부터는 앞쪽 공백 `N-i`개, 별 하나, 안쪽 공백 `2*(i-1)-1`개, 별 하나를 출력한다
+
+**핵심 아이디어**: 삼각형 테두리만 출력하므로 각 줄에서 별은 최대 2개이고, 안쪽 공백의 크기가 줄마다 2씩 증가한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  int n;
+  cin >> n;
+
+  for (int i = 1; i < n + 1; i++)
+  {
+    for (int j = n - i; j > 0; j--)
+    {
+      cout << " ";
+    }
+
+    if (i == 1)
+    {
+      cout << "*\n";
+    }
+    else
+    {
+      cout << "*";
+      for (int j = 0; j < 2 * (i - 1) - 1; j++)
+      {
+        cout << " ";
+      }
+      cout << "*\n";
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(1)

@@ -1,0 +1,57 @@
+---
+title: "BOJ 7120 - String"
+date: "2025-05-15"
+description: "문자열 문제"
+tags: ["문자열"]
+platform: "boj"
+problem_number: "7120"
+problem_url: "https://www.acmicpc.net/problem/7120"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7120 - String](https://www.acmicpc.net/problem/7120)
+
+문자열에서 연속으로 같은 문자가 반복되면 하나만 남기고 제거하라.
+
+### 입력
+
+문자열이 한 줄로 주어진다.
+
+### 출력
+
+연속 중복 문자를 제거한 결과를 출력한다.
+
+### 예제
+
+| 입력     | 출력  |
+| -------- | ----- |
+| `aabbcc` | `abc` |
+
+## 풀이
+
+이전 문자와 비교하며 다른 문자만 출력한다.
+
+1. 문자열을 순회하며 현재 문자와 이전 문자를 비교한다
+2. 다르면 출력하고, 같으면 건너뛴다
+
+**핵심 아이디어**: 이전 문자 하나만 기억하면 연속 중복을 O(N) 시간에 제거할 수 있다.
+
+## 코드
+
+```python
+a = input()
+b = ""
+for i in a:
+    if b != i:
+        print(i, end="")
+    b = i
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

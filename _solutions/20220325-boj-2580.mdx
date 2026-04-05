@@ -1,0 +1,132 @@
+---
+title: "BOJ 2580 - 스도쿠"
+date: "2022-03-25"
+description: "구현, 백트래킹 문제"
+tags: ["구현", "백트래킹"]
+platform: "boj"
+problem_number: "2580"
+problem_url: "https://www.acmicpc.net/problem/2580"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2580 - 스도쿠](https://www.acmicpc.net/problem/2580)
+
+9x9 스도쿠 판에서 빈 칸(0으로 표시)을 채워 완성된 스도쿠를 출력하는 문제이다. 스도쿠 규칙은 각 행, 각 열, 3x3 박스 안에 1~9의 숫자가 하나씩만 존재해야 한다. 항상 유일한 해가 존재함이 보장된다.
+
+### 입력
+
+- 9줄에 걸쳐 스도쿠 판의 숫자 (빈 칸은 0)
+
+### 출력
+
+완성된 스도쿠 판을 9줄 출력한다.
+
+### 예제
+
+| 입력                                          | 출력                                          |
+| --------------------------------------------- | --------------------------------------------- |
+| `0 3 5 4 6 9 2 7 8` `7 8 2 1 0 5 6 0 9` `...` | `1 3 5 4 6 9 2 7 8` `7 8 2 1 3 5 6 4 9` `...` |
+
+## 풀이
+
+0인 칸을 순서대로 방문하면서 1~9 중 놓을 수 있는 숫자를 시도하고, 가능하지 않으면 되돌아오는 백트래킹 방식으로 풀이한다.
+
+1. `sudoku(row, col)`을 (0, 0)부터 순서대로 호출하며 빈 칸을 찾는다.
+2. `col == 9`이면 다음 행으로, `row == 9`이면 모든 칸이 채워진 것이므로 결과를 출력하고 `System.exit(0)`으로 종료한다.
+3. 현재 칸이 0이면 `isPossible()`로 1~9 중 배치 가능한 숫자를 찾아 넣고 다음 칸으로 재귀한다.
+4. 재귀 중 종료되지 않으면 해당 칸을 다시 0으로 복구하여 백트래킹한다.
+5. `isPossible()`은 같은 행, 같은 열, 해당 3x3 박스를 모두 확인하여 중복 여부를 판단한다.
+
+**핵심 아이디어**: 2차원 배열을 1차원처럼 `(row, col)` 형태로 순회하며, 하나의 완성 해를 찾는 즉시 `System.exit(0)`으로 탐색을 중단한다. 3x3 박스의 시작 좌표는 `(row/3)*3`, `(col/3)*3`으로 계산한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day46BOJ2580스도쿠검증 { // 2580 스도쿠 검증
+	static int[][] arr = new int[9][9];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		for (int i = 0; i < 9; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < 9; j++) {
+				arr[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		sudoku(0, 0);
+
+		br.close();
+	}
+
+	public static void sudoku(int row, int col) {
+		if (col == 9) {
+			sudoku(row + 1, 0);
+			return;
+		} // 다음줄부터 채우기
+
+		if (row == 9) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; j < 9; j++) {
+					sb.append(arr[i][j]).append(' ');
+				}
+				sb.append('\n');
+			}
+			System.out.println(sb);
+			System.exit(0);
+		} // 끝까지 다 채워진 경우에 출력 후 종료
+
+		if (arr[row][col] == 0) {
+			for (int i = 1; i <= 9; i++) {
+				if (isPossible(row, col, i)) {
+					arr[row][col] = i;
+					sudoku(row, col + 1);
+				} // i를 넣을 수 있으면 넣고 재귀
+			}
+			arr[row][col] = 0; // 재귀 중에 종료되지 않으면 다시 값을 복구
+			return;
+		}
+
+		sudoku(row, col + 1);
+	}
+
+	public static boolean isPossible(int row, int col, int value) {
+		for (int i = 0; i < 9; i++) {
+			if (arr[row][i] == value) {
+				return false;
+			}
+		}
+		for (int i = 0; i < 9; i++) {
+			if (arr[i][col] == value) {
+				return false;
+			}
+		}
+		int set_row = (row / 3) * 3;
+		int set_col = (col / 3) * 3;
+		for (int i = set_row; i < set_row + 3; i++) {
+			for (int j = set_col; j < set_col + 3; j++) {
+				if (arr[i][j] == value) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(9^빈칸수) — 최악의 경우 81개 빈 칸에 대해 9가지 탐색 (백트래킹으로 실제 탐색 범위는 훨씬 작음)
+- 공간: O(81) — 9x9 고정 크기 배열

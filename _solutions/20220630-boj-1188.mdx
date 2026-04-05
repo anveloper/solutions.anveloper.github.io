@@ -1,0 +1,81 @@
+---
+title: "BOJ 1188 - 음식 평론가"
+date: "2022-06-30"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "1188"
+problem_url: "https://www.acmicpc.net/problem/1188"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1188 - 음식 평론가](https://www.acmicpc.net/problem/1188)
+
+N개의 소시지를 M명의 평론가에게 똑같이 나눠야 한다. 각 평론가는 정확히 N/M만큼의 소시지를 먹어야 한다. 소시지를 자르는 최소 횟수를 구하는 문제이다.
+
+예를 들어, 3개의 소시지를 2명에게 나눈다면 한 사람당 3/2씩이고, 각 소시지를 반으로 자르는 식으로 최소 2번 자르면 된다.
+
+### 입력
+
+첫째 줄에 소시지의 수 N(1 ≤ N ≤ 10,000)과 평론가의 수 M(1 ≤ M ≤ 10,000)이 주어진다.
+
+### 출력
+
+소시지를 자르는 최소 횟수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `3 2` | `2`  |
+| `5 5` | `0`  |
+
+## 풀이
+
+최소 절단 횟수는 `M - gcd(N, M)`임을 수학적으로 도출하여 GCD(최대공약수)로 풀이한다.
+
+1. N개의 소시지를 M명에게 나눌 때, N/M = (N/gcd)/(M/gcd)로 기약분수 형태로 표현한다.
+2. 각 평론가는 M/gcd 조각의 소시지 조각을 받아야 하므로, 전체적으로 N \* (M/gcd)개의 조각이 필요하다.
+3. 원래 N개 소시지에서 N개를 빼면, 총 `N * (M/gcd) - N = N * (M/gcd - 1)`번 자르면 된다.
+4. 이는 `M - gcd(N, M)`으로 단순화된다.
+
+**핵심 아이디어**: N과 M의 최대공약수(GCD)를 구하면, N/gcd개의 소시지를 M/gcd명에게 나누는 단위 문제로 환원된다. 각 단위 블록에서 (M/gcd - 1)번 자르므로, 총 N \* (M/gcd - 1) = M - gcd(N, M)번이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.util.Scanner;
+
+public class Day143BOJ1188최대공약수 { // 1188 음식 평론가
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		int M = sc.nextInt();
+		System.out.println(M - gcd(N, M));
+		sc.close();
+	}
+
+	private static int gcd(int n, int m) {
+		return n % m == 0 ? m : gcd(m, n % m);
+	}
+}
+//	static int gcd(int a, int b) { //최대공약수 구하는 함수
+//		while (b != 0) {
+//			int r = a % b;
+//			a = b;
+//			b = r;
+//		}
+//		return a;
+//	}
+```
+
+## 복잡도
+
+- 시간: O(log N) — 유클리드 호제법
+- 공간: O(1)

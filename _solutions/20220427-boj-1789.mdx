@@ -1,0 +1,74 @@
+---
+title: "BOJ 1789 - 수들의 합"
+date: "2022-04-27"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "1789"
+problem_url: "https://www.acmicpc.net/problem/1789"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1789 - 수들의 합](https://www.acmicpc.net/problem/1789)
+
+서로 다른 자연수 여러 개의 합이 S가 될 때, 이 자연수의 개수의 최댓값을 구한다. 사용하는 자연수는 모두 서로 달라야 하며, 합이 정확히 S가 되어야 한다.
+
+### 입력
+
+- 첫째 줄: 자연수 S (1 이상 4,294,967,295 이하)
+
+### 출력
+
+- 합이 S가 되는 서로 다른 자연수의 최대 개수
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `200` | `19` |
+
+## 풀이
+
+개수를 최대화하려면 가장 작은 자연수부터 차례로 더하는 그리디 접근이 최적이다.
+
+1. `i = 1`부터 시작해 `S`를 1씩 증가하는 수로 빼나간다.
+2. 누적합 `S`가 0 이하가 되기 직전까지 더할 수 있는 수의 개수 `n`을 센다.
+3. 누적합이 S를 초과하는 시점에 이전까지의 개수 `n`이 정답이다.
+
+**핵심 아이디어**: 서로 다른 자연수의 합으로 S를 만들 때 개수를 최대화하려면, 1, 2, 3, ... 순서로 더하는 것이 최선이다. 1 + 2 + ... + k = k(k+1)/2 이 S 이하인 최대 k가 답이다. 코드에서는 누적합이 S를 넘는 순간을 감지하여 직전 개수를 반환한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.util.Scanner;
+
+public class Day79BOJ1789수들의합구현 { // 1789 수들의 합 구현
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println(sol(sc.nextLong()));
+		sc.close();
+	}
+
+	private static long sol(long N) {
+		int n = 0, i = 0;
+		long S = 0L;
+		while (true) {
+			S += ++i;
+			if (S > N)
+				return n;
+			n++;
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(sqrt(S)) — 1+2+...+k = k(k+1)/2 이므로 k는 약 sqrt(2S) 수준
+- 공간: O(1) — 변수 몇 개만 사용

@@ -1,0 +1,85 @@
+---
+title: "BOJ 10810 - 공 넣기"
+date: "2023-10-04"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "10810"
+problem_url: "https://www.acmicpc.net/problem/10810"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10810 - 공 넣기](https://www.acmicpc.net/problem/10810)
+
+N개의 바구니가 있고, M번의 공 넣기 연산이 주어진다. 각 연산은 i번 바구니부터 j번 바구니까지 k번 공을 넣는 것이다.
+
+### 입력
+
+첫째 줄에 바구니의 수 N과 연산 수 M이 주어진다. 다음 M줄에 i, j, k가 주어진다.
+
+### 출력
+
+각 바구니에 들어있는 공의 번호를 순서대로 출력한다.
+
+### 예제
+
+| 입력                                  | 출력        |
+| ------------------------------------- | ----------- |
+| `5 4` `1 2 3` `3 4 4` `1 4 1` `2 2 2` | `1 2 1 1 0` |
+
+## 풀이
+
+M번의 연산을 순서대로 시뮬레이션하며, 각 연산에서 i~j번 바구니에 k번 공을 넣는다.
+
+1. N 크기의 배열을 0으로 초기화한다
+2. 각 연산에서 Arrays.fill(arr, i-1, j, k)로 i번~j번 바구니를 k로 채운다
+3. 모든 연산 후 배열을 순서대로 출력한다
+
+**핵심 아이디어**: Arrays.fill의 범위 지정 기능을 활용하여 구간 갱신을 간결하게 처리한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day607BOJ10810공넣기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int N = Integer.parseInt(st.nextToken());
+    int[] arr = new int[N];
+
+    int M = Integer.parseInt(st.nextToken());
+    for (int i = 0; i < M; i++) {
+      st = new StringTokenizer(br.readLine());
+      int I = Integer.parseInt(st.nextToken());
+      int J = Integer.parseInt(st.nextToken());
+      int K = Integer.parseInt(st.nextToken());
+
+      Arrays.fill(arr, I - 1, J, K);
+    }
+
+    for (int k = 0; k < arr.length; k++) {
+      bw.write(arr[k] + " ");
+    }
+
+    br.close();
+    bw.flush();
+    bw.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(M \* N) — M번의 연산에서 각각 최대 N개 바구니를 갱신
+- 공간: O(N)

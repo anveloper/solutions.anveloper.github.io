@@ -1,0 +1,60 @@
+---
+title: "BOJ 15700 - 타일 채우기 4"
+date: "2024-10-31"
+description: "N x M 격자를 2x1 타일로 채울 수 있는 최대 개수를 구하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "15700"
+problem_url: "https://www.acmicpc.net/problem/15700"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15700 - 타일 채우기 4](https://www.acmicpc.net/problem/15700)
+
+N x M 격자를 2x1 도미노 타일로 채울 때 최대 타일 개수를 구하라.
+
+### 입력
+
+N, M이 주어진다.
+
+### 출력
+
+최대 타일 개수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `2 3` | `3`  |
+
+## 풀이
+
+총 칸 수를 2로 나눈다.
+
+1. `N * M / 2`를 계산하여 출력한다
+
+**핵심 아이디어**: 2x1 타일 하나가 2칸을 차지하므로, 최대 `N*M/2`개를 놓을 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  long x, y;
+  cin >> x >> y;
+  cout << x * y / 2;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

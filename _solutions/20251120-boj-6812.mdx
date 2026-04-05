@@ -1,0 +1,109 @@
+---
+title: "BOJ 6812 - Good times"
+date: "2025-11-20"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "6812"
+problem_url: "https://www.acmicpc.net/problem/6812"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6812 - Good times](https://www.acmicpc.net/problem/6812)
+
+캐나다의 Ottawa(동부) 시간을 입력받아 여러 도시의 현지 시간을 출력하는 문제다. 각 도시는 Ottawa 기준으로 시차가 있으며, 시간은 24시간 형식(HHMM)으로 표현된다. 자정 경계(0000~2359)를 처리하고, St. John's처럼 분 단위 시차(+30분)도 고려해야 한다.
+
+### 입력
+
+Ottawa 시간을 나타내는 정수 `t` (HHMM 형식, 예: 1430은 14시 30분)가 주어진다.
+
+### 출력
+
+7개 도시의 현지 시간을 아래 순서로 출력한다.
+
+```
+{t} in Ottawa
+{Victoria} in Victoria
+{Edmonton} in Edmonton
+{Winnipeg} in Winnipeg
+{t} in Toronto
+{Halifax} in Halifax
+{StJohns} in St. John's
+```
+
+시차는 Ottawa 기준으로 다음과 같다.
+
+| 도시       | 시차        |
+| ---------- | ----------- |
+| Victoria   | -3시간      |
+| Edmonton   | -2시간      |
+| Winnipeg   | -1시간      |
+| Toronto    | 0 (동일)    |
+| Halifax    | +1시간      |
+| St. John's | +1시간 30분 |
+
+### 예제
+
+| 입력   | 출력                                                                                                                              |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `1200` | `1200 in Ottawa` `900 in Victoria` `1000 in Edmonton` `1100 in Winnipeg` `1200 in Toronto` `1300 in Halifax` `1330 in St. John's` |
+
+## 풀이
+
+HHMM 형식의 정수로 시간 연산을 수행하되, 분이 60 이상이 되거나 자정을 넘는 경우를 보정하는 `convert` 함수를 구현한다.
+
+1. Ottawa 시간 `t`를 HHMM 정수로 입력받는다.
+2. `convert(t + offset)` 함수로 각 도시의 시간을 계산한다.
+3. `convert` 함수 내부 처리:
+   - 음수(`t < 0`)이면 2400을 더해 자정 이전으로 조정
+   - 2400 이상이면 2400을 빼서 다음 날로 조정
+   - 분 부분(`tmp % 100`)이 60 이상이면 시간을 1 올리고 분에서 60을 빼서 정규화
+   - 정규화 후 다시 2400 이상이면 2400을 뺌
+4. Ottawa, Toronto는 변환 없이 `t`를 그대로 출력한다.
+
+**핵심 아이디어:** HHMM 형식 정수를 직접 가감하면 분 경계(예: 1130 + 100 = 1230이지만 실제는 1230, 그러나 1145 + 45 = 1190이므로 정규화 필요)를 처리해야 한다. `tmp % 100 >= 60` 조건으로 이를 해결하며, St. John's의 +130(1시간 30분) 오프셋도 동일한 정규화 로직이 처리한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int t;
+
+int convert(int ti)
+{
+  int tmp = ti;
+  if (ti < 0)
+    tmp = ti + 2400;
+  if (ti >= 2400)
+    tmp = ti - 2400;
+  if (tmp % 100 >= 60)
+    tmp = 100 * (tmp / 100 + 1) + tmp % 100 - 60;
+  if (tmp >= 2400)
+    tmp -= 2400;
+  return tmp;
+}
+
+int main()
+{
+  cin >> t;
+  cout << t << " in Ottawa\n";
+  cout << convert(t - 300) << " in Victoria\n";
+  cout << convert(t - 200) << " in Edmonton\n";
+  cout << convert(t - 100) << " in Winnipeg\n";
+  cout << t << " in Toronto\n";
+  cout << convert(t + 100) << " in Halifax\n";
+  cout << convert(t + 130) << " in St. John's";
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정된 7개 도시에 대해 상수 번의 연산 수행
+- 공간: O(1) — 변수 2개만 사용

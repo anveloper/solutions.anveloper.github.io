@@ -1,0 +1,85 @@
+---
+title: "BOJ 2750 - 수 정렬하기"
+date: "2022-03-13"
+description: "정렬, 구현 문제"
+tags: ["정렬", "구현"]
+platform: "boj"
+problem_number: "2750"
+problem_url: "https://www.acmicpc.net/problem/2750"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2750 - 수 정렬하기](https://www.acmicpc.net/problem/2750)
+
+N개의 수가 주어졌을 때, 오름차순으로 정렬하여 출력하는 문제이다. 수의 범위는 절댓값 1,000 이하이며 중복이 없다.
+
+### 입력
+
+첫째 줄에 수의 개수 N (1 이상 1,000 이하)이 주어진다. 둘째 줄부터 N개의 줄에 정수가 한 줄에 하나씩 주어진다.
+
+### 출력
+
+첫째 줄부터 N개의 줄에 오름차순으로 정렬한 결과를 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                    | 출력                |
+| ----------------------- | ------------------- |
+| `5` `5` `2` `3` `4` `1` | `1` `2` `3` `4` `5` |
+
+## 풀이
+
+버블 정렬을 직접 구현하여 배열을 오름차순으로 정렬한다. N이 최대 1,000으로 작기 때문에 O(N²) 정렬도 충분히 통과 가능하다.
+
+1. N개의 정수를 입력받아 배열에 저장한다.
+2. 버블 정렬을 수행한다: 바깥 루프는 i를 N-1부터 0까지 감소, 안쪽 루프는 j를 0부터 i 미만까지 순회하며 인접 원소를 비교·교환한다.
+3. 정렬된 배열을 한 줄에 하나씩 출력한다.
+
+**핵심 아이디어:** 정렬 기초 문제로, 버블 정렬의 원리를 직접 구현하는 것이 목적이다. 인접한 두 원소를 비교해 큰 값을 뒤로 보내는 과정을 반복하면 최댓값이 매 패스마다 배열 끝으로 이동한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day03BOJ2750수정렬하기 { // 2750번 수 정렬하기 기초
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		int N = sc.nextInt();
+		int[] arr = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			arr[i] = sc.nextInt();
+		}
+
+		for (int i = N - 1; i >= 0; i--) {
+			for (int j = 0; j < i; j++) {
+				if (arr[j] > arr[j + 1]) {
+					int temp = arr[j];
+					arr[j] = arr[j + 1];
+					arr[j + 1] = temp;
+				}
+			}
+		}
+
+		for (int i = 0; i < N; i++) {
+			System.out.println(arr[i]);
+		}
+
+		sc.close();
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — 버블 정렬의 시간 복잡도. N ≤ 1,000이므로 최대 약 500,000번 비교
+- 공간: O(N) — 입력 배열

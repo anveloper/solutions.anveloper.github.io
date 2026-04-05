@@ -1,0 +1,82 @@
+---
+title: "BOJ 1793 - 타일링"
+date: "2023-10-31"
+description: "다이나믹 프로그래밍, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["다이나믹 프로그래밍", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "1793"
+problem_url: "https://www.acmicpc.net/problem/1793"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1793 - 타일링](https://www.acmicpc.net/problem/1793)
+
+2 x N 직사각형을 1x2, 2x1, 2x2 타일로 채우는 경우의 수를 구하라.
+
+### 입력
+
+여러 줄에 N이 주어진다 (EOF까지).
+
+### 출력
+
+각 N에 대해 경우의 수를 출력한다.
+
+### 예제
+
+| 입력         | 출력             |
+| ------------ | ---------------- |
+| `2` `8` `12` | `3` `171` `2731` |
+
+## 풀이
+
+DP 점화식 `dp[i] = dp[i-1] + 2 * dp[i-2]`를 BigInteger로 계산한다.
+
+1. dp[0] = 1, dp[1] = 1, dp[2] = 3으로 초기화한다
+2. `i >= 3`에서 dp[i] = dp[i-1] (2x1 세로 타일) + 2 \* dp[i-2] (1x2 가로 두 개 또는 2x2 한 개)
+3. 값이 매우 커질 수 있으므로 `BigInteger`를 사용한다
+4. 250까지 미리 계산하여 쿼리에 O(1)로 응답한다
+
+**핵심 아이디어**: 2x2 타일이 추가되어 기존 피보나치 타일링에서 dp[i-2] 계수가 1에서 2로 증가한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.math.BigInteger;
+
+public class Day634BOJ1793타일링 {
+
+  static BigInteger[] dp;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    dp = new BigInteger[251];
+
+    dp[0] = new BigInteger("1");
+    dp[1] = new BigInteger("1");
+    dp[2] = new BigInteger("3");
+
+    for (int i = 3; i < 251; i++) {
+      dp[i] = dp[i - 1].add(dp[i - 2].multiply(new BigInteger("2")));
+    }
+
+    String line = null;
+    while ((line = br.readLine()) != null) {
+      int n = Integer.parseInt(line);
+      System.out.println(dp[n]);
+    }
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) - BigInteger 연산 무시 시
+- 공간: O(N)

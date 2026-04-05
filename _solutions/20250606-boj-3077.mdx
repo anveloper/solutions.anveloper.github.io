@@ -1,0 +1,67 @@
+---
+title: "BOJ 3077 - 임진왜란"
+date: "2025-06-06"
+description: "자료 구조, 브루트포스 알고리즘, 집합과 맵 문제"
+tags: ["자료 구조", "브루트포스 알고리즘", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "3077"
+problem_url: "https://www.acmicpc.net/problem/3077"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3077 - 임진왜란](https://www.acmicpc.net/problem/3077)
+
+역사 시험에서 N개 사건의 올바른 순서가 주어지고, 학생이 작성한 순서가 주어진다. 모든 사건 쌍 중에서 순서가 올바른 쌍의 수와 전체 쌍의 수를 분수로 출력하라.
+
+### 입력
+
+첫 줄에 사건 수 N, 둘째 줄에 올바른 순서, 셋째 줄에 학생의 답이 주어진다.
+
+### 출력
+
+`올바른 쌍의 수/전체 쌍의 수` 형식으로 출력한다.
+
+### 예제
+
+| 입력                                                                                        | 출력   |
+| ------------------------------------------------------------------------------------------- | ------ |
+| `5` `Imjin Byeongia Jeongmyo Jeongyou Byeongin` `Jeongyou Imjin Byeongia Jeongmyo Byeongin` | `6/10` |
+
+## 풀이
+
+정답 순서를 인덱스로 매핑한 뒤, 학생 답의 모든 쌍에서 순서가 올바른 경우를 센다.
+
+1. 정답 순서의 각 사건에 인덱스를 매핑하는 딕셔너리를 만든다
+2. 학생의 답을 정답 인덱스로 변환한다
+3. 변환된 배열에서 모든 `(i, j)` 쌍 (`i < j`)을 검사한다
+4. `배열[i] < 배열[j]`이면 순서가 올바르므로 카운트를 증가한다
+5. 전체 쌍의 수 `N x (N-1) / 2`와 함께 분수로 출력한다
+
+**핵심 아이디어**: 정답 순서를 인덱스로 변환하면, 문제는 학생 답 배열에서 순서쌍(정순 쌍)의 개수를 세는 문제로 변환된다.
+
+## 코드
+
+```python
+n = int(input())
+answer = {}
+j = 0
+for i in input().split():
+    answer[i] = j
+    j += 1
+my_answer = [answer[i] for i in input().split()]
+cnt = 0
+for i in range(len(my_answer) - 1):
+    for j in range(i, len(my_answer)):
+        if my_answer[i] < my_answer[j]:
+            cnt += 1
+print(f"{cnt}/{int(n*(n-1)/2)}")
+```
+
+## 복잡도
+
+- 시간: O(N^2) — 모든 쌍을 검사
+- 공간: O(N) — 딕셔너리와 변환 배열 저장

@@ -1,0 +1,95 @@
+---
+title: "BOJ 1377 - 버블 소트"
+date: "2023-07-18"
+description: "정렬 문제"
+tags: ["정렬"]
+platform: "boj"
+problem_number: "1377"
+problem_url: "https://www.acmicpc.net/problem/1377"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1377 - 버블 소트](https://www.acmicpc.net/problem/1377)
+
+배열에 버블 소트를 수행할 때, 교환이 없는 패스가 처음 발생하는 번째를 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 배열 원소가 주어진다.
+
+### 출력
+
+버블 소트에서 교환이 없는 패스가 처음 나타나는 번째를 출력한다.
+
+### 예제
+
+| 입력                     | 출력 |
+| ------------------------ | ---- |
+| `5` `10` `1` `5` `2` `3` | `3`  |
+
+## 풀이
+
+각 원소가 정렬 후 왼쪽으로 이동한 최대 거리를 구하여 버블 소트 패스 수를 결정한다.
+
+1. 원래 인덱스를 기록한 후 값 기준으로 정렬한다
+2. 각 원소의 (원래 인덱스 - 정렬 후 인덱스)의 최댓값을 구한다
+3. 최댓값 + 1이 답이다
+
+**핵심 아이디어**: 버블 소트 한 패스에서 각 원소는 왼쪽으로 최대 1칸 이동하므로, 왼쪽으로 이동해야 하는 최대 거리 + 1이 필요한 패스 수이다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day527BOJ1377버블소트 {
+  static class Point implements Comparable<Point> {
+    int num;
+    int idx;
+
+    Point(int num, int idx) {
+      this.num = num;
+      this.idx = idx;
+    }
+
+    @Override
+    public int compareTo(Point o) {
+      return num - o.num;
+    }
+  }
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    int N = Integer.parseInt(br.readLine());
+
+    Point[] points = new Point[N + 1];
+    for (int i = 1; i <= N; i++) {
+      int temp = Integer.parseInt(br.readLine());
+      points[i] = new Point(temp, i);
+    }
+    Arrays.sort(points, 1, N + 1);
+
+    int max = 0;
+    for (int i = 1; i <= N; i++) {
+      max = Math.max(max, points[i].idx - i);
+    }
+
+    bw.write((max + 1) + "\n");
+    bw.close();
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

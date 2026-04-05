@@ -1,0 +1,66 @@
+---
+title: "BOJ 10872 - 팩토리얼"
+date: "2022-03-14"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "10872"
+problem_url: "https://www.acmicpc.net/problem/10872"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10872 - 팩토리얼](https://www.acmicpc.net/problem/10872)
+
+정수 N이 주어질 때, N!을 구하라. (0! = 1)
+
+### 입력
+
+첫째 줄에 N (0 이상 12 이하)이 주어진다.
+
+### 출력
+
+N!을 출력한다.
+
+### 예제
+
+| 입력 | 출력      |
+| ---- | --------- |
+| `10` | `3628800` |
+
+## 풀이
+
+재귀 함수로 팩토리얼을 계산한다.
+
+1. 기저 조건: n이 1 이하이면 1을 반환한다 (0! = 1! = 1)
+2. 재귀: recur(n-1) \* n을 반환한다
+
+**핵심 아이디어**: N이 최대 12이므로 int 범위 내에서 충분히 계산 가능하다 (12! = 479,001,600).
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day35BOJ10872재귀팩토리얼 { // 10872재귀팩토리얼
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println(recur(sc.nextInt()));
+		sc.close();
+	}
+
+	private static int recur(int n) {
+		return n > 1 ? recur(n - 1) * n : 1;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,97 @@
+---
+title: "BOJ 20920 - 영단어 암기는 괴로워"
+date: "2023-10-25"
+description: "자료 구조, 문자열, 정렬 문제"
+tags: ["자료 구조", "문자열", "정렬", "집합과 맵", "해시를 사용한 집합과 맵", "트리를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "20920"
+problem_url: "https://www.acmicpc.net/problem/20920"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 20920 - 영단어 암기는 괴로워](https://www.acmicpc.net/problem/20920)
+
+길이 M 이상인 단어들을 빈도 내림차순 → 길이 내림차순 → 사전순으로 정렬하여 중복 없이 출력하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 N줄에 단어가 주어진다.
+
+### 출력
+
+정렬 조건에 따라 단어를 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                                                      | 출력                    |
+| --------------------------------------------------------- | ----------------------- |
+| `7 4` `apple` `ant` `sand` `apple` `append` `sand` `sand` | `sand` `apple` `append` |
+
+## 풀이
+
+`HashMap`으로 빈도를 세고, 커스텀 정렬 기준으로 정렬한다.
+
+1. 길이 M 미만인 단어는 무시한다
+2. `HashMap`에 단어별 빈도를 기록한다
+3. 빈도 내림차순 → 길이 내림차순 → 사전순으로 정렬한다
+
+**핵심 아이디어**: 다중 정렬 기준을 커스텀 `Comparator`로 구현하여 한 번의 정렬로 해결한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Day628BOJ20920영단어암기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    int n = Integer.parseInt(st.nextToken());
+    int m = Integer.parseInt(st.nextToken());
+
+    Map<String, Integer> wordMap = new HashMap<String, Integer>();
+
+    for (int i = 0; i < n; i++) {
+      String word = br.readLine();
+      if (word.length() < m)
+        continue;
+
+      Integer count = wordMap.getOrDefault(word, 0);
+      wordMap.put(word, count + 1);
+    }
+    List<String> words = wordMap.keySet().stream().collect(Collectors.toList());
+
+    words.sort((o1, o2) -> {
+      int c1 = wordMap.get(o1);
+      int c2 = wordMap.get(o2);
+
+      if (c1 == c2) {
+        if (o1.length() == o2.length())
+          return o1.compareTo(o2);
+        return o2.length() - o1.length();
+      }
+      return c2 - c1;
+    });
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < words.size(); i++) {
+      sb.append(words.get(i)).append("\n");
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

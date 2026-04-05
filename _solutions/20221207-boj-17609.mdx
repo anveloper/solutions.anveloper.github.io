@@ -1,0 +1,134 @@
+---
+title: "BOJ 17609 - 회문"
+date: "2022-12-07"
+description: "문자열, 두 포인터 문제"
+tags: ["문자열", "두 포인터"]
+platform: "boj"
+problem_number: "17609"
+problem_url: "https://www.acmicpc.net/problem/17609"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17609 - 회문](https://www.acmicpc.net/problem/17609)
+
+회문(palindrome)이란 앞에서부터 읽을 때나 뒤에서부터 읽을 때나 같은 문자열이다. 유사 회문은 한 문자를 삭제하면 회문이 되는 문자열이다. 문자열이 주어졌을 때, 회문이면 0, 유사 회문이면 1, 둘 다 아니면 2를 출력하라.
+
+### 입력
+
+첫 줄에 테스트 케이스 T (1 ≤ T ≤ 30)가 주어진다. 각 테스트 케이스는 한 줄로 이루어진 문자열이 주어진다. 문자열의 길이는 최대 100,000이고, 알파벳 소문자로만 이루어져 있다.
+
+### 출력
+
+각 테스트 케이스에 대해 0, 1, 2 중 하나를 출력한다.
+
+### 예제
+
+입력:
+
+```
+3
+abba
+abcba
+abcdba
+```
+
+출력:
+
+```
+0
+0
+1
+```
+
+## 풀이
+
+**핵심 아이디어**: 투 포인터로 양 끝에서 좁혀가며 회문을 검사한다. 불일치가 발생하면 왼쪽 문자를 제거하는 경우와 오른쪽 문자를 제거하는 경우 두 가지를 모두 시도한다. 둘 중 하나가 회문이면 유사 회문(1), 둘 다 아니면 2이다.
+
+1. **회문 검사**: `left`, `right` 포인터를 양 끝에서 시작하여 `left <= right`인 동안 `s.charAt(left) == s.charAt(right)`를 확인한다. 모두 일치하면 회문(0 반환).
+2. **불일치 발생 시**: `result = 1`로 설정하고, 두 가지 경우를 검사한다.
+   - 경우 A: `left+1`부터 `right`까지 — 왼쪽 문자 제거 시뮬레이션
+   - 경우 B: `left`부터 `right-1`까지 — 오른쪽 문자 제거 시뮬레이션
+3. **두 경우 모두 실패 시**: `result`를 2로 설정한다. 두 경우 중 하나가 실패할 때마다 `result++` 후, 두 경우 모두 성공했으면 중복 카운팅을 방지하기 위해 1을 빼는 방식을 사용한다.
+4. **조기 종료**: 첫 번째 불일치에서 바로 판정하고 반환한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Day303BOJ17609회문 {
+    static int T;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        T = Integer.parseInt(br.readLine());
+
+        for (int i = 0; i < T; i++) {
+            String s = br.readLine();
+
+            checkP(s);
+            System.out.println(checkP(s));
+        }
+    }
+
+    private static int checkP(String s) {
+        int result = 0;
+        int left = 0;
+        int right = s.length() - 1;
+
+        while (left <= right) {
+
+            if (s.charAt(left) == s.charAt(right)) {
+                left++;
+                right--;
+            } else {
+                result = 1;
+
+                int l = left + 1;
+                int r = right;
+
+                while (l <= r) {
+                    if (l > r)
+                        break;
+                    if (s.charAt(l) == s.charAt(r)) {
+                        l++;
+                        r--;
+                    } else {
+                        result++;
+                        break;
+                    }
+                }
+
+                l = left;
+                r = right - 1;
+                while (l <= r) {
+                    if (s.charAt(l) == s.charAt(r)) {
+                        l++;
+                        r--;
+                    } else {
+                        result++;
+                        break;
+                    }
+                }
+                if (result >= 2)
+                    result -= 1;
+                return result;
+            }
+        }
+        return result;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 문자열을 한 번 순회 (투 포인터)
+- 공간: O(1) — 추가 배열 없이 포인터만 사용

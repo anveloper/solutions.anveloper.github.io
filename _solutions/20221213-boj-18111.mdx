@@ -1,0 +1,109 @@
+---
+title: "BOJ 18111 - 마인크래프트"
+date: "2022-12-13"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "18111"
+problem_url: "https://www.acmicpc.net/problem/18111"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 18111 - 마인크래프트](https://www.acmicpc.net/problem/18111)
+
+N x M 크기의 땅을 하나의 높이로 평탄화할 때, 최소 시간과 그때의 높이를 구하라. 블록 제거는 2초, 블록 설치는 1초가 걸리며 인벤토리에 B개의 블록이 있다.
+
+### 입력
+
+첫째 줄에 N, M (1 ≤ N, M ≤ 500), 인벤토리 블록 수 B (0 ≤ B ≤ 6.4 \* 10^7), 이후 N줄에 각 칸의 높이가 주어진다.
+
+### 출력
+
+첫째 줄에 최소 시간과 그때의 높이를 출력한다. 시간이 같으면 높이가 가장 높은 것을 출력한다.
+
+### 예제
+
+| 입력                                   | 출력  |
+| -------------------------------------- | ----- |
+| `3 4 99` `0 0 0 0` `0 0 0 0` `0 0 0 1` | `2 0` |
+
+## 풀이
+
+가능한 모든 높이를 브루트포스로 시도하며 최소 시간을 구한다.
+
+1. 전체 블록 수(인벤토리 + 땅 위 블록)를 합산하고, 가능한 최대 높이(총 블록 / 칸 수)를 계산한다
+2. 최대 높이부터 0까지 역순으로 탐색한다 (같은 시간이면 높은 높이 우선)
+3. 각 높이 i에 대해: 현재 칸이 i보다 높으면 제거(2초), 낮으면 설치(1초) 누적
+4. 누적 시간이 현재 최솟값보다 작으면 갱신한다
+
+**핵심 아이디어**: 높이를 큰 값부터 탐색하므로, 같은 최소 시간일 때 자연스럽게 높은 높이가 먼저 선택된다. 최대 높이 상한을 총 블록 수 기반으로 제한하여 불필요한 탐색을 줄인다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+public class Day309BOJ18111마인 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        String[] str = br.readLine().split(" ");
+        int N = Integer.valueOf(str[0]);
+        int M = Integer.valueOf(str[1]);
+        int B = Integer.valueOf(str[2]);
+        int[][] field = new int[N][M];
+
+        int sum = B;
+        int time = -1;
+        int height = -1;
+        int max = -1;
+
+        for (int i = 0; i < N; i++) {
+            str = br.readLine().split(" ");
+            for (int j = 0; j < M; j++) {
+                field[i][j] = Integer.valueOf(str[j]);
+                sum += field[i][j];
+            }
+        }
+
+        max = sum / (N * M);
+
+        for (int i = max; i >= 0; i--) {
+            int nowTime = 0;
+            for (int[] x : field) {
+                for (int y : x) {
+                    if (y > i) {
+                        nowTime += (y - i) * 2;
+                    } else if (y < i) {
+                        nowTime += (i - y);
+                    }
+                }
+            }
+
+            if (time == -1 || time > nowTime) {
+                time = nowTime;
+                height = i;
+            }
+        }
+
+        System.out.print(time + " " + height);
+        bw.close();
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(H _ N _ M) (H: 최대 높이, 최대 256)
+- 공간: O(N \* M)

@@ -1,0 +1,112 @@
+---
+title: "BOJ 1101 - 카드 정리 1"
+date: "2023-01-15"
+description: "그리디 알고리즘, 브루트포스 알고리즘 문제"
+tags: ["그리디 알고리즘", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1101"
+problem_url: "https://www.acmicpc.net/problem/1101"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1101 - 카드 정리 1](https://www.acmicpc.net/problem/1101)
+
+N 묶음의 카드가 있고, 각 카드는 m가지 색깔 중 하나를 가진다. 각 묶음에는 여러 색깔의 카드가 섞여 있을 수 있다. 한 번의 작업으로 한 묶음에서 카드를 꺼내 다른 묶음 위에 올려놓을 수 있다. 각 묶음에 한 가지 색깔의 카드만 남도록 만드는 데 필요한 최소 작업 횟수를 구한다.
+
+각 묶음은 "대표 색깔"이 정해지면, 그 외 다른 색깔의 카드들을 다른 묶음으로 옮겨야 한다. 최적의 방법은 각 묶음마다 가장 많이 등장한 색깔을 유지하고 나머지를 이동시키는 것이다.
+
+### 입력
+
+첫째 줄에 N과 m이 주어진다. (1 ≤ N ≤ 100, 1 ≤ m ≤ 100)
+
+다음 N개의 줄에 각 묶음의 각 색깔별 카드 수가 주어진다.
+
+### 출력
+
+최소 작업 횟수를 출력한다.
+
+### 예제
+
+**입력**
+
+```
+3 3
+1 0 1
+0 2 0
+1 0 0
+```
+
+**출력**
+
+```
+1
+```
+
+## 풀이
+
+**핵심 아이디어**: 각 묶음(행)을 스캔하면서, 카드가 있는 색깔(j 번째 컬럼)의 수를 센다. 색깔이 두 가지 이상이면 반드시 작업이 필요하고(`ans++`), 색깔이 정확히 하나이면 그 색깔 컬럼 j에 이미 누군가가 그 색으로 "점유"했는지 확인한다.
+
+1. **각 행 탐색**: 각 묶음 i에서 0이 아닌 색깔의 수(`cnt`)와 해당 컬럼 인덱스(`idx`)를 파악한다.
+2. **`cnt > 1`**: 여러 색깔이 섞인 묶음은 반드시 작업이 필요하므로 `ans++`한다.
+3. **cnt == 1**: 한 가지 색깔만 있는 묶음에서
+   - 해당 색깔 컬럼 `idx`가 이미 `isSelected[idx] = true`이면: 두 묶음이 같은 색을 독점하려 하므로 하나를 다른 곳으로 옮겨야 한다. `ans++`
+   - 아직 `isSelected[idx] = false`이면: 이 묶음이 해당 색깔의 "기준 묶음"이 된다. `isSelected[idx] = true`로 표시한다.
+4. **최종 출력**: `ans == 0`이면 0, 아니면 `ans - 1`을 출력한다. 마지막 1을 빼는 이유는 마지막 작업의 카드를 받는 묶음이 하나 존재하므로 실질적인 이동 횟수는 하나 줄어들기 때문이다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day342BOJ1101카드정리1 {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        boolean[] isSelected = new boolean[m];
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine(), " ");
+            int cnt = 0;
+            int idx = 0;
+            for (int j = 0; j < m; j++) {
+                int k = Integer.parseInt(st.nextToken());
+
+                if (k > 0) {
+                    cnt++;
+                    idx = j;
+                }
+                if (cnt > 1)
+                    break;
+            }
+
+            if (cnt > 1)
+                ans++;
+            else if (cnt == 1) {
+                if (isSelected[idx])
+                    ans++;
+                else
+                    isSelected[idx] = true;
+            }
+        }
+        System.out.println(ans == 0 ? 0 : ans - 1);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N × m) — N개 묶음 × m가지 색깔 스캔
+- 공간: O(m) — `isSelected[]` 배열

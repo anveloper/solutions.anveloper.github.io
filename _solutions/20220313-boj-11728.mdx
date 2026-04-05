@@ -1,0 +1,108 @@
+---
+title: "BOJ 11728 - 배열 합치기"
+date: "2022-03-13"
+description: "정렬, 두 포인터 문제"
+tags: ["정렬", "두 포인터"]
+platform: "boj"
+problem_number: "11728"
+problem_url: "https://www.acmicpc.net/problem/11728"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11728 - 배열 합치기](https://www.acmicpc.net/problem/11728)
+
+정렬된 두 배열 A와 B가 주어졌을 때, 두 배열을 합쳐 정렬된 하나의 배열을 만들어 출력하는 문제다.
+
+### 입력
+
+- 첫째 줄: 배열 A의 크기 N, 배열 B의 크기 M (각 1 이상 1,000,000 이하)
+- 둘째 줄: 배열 A의 원소 N개 (오름차순 정렬, 각 10억 이하의 자연수)
+- 셋째 줄: 배열 B의 원소 M개 (오름차순 정렬)
+
+### 출력
+
+두 배열을 합쳐 정렬한 결과를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력              | 출력      |
+| ----------------- | --------- |
+| `2 2` `3 5` `2 9` | `2 3 5 9` |
+
+## 풀이
+
+각 배열을 정렬한 뒤 두 포인터를 이용해 작은 값부터 순서대로 결과 버퍼에 추가한다.
+
+1. 두 배열 `arr`, `brr`을 입력받아 각각 `Arrays.sort`로 정렬한다.
+2. 두 포인터 `idx`, `jdx`를 각 배열의 시작에 위치시킨다.
+3. 두 포인터가 모두 범위 내에 있을 때, 더 작은 값을 `StringBuilder`에 추가하고 해당 포인터를 전진한다.
+4. 한 배열이 소진되면 나머지 배열의 남은 원소를 순서대로 추가한다.
+5. 최종 결과를 한 번에 출력한다.
+
+**핵심 아이디어**: 이미 각 배열이 정렬되어 있다면 두 포인터 머지(merge)를 사용해 O(N + M)에 합칠 수 있다. 이 코드에서는 입력이 정렬되어 있지 않을 경우를 대비해 `Arrays.sort`를 선행한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Day30BOJ11728배열합치기 { // 11728배열합치기
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		int[] arr = new int[N];
+		int[] brr = new int[M];
+		st = new StringTokenizer(br.readLine());
+		int idx = 0;
+		while (st.hasMoreTokens()) {
+			arr[idx++] = Integer.parseInt(st.nextToken());
+		}
+		st = new StringTokenizer(br.readLine());
+		idx = 0;
+		while (st.hasMoreTokens()) {
+			brr[idx++] = Integer.parseInt(st.nextToken());
+		}
+
+		Arrays.sort(arr);
+		Arrays.sort(brr);
+
+		idx = 0;
+		int jdx = 0;
+		while (idx < N && jdx < M) {
+			if (arr[idx] < brr[jdx]) {
+				sb.append(arr[idx++] + " ");
+			} else {
+				sb.append(brr[jdx++] + " ");
+			}
+		}
+
+		while (idx < N) {
+			sb.append(arr[idx++] + " ");
+		}
+
+		while (jdx < M) {
+			sb.append(brr[jdx++] + " ");
+		}
+
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O((N + M) log(N + M)) — 각 배열 정렬 O(N log N + M log M), 머지 O(N + M)
+- 공간: O(N + M) — 두 배열 저장

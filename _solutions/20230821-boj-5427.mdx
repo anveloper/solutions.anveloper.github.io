@@ -1,0 +1,156 @@
+---
+title: "BOJ 5427 - 불"
+date: "2023-08-21"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "5427"
+problem_url: "https://www.acmicpc.net/problem/5427"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5427 - 불](https://www.acmicpc.net/problem/5427)
+
+W x H 건물에서 불이 번지는 동안 상근이가 탈출하는 최소 시간을 구하라. 불과 상근이 모두 매초 4방향으로 이동한다.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 W, H와 격자가 주어진다. `@`은 상근이, `*`은 불, `#`은 벽.
+
+### 출력
+
+최소 탈출 시간을 출력한다. 불가능하면 "IMPOSSIBLE"을 출력한다.
+
+### 예제
+
+| 입력                           | 출력 |
+| ------------------------------ | ---- |
+| `1` `4 3` `####` `#*@.` `####` | `2`  |
+
+## 풀이
+
+불과 사람을 동시에 BFS하여, 불이 번진 후 사람이 이동하는 방식으로 탈출을 시뮬레이션한다.
+
+1. 매 시간 단위로 불을 먼저 4방향으로 확산시킨다
+2. 그 후 사람을 4방향으로 이동시킨다
+3. 사람이 격자 밖으로 나가면 탈출 성공이다
+4. 더 이상 이동할 수 없으면 "IMPOSSIBLE"이다
+
+**핵심 아이디어**: 불을 먼저 번지게 한 뒤 사람을 이동시키면, 불이 도달할 칸을 자연스럽게 피할 수 있다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day561BOJ5427불 {
+  static int w, h;
+  static char[][] map;
+  static Queue<int[]> person;
+  static Queue<int[]> fire;
+  static int[] dx = { -1, 1, 0, 0 };
+  static int[] dy = { 0, 0, -1, 1 };
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int tc = Integer.parseInt(br.readLine());
+
+    StringBuilder sb = new StringBuilder();
+    while (tc-- > 0) {
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      w = Integer.parseInt(st.nextToken());
+      h = Integer.parseInt(st.nextToken());
+
+      map = new char[h][w];
+      fire = new LinkedList<>();
+      person = new LinkedList<>();
+      for (int i = 0; i < h; i++) {
+        String line = br.readLine();
+        for (int j = 0; j < w; j++) {
+          char c = line.charAt(j);
+          if (c == '@') {
+            person.add(new int[] { j, i, 0 });
+          } else if (c == '*') {
+            fire.add(new int[] { j, i });
+          }
+          map[i][j] = c;
+        }
+      }
+      int res = -1;
+      out: while (true) {
+        // 1. 불 번짐
+        int fSize = fire.size();
+        for (int i = 0; i < fSize; i++) {
+          int[] pos = fire.poll();
+          int px = pos[0], py = pos[1];
+          fireMarking(px, py);
+        }
+
+        int pSize = person.size();
+        for (int i = 0; i < pSize; i++) {
+          int[] pos = person.poll();
+          int px = pos[0], py = pos[1], time = pos[2];
+          res = escape(px, py, time);
+          if (res != -1) {
+            break out;
+          }
+        }
+        if (person.isEmpty())
+          break;
+      }
+
+      if (res != -1)
+        sb.append(res + "\n");
+      else
+        sb.append("IMPOSSIBLE\n");
+    }
+    System.out.println(sb.toString());
+
+  }
+
+  static int escape(int x, int y, int time) {
+    for (int i = 0; i < 4; i++) {
+      int nx = x + dx[i];
+      int ny = y + dy[i];
+
+      if (nx < 0 || nx > w - 1 || ny < 0 || ny > h - 1) {
+        return time + 1;
+      }
+
+      if (map[ny][nx] == '.') {
+        map[ny][nx] = '@';
+        person.add(new int[] { nx, ny, time + 1 });
+      }
+    }
+    return -1;
+
+  }
+
+  static void fireMarking(int x, int y) {
+    for (int i = 0; i < 4; i++) {
+      int nx = x + dx[i];
+      int ny = y + dy[i];
+
+      if (nx < 0 || nx > w - 1 || ny < 0 || ny > h - 1)
+        continue;
+
+      if (map[ny][nx] == '.' || map[ny][nx] == '@') {
+        map[ny][nx] = '*';
+        fire.add(new int[] { nx, ny });
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T _ W _ H)
+- 공간: O(W \* H)

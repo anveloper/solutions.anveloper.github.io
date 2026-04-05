@@ -1,0 +1,64 @@
+---
+title: "BOJ 11719 - 그대로 출력하기 2"
+date: "2023-01-26"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "11719"
+problem_url: "https://www.acmicpc.net/problem/11719"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11719 - 그대로 출력하기 2](https://www.acmicpc.net/problem/11719)
+
+입력 받은 문자열을 빈 줄을 포함하여 그대로 출력하라. 그대로 출력하기 1과 달리 빈 줄도 포함될 수 있다.
+
+### 입력
+
+최대 100줄의 문자열이 주어진다 (EOF까지). 빈 줄이 포함될 수 있다.
+
+### 출력
+
+입력을 빈 줄 포함 그대로 출력한다.
+
+### 예제
+
+| 입력                                    | 출력                                    |
+| --------------------------------------- | --------------------------------------- |
+| `Hello` `` `Baekjoon` `` `Online Judge` | `Hello` `` `Baekjoon` `` `Online Judge` |
+
+## 풀이
+
+BufferedReader로 EOF까지 한 줄씩 읽어 출력한다. 빈 줄도 null이 아니므로 정상 출력된다.
+
+1. `br.readLine()`이 null을 반환할 때까지 반복한다
+2. 빈 줄("")은 null이 아니므로 while 조건을 통과하여 정상 출력된다
+3. 그대로 출력하기 1과 동일한 코드로 해결 가능하다
+
+**핵심 아이디어**: Java의 `readLine()`은 빈 줄을 빈 문자열("")로 반환하고, 입력 종료(EOF)만 null로 반환하므로 동일 로직으로 빈 줄까지 처리된다.
+
+## 코드
+
+```java
+
+import java.io.*;
+
+public class Day354BOJ11719그대로출력2 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String s;
+        while ((s = br.readLine()) != null) {
+            System.out.println(s);
+        }
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 전체 입력 길이)
+- 공간: O(L) (한 줄씩 처리)

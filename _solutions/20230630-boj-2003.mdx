@@ -1,0 +1,90 @@
+---
+title: "BOJ 2003 - 수들의 합 2"
+date: "2023-06-30"
+description: "브루트포스 알고리즘, 누적 합, 두 포인터 문제"
+tags: ["브루트포스 알고리즘", "누적 합", "두 포인터"]
+platform: "boj"
+problem_number: "2003"
+problem_url: "https://www.acmicpc.net/problem/2003"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2003 - 수들의 합 2](https://www.acmicpc.net/problem/2003)
+
+N개의 수로 이루어진 수열에서 연속된 수들의 부분합이 M이 되는 경우의 수를 구하라.
+
+### 입력
+
+첫째 줄에 N과 M, 둘째 줄에 N개의 수가 주어진다.
+
+### 출력
+
+부분합이 M인 경우의 수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `4 2` `1 1 1 1` | `3`  |
+
+## 풀이
+
+투 포인터로 연속 부분합이 M인 구간의 개수를 센다.
+
+1. 합이 M보다 작으면 R 포인터를 오른쪽으로 이동하며 더한다
+2. 합이 M과 같으면 카운트를 증가시키고 양쪽 포인터를 모두 이동한다
+3. 합이 M보다 크면 L 포인터를 이동하며 뺀다
+
+**핵심 아이디어**: 양수 수열에서 투 포인터는 합이 커지면 왼쪽을, 작으면 오른쪽을 이동하여 O(N)에 모든 경우를 탐색한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day509BOJ2003수들의합2 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int N = Integer.parseInt(st.nextToken());
+    int M = Integer.parseInt(st.nextToken());
+    st = new StringTokenizer(br.readLine());
+    int[] arr = new int[N];
+    for (int i = 0; i < N; i++) {
+      arr[i] = Integer.parseInt(st.nextToken());
+    }
+    int i = 0;
+    int j = 0;
+    int sum = 0;
+    int ans = 0;
+    while (j < N) {
+      if (sum < M) {
+        sum += arr[j++];
+      } else if (sum == M) {
+        ans++;
+        sum -= arr[i++];
+        sum += arr[j++];
+      } else {
+        sum -= arr[i++];
+      }
+    }
+    while (i < N && M < sum)
+      sum -= arr[i++];
+    if (sum == M)
+      ans++;
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

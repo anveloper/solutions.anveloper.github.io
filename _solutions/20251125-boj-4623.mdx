@@ -1,0 +1,95 @@
+---
+title: "BOJ 4623 - Copier Reduction"
+date: "2025-11-25"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "4623"
+problem_url: "https://www.acmicpc.net/problem/4623"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4623 - Copier Reduction](https://www.acmicpc.net/problem/4623)
+
+원본 A x B 크기의 문서를 C x D 크기의 용지에 맞추기 위한 최대 축소 비율(%)을 구하라.
+
+### 입력
+
+여러 테스트 케이스에 A, B, C, D가 주어지며, 모두 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 최대 축소 비율을 `N%` 형식으로 출력한다.
+
+### 예제
+
+| 입력                  | 출력  |
+| --------------------- | ----- |
+| `10 10 8 8` `0 0 0 0` | `80%` |
+
+## 풀이
+
+이분 탐색으로 가로/세로 모두 용지에 맞는 최대 정수 비율을 찾는다.
+
+1. 원본과 용지 모두 긴 변/짧은 변 순으로 정규화한다
+2. 1%~100% 범위에서 이분 탐색을 수행한다
+3. 축소 비율 mid%에서 `A * mid <= C * 100` 이고 `B * mid <= D * 100`이면 가능하다
+4. 가능한 최대 비율을 출력한다
+
+**핵심 아이디어**: 정수 비율에 대한 이분 탐색으로, 가로/세로 두 조건을 동시에 만족하는 최대 비율을 O(log 100)에 찾는다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int main(void)
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  while (1)
+  {
+    int A, B, C, D;
+    cin >> A >> B >> C >> D;
+    if (A == 0 && B == 0 && C == 0 && D == 0)
+    {
+      break;
+    }
+    if (A < B)
+    {
+      swap(A, B);
+    }
+    if (C < D)
+    {
+      swap(C, D);
+    }
+    int start = 1, end = 100;
+    int result;
+    while (start <= end)
+    {
+      int mid = (start + end) / 2;
+      if (A * mid <= C * 100 && B * mid <= D * 100)
+      {
+        start = mid + 1;
+        result = mid;
+      }
+      else
+      {
+        end = mid - 1;
+      }
+    }
+    cout << result << "%\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* log 100)
+- 공간: O(1)

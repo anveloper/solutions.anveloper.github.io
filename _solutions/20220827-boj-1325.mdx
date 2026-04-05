@@ -1,0 +1,148 @@
+---
+title: "BOJ 1325 - 효율적인 해킹"
+date: "2022-08-27"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "1325"
+problem_url: "https://www.acmicpc.net/problem/1325"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1325 - 효율적인 해킹](https://www.acmicpc.net/problem/1325)
+
+N대의 컴퓨터와 M개의 신뢰 관계가 주어진다. A가 B를 신뢰하면 A를 해킹할 때 B도 해킹할 수 있다. 한 번에 가장 많은 컴퓨터를 해킹할 수 있는 컴퓨터 번호를 모두 출력한다.
+
+- 신뢰 관계: A→B이면 A를 해킹하면 B도 해킹 가능 (A가 B를 신뢰)
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. (1 ≤ N ≤ 10,000, 1 ≤ M ≤ 100,000)
+
+다음 M줄에 A B가 주어진다. (A가 B를 신뢰)
+
+### 출력
+
+가장 많은 컴퓨터를 해킹할 수 있는 번호를 오름차순으로 출력한다.
+
+### 예제
+
+입력:
+
+```
+5 4
+3 1
+3 2
+4 3
+5 3
+```
+
+출력:
+
+```
+4 5
+```
+
+## 풀이
+
+**핵심 아이디어**: 각 노드를 시작점으로 BFS를 수행하여 도달 가능한 노드 수를 계산한다. 방향 그래프에서 A→B 간선은 "A에서 출발하면 B를 해킹할 수 있다"는 의미이다.
+
+1. A→B 방향 간선을 그래프에 저장한다.
+2. 각 노드 i에서 BFS를 수행하여 방문한 노드의 수를 `ans[next]`에 누적한다.
+   - BFS 중 방문한 노드 `next`마다 `ans[next]++`로 i에서 next가 해킹 가능함을 기록한다.
+3. 모든 노드에 대해 BFS를 완료한 후 `ans` 배열의 최댓값을 구한다.
+4. 최댓값과 같은 `ans[i]`를 가진 노드 번호를 오름차순으로 출력한다.
+
+주의: 시간 초과 방지를 위해 각 BFS마다 방문 배열을 초기화한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day249;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Day201BOJ1325해킹DFS {
+	static ArrayList<Integer>[] graph;
+	static int depth, max;
+	static int[] ans;
+	static boolean[] isPossible;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		String[] s = br.readLine().split(" ");
+
+		int N = stoi(s[0]);
+		int M = stoi(s[1]);
+		ans = new int[N + 1];
+		graph = new ArrayList[N + 1];
+
+		for (int i = 1; i <= N; i++) {
+			graph[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			String[] s2 = br.readLine().split(" ");
+			int A = stoi(s2[0]);
+			int B = stoi(s2[1]);
+
+			graph[A].add(B);
+		}
+
+		for (int i = 1; i <= N; i++) {
+			isPossible = new boolean[N + 1];
+			isPossible[i] = true;
+			BFS(i);
+		}
+		int max = 0;
+
+		for (int i = 1; i <= N; i++) {
+			max = Math.max(max, ans[i]);
+		}
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 1; i <= N; i++) {
+			if (ans[i] == max) {
+				sb.append(i + " ");
+			}
+		}
+		System.out.println(sb.toString().trim());
+
+	}
+
+	static void BFS(int curNode) {
+		Queue<Integer> q = new LinkedList<>();
+		q.add(curNode);
+		isPossible[curNode] = true;
+
+		while (!q.isEmpty()) {
+			curNode = q.remove();
+			for (int next : graph[curNode]) {
+				if (!isPossible[next]) {
+					ans[next]++;
+					isPossible[next] = true;
+					q.add(next);
+				}
+			}
+		}
+	}
+
+	static int stoi(String s) {
+		return Integer.parseInt(s);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N × (V + E)) — N개의 노드에서 각각 BFS 수행 (N=10,000, M=100,000)
+- 공간: O(V + E) — 인접 리스트 및 방문 배열

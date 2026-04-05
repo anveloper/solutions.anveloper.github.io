@@ -1,0 +1,113 @@
+---
+title: "BOJ 2504 - 괄호의 값"
+date: "2022-11-23"
+description: "구현, 자료 구조, 스택 문제"
+tags: ["구현", "자료 구조", "스택"]
+platform: "boj"
+problem_number: "2504"
+problem_url: "https://www.acmicpc.net/problem/2504"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2504 - 괄호의 값](https://www.acmicpc.net/problem/2504)
+
+`()`의 값은 2, `[]`의 값은 3이다. `(X)`는 `2*X`, `[X]`는 `3*X`이며, `XY`는 `X+Y`로 계산한다. 올바른 괄호열의 값을 구하라. 올바르지 않으면 0을 출력한다.
+
+### 입력
+
+첫째 줄에 괄호열이 주어진다 (길이 1 이상 30 이하).
+
+### 출력
+
+괄호열의 값을 출력한다. 올바르지 않은 괄호열이면 0을 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `(()[[]])([])` | `28` |
+
+## 풀이
+
+스택과 누적 곱셈 값(cnt)을 활용하여 중첩 괄호의 값을 계산한다.
+
+1. 여는 괄호 `(`이면 스택에 넣고 cnt에 2를 곱한다
+2. 여는 괄호 `[`이면 스택에 넣고 cnt에 3을 곱한다
+3. 닫는 괄호 `)`이면 스택이 비었거나 짝이 안 맞으면 실패 처리한다. 직전 문자가 `(`이면 (가장 안쪽 괄호) cnt를 answer에 더한다. 스택에서 꺼내고 cnt를 2로 나눈다
+4. 닫는 괄호 `]`도 동일하게 처리하되 3으로 나눈다
+5. 최종적으로 스택이 비어있고 유효하면 answer, 아니면 0을 출력한다
+
+**핵심 아이디어**: 분배법칙을 활용한다. 예를 들어 `(()[])` = `2*(2+3)` = `2*2 + 2*3`처럼, 가장 안쪽 괄호가 닫힐 때 현재까지의 누적 곱(cnt)을 더하면 된다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Stack;
+
+public class Day289BOJ2504괄호 {
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String line = br.readLine();
+
+		Stack<Character> st = new Stack<>();
+		boolean flag = true;
+		int answer = 0;
+		int cnt = 1;
+		for (int i = 0; i < line.length(); i++) {
+			char cur = line.charAt(i);
+			if (cur == '(') {
+				st.push(cur);
+				cnt *= 2;
+			} else if (cur == '[') {
+				st.push(cur);
+				cnt *= 3;
+			} else {
+				if (cur == ')') {
+					if (st.isEmpty() || st.peek() != '(') {
+						flag = false;
+						break;
+					}
+					if (line.charAt(i - 1) == '(') {
+						answer += cnt;
+					}
+					st.pop();
+					cnt /= 2;
+				} else if (cur == ']') {
+					if (st.isEmpty() || st.peek() != '[') {
+						flag = false;
+						break;
+					}
+					if (line.charAt(i - 1) == '[') {
+						answer += cnt;
+					}
+					st.pop();
+					cnt /= 3;
+				} else {
+					flag = false;
+					break;
+				}
+			}
+		}
+		if (!flag || !st.isEmpty()) {
+			System.out.println(0);
+		} else {
+			System.out.println(answer);
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

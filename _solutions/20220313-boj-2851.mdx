@@ -1,0 +1,75 @@
+---
+title: "BOJ 2851 - 슈퍼 마리오"
+date: "2022-03-13"
+description: "구현, 브루트포스 알고리즘, 누적 합 문제"
+tags: ["구현", "브루트포스 알고리즘", "누적 합"]
+platform: "boj"
+problem_number: "2851"
+problem_url: "https://www.acmicpc.net/problem/2851"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2851 - 슈퍼 마리오](https://www.acmicpc.net/problem/2851)
+
+10개의 버섯 점수가 순서대로 주어진다. 마리오는 버섯을 앞에서부터 먹을 수 있으며, 버섯을 먹어 점수 합이 100에 가장 가까운 상태에서 멈춰야 한다. 합이 100을 넘어도 되며, 현재 합과 버섯을 더한 합 중 100에 더 가까운 쪽을 선택한다. 같은 거리라면 100 이상인 쪽을 선택한다.
+
+### 입력
+
+10개의 줄에 각 버섯의 점수(1 이상 1,000 이하의 정수)가 한 줄에 하나씩 주어진다.
+
+### 출력
+
+마리오가 얻는 점수를 출력한다.
+
+### 예제
+
+| 입력                                         | 출력 |
+| -------------------------------------------- | ---- |
+| `1` `1` `1` `1` `1` `10` `10` `10` `10` `40` | `75` |
+
+## 풀이
+
+10개의 버섯을 순서대로 읽으면서 100에 더 가까워지는 경우에만 누적하고, 그렇지 않으면 즉시 중단하는 그리디 방식으로 해결한다.
+
+1. 누적 합 `ans`를 0으로 초기화한다.
+2. 10개의 버섯 점수를 차례로 읽는다.
+3. `|ans - 100|`과 `|ans + n - 100|`을 비교하여 새 버섯을 더한 쪽이 100에 가깝거나 같으면 `ans += n`으로 누적한다.
+4. 그렇지 않으면 루프를 중단(`break`)한다.
+5. 최종 `ans`를 출력한다.
+
+**핵심 아이디어:** `Math.abs(ans - 100) >= Math.abs(ans + n - 100)` 조건이 성립할 때만 버섯을 추가한다. `>=`를 사용하는 이유는 같은 거리일 때 100 이상(더한 쪽)을 선택하기 위함이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day11BOJ2851슈퍼마리오 { // 2851
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int N = 10;
+		int ans = 0;
+		for (int i = 0; i < N; i++) {
+			int n = sc.nextInt();
+			if (Math.abs(ans - 100) >= Math.abs(ans + n - 100)) {
+				ans += n;
+			} else {
+				break;
+			}
+		}
+		System.out.println(ans);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 입력이 항상 10개로 고정
+- 공간: O(1) — 추가 배열 없음

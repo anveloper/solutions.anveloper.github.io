@@ -1,0 +1,105 @@
+---
+title: "BOJ 4900 - 7 더하기"
+date: "2025-08-19"
+description: "구현, 문자열, 런타임 전의 전처리 문제"
+tags: ["구현", "문자열", "런타임 전의 전처리"]
+platform: "boj"
+problem_number: "4900"
+problem_url: "https://www.acmicpc.net/problem/4900"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4900 - 7 더하기](https://www.acmicpc.net/problem/4900)
+
+7-세그먼트 디스플레이로 인코딩된 수식 `A+B=`가 주어질 때, 인코딩된 형식 그대로 `A+B` 뒤에 합의 인코딩 결과를 이어 붙여 출력하는 문제다. 각 숫자(0~9)는 7-세그먼트의 점등 패턴을 정수로 인코딩한 3자리 숫자로 표현된다.
+
+### 입력
+
+- 여러 줄에 걸쳐 인코딩된 수식 문자열이 주어진다.
+- `BYE`가 입력되면 종료한다.
+
+### 출력
+
+- 각 수식 문자열 뒤에 합의 인코딩 결과를 이어 붙여 출력한다.
+
+### 예제
+
+| 입력                     | 출력                  |
+| ------------------------ | --------------------- |
+| `06310006303+093=` `BYE` | `06310006303+093=063` |
+
+## 풀이
+
+7-세그먼트 인코딩 룩업 테이블을 미리 구성한 뒤 문자열을 파싱하여 숫자를 복원하고 합산한 결과를 다시 인코딩하는 구현 문제다.
+
+1. 숫자 0~9에 대응하는 세그먼트 인코딩 값 배열 `code[10]`을 미리 정의하고, 역방향 맵 `decode`를 구성한다.
+2. `+` 구분자를 기준으로 A와 B를 각각 3자리씩 파싱하여 `decode`로 원래 숫자를 복원한다.
+3. A + B를 계산하고, 결과의 각 자릿수를 `code`로 다시 인코딩하여 3자리 형식으로 출력한다.
+
+**핵심 아이디어**: 런타임 전에 인코딩/디코딩 테이블을 미리 구축(precomputation)하면 O(1) 조회로 숫자 변환이 가능하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+
+using namespace std;
+
+int code[10] = {63, 10, 93, 79, 106, 103, 119, 11, 127, 107};
+unordered_map<int, int> decode;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  for (int i = 0; i < 10; i++)
+    decode[code[i]] = i;
+
+  string str;
+  while (cin >> str && str != "BYE")
+  {
+    int a = 0, b = 0;
+    bool isFirst = true;
+
+    for (int i = 0; i < str.size() - 1; i++)
+    {
+      if (str[i] == '+')
+      {
+        isFirst = false;
+        continue;
+      }
+
+      int tmp = decode[stoi(str.substr(i, 3))];
+      if (isFirst)
+        a = a * 10 + tmp;
+      else
+        b = b * 10 + tmp;
+      i += 2;
+    }
+
+    cout << str;
+
+    for (auto ch : to_string(a + b))
+    {
+      int tmp = code[ch - '0'];
+      if (tmp < 100)
+        cout << "0";
+      cout << tmp;
+    }
+    cout << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(L) — L은 입력 문자열의 길이 (각 수식을 한 번 순회)
+- 공간: O(1) — 룩업 테이블 크기는 고정 (10개 항목)

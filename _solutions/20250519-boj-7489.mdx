@@ -1,0 +1,68 @@
+---
+title: "BOJ 7489 - 팩토리얼"
+date: "2025-05-19"
+description: "수학, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["수학", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "7489"
+problem_url: "https://www.acmicpc.net/problem/7489"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7489 - 팩토리얼](https://www.acmicpc.net/problem/7489)
+
+N!의 0이 아닌 마지막 자릿수를 구하라.
+
+### 입력
+
+테스트 케이스 수 T와 각 자연수 N이 주어진다.
+
+### 출력
+
+각 N에 대해 N!의 0이 아닌 마지막 자릿수를 출력한다.
+
+### 예제
+
+| 입력        | 출력    |
+| ----------- | ------- |
+| `2` `5` `7` | `2` `4` |
+
+## 풀이
+
+팩토리얼을 계산하면서 뒤의 0을 제거하고 마지막 자릿수만 유지한다.
+
+1. 1부터 N까지 곱하며 누적한다
+2. 곱할 때마다 뒤의 0을 제거한다 (10으로 나누기)
+3. 충분히 큰 모듈러로 오버플로우를 방지하며 마지막 자릿수를 유지한다
+
+**핵심 아이디어**: 뒤의 0은 2와 5의 쌍에서 발생하므로, 곱셈 후 즉시 제거하면 마지막 유효 자릿수를 추적할 수 있다.
+
+## 코드
+
+```python
+import sys
+
+
+def newfactorial(n):
+    ans = 1
+    for i in range(1, n + 1):
+        ans *= i
+        ans %= 1000000000000
+        while ans % 10 == 0:
+            ans /= 10
+    return int(ans % 10)
+
+
+for _ in range(int(sys.stdin.readline())):
+    n = int(sys.stdin.readline())
+    print(newfactorial(n))
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

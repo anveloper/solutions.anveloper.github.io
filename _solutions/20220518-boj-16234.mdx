@@ -1,0 +1,153 @@
+---
+title: "BOJ 16234 - 인구 이동"
+date: "2022-05-18"
+description: "구현, 그래프 이론, 그래프 탐색 문제"
+tags: ["구현", "그래프 이론", "그래프 탐색", "시뮬레이션", "너비 우선 탐색"]
+platform: "boj"
+problem_number: "16234"
+problem_url: "https://www.acmicpc.net/problem/16234"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16234 - 인구 이동](https://www.acmicpc.net/problem/16234)
+
+N×N 격자에 국가들이 있으며, 각 칸에 인구 수가 주어진다. 인접한 두 국가의 인구 차이가 L 이상 R 이하이면 국경이 열린다. 국경이 열린 국가들끼리 연합을 형성하고, 연합 내 인구를 균등하게 분배한다. 더 이상 국경이 열리지 않을 때까지 반복할 때, 인구 이동이 발생한 횟수를 구하는 문제이다.
+
+### 입력
+
+- 첫째 줄: N, L, R (1 이상 50 이하, 1 이상 100 이하)
+- 다음 N줄: N개의 인구 수 (0 이상 100 이하 정수)
+
+### 출력
+
+- 인구 이동이 발생한 날의 수
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `2 20 50` `50 30` `20 40` | `1`  |
+
+## 풀이
+
+BFS를 이용해 인구 이동 조건을 만족하는 연합 영역을 탐색하고, 연합이 존재하면 인구를 균등 분배한다. 이 과정을 연합이 없어질 때까지 반복한다.
+
+1. 전체 격자를 순회하며 방문하지 않은 칸에서 BFS를 시작한다.
+2. BFS 탐색 시 인접 칸과의 인구 차이가 L 이상 R 이하이면 같은 연합으로 묶는다.
+3. 연합 크기가 2 이상이면 연합 내 인구를 `합계 / 크기`로 균등 분배한다.
+4. 해당 날에 하나라도 인구 이동이 발생하면 날짜 카운터를 증가시킨다.
+5. 인구 이동이 없는 날이 되면 반복을 종료하고 카운터를 출력한다.
+
+**핵심 아이디어**: 매 라운드마다 BFS로 연합을 찾고 인구를 재분배한다. `bfs()` 함수가 이동한 연결 수를 반환하고, 0이면 종료한다. 연합 내 모든 칸을 `uni` 리스트에 저장하여 일괄 업데이트한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day100BOJ16234인구이동BFS { // 16234 인구이동
+	static int N, L, R, ans;
+	static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+	static int[][] map;
+	static boolean[][] visit;
+	static Queue<Pos> q;
+	static List<Pos> uni;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		L = Integer.parseInt(st.nextToken());
+		R = Integer.parseInt(st.nextToken());
+		ans = 0;
+		map = new int[N][N];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		while (true) {
+			if (bfs() == 0)
+				break;
+			else
+				ans++;
+		}
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static int bfs() {
+		int rst = 0;
+		visit = new boolean[N][N];
+		for (int r = 0; r < N; r++) {
+			for (int c = 0; c < N; c++) {
+				if (visit[r][c])
+					continue;
+				Pos pos = new Pos(r, c);
+				q = new LinkedList<>();
+				uni = new LinkedList<>();
+				q.add(pos);
+				uni.add(pos);
+				visit[r][c] = true;
+				int sum = map[r][c];
+				while (!q.isEmpty()) {
+					Pos p = q.poll();
+					for (int i = 0; i < 4; i++) {
+						int nr = p.r + dr[i];
+						int nc = p.c + dc[i];
+						if (index(nr, nc) || visit[nr][nc] || check(map[p.r][p.c], map[nr][nc]))
+							continue;
+						Pos np = new Pos(nr, nc);
+						q.add(np);
+						uni.add(np);
+						visit[nr][nc] = true;
+						sum += map[nr][nc];
+						rst++;
+					}
+				}
+				if (rst > 0) {
+					for (int i = 0; i < uni.size(); i++) {
+						Pos p = uni.get(i);
+						map[p.r][p.c] = sum / uni.size();
+					}
+				}
+			}
+		}
+		return rst;
+	}
+
+	private static boolean check(int a, int b) {
+		return Math.abs(a - b) < L || Math.abs(a - b) > R;
+	}
+
+	private static boolean index(int r, int c) {
+		return r < 0 || c < 0 || r >= N || c >= N;
+	}
+
+	static class Pos {
+		int r, c;
+
+		Pos(int r, int c) {
+			this.r = r;
+			this.c = c;
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N² × 이동 횟수) — 매 라운드마다 N² 전체를 BFS로 순회
+- 공간: O(N²)

@@ -1,0 +1,60 @@
+---
+title: "BOJ 15727 - 조별과제를 하려는데 조장이 사라졌다"
+date: "2024-11-01"
+description: "거리를 5로 나눈 올림값을 구하는 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "15727"
+problem_url: "https://www.acmicpc.net/problem/15727"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15727 - 조별과제를 하려는데 조장이 사라졌다](https://www.acmicpc.net/problem/15727)
+
+거리 N(km)이 주어질 때, 시속 5km로 이동하는 데 걸리는 시간(올림)을 구하라.
+
+### 입력
+
+정수 N이 주어진다.
+
+### 출력
+
+이동 시간(시간 단위, 올림)을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `7`  | `2`  |
+
+## 풀이
+
+올림 나눗셈으로 이동 시간을 구한다.
+
+1. `(N - 1) / 5 + 1`로 올림 나눗셈을 계산한다
+
+**핵심 아이디어**: 정수 올림 나눗셈은 `(a - 1) / b + 1`로 구현한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+  int n;
+  cin >> n;
+  cout << (n - 1) / 5 + 1 << endl;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

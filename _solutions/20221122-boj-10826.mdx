@@ -1,0 +1,76 @@
+---
+title: "BOJ 10826 - 피보나치 수 4"
+date: "2022-11-22"
+description: "다이나믹 프로그래밍, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["다이나믹 프로그래밍", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "10826"
+problem_url: "https://www.acmicpc.net/problem/10826"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10826 - 피보나치 수 4](https://www.acmicpc.net/problem/10826)
+
+자연수 N이 주어졌을 때, N번째 피보나치 수를 구하라. 결과가 매우 클 수 있으므로 큰 수 연산이 필요하다.
+
+### 입력
+
+첫째 줄에 N이 주어진다 (0 이상 10,000 이하).
+
+### 출력
+
+N번째 피보나치 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `10` | `55` |
+
+## 풀이
+
+`BigInteger` 배열로 큰 수 피보나치를 바텀업 DP로 계산한다.
+
+1. 크기 10,001의 `BigInteger` 배열을 생성하고 `fib[0] = 0`, `fib[1] = 1`로 초기화한다
+2. i = 2부터 10,000까지 `fib[i] = fib[i-1] + fib[i-2]`를 계산한다
+3. 입력 N을 읽어 `fib[N]`을 출력한다
+
+**핵심 아이디어**: F(10000)은 수천 자리 수이므로 `long` 범위를 초과한다. `BigInteger`를 사용해 임의 정밀도 연산으로 해결한다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+
+public class Day287BOJ10826피보나치4 {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		BigInteger[] fivonacci = new BigInteger[10001];
+
+		fivonacci[0] = BigInteger.ZERO;
+		fivonacci[1] = BigInteger.ONE;
+
+		for (int i = 2; i < fivonacci.length; i++) {
+			fivonacci[i] = fivonacci[i - 1].add(fivonacci[i - 2]);
+		}
+		int num = Integer.parseInt(br.readLine());
+
+		System.out.println(fivonacci[num]);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

@@ -1,0 +1,80 @@
+---
+title: "BOJ 2061 - 좋은 암호"
+date: "2024-09-05"
+description: "큰 수 K가 2부터 L-1 사이의 소인수를 가지는지 판별하는 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2061"
+problem_url: "https://www.acmicpc.net/problem/2061"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2061 - 좋은 암호](https://www.acmicpc.net/problem/2061)
+
+매우 큰 수 K와 정수 L이 주어질 때, K가 2 이상 L 미만의 수로 나누어떨어지면 BAD과 그 수를, 아니면 GOOD을 출력하라.
+
+### 입력
+
+K(최대 100자리)와 L이 주어진다.
+
+### 출력
+
+나누어떨어지면 "BAD 약수", 아니면 "GOOD"을 출력한다.
+
+### 예제
+
+| 입력     | 출력     |
+| -------- | -------- |
+| `143 20` | `BAD 11` |
+
+## 풀이
+
+큰 수 K를 문자열로 처리하고, 자릿수별 나머지 연산으로 약수를 탐색한다.
+
+1. K를 문자열로 입력받는다
+2. 2부터 L-1까지 각 수 i에 대해, K의 각 자릿수를 순회하며 `(누적 * 10 + 자릿수) % i`로 나머지를 계산한다
+3. 나머지가 0이면 "BAD i"를 출력하고 종료한다
+4. 모든 수를 확인해도 0이 아니면 "GOOD"을 출력한다
+
+**핵심 아이디어**: 큰 수의 나머지를 자릿수별로 누적 계산하면 오버플로우 없이 O(D)에 `K mod i`를 구할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+int main()
+{
+  ios::sync_with_stdio(false), cin.tie(NULL);
+  string K;
+  register int L;
+  cin >> K >> L;
+  for (register int i = 2, j; i < L; ++i)
+  {
+    register int ans = 0, tmp = 1;
+    for (j = K.length() - 1; j >= 0; --j)
+    {
+      ans = (ans + (K[j] - '0') * tmp) % i;
+      tmp *= 10;
+      tmp %= i;
+    }
+    if (ans == 0)
+    {
+      cout << "BAD " << i;
+      return 0;
+    }
+  }
+  cout << "GOOD";
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(L \* D) (L: 범위 상한, D: K의 자릿수)
+- 공간: O(D)

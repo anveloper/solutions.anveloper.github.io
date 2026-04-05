@@ -1,0 +1,88 @@
+---
+title: "BOJ 1358 - 하키"
+date: "2023-03-07"
+description: "기하학 문제"
+tags: ["기하학"]
+platform: "boj"
+problem_number: "1358"
+problem_url: "https://www.acmicpc.net/problem/1358"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1358 - 하키](https://www.acmicpc.net/problem/1358)
+
+하키 링크는 가운데 직사각형과 양쪽 반원으로 구성된다. P명의 선수 좌표가 주어질 때, 링크 내부 또는 경계에 있는 선수의 수를 구하라.
+
+### 입력
+
+첫째 줄에 W(너비), H(높이), X, Y(좌상단 좌표), P(선수 수)가 주어진다. 이후 P줄에 각 선수의 좌표가 주어진다.
+
+### 출력
+
+링크 안에 있는 선수의 수를 출력한다.
+
+### 예제
+
+| 입력                                           | 출력 |
+| ---------------------------------------------- | ---- |
+| `100 50 0 0 4` `50 25` `0 0` `100 50` `53 100` | `3`  |
+
+## 풀이
+
+각 선수가 직사각형 또는 양쪽 반원 내부에 있는지 판별한다.
+
+1. 직사각형 영역: X ≤ x ≤ X+W, Y ≤ y ≤ Y+H 범위 검사
+2. 왼쪽 반원: 중심 (X, Y+R)에서의 거리가 R 이하인지 확인 (R = H/2)
+3. 오른쪽 반원: 중심 (X+W, Y+R)에서의 거리가 R 이하인지 확인
+4. 세 영역 중 하나라도 포함되면 카운트 증가
+
+**핵심 아이디어**: 하키 링크를 직사각형 + 좌반원 + 우반원 3개 영역으로 분리하여 각각 포함 여부를 독립적으로 검사한다. 거리 비교 시 제곱근을 피하고 제곱 비교를 사용한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day394BOJ1358하키 {
+    public static void main(String[] args) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(in.readLine());
+        int W = Integer.parseInt(st.nextToken());
+        int H = Integer.parseInt(st.nextToken());
+        int X = Integer.parseInt(st.nextToken());
+        int Y = Integer.parseInt(st.nextToken());
+        int P = Integer.parseInt(st.nextToken());
+        int R = H / 2;
+
+        int cnt = 0;
+        for (int i = 0; i < P; i++) {
+            st = new StringTokenizer(in.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+
+            if (x >= X && x <= X + W && y >= Y && y <= Y + H)
+                cnt++;
+            else {
+                int dist1 = (X - x) * (X - x) + (Y + R - y) * (Y + R - y);
+                int dist2 = (X + W - x) * (X + W - x) + (Y + R - y) * (Y + R - y);
+                if (dist1 <= R * R || dist2 <= R * R)
+                    cnt++;
+            }
+        }
+
+        System.out.print(cnt);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(P)
+- 공간: O(1)

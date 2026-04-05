@@ -1,0 +1,80 @@
+---
+title: "BOJ 1159 - 농구 경기"
+date: "2024-01-22"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1159"
+problem_url: "https://www.acmicpc.net/problem/1159"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1159 - 농구 경기](https://www.acmicpc.net/problem/1159)
+
+N명의 선수 이름이 주어질 때, 성의 첫 글자가 같은 선수가 5명 이상인 글자를 사전순으로 출력하라. 해당하는 글자가 없으면 "PREDAJA"를 출력한다.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 선수 이름이 주어진다.
+
+### 출력
+
+조건을 만족하는 글자를 사전순으로 출력하거나 "PREDAJA"를 출력한다.
+
+### 예제
+
+| 입력                     | 출력 |
+| ------------------------ | ---- |
+| `10` `aaaa` `abcd` `...` | `a`  |
+
+## 풀이
+
+알파벳 빈도 배열로 첫 글자를 세고, 5 이상인 글자를 출력한다.
+
+1. 크기 26 배열에 각 이름의 첫 글자 빈도를 센다
+2. 빈도가 5 이상인 글자가 있는지 확인한다
+3. 있으면 해당 글자를 사전순(a~z)으로 출력한다
+4. 없으면 "PREDAJA"를 출력한다
+
+**핵심 아이디어**: 알파벳 빈도 배열을 활용하여 O(N) 시간에 카운팅하고 O(26)에 결과를 출력한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+
+public class Day720BOJ1159농구경기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int[] arr = new int[26];
+    int n = Integer.parseInt(br.readLine());
+    boolean possible = false;
+    for (int i = 0; i < n; i++) {
+      String name = br.readLine();
+      char c = name.charAt(0);
+      arr[c - 97]++;
+      if (arr[c - 97] == 5)
+        possible = true;
+    }
+    if (possible) {
+      for (int i = 0; i < 26; i++) {
+        if (arr[i] >= 5)
+          System.out.print((char) (i + 97));
+      }
+    } else {
+      System.out.print("PREDAJA");
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N개 이름 순회
+- 공간: O(1) — 크기 26 고정 배열

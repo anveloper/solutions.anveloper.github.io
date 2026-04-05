@@ -1,0 +1,58 @@
+---
+title: "BOJ 2168 - 타일 위의 대각선"
+date: "2025-07-11"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "2168"
+problem_url: "https://www.acmicpc.net/problem/2168"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2168 - 타일 위의 대각선](https://www.acmicpc.net/problem/2168)
+
+x \* y 격자에서 대각선이 지나는 타일의 수를 구하라.
+
+### 입력
+
+정수 x, y가 주어진다.
+
+### 출력
+
+대각선이 지나는 타일의 수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `3 4` | `6`  |
+
+## 풀이
+
+GCD를 이용한 공식으로 계산한다.
+
+1. x와 y의 최대공약수 g를 구한다
+2. 대각선이 지나는 타일 수 = `(x/g + y/g - 1) * g`
+3. 결과를 출력한다
+
+**핵심 아이디어**: 대각선이 지나는 타일 수 공식 `x + y - gcd(x, y)`를 정리하면 `(x/g + y/g - 1) * g`가 된다.
+
+## 코드
+
+```python
+import math
+
+x, y = map(int, input().split())
+a = math.gcd(x, y)
+ans = (x // a + y // a - 1) * a
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

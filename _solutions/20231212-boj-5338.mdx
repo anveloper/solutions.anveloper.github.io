@@ -1,0 +1,64 @@
+---
+title: "BOJ 5338 - 마이크로소프트 로고"
+date: "2023-12-12"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5338"
+problem_url: "https://www.acmicpc.net/problem/5338"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5338 - 마이크로소프트 로고](https://www.acmicpc.net/problem/5338)
+
+주어진 마이크로소프트 로고 ASCII 아트를 그대로 출력하라.
+
+### 입력
+
+없음.
+
+### 출력
+
+5줄의 ASCII 아트를 출력한다.
+
+### 예제
+
+| 입력   | 출력             |
+| ------ | ---------------- |
+| (없음) | (ASCII 아트 5줄) |
+
+## 풀이
+
+고정된 문자열을 `StringBuilder`에 담아 한 번에 출력한다.
+
+1. 로고의 5줄을 하드코딩하여 `StringBuilder`에 추가한다
+2. 한 번의 출력으로 전체를 출력한다
+
+**핵심 아이디어**: 고정 출력 문제로, 요구되는 문자열을 정확히 재현하면 된다.
+
+## 코드
+
+```java
+package day699;
+
+public class Day675BOJ5338마이크로소프트로고 {
+  public static void main(String[] args) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("       _.-;;-._\n"
+        + "'-..-'|   ||   |\n"
+        + "'-..-'|_.-;;-._|\n"
+        + "'-..-'|   ||   |\n"
+        + "'-..-'|_.-''-._|");
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 출력
+- 공간: O(1) — 고정 문자열

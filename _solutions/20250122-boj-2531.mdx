@@ -1,0 +1,80 @@
+---
+title: "BOJ 2531 - 회전 초밥"
+date: "2025-01-22"
+description: "브루트포스 알고리즘, 두 포인터, 슬라이딩 윈도우 문제"
+tags: ["브루트포스 알고리즘", "두 포인터", "슬라이딩 윈도우"]
+platform: "boj"
+problem_number: "2531"
+problem_url: "https://www.acmicpc.net/problem/2531"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2531 - 회전 초밥](https://www.acmicpc.net/problem/2531)
+
+회전 초밥 벨트에서 연속 K개를 먹을 때, 쿠폰 초밥을 포함하여 먹을 수 있는 최대 초밥 종류 수를 구하라.
+
+### 입력
+
+접시 수 N, 초밥 가짓수 d, 연속 접시 수 K, 쿠폰 번호 c가 주어지고, N개의 초밥 번호가 주어진다.
+
+### 출력
+
+먹을 수 있는 초밥 종류의 최댓값을 출력한다.
+
+### 예제
+
+| 입력                            | 출력 |
+| ------------------------------- | ---- |
+| `8 30 4 30` `7 9 7 30 2 7 9 25` | `5`  |
+
+## 풀이
+
+슬라이딩 윈도우로 연속 K개 구간을 이동하며 종류 수를 추적한다.
+
+1. 처음 K개의 초밥 종류를 `defaultdict`로 카운팅한다
+2. 쿠폰 초밥을 항상 포함시킨다
+3. 윈도우를 한 칸씩 이동하며 빠지는/들어오는 초밥을 갱신한다
+4. 매 위치에서 종류 수의 최댓값을 갱신한다
+
+**핵심 아이디어**: 원형 벨트이므로 `% n`으로 인덱스를 처리하고, 쿠폰 초밥을 미리 카운트에 포함시키면 자연스럽게 보너스가 반영된다.
+
+## 코드
+
+```python
+from collections import defaultdict
+import sys
+input = sys.stdin.readline
+
+n, d, k, c = map(int, input().split())
+belt = [int(input()) for _ in range(n)]
+count = defaultdict(int)
+
+for i in range(k):
+    count[belt[i]] += 1
+
+count[c] += 1
+total = len(count)
+
+for i in range(1, n):
+    start = belt[i-1]
+    count[start] -= 1
+
+    if not count[start]:
+        count.pop(start)
+
+    end = belt[(i + k - 1) % n]
+    count[end] += 1
+
+    total = max(total, len(count))
+
+print(total)
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

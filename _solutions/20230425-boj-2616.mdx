@@ -1,0 +1,91 @@
+---
+title: "BOJ 2616 - 소형기관차"
+date: "2023-04-25"
+description: "다이나믹 프로그래밍, 누적 합 문제"
+tags: ["다이나믹 프로그래밍", "누적 합"]
+platform: "boj"
+problem_number: "2616"
+problem_url: "https://www.acmicpc.net/problem/2616"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2616 - 소형기관차](https://www.acmicpc.net/problem/2616)
+
+N개의 객차 중 3대의 소형기관차가 각각 연속된 최대 K개의 객차를 끌 때, 끌 수 있는 최대 손님 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 각 객차의 손님 수, 셋째 줄에 K가 주어진다.
+
+### 출력
+
+3대가 끌 수 있는 최대 손님 수를 출력한다.
+
+### 예제
+
+| 입력                           | 출력  |
+| ------------------------------ | ----- |
+| `7` `35 40 50 10 30 45 60` `2` | `240` |
+
+## 풀이
+
+누적합과 DP로 3대의 소형기관차가 끌 수 있는 최대 손님 수를 구한다.
+
+1. 누적합 배열 `sum[i]`를 구한다
+2. `dp[i][j]`: i대의 기관차로 j번째 객차까지 고려했을 때 최대 손님 수
+3. `dp[i][j] = max(dp[i][j-1], dp[i-1][j-K] + sum[j] - sum[j-K])`
+4. 답은 `dp[3][N]`
+
+**핵심 아이디어**: 각 기관차가 끌 구간을 겹치지 않게 선택하는 문제로, 누적합으로 구간 합을 O(1)에 구하고 DP로 최적 배치를 찾는다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day443BOJ2616소형기관차 {
+  static int N, max;
+  static int[] arr, sum;
+  static int[][] dp;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+
+    N = Integer.parseInt(br.readLine());
+    arr = new int[N + 1];
+    sum = new int[N + 1];
+    dp = new int[4][N + 1];
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 1; i <= N; i++) {
+      arr[i] = Integer.parseInt(st.nextToken());
+      sum[i] = sum[i - 1] + arr[i];
+    }
+
+    max = Integer.parseInt(br.readLine());
+
+    for (int i = 1; i < 4; i++) {
+      for (int j = i * max; j <= N; j++) {
+        dp[i][j] = Math.max(
+            dp[i][j - 1],
+            dp[i - 1][j - max] + (sum[j] - sum[j - max]));
+      }
+    }
+
+    System.out.println(dp[3][N]);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

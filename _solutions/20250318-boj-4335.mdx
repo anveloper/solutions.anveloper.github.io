@@ -1,0 +1,91 @@
+---
+title: "BOJ 4335 - 숫자 맞추기"
+date: "2025-03-18"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4335"
+problem_url: "https://www.acmicpc.net/problem/4335"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4335 - 숫자 맞추기](https://www.acmicpc.net/problem/4335)
+
+Stan이 숫자 맞추기 게임에서 정직했는지 판별하는 문제이다.
+추측한 숫자와 힌트(`too high` / `too low` / `correct`)가 주어질 때, 힌트들이 서로 모순되는지 검사한다.
+"너무 높다"고 했던 숫자보다 크거나 같은 답, 또는 "너무 낮다"고 했던 숫자보다 작거나 같은 답이 정답으로 제시되면 거짓말이다.
+
+### 입력
+
+각 게임은 숫자와 힌트 쌍의 연속으로 이루어진다. 숫자 0과 `correct` 힌트가 나오면 게임이 종료된다.
+다음 게임이 시작되거나 입력이 끝날 때까지 반복된다.
+
+### 출력
+
+각 게임에 대해 `Stan is dishonest` 또는 `Stan may be honest`를 출력한다.
+
+### 예제
+
+| 입력                    | 출력                |
+| ----------------------- | ------------------- |
+| `5 too low` `3 correct` | `Stan is dishonest` |
+
+## 풀이
+
+`too high` 힌트를 받은 숫자들과 `too low` 힌트를 받은 숫자들을 각각 리스트에 누적하다가, `correct`가 나오면 정답과의 모순을 검사한다.
+
+1. `too high` 힌트를 받은 숫자는 `lst_high`에, `too low` 힌트는 `lst_low`에 추가한다.
+2. `correct` 힌트(숫자가 0이 아닌 경우 종료)가 나오면 정답 `num`과 다음 조건을 검사한다:
+   - `lst_low`가 있고 `max(lst_low) >= num`: "낮다"고 했던 숫자가 정답보다 크거나 같음 → 거짓말.
+   - `lst_high`가 있고 `min(lst_high) <= num`: "높다"고 했던 숫자가 정답보다 작거나 같음 → 거짓말.
+3. 모순이 없으면 `Stan may be honest`를 출력하고 리스트를 초기화한다.
+
+**핵심 아이디어**: `too low`의 최대값이 정답 이상이거나 `too high`의 최소값이 정답 이하이면 논리적 모순이 발생한다.
+
+## 코드
+
+```python
+import sys
+
+lst_high = []
+lst_low = []
+
+while 1:
+    num = int(sys.stdin.readline())
+    if num == 0:
+        break
+    what = str(sys.stdin.readline().strip())
+    if what == "too high":
+        lst_high.append(num)
+    elif what == "too low":
+        lst_low.append(num)
+    else:
+        if len(lst_low) != 0 and len(lst_high) != 0:
+            if max(lst_low) >= num or min(lst_high) <= num:
+                print("Stan is dishonest")
+            else:
+                print("Stan may be honest")
+        elif len(lst_low) != 0:
+            if max(lst_low) >= num:
+                print("Stan is dishonest")
+            else:
+                print("Stan may be honest")
+        elif len(lst_high) != 0:
+            if min(lst_high) <= num:
+                print("Stan is dishonest")
+            else:
+                print("Stan may be honest")
+        else:
+            print("Stan may be honest")
+        lst_high = []
+        lst_low = []
+```
+
+## 복잡도
+
+- 시간: O(N) — 힌트 수 N에 대해 선형 (max/min은 누적 리스트 크기에 비례)
+- 공간: O(N) — 힌트 리스트 저장

@@ -1,0 +1,93 @@
+---
+title: "BOJ 2485 - 가로수"
+date: "2023-12-13"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "2485"
+problem_url: "https://www.acmicpc.net/problem/2485"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2485 - 가로수](https://www.acmicpc.net/problem/2485)
+
+직선 도로에 N개의 가로수가 일정하지 않은 간격으로 심어져 있을 때, 모든 가로수가 같은 간격이 되도록 추가해야 하는 최소 가로수 수를 구하라.
+
+### 입력
+
+첫째 줄에 가로수의 수 N, 이후 N줄에 각 가로수의 위치가 오름차순으로 주어진다.
+
+### 출력
+
+추가해야 하는 가로수의 최소 수를 출력한다.
+
+### 예제
+
+| 입력                 | 출력 |
+| -------------------- | ---- |
+| `4` `1` `3` `7` `13` | `3`  |
+
+## 풀이
+
+인접 가로수 간의 간격들의 GCD를 구하면 최적 간격이 되고, 이를 통해 추가 가로수 수를 계산한다.
+
+1. N개의 가로수 위치를 입력받는다
+2. 인접한 가로수 사이의 간격을 모두 구한다
+3. 모든 간격의 GCD를 유클리드 호제법으로 구한다
+4. 전체 구간에 GCD 간격으로 배치할 수 있는 가로수 수에서 기존 가로수 수를 빼면 답이다
+
+**핵심 아이디어**: 모든 간격을 균등하게 만드는 최대 간격은 간격들의 GCD이며, `(전체거리/GCD + 1 - N)`이 추가 필요한 가로수 수이다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day676BOJ2485가로수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    int N = Integer.parseInt(br.readLine());
+
+    int[] tree = new int[N];
+
+    for (int i = 0; i < N; i++) {
+      tree[i] = Integer.parseInt(br.readLine());
+    }
+
+    br.close();
+
+    int gcd = 0;
+    for (int i = 0; i < N - 1; i++) {
+      int distance = tree[i + 1] - tree[i];
+      gcd = findGCD(distance, gcd);
+    }
+
+    bw.write((tree[N - 1] - tree[0]) / gcd + 1 - (tree.length) + "");
+    bw.flush();
+    bw.close();
+
+  }
+
+  static int findGCD(int A, int B) {
+    while (B != 0) {
+      int R = A % B;
+      A = B;
+      B = R;
+    }
+    return A;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log M) - M은 최대 간격
+- 공간: O(N)

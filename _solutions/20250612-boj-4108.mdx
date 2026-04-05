@@ -1,0 +1,94 @@
+---
+title: "BOJ 4108 - 지뢰찾기"
+date: "2025-06-12"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4108"
+problem_url: "https://www.acmicpc.net/problem/4108"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4108 - 지뢰찾기](https://www.acmicpc.net/problem/4108)
+
+R행 C열 격자판에 지뢰(`*`)와 빈 칸(`.`)이 주어질 때, 각 빈 칸에 인접한 지뢰 수를 계산하여 출력하는 클래식 지뢰찾기 문제이다.
+지뢰 칸은 그대로 `*`로, 빈 칸은 주변 8방향 지뢰 수(0~8)로 채워 출력한다.
+입력은 `0 0`이 나올 때까지 여러 테스트 케이스가 주어진다.
+
+### 입력
+
+각 테스트 케이스 첫 줄에 행 수 R과 열 수 C가 주어진다.
+이후 R줄에 걸쳐 `*`와 `.`로 이루어진 격자가 주어진다.
+`0 0`이 입력되면 종료한다.
+
+### 출력
+
+각 테스트 케이스에 대해 지뢰 수가 채워진 격자를 출력한다.
+
+### 예제
+
+| 입력                                    | 출력                        |
+| --------------------------------------- | --------------------------- |
+| `4 4` `*...` `....` `.*..` `....` `0 0` | `*100` `2210` `1*10` `1110` |
+
+## 풀이
+
+각 빈 칸에 대해 8방향 인접 칸을 탐색하여 지뢰 수를 세는 시뮬레이션이다.
+
+1. `R, C`를 읽어 `0 0`이면 종료한다.
+2. R행의 격자를 2차원 리스트 `grid`로 저장한다.
+3. 결과 저장용 2차원 리스트 `result`를 초기화한다.
+4. 각 셀 `(i, j)`에 대해:
+   - `*`이면 `result[i][j] = "*"`으로 복사한다.
+   - `.`이면 `count_mines()`를 호출하여 8방향 지뢰 수를 계산하고 숫자 문자로 저장한다.
+5. `count_mines()`는 8방향 오프셋을 순회하며 범위 내 `*` 셀의 수를 반환한다.
+6. 각 행을 문자열로 합쳐 출력한다.
+
+**핵심 아이디어**: 8방향 오프셋 배열 `[(-1,-1), (-1,0), ...]`을 미리 정의하면 경계 처리를 포함한 인접 셀 탐색이 간결해진다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+
+def count_mines(grid, r, c, rows, cols):
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    count = 0
+    for dr, dc in directions:
+        nr, nc = r + dr, c + dc
+        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == "*":
+            count += 1
+    return count
+
+
+def solve_mine_sweeper():
+    while True:
+        R, C = map(int, input().split())
+        if R == 0 and C == 0:
+            break
+        grid = [list(input().strip()) for _ in range(R)]
+        result = [["" for _ in range(C)] for _ in range(R)]
+        for i in range(R):
+            for j in range(C):
+                if grid[i][j] == "*":
+                    result[i][j] = "*"
+                else:
+                    result[i][j] = str(count_mines(grid, i, j, R, C))
+        for row in result:
+            print("".join(row))
+
+
+solve_mine_sweeper()
+```
+
+## 복잡도
+
+- 시간: O(R \* C) — 각 셀마다 8방향 탐색 (상수 시간)
+- 공간: O(R \* C) — 격자 및 결과 배열 저장

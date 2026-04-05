@@ -1,0 +1,76 @@
+---
+title: "BOJ 4635 - Speed Limit"
+date: "2025-08-24"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "4635"
+problem_url: "https://www.acmicpc.net/problem/4635"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4635 - Speed Limit](https://www.acmicpc.net/problem/4635)
+
+구간별 속도 제한이 주어질 때 총 이동 거리를 계산하는 문제다. 각 구간은 속도(mph)와 누적 시간(시간 단위)으로 표현되며, 이전 구간과의 시간 차이에 속도를 곱해 거리를 누적한다.
+
+### 입력
+
+- 여러 테스트 케이스가 주어지며, 각 케이스는 n으로 시작한다 (n = -1이면 종료).
+- 이후 n줄에 걸쳐 속도 s와 누적 시간 t가 주어진다.
+
+### 출력
+
+- 각 테스트 케이스에 대해 총 이동 거리와 `miles`를 출력한다.
+
+### 예제
+
+| 입력                          | 출력        |
+| ----------------------------- | ----------- |
+| `3` `55 1` `65 2` `70 3` `-1` | `190 miles` |
+
+## 풀이
+
+이전 시간과 현재 시간의 차이에 현재 속도를 곱해 구간별 거리를 누적하는 단순 시뮬레이션이다.
+
+1. n을 입력받아 -1이면 종료한다.
+2. 이전 시간 `prev`를 0으로 초기화한다.
+3. n개의 (s, t) 쌍을 순서대로 읽으면서 `total += s * (t - prev)`를 계산한다.
+4. `prev = t`로 갱신하고 다음 구간으로 이동한다.
+5. 모든 구간을 처리하면 total을 출력한다.
+
+**핵심 아이디어**: 속도-시간 그래프에서 거리는 넓이이므로 각 구간의 직사각형 넓이(속도 × 시간 간격)를 누적하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int n;
+  while (cin >> n && n != -1)
+  {
+    int total = 0;
+    int prev = 0;
+    for (int i = 0; i < n; i++)
+    {
+      int s, t;
+      cin >> s >> t;
+      int interval = t - prev;
+      total += s * interval;
+      prev = t;
+    }
+    cout << total << " miles\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N은 구간 수 (각 구간을 한 번 처리)
+- 공간: O(1)

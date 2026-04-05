@@ -1,0 +1,129 @@
+---
+title: "BOJ 9205 - 맥주 마시면서 걸어가기"
+date: "2023-10-18"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색"]
+platform: "boj"
+problem_number: "9205"
+problem_url: "https://www.acmicpc.net/problem/9205"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9205 - 맥주 마시면서 걸어가기](https://www.acmicpc.net/problem/9205)
+
+집에서 페스티벌까지 맥주 20병(50미터/병)으로 이동할 수 있는지 판별하라. 편의점에서 맥주를 보충할 수 있다 (최대 20병).
+
+### 입력
+
+첫째 줄에 테스트 케이스 T. 각 케이스에 편의점 수 N, 집 좌표, N개의 편의점 좌표, 페스티벌 좌표가 주어진다.
+
+### 출력
+
+도달 가능하면 "happy", 불가능하면 "sad"를 출력한다.
+
+### 예제
+
+| 입력                                           | 출력    |
+| ---------------------------------------------- | ------- |
+| `1` `2` `0 0` `1000 0` `1000 1000` `2000 1000` | `happy` |
+
+## 풀이
+
+맨해튼 거리 1000 이하인 지점끼리 그래프 간선을 연결하고, BFS로 집에서 페스티벌 도달 가능 여부를 확인한다.
+
+1. 집, 편의점, 페스티벌을 노드로 설정한다
+2. 두 노드 간 맨해튼 거리가 1000 이하이면 간선을 연결한다 (20병 \* 50m)
+3. 집(노드 0)에서 페스티벌(노드 N+1)까지 BFS로 탐색한다
+
+**핵심 아이디어**: 맥주 20병으로 최대 1000m 이동 가능하므로, 거리 1000 이내의 노드를 연결한 그래프에서 경로 존재 여부를 확인한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+class Point {
+  int x, y;
+
+  public Point(int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+
+}
+
+public class Day621BOJ9205맥주마시면서걸어가기 {
+  static int N;
+  static List<List<Integer>> map;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int t = Integer.parseInt(br.readLine());
+
+    StringTokenizer st;
+    StringBuilder sb = new StringBuilder();
+    while (t-- > 0) {
+      N = Integer.parseInt(br.readLine());
+
+      Point[] nodes = new Point[N + 2];
+      for (int i = 0; i < N + 2; ++i) {
+        st = new StringTokenizer(br.readLine());
+        int x = Integer.parseInt(st.nextToken());
+        int y = Integer.parseInt(st.nextToken());
+
+        nodes[i] = new Point(x, y);
+      }
+
+      map = new ArrayList<>();
+      for (int i = 0; i < N + 2; ++i)
+        map.add(new ArrayList<>());
+
+      for (int i = 0; i < N + 1; ++i) {
+        for (int j = i + 1; j < N + 2; ++j) {
+          int diff = Math.abs(nodes[i].x - nodes[j].x) + Math.abs(nodes[i].y - nodes[j].y);
+          if (diff <= 1000) {
+            map.get(i).add(j);
+            map.get(j).add(i);
+          }
+        }
+      }
+      sb.append(bfs()).append("\n");
+    }
+    System.out.print(sb);
+  }
+
+  static String bfs() {
+    Queue<Integer> q = new LinkedList<>();
+    q.add(0);
+
+    boolean[] visited = new boolean[N + 2];
+    visited[0] = true;
+
+    while (!q.isEmpty()) {
+      int cur = q.poll();
+
+      if (cur == N + 1)
+        return "happy";
+      for (int i : map.get(cur)) {
+        if (visited[i])
+          continue;
+        visited[i] = true;
+        q.add(i);
+      }
+    }
+    return "sad";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) - 그래프 구축
+- 공간: O(N²)

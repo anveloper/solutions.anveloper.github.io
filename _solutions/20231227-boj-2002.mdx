@@ -1,0 +1,86 @@
+---
+title: "BOJ 2002 - 추월"
+date: "2023-12-27"
+description: "구현, 자료 구조, 문자열 문제"
+tags: ["구현", "자료 구조", "문자열", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "2002"
+problem_url: "https://www.acmicpc.net/problem/2002"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2002 - 추월](https://www.acmicpc.net/problem/2002)
+
+터널에 들어간 순서와 나온 순서가 주어질 때, 터널 안에서 추월한 차량의 수를 구하라.
+
+### 입력
+
+첫째 줄에 차량 수 N, 이후 N줄에 들어간 순서, 다시 N줄에 나온 순서가 주어진다.
+
+### 출력
+
+추월한 차량의 수를 출력한다.
+
+### 예제
+
+| 입력                                            | 출력 |
+| ----------------------------------------------- | ---- |
+| `4` `ZG...` `AB...` `AB...` `ZG...` `...` `...` | `1`  |
+
+## 풀이
+
+들어간 순서를 `HashMap`에 저장하고, 나온 순서에서 역전이 발생한 차량을 카운트한다.
+
+1. 들어간 순서대로 차량명과 인덱스를 `HashMap`에 저장한다
+2. 나온 순서의 차량을 들어간 순서 인덱스로 변환한 배열을 만든다
+3. 배열을 순회하며 자신보다 뒤에 더 작은 인덱스가 있으면 추월한 것으로 판정한다
+4. 추월 차량 수를 출력한다
+
+**핵심 아이디어**: 들어간 순서 대비 나온 순서에서 역전(inversion)이 발생한 차량이 추월 차량이다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day694BOJ2002추월 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    Map<String, Integer> map = new HashMap<>();
+    int ans = 0;
+
+    for (int i = 0; i < N; i++) {
+      map.put(br.readLine(), i);
+    }
+    int[] arr = new int[N];
+
+    for (int i = 0; i < N; i++) {
+      String input = br.readLine();
+      arr[i] = map.get(input);
+    }
+
+    for (int i = 0; i < N - 1; i++) {
+      for (int j = i + 1; j < N; j++) {
+        if (arr[i] > arr[j]) {
+          ans += 1;
+          break;
+        }
+      }
+    }
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) — 이중 반복문으로 역전 검사
+- 공간: O(N) — HashMap과 배열

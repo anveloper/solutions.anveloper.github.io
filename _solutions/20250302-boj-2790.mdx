@@ -1,0 +1,71 @@
+---
+title: "BOJ 2790 - F7"
+date: "2025-03-02"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "2790"
+problem_url: "https://www.acmicpc.net/problem/2790"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2790 - F7](https://www.acmicpc.net/problem/2790)
+
+N명의 드라이버 현재 점수가 주어질 때, 마지막 레이스에서 우승 가능한 드라이버의 수를 구하라.
+
+### 입력
+
+드라이버 수 N과 각 현재 점수가 주어진다.
+
+### 출력
+
+우승 가능한 드라이버 수를 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `3` `10 20 30` | `2`  |
+
+## 풀이
+
+내림차순 정렬 후 각 드라이버의 최대 가능 점수를 비교한다.
+
+1. 점수를 내림차순 정렬한다
+2. i번째 드라이버의 최대 점수 = 현재 점수 + (i+1)등 보너스
+3. 이전까지의 최대 점수보다 현재 + N이 작으면 더 이상 우승 불가
+
+**핵심 아이디어**: 마지막 레이스에서 얻을 수 있는 최대 점수(1등 시)가 다른 드라이버의 확정 점수보다 작으면 우승 불가능하다.
+
+## 코드
+
+```python
+# F7
+import sys
+
+input = sys.stdin.readline
+N = int(input())
+drivers = [int(input()) for _ in range(N)]
+drivers.sort(reverse=True)
+
+answer = 0
+max_score = 0
+
+for i in range(N):
+    if drivers[i] + N < max_score:
+        break
+
+    answer += 1
+    max_score = max(max_score, drivers[i] + (i + 1))
+
+print(answer)
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

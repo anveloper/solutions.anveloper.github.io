@@ -1,0 +1,79 @@
+---
+title: "BOJ 10818 - 최소, 최대"
+date: "2023-07-16"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "10818"
+problem_url: "https://www.acmicpc.net/problem/10818"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10818 - 최소, 최대](https://www.acmicpc.net/problem/10818)
+
+N개의 정수가 주어질 때, 최솟값과 최댓값을 구한다.
+
+### 입력
+
+첫째 줄에 N이 주어진다 (1 이상 1,000,000 이하). 둘째 줄에 N개의 정수가 공백으로 구분되어 주어진다 (절댓값 1,000,000 이하).
+
+### 출력
+
+최솟값과 최댓값을 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                | 출력   |
+| ------------------- | ------ |
+| `5` `20 10 35 30 7` | `7 35` |
+
+## 풀이
+
+N개의 수를 순회하며 최솟값과 최댓값을 갱신한다.
+
+1. max를 매우 작은 값(-1000001), min을 매우 큰 값(1000001)으로 초기화한다
+2. StringTokenizer로 각 수를 파싱하며 max, min을 갱신한다
+3. 결과를 "min max" 형태로 출력한다
+
+**핵심 아이디어**: 한 번의 순회로 최솟값과 최댓값을 동시에 구한다. 정렬 없이 O(N)에 해결 가능하다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day525BOJ10818최소최대 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    Integer.parseInt(br.readLine());
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+    int max = -1000001;
+    int min = 1000001;
+
+    while (st.hasMoreTokens()) {
+      int val = Integer.parseInt(st.nextToken());
+      if (val > max) {
+        max = val;
+      }
+      if (val < min) {
+        min = val;
+      }
+    }
+    System.out.println(min + " " + max);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

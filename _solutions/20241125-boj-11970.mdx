@@ -1,0 +1,69 @@
+---
+title: "BOJ 11970 - Fence Painting"
+date: "2024-11-25"
+description: "두 구간이 칠해진 울타리의 총 칠해진 길이를 구하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "11970"
+problem_url: "https://www.acmicpc.net/problem/11970"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11970 - Fence Painting](https://www.acmicpc.net/problem/11970)
+
+두 구간 [a, b)와 [c, d)가 주어질 때, 울타리에서 한 번이라도 칠해진 총 길이를 구하라.
+
+### 입력
+
+두 줄에 걸쳐 각 구간의 시작점과 끝점이 주어진다 (0 이상 100 이하).
+
+### 출력
+
+칠해진 총 길이를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `1 3` `2 5` | `4`  |
+
+## 풀이
+
+크기 101의 배열에 각 구간을 마킹하고, 마킹된 칸 수를 센다.
+
+1. 첫 번째 구간 [a[0], a[1])의 각 인덱스에 표시한다
+2. 두 번째 구간 [a[2], a[3])의 각 인덱스에 표시한다
+3. 배열 전체를 순회하여 표시된 칸 수를 합산한다
+
+**핵심 아이디어**: 배열 마킹으로 두 구간의 합집합 길이를 구하면 중복 구간이 자동으로 처리된다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int ans, fence[101], a[4];
+int main()
+{
+  cin >> a[0] >> a[1] >> a[2] >> a[3];
+  for (int i = a[0]; i < a[1]; i++)
+    fence[i]++;
+  for (int i = a[2]; i < a[3]; i++)
+    fence[i]++;
+  for (int i = 0; i <= 100; i++)
+  {
+    if (fence[i])
+      ans++;
+  }
+  cout << ans;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 울타리 범위, 최대 100)
+- 공간: O(N)

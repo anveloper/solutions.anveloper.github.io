@@ -1,0 +1,91 @@
+---
+title: "BOJ 8949 - 대충 더해"
+date: "2025-09-13"
+description: "수학, 구현, 문자열 문제"
+tags: ["수학", "구현", "문자열", "사칙연산"]
+platform: "boj"
+problem_number: "8949"
+problem_url: "https://www.acmicpc.net/problem/8949"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8949 - 대충 더해](https://www.acmicpc.net/problem/8949)
+
+두 수 A와 B를 더할 때 올림(carry)을 무시하고 각 자릿수를 단순히 더한 결과를 출력한다. 자릿수가 다를 경우 짧은 수는 앞에 0을 채운 것처럼 처리한다. 결과의 최상위 자릿수가 0이면 출력에서 제외한다 (단, 맨 마지막 자릿수는 항상 출력).
+
+### 입력
+
+두 정수 문자열 `A`, `B`가 공백으로 구분되어 주어진다.
+
+```
+199 801
+```
+
+### 출력
+
+각 자릿수를 올림 없이 더한 결과를 출력한다.
+
+```
+990
+```
+
+### 예제
+
+| 입력      | 출력  |
+| --------- | ----- |
+| `199 801` | `990` |
+| `5 7`     | `12`  |
+
+## 풀이
+
+두 문자열의 끝(일의 자리)부터 앞쪽으로 동시에 순회하며 각 자릿수를 더한 값을 결과 벡터에 저장한 뒤, 역순으로 출력한다. 선행 0은 출력하지 않는다.
+
+1. 두 문자열 A, B를 끝 인덱스부터 동시에 감소시키며 각 자릿수 합을 `res` 벡터에 push한다.
+2. 한쪽이 먼저 소진되면 나머지 문자열의 자릿수를 계속 `res`에 추가한다.
+3. `res`를 역순으로 순회하며 출력한다. 단, 가장 앞의 0은 건너뛴다 (`i > 0` 조건).
+
+**핵심 아이디어**: 올림 없는 덧셈이므로 각 자릿수를 독립적으로 더하면 된다. 역순 벡터에 저장 후 역방향 출력으로 올바른 자릿수 순서를 만든다. 마지막 원소(`res[0]`)는 일의 자리에 해당하며 항상 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+vector<int> res;
+
+int main()
+{
+  string A, B;
+  cin >> A >> B;
+  int i = A.length(), j = B.length();
+  for (; i >= 0 && j >= 0; i--, j--)
+  {
+    int a = A[i] - '0';
+    int b = B[j] - '0';
+    res.push_back(a + b);
+  }
+
+  while (i >= 0)
+    res.push_back(A[i--] - '0');
+  while (j >= 0)
+    res.push_back(B[j--] - '0');
+
+  for (int i = res.size() - 1; i > 0; i--)
+  {
+    cout << res[i];
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(max(|A|, |B|)) — 두 문자열 길이 중 큰 값에 비례
+- 공간: O(max(|A|, |B|)) — 결과 벡터 크기

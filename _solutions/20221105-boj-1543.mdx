@@ -1,0 +1,74 @@
+---
+title: "BOJ 1543 - 문서 검색"
+date: "2022-11-05"
+description: "문자열, 브루트포스 알고리즘 문제"
+tags: ["문자열", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1543"
+problem_url: "https://www.acmicpc.net/problem/1543"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1543 - 문서 검색](https://www.acmicpc.net/problem/1543)
+
+문서와 검색 단어가 주어질 때, 문서에서 검색 단어가 겹치지 않게 최대 몇 번 등장하는지 구하라.
+
+### 입력
+
+첫째 줄에 문서(길이 2,500 이하), 둘째 줄에 검색 단어(길이 50 이하)가 주어진다.
+
+### 출력
+
+겹치지 않게 등장하는 최대 횟수를 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `ababababa` `aba` | `2`  |
+
+## 풀이
+
+`String.replaceAll()`로 검색 단어를 한 문자로 치환한 뒤, 치환된 문자의 개수를 세어 등장 횟수를 구한다.
+
+1. 문서에서 검색 단어를 모두 "1"로 치환한다
+2. 치환된 결과 문자열에서 '1'의 개수를 센다
+
+**핵심 아이디어**: `replaceAll()`은 왼쪽부터 겹치지 않게 매칭하므로, 자연스럽게 비겹침 조건을 만족한다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.util.*;
+
+public class Day271BOJ1543문서검색 {
+	public static void main(String args[]) {
+		Scanner sc = new Scanner(System.in);
+		String text = sc.nextLine();
+		String fT = sc.nextLine();
+		sc.close();
+		int cnt = 0;
+
+		text = text.replaceAll(fT, "1");
+
+		for (int i = 0; i < text.length(); i++) {
+			if (text.charAt(i) == '1') {
+				cnt++;
+			}
+		}
+
+		System.out.println(cnt);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

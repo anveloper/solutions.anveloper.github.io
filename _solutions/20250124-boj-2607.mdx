@@ -1,0 +1,71 @@
+---
+title: "BOJ 2607 - 비슷한 단어"
+date: "2025-01-24"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2607"
+problem_url: "https://www.acmicpc.net/problem/2607"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2607 - 비슷한 단어](https://www.acmicpc.net/problem/2607)
+
+첫 번째 단어와 "비슷한" 단어의 수를 구하라. 두 단어가 비슷하려면 한 글자를 더하거나, 빼거나, 바꾸어서 같은 구성이 될 수 있어야 한다.
+
+### 입력
+
+첫째 줄에 단어 수 N, 이후 N줄에 단어가 주어진다.
+
+### 출력
+
+첫 번째 단어와 비슷한 단어의 수를 출력한다.
+
+### 예제
+
+| 입력                          | 출력 |
+| ----------------------------- | ---- |
+| `4` `DOG` `GOD` `GOOD` `DDOG` | `2`  |
+
+## 풀이
+
+각 단어의 글자를 대상 단어에서 하나씩 제거하며 불일치와 잔여를 센다.
+
+1. 비교 단어의 각 글자를 대상 단어 복사본에서 제거한다
+2. 제거 실패한 글자 수(cnt)와 대상에 남은 글자 수를 센다
+3. 둘 다 2 미만이면 비슷한 단어이다 (추가/삭제/교체 1회로 변환 가능)
+
+**핵심 아이디어**: 불일치 수와 잔여 수의 합이 0(동일), 1(추가/삭제), 또는 각각 1(교체)이면 비슷한 단어이다.
+
+## 코드
+
+```python
+N = int(input())
+target = list(input()) # 비교 대상 단어(첫 단어)
+answer = 0
+
+for _ in range(N-1):
+    compare = target[:]
+    word = input() # 새로운 단어
+    cnt = 0
+
+    for w in word:
+        if w in compare:
+            compare.remove(w)
+        else:
+            cnt += 1
+
+    if cnt < 2 and len(compare) < 2:
+        answer += 1
+
+print(answer)
+```
+
+## 복잡도
+
+- 시간: O(N \* L²) — 단어당 L글자, remove는 O(L)
+- 공간: O(L) — 대상 단어 복사본

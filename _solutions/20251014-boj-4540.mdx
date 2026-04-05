@@ -1,0 +1,104 @@
+---
+title: "BOJ 4540 - Q"
+date: "2025-10-14"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4540"
+problem_url: "https://www.acmicpc.net/problem/4540"
+difficulty: "실버 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4540 - Q](https://www.acmicpc.net/problem/4540)
+
+N개의 문자열이 순서대로 있고, Q개의 명령이 주어진다. 각 명령은 `x y` 형태로, x번 문자열을 y번 위치에 배치하라는 의미다. 명령을 모두 수행한 뒤 지정된 위치에 배치되지 않은 나머지 문자열들은 원래 순서를 유지하며 빈 위치를 차례로 채운다. 최종 배열을 출력한다.
+
+### 입력
+
+첫 줄에 테스트 케이스 수 T가 주어진다. 각 테스트 케이스는 N과 Q, N개의 문자열, Q개의 명령 `x y`로 구성된다.
+
+### 출력
+
+각 테스트 케이스에 대해 최종 N개의 문자열을 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                            | 출력      |
+| ------------------------------- | --------- |
+| `1` `4 2` `A B C D` `2 1` `4 3` | `B A D C` |
+
+## 풀이
+
+Q개의 명령으로 특정 위치를 먼저 채우고, 나머지 위치는 사용되지 않은 문자열로 순서대로 채운다.
+
+1. N개의 문자열을 `s[1..N]`에 저장하고, 결과 배열 `ans[1..N]`을 초기화한다.
+2. Q개의 명령 `(x, y)`를 처리하면서 `ans[y] = s[x]`로 지정 위치를 채우고, `visited[x] = 1`로 사용된 원본을 표시한다.
+3. 명령으로 채워지지 않은 나머지 위치(Q개 이후)에 대해, 사용되지 않은 원본 문자열(`visited[sidx] == 0`)을 순서대로 빈 자리(`ans[aidx] == ""`)에 배치한다.
+4. 최종 `ans` 배열을 순서대로 출력한다.
+
+**핵심 아이디어**: 명령에 의해 위치가 고정된 문자열을 먼저 배치하고, 나머지는 원래 순서를 유지하며 빈 슬롯을 채우는 두 단계 접근법을 사용한다. `visited` 배열로 이미 배치된 원본을 추적하고, `sidx`·`aidx` 두 포인터로 남은 원본과 빈 자리를 동시에 순회한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstring>
+using namespace std;
+
+string s[21];
+string ans[21];
+int visited[21];
+
+void solve()
+{
+  int N, Q;
+  cin >> N >> Q;
+  for (int i = 1; i <= N; i++)
+    cin >> s[i], ans[i] = "";
+  memset(visited, 0, sizeof(visited));
+
+  for (int q = 0; q < Q; q++)
+  {
+    int x, y;
+    cin >> x >> y;
+    ans[y] = s[x];
+    visited[x] = 1;
+  }
+
+  int sidx = 1, aidx = 1;
+  for (int q = Q; q < N; q++)
+  {
+    while (visited[sidx])
+      sidx++;
+    while (ans[aidx] != "")
+      aidx++;
+    ans[aidx] = s[sidx];
+    aidx++, sidx++;
+  }
+
+  for (int i = 1; i <= N; i++)
+    cout << ans[i] << ' ';
+  cout << '\n';
+}
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  int T;
+  cin >> T;
+  while (T--)
+    solve();
+}
+```
+
+## 복잡도
+
+- 시간: O(N + Q) — 명령 처리 O(Q), 나머지 채우기 O(N)
+- 공간: O(N) — 문자열 배열 및 방문 배열

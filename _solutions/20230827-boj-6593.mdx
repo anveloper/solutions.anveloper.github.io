@@ -1,0 +1,132 @@
+---
+title: "BOJ 6593 - 상범 빌딩"
+date: "2023-08-27"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "6593"
+problem_url: "https://www.acmicpc.net/problem/6593"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6593 - 상범 빌딩](https://www.acmicpc.net/problem/6593)
+
+L층 R행 C열의 3D 빌딩에서 시작점(S)에서 출구(E)까지의 최단 시간을 구하라. 상하좌우 및 위아래 층 이동 가능.
+
+### 입력
+
+여러 테스트 케이스가 주어지며, 각 케이스에 L, R, C와 3D 격자가 주어진다.
+
+### 출력
+
+최단 시간을 출력한다. 탈출 불가능하면 "Trapped!"을 출력한다.
+
+### 예제
+
+| 입력                                        | 출력                       |
+| ------------------------------------------- | -------------------------- |
+| `3 4 5` `S....` `...` `E....` `...` `0 0 0` | `Escaped in 11 minute(s).` |
+
+## 풀이
+
+3D BFS로 6방향(상하좌우 + 위아래 층) 탐색하여 최단 경로를 구한다.
+
+1. 시작점 S에서 BFS를 시작한다
+2. 6방향(동서남북 + 위층 아래층)으로 이동을 시도한다
+3. 출구 E에 도달하면 이동 횟수를 반환한다
+4. 큐가 비면 탈출 불가능이다
+
+**핵심 아이디어**: 2D BFS를 3차원으로 확장하여 층간 이동을 추가한 6방향 탐색이다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day569BOJ6593상범빌딩 {
+
+  static int l, r, c;
+  static char[][][] map;
+  static StringBuilder sb = new StringBuilder();
+  static int[] dx = { -1, 1, 0, 0, 0, 0 };
+  static int[] dy = { 0, 0, -1, 1, 0, 0 };
+  static int[] dz = { 0, 0, 0, 0, 1, -1 };
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+    while (true) {
+      st = new StringTokenizer(br.readLine());
+      l = Integer.parseInt(st.nextToken());
+      r = Integer.parseInt(st.nextToken());
+      c = Integer.parseInt(st.nextToken());
+      if (l == 0 && r == 0 && c == 0) {
+        System.out.println(sb.toString());
+        return;
+      }
+
+      int sx = 0, sy = 0, sz = 0;
+      map = new char[l][r][c];
+      for (int i = 0; i < l; i++) {
+        for (int j = 0; j < r; j++) {
+          String line = br.readLine();
+          for (int k = 0; k < c; k++) {
+            map[i][j][k] = line.charAt(k);
+            if (map[i][j][k] == 'S') {
+              sx = k;
+              sy = j;
+              sz = i;
+              map[i][j][k] = '.';
+            }
+          }
+        }
+        br.readLine();
+      }
+      bfs(sx, sy, sz);
+    }
+  }
+
+  static void bfs(int x, int y, int z) {
+    Queue<int[]> q = new LinkedList<>();
+    boolean[][][] check = new boolean[l][r][c];
+    q.add(new int[] { x, y, z, 0 });
+    check[z][y][x] = true;
+
+    while (!q.isEmpty()) {
+      int[] p = q.poll();
+      int px = p[0], py = p[1], pz = p[2];
+      int move = p[3];
+
+      if (map[pz][py][px] == 'E') {
+        sb.append("Escaped in " + move + " minute(s).\n");
+        return;
+      }
+
+      for (int d = 0; d < 6; d++) {
+        int nx = px + dx[d], ny = py + dy[d], nz = pz + dz[d];
+        if (nx < 0 || ny < 0 || nz < 0 || nx > c - 1 || ny > r - 1 || nz > l - 1)
+          continue;
+        if (check[nz][ny][nx])
+          continue;
+        if (map[nz][ny][nx] == '.' || map[nz][ny][nx] == 'E') {
+          check[nz][ny][nx] = true;
+          q.add(new int[] { nx, ny, nz, move + 1 });
+        }
+      }
+    }
+    sb.append("Trapped!\n");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(L _ R _ C)
+- 공간: O(L _ R _ C)

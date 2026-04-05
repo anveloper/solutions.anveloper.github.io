@@ -1,0 +1,71 @@
+---
+title: "BOJ 2588 - 곱셈"
+date: "2023-06-20"
+description: "사칙연산, 수학 문제"
+tags: ["사칙연산", "수학"]
+platform: "boj"
+problem_number: "2588"
+problem_url: "https://www.acmicpc.net/problem/2588"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2588 - 곱셈](https://www.acmicpc.net/problem/2588)
+
+세 자리 수 두 개의 곱셈 과정에서 각 자릿수별 부분곱과 최종 결과를 출력하라.
+
+### 입력
+
+첫째 줄에 A, 둘째 줄에 B(세 자리 수)가 주어진다.
+
+### 출력
+
+B의 일의 자리, 십의 자리, 백의 자리와 A의 곱을 각 줄에, 마지막 줄에 A\*B를 출력한다.
+
+### 예제
+
+| 입력        | 출력                          |
+| ----------- | ----------------------------- |
+| `472` `385` | `2360` `3776` `1416` `181720` |
+
+## 풀이
+
+B의 각 자릿수를 추출하여 A와의 부분곱을 계산한다.
+
+1. B를 문자 배열로 변환하여 각 자릿수를 추출한다
+2. 일의 자리(b[2]), 십의 자리(b[1]), 백의 자리(b[0])와 A를 곱한다
+3. 마지막에 A \* B 전체 곱을 출력한다
+
+**핵심 아이디어**: 문자열의 각 문자에서 '0'을 빼면 정수 자릿수를 얻을 수 있다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+
+public class Day499BOJ2588곱셈 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    int A = Integer.parseInt(br.readLine());
+    String B = br.readLine();
+    char[] b = B.toCharArray();
+
+    sb.append(A * (b[2] - '0')).append("\n");
+    sb.append(A * (b[1] - '0')).append("\n");
+    sb.append(A * (b[0] - '0')).append("\n");
+    sb.append(A * Integer.parseInt(B)).append("\n");
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

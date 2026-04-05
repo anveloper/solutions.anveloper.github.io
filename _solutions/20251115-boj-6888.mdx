@@ -1,0 +1,72 @@
+---
+title: "BOJ 6888 - Terms of Office"
+date: "2025-11-15"
+description: "수학, 정수론 문제"
+tags: ["수학", "정수론"]
+platform: "boj"
+problem_number: "6888"
+problem_url: "https://www.acmicpc.net/problem/6888"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6888 - Terms of Office](https://www.acmicpc.net/problem/6888)
+
+X년부터 Y년까지에서 임기가 2, 3, 4, 5년인 네 직책이 모두 동시에 교체되는 해를 찾아라. X년에 모두 시작한다.
+
+### 입력
+
+두 정수 X와 Y가 주어진다.
+
+### 출력
+
+모든 직책이 동시에 교체되는 해를 출력한다.
+
+### 예제
+
+| 입력        | 출력                                                                    |
+| ----------- | ----------------------------------------------------------------------- |
+| `2000 2100` | `All positions change in year 2000` `All positions change in year 2060` |
+
+## 풀이
+
+X년 이후 LCM(2, 3, 4, 5) = 60년마다 모든 직책이 동시에 교체된다.
+
+1. X년부터 Y년까지 순회한다
+2. 각 해에서 `(year - X)`가 2, 3, 4, 5 모두의 배수인지 확인한다
+3. 조건을 만족하면 해당 해를 출력한다
+
+**핵심 아이디어**: 네 주기의 최소공배수 LCM(2, 3, 4, 5) = 60이므로, 시작해 이후 60년 단위로 동시 교체가 일어난다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int x, y;
+  cin >> x >> y;
+
+  for (int year = x; year <= y; year++)
+  {
+    if (!((year - x) % 4) && !((year - x) % 2) && !((year - x) % 3) && !((year - x) % 5))
+      cout << "All positions change in year " << year << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(Y - X)
+- 공간: O(1)

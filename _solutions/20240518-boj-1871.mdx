@@ -1,0 +1,60 @@
+---
+title: "BOJ 1871 - 좋은 자동차 번호판"
+date: "2024-05-18"
+description: "자동차 번호판의 문자부와 숫자부 차이가 100 이하인지 판별"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1871"
+problem_url: "https://www.acmicpc.net/problem/1871"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1871 - 좋은 자동차 번호판](https://www.acmicpc.net/problem/1871)
+
+LLL-DDDD 형태의 번호판에서 문자 3자리를 26진수로 변환한 값과 숫자 4자리의 차이가 100 이하이면 nice, 아니면 not nice를 출력하라.
+
+### 입력
+
+첫째 줄에 번호판 수 N, 이후 N줄에 각 번호판이 주어진다.
+
+### 출력
+
+각 번호판에 대해 nice 또는 not nice를 출력한다.
+
+### 예제
+
+| 입력                      | 출력          |
+| ------------------------- | ------------- |
+| `2` `AAA-0000` `ABA-0026` | `nice` `nice` |
+
+## 풀이
+
+문자부를 26진수로 변환한 값과 숫자부의 차이의 절대값이 100 이하인지 확인한다.
+
+1. 번호판을 '-'로 분리하여 문자부와 숫자부를 얻는다
+2. 문자부를 26진수로 변환한다 (A=0, B=1, ..., Z=25)
+3. 숫자부를 정수로 변환한다
+4. 두 값의 차이의 절대값이 100 이하이면 nice, 아니면 not nice를 출력한다
+
+**핵심 아이디어**: 문자부의 26진수 변환은 `(c-'A') * 26^(2-i)`를 합산하면 된다.
+
+## 코드
+
+```python
+for _ in range(int(input())):
+  L, D = input().split('-')
+  n = int(D)
+  s = 0
+  for i in range(3):
+    s += (ord(L[i])-65) * 26**(2-i)
+  print("nice" if abs(s-n) <= 100 else "not nice")
+```
+
+## 복잡도
+
+- 시간: O(T) — T는 테스트 케이스 수
+- 공간: O(1)

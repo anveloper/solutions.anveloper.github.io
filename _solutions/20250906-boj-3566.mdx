@@ -1,0 +1,105 @@
+---
+title: "BOJ 3566 - 대형 스크린"
+date: "2025-09-06"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "3566"
+problem_url: "https://www.acmicpc.net/problem/3566"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3566 - 대형 스크린](https://www.acmicpc.net/problem/3566)
+
+영화관 스크린의 해상도(rh x rv)와 크기(sh x sv)를 만족하는 타일(패널)을 구매하려 한다. 후보 타일들 중 비용이 가장 적은 타일 조합의 총 비용을 구한다. 타일은 가로/세로 방향으로 배치할 수 있으며, 해상도와 물리적 크기 모두 요구사항을 충족해야 한다.
+
+### 입력
+
+첫째 줄: 스크린의 가로 해상도 `rh`, 세로 해상도 `rv`, 가로 크기 `sh`, 세로 크기 `sv`
+
+둘째 줄: 타일 후보 수 `n`
+
+이후 n줄: 각 타일의 가로 해상도 `rhi`, 세로 해상도 `rvi`, 가로 크기 `shi`, 세로 크기 `svi`, 단가 `pi`
+
+```
+1920 1080 160 90
+3
+192 108 16 9 100
+120 90 12 9 150
+640 480 40 30 80
+```
+
+### 출력
+
+최소 총 비용을 출력한다.
+
+```
+1000
+```
+
+### 예제
+
+| 입력                                            | 출력   |
+| ----------------------------------------------- | ------ |
+| `1920 1080 160 90` `3` `192 108 16 9 100` `...` | `1000` |
+
+## 풀이
+
+각 타일에 대해 가로 방향과 세로 방향 두 가지 배치를 모두 시도하여, 해상도와 크기를 모두 만족하는 최소 타일 수와 그 비용을 계산한 뒤 전체 최솟값을 구한다.
+
+1. 스크린 요구 사항(해상도 rh x rv, 크기 sh x sv)을 입력받는다.
+2. 각 후보 타일에 대해 두 가지 배치 방향을 시도한다.
+   - **정방향**: 가로에 타일 가로를 맞춤 — `h = ceil(rh/rhi)`, `ceil(sh/shi)` 중 큰 값, 마찬가지로 세로 `v` 계산
+   - **회전 방향**: 타일을 90도 회전하여 배치 — `h = ceil(rh/rvi)`, `ceil(sh/svi)` 중 큰 값
+3. 각 방향에서 `h * v * pi`를 계산하여 전역 최솟값을 갱신한다.
+4. 최솟값을 출력한다.
+
+**핵심 아이디어**: 타일을 가로/세로로 몇 장 깔아야 하는지는 해상도 조건과 크기 조건 각각에서 필요한 타일 수 중 더 큰 값(`max`)이 된다. `ceil` 나눗셈으로 부족함 없이 채우고, 두 배치 방향을 모두 검사하여 최적을 선택한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+int rh, rv, sh, sv;
+int n, rhi, rvi, shi, svi, pi;
+int answer = 987654321;
+
+int main()
+{
+  cin.tie(NULL);
+  ios::sync_with_stdio(false);
+
+  cin >> rh >> rv >> sh >> sv;
+
+  cin >> n;
+
+  for (int i = 0; i < n; i++)
+  {
+    cin >> rhi >> rvi >> shi >> svi >> pi;
+
+    int h = max(ceil((double)rh / rhi), ceil((double)sh / shi));
+    int v = max(ceil((double)rv / rvi), ceil((double)sv / svi));
+    answer = min(answer, h * v * pi);
+
+    h = max(ceil((double)rh / rvi), ceil((double)sh / svi));
+    v = max(ceil((double)rv / rhi), ceil((double)sv / shi));
+    answer = min(answer, h * v * pi);
+  }
+
+  cout << answer;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 타일 후보 수 N에 대해 각각 O(1) 처리
+- 공간: O(1) — 별도 자료구조 없이 변수만 사용

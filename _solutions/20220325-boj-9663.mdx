@@ -1,0 +1,93 @@
+---
+title: "BOJ 9663 - N-Queen"
+date: "2022-03-25"
+description: "브루트포스 알고리즘, 백트래킹 문제"
+tags: ["브루트포스 알고리즘", "백트래킹"]
+platform: "boj"
+problem_number: "9663"
+problem_url: "https://www.acmicpc.net/problem/9663"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9663 - N-Queen](https://www.acmicpc.net/problem/9663)
+
+N x N 체스판에 N개의 퀸을 서로 공격하지 않도록 배치하는 경우의 수를 구하는 문제이다. 퀸은 같은 행, 열, 대각선에 있는 기물을 공격할 수 있다. 입력으로 N이 주어지면 가능한 배치 수를 출력한다.
+
+### 입력
+
+- 첫 번째 줄: 정수 N (1 이상 15 이하)
+
+### 출력
+
+N개의 퀸을 배치할 수 있는 경우의 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `8`  | `92` |
+
+## 풀이
+
+각 행에 퀸을 하나씩 배치하는 방식으로 탐색 공간을 줄이고, 백트래킹으로 충돌 조건을 만족하지 않는 경우를 조기에 가지치기한다.
+
+1. `arr[depth] = col`로 depth번째 행에 퀸을 col열에 놓는다는 의미로 1차원 배열을 활용한다.
+2. `nQueen(depth)`에서 `depth == N`이면 유효한 배치이므로 `ans`를 증가시킨다.
+3. 각 열 위치 i에 대해 `isPossible(depth)`를 호출해 이전 행의 퀸들과 충돌 여부를 확인한다.
+4. `isPossible()`에서 같은 열(`arr[col] == arr[i]`) 또는 대각선(`|col - i| == |arr[col] - arr[i]|`) 충돌을 확인한다.
+
+**핵심 아이디어**: 2차원 배열 대신 1차원 배열 `arr[row] = col`로 표현하여 각 행에 퀸이 하나임을 자동으로 보장한다. 행 단위 탐색으로 같은 행 중복 배치를 원천 차단하고, 열과 대각선 조건만 추가로 검사한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day46BOJ9663nqeen재귀2차1차화 { // 9663 N-Queen
+	static int N;
+	static int[] arr;
+	static int ans = 0;
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		N = sc.nextInt();
+		arr = new int[N];
+		nQueen(0);
+		System.out.println(ans);
+		sc.close();
+	}
+
+	public static void nQueen(int depth) {
+		if (depth == N) {
+			ans++;
+			return;
+		}
+		for (int i = 0; i < N; i++) {
+			arr[depth] = i;
+			if (isPossile(depth))
+				nQueen(depth + 1);
+		}
+	}
+
+	private static boolean isPossile(int col) {
+		for (int i = 0; i < col; i++) {
+			if (arr[col] == arr[i])
+				return false;
+			else if (Math.abs(col - i) == Math.abs(arr[col] - arr[i]))
+				return false;
+		}
+		return true;
+	} // 2차원으로 풀었는데, 구선생님께서 1차원으로 arr[col] = row가 되는 1차원으로 재귀..
+} // 모든 좌표를 방문해서 가능, 불가능 여부를 찾는 방법에 활용가능
+```
+
+## 복잡도
+
+- 시간: O(N!) — 최악의 경우 N개 행에 걸쳐 각 열을 시도 (백트래킹으로 실제 탐색 범위는 훨씬 작음)
+- 공간: O(N) — 1차원 배열 arr과 재귀 스택 깊이 N

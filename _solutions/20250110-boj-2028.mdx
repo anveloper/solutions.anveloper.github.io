@@ -1,0 +1,58 @@
+---
+title: "BOJ 2028 - 자기복제수"
+date: "2025-01-10"
+description: "수학 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "2028"
+problem_url: "https://www.acmicpc.net/problem/2028"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2028 - 자기복제수](https://www.acmicpc.net/problem/2028)
+
+양의 정수 N의 제곱의 마지막 자릿수가 N 자체와 같은지 판별하라.
+
+### 입력
+
+테스트 케이스 수와 각 정수 N이 주어진다.
+
+### 출력
+
+자기복제수이면 "YES", 아니면 "NO"를 출력한다.
+
+### 예제
+
+| 입력     | 출력  |
+| -------- | ----- |
+| `1` `76` | `YES` |
+
+## 풀이
+
+N^2의 끝자리가 N과 같은지 문자열 비교한다.
+
+1. N^2을 문자열로 변환한다
+2. 마지막 `len(N)` 자리를 추출하여 N과 비교한다
+3. 일치하면 "YES", 아니면 "NO"를 출력한다
+
+**핵심 아이디어**: 문자열 슬라이싱 `[-len(str(num)):]`으로 끝자리를 추출하면 간단히 비교할 수 있다.
+
+## 코드
+
+```python
+def fn(num):
+    if str(num**2)[-len(str(num)):] == str(num):
+        return "YES"
+    return "NO"
+for i in range(int(input())):
+    print(fn(int(input())))
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

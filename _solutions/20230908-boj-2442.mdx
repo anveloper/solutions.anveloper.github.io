@@ -1,0 +1,72 @@
+---
+title: "BOJ 2442 - 별 찍기 - 5"
+date: "2023-09-08"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2442"
+problem_url: "https://www.acmicpc.net/problem/2442"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2442 - 별 찍기 - 5](https://www.acmicpc.net/problem/2442)
+
+첫째 줄에 1개, 둘째 줄에 3개, ..., N째 줄에 2\*N-1개의 별을 가운데 정렬하여 출력한다.
+
+### 입력
+
+첫째 줄에 N이 주어진다 (1 이상 100 이하).
+
+### 출력
+
+N줄에 걸쳐 가운데 정렬된 삼각형 별을 출력한다.
+
+### 예제
+
+| 입력 | 출력                 |
+| ---- | -------------------- |
+| `3`  | `  *` ` ***` `*****` |
+
+## 풀이
+
+각 줄마다 공백과 별의 개수를 계산하여 출력한다.
+
+1. i행(1~N)에서 공백은 (N-i)개, 별은 (2\*i-1)개를 출력한다
+2. StringBuilder에 모아 한 번에 출력한다
+
+**핵심 아이디어**: i번째 행의 공백 수 = N-i, 별 수 = 2\*i-1 패턴의 이중 루프이다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day581BOJ2442별찍기5 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+    StringBuilder sb = new StringBuilder();
+    for (int i = 1; i <= n; i++) {
+      for (int j = 1; j <= n - i; j++) {
+        sb.append(" ");
+      }
+      for (int j = 1; j <= 2 * i - 1; j++) {
+        sb.append("*");
+      }
+      sb.append("\n");
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(N^2) — StringBuilder 누적

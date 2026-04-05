@@ -1,0 +1,58 @@
+---
+title: "BOJ 4580 - Mad Scientist"
+date: "2026-03-06"
+description: "누적 합 배열에서 각 구간의 원소 개수를 구해 출력하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4580"
+problem_url: "https://www.acmicpc.net/problem/4580"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4580 - Mad Scientist](https://www.acmicpc.net/problem/4580)
+
+> 누적 합 형태의 배열이 주어질 때, 각 구간에 해당하는 값의 개수만큼 구간 번호를 반복 출력하는 문제
+
+## 풀이
+
+누적 합 배열에서 인접한 두 값의 차이가 해당 구간의 원소 수이다. `p[i] - p[i-1]`만큼 구간 번호 `i`를 반복 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int k;
+  while (cin >> k && k != 0) {
+    vector<int> p(k + 1, 0);
+    for (int i = 1; i <= k; ++i) {
+      cin >> p[i];
+    }
+
+    for (int i = 1; i <= k; ++i) {
+      int count = p[i] - p[i - 1];
+      for (int j = 0; j < count; ++j) {
+        cout << i << " ";
+      }
+    }
+    cout << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 총 원소 수)
+- 공간: O(K) (K: 구간 수)

@@ -1,0 +1,140 @@
+---
+title: "BOJ 7576 - 토마토"
+date: "2022-03-13"
+description: "너비 우선 탐색, 그래프 이론, 그래프 탐색 문제"
+tags: ["너비 우선 탐색", "그래프 이론", "그래프 탐색", "격자 그래프", "최단 경로"]
+platform: "boj"
+problem_number: "7576"
+problem_url: "https://www.acmicpc.net/problem/7576"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7576 - 토마토](https://www.acmicpc.net/problem/7576)
+
+M×N 격자 박스에 토마토가 담겨 있다. 익은 토마토(1)는 하루마다 상하좌우 인접한 안 익은 토마토(0)를 익힌다. -1은 빈 칸이다. 모든 토마토가 익는 데 걸리는 최소 일수를 구하는 문제이다. 모든 토마토가 익을 수 없으면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 가로 칸의 수 M (1 이상 1,000 이하), 세로 칸의 수 N (1 이상 1,000 이하)이 공백으로 구분되어 주어진다. 다음 N개의 줄에 박스의 상태가 주어진다.
+
+### 출력
+
+모든 토마토가 익는 최소 날 수를 출력한다. 이미 모두 익었으면 0, 익을 수 없으면 -1을 출력한다.
+
+### 예제
+
+| 입력                                                          | 출력 |
+| ------------------------------------------------------------- | ---- |
+| `6 4` `0 0 0 0 0 0` `0 0 0 0 0 0` `0 0 0 0 0 0` `0 0 0 0 0 1` | `8`  |
+
+## 풀이
+
+다중 출발점 BFS(Multi-source BFS)로 해결한다. 초기에 익은 토마토 전부를 큐에 넣고 동시에 BFS를 시작하면, 각 토마토가 익는 날짜는 해당 위치까지의 최단 거리와 같다.
+
+1. M×N 박스를 입력받으면서 익은 토마토(`box[i][j] == 1`)를 모두 초기 큐에 넣는다.
+2. BFS를 수행하며 현재 토마토에서 상하좌우 방향을 탐색한다.
+3. 안 익은 토마토(`0`)를 만나면 익힌 뒤(`1`로 변경) 큐에 날짜+1로 추가한다.
+4. BFS 종료 후 `checkTomato()`로 남아있는 `0`이 없는지 확인한다.
+5. 안 익은 토마토가 없으면 마지막 처리된 날짜를 출력하고, 있으면 -1을 출력한다.
+
+**핵심 아이디어:** 여러 출발점에서 동시에 BFS를 시작하면 모든 위치까지의 최단 거리를 한 번의 탐색으로 구할 수 있다. 날짜 정보는 큐에 저장되는 `Dot` 객체의 `day` 필드로 전파된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day28BOJ7576토마토큐 { // 7576 토마토
+	static int N;
+	static int M;
+	static int[][] box;
+	static int[] dx = { 1, -1, 0, 0 };
+	static int[] dy = { 0, 0, 1, -1 };
+
+	static class Dot {
+		int x;
+		int y;
+		int day;
+
+		public Dot(int x, int y, int day) {
+			this.x = x;
+			this.y = y;
+			this.day = day;
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		box = new int[M][N];
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			for (int j = 0; j < N; j++) {
+				box[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		Queue<Dot> q = new LinkedList<Dot>();
+		int day = 0;
+
+		for (int i = 0; i < M; i++) {
+			for (int j = 0; j < N; j++) {
+				if (box[i][j] == 1)
+					q.offer(new Dot(i, j, 0));
+			}
+		}
+
+		while (!q.isEmpty()) {
+			Dot dot = q.poll();
+			day = dot.day;
+
+			for (int i = 0; i < 4; i++) {
+				int nx = dot.x + dx[i];
+				int ny = dot.y + dy[i];
+
+				if (0 <= nx && nx < M && 0 <= ny && ny < N) {
+					if (box[nx][ny] == 0) {
+						box[nx][ny] = 1;
+						q.add(new Dot(nx, ny, day + 1));
+					}
+				}
+			}
+		}
+
+		if (checkTomato())
+			System.out.println(day);
+		else
+			System.out.println(-1);
+	}
+
+	static boolean checkTomato() {
+		for (int i = 0; i < M; i++) {
+			for (int j = 0; j < N; j++) {
+				if (box[i][j] == 0)
+					return false;
+			}
+		}
+		return true;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(NM) — 각 셀을 최대 한 번씩 방문
+- 공간: O(NM) — 격자 배열과 BFS 큐

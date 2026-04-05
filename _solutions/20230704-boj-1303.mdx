@@ -1,0 +1,143 @@
+---
+title: "BOJ 1303 - 전쟁 - 전투"
+date: "2023-07-04"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "1303"
+problem_url: "https://www.acmicpc.net/problem/1303"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1303 - 전쟁 - 전투](https://www.acmicpc.net/problem/1303)
+
+N x M 전장에서 아군(W)과 적군(B)이 배치되어 있을 때, 인접한 같은 팀 병사 그룹의 위력(그룹 크기의 제곱)의 합을 각각 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 M줄에 전장 상태가 주어진다.
+
+### 출력
+
+아군과 적군의 위력 합을 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                                          | 출력     |
+| --------------------------------------------- | -------- |
+| `5 5` `WBWWW` `WWWWW` `BBBBB` `BBBWW` `WWWWW` | `130 65` |
+
+## 풀이
+
+BFS로 같은 팀의 연결 컴포넌트를 찾고, 각 그룹 크기의 제곱을 합산한다.
+
+1. 모든 칸을 순회하며 미방문 칸에서 BFS를 시작한다
+2. 같은 문자(W 또는 B)로 연결된 그룹의 크기를 센다
+3. 그룹 크기의 제곱을 해당 팀의 위력에 더한다
+
+**핵심 아이디어**: 연결 컴포넌트의 크기를 BFS로 구한 후 제곱하면 해당 그룹의 위력이 된다.
+
+## 코드
+
+```java
+package day549;
+
+import java.util.*;
+import java.io.*;
+
+public class Day513BOJ1303전쟁전투 {
+  static int N, M, cnt, white = 0, black = 0;
+  static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+  static char[][] map;
+  static boolean[][] visited;
+  static Queue<Node> q = new LinkedList<>();
+
+  static class Node {
+    int r, c;
+
+    public Node(int r, int c) {
+      this.r = r;
+      this.c = c;
+    }
+  }
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+    st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+
+    visited = new boolean[M][N];
+
+    map = new char[M][N];
+    for (int i = 0; i < M; i++) {
+      st = new StringTokenizer(br.readLine());
+      String temp = st.nextToken();
+
+      for (int j = 0; j < N; j++) {
+        char ch = temp.charAt(j);
+        map[i][j] = ch;
+      }
+    }
+
+    for (int i = 0; i < M; i++) {
+      for (int j = 0; j < N; j++) {
+
+        if (visited[i][j] == false) {
+
+          if (map[i][j] == 'W') {
+            white += bfs(i, j, 'W');
+          } else {
+            black += bfs(i, j, 'B');
+          }
+
+        }
+      }
+    }
+
+    System.out.println(white + " " + black);
+  }
+
+  static int bfs(int y, int x, char ch) {
+    q.offer(new Node(y, x));
+    cnt = 1;
+    visited[y][x] = true;
+
+    while (!q.isEmpty()) {
+      check(ch);
+    }
+
+    return cnt * cnt;
+  }
+
+  static void check(char ch) {
+    Node cur = q.poll();
+
+    for (int i = 0; i < 4; i++) {
+
+      int nr = cur.r + dr[i];
+      int nc = cur.c + dc[i];
+
+      if (nr >= 0 && nr < M && nc >= 0 && nc < N) {
+
+        if (visited[nr][nc] == false && ch == map[nr][nc]) {
+
+          q.offer(new Node(nr, nc));
+          visited[nr][nc] = true;
+          cnt++;
+        }
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(NM)
+- 공간: O(NM)

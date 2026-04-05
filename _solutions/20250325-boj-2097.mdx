@@ -1,0 +1,65 @@
+---
+title: "BOJ 2097 - 조약돌"
+date: "2025-03-25"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "2097"
+problem_url: "https://www.acmicpc.net/problem/2097"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2097 - 조약돌](https://www.acmicpc.net/problem/2097)
+
+N개의 조약돌을 가능한 한 정사각형에 가까운 직사각형으로 배열할 때, 둘레를 구하라.
+
+### 입력
+
+정수 N이 주어진다.
+
+### 출력
+
+직사각형의 둘레를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `9`  | `12` |
+
+## 풀이
+
+N의 제곱근에 가장 가까운 직사각형을 찾아 둘레를 계산한다.
+
+1. N이 1 또는 2이면 둘레는 4이다
+2. sqrt(N)을 반올림하여 한 변의 길이를 구한다
+3. 완전 정사각형이면 `(변-1) * 4`, 아니면 두 변의 합 `* 2`로 둘레를 계산한다
+
+**핵심 아이디어**: N개를 최대한 정사각형에 가깝게 배치하면 둘레가 최소화된다.
+
+## 코드
+
+```python
+def solve(n):
+    if n == 1 or n == 2:
+        return 4
+    else:
+        temp = round((n) ** 0.5)
+        if temp * temp >= n:
+            return (temp - 1) * 4
+        else:
+            return ((temp - 1) * 2) + (temp * 2)
+
+
+N = int(input())
+print(solve(N))
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,152 @@
+---
+title: "BOJ 1033 - 칵테일"
+date: "2022-08-05"
+description: "수학, 그래프 이론, 그래프 탐색 문제"
+tags: ["수학", "그래프 이론", "그래프 탐색", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "1033"
+problem_url: "https://www.acmicpc.net/problem/1033"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1033 - 칵테일](https://www.acmicpc.net/problem/1033)
+
+N가지 재료로 만드는 칵테일의 레시피가 N-1개의 비율로 주어진다. 각 비율은 "재료 a와 재료 b의 질량 비가 p:q"로 표현된다. 모든 재료의 질량이 정수이고, 전체 질량의 합이 최소가 되도록 각 재료의 질량을 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 재료의 수 N이 주어진다. (2 ≤ N ≤ 10)
+
+다음 N-1줄에 a, b, p, q가 주어진다. (재료 a와 b의 질량비가 p:q)
+
+### 출력
+
+각 재료의 질량을 공백으로 구분하여 출력한다.
+
+### 예제
+
+**입력:**
+
+```
+3
+0 1 2 3
+0 2 5 7
+```
+
+**출력:**
+
+```
+70 105 50
+```
+
+## 풀이
+
+**핵심 아이디어:** N-1개의 비율 관계를 트리(그래프)로 표현하고 DFS로 모든 재료의 상대적 질량을 계산한다. LCM을 이용해 정수 비율을 유지하고, 마지막에 GCD로 약분한다.
+
+단계별 풀이:
+
+1. 각 비율 a:b = p:q를 양방향 간선으로 그래프에 저장. b→a 방향으로 가면 비율이 q:p가 된다.
+2. 모든 비율의 LCM을 미리 계산하여 `lcm`으로 저장.
+3. 루트 노드(0번)의 질량을 `lcm`으로 설정하고 DFS 탐색.
+4. 인접 노드 `next`의 질량: `D[next] = D[current] * q / p` (현재→다음 비율로 계산).
+5. 모든 노드 질량의 GCD를 구하여 각 질량을 GCD로 나눠 최솟값을 얻는다.
+
+LCM을 초기값으로 쓰는 이유: 중간 계산에서 정수 나눗셈 오류가 발생하지 않도록 보장하기 위함이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+public class Day179BOJ1033칵테일DFS {
+
+	static long[] D;
+	static boolean[] visited;
+	static ArrayList<int[]>[] al;
+	static long lcm;
+
+	public static void main(String[] args) throws IOException {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+		int N = Integer.parseInt(br.readLine());
+		D = new long[N];
+		visited = new boolean[N];
+		al = new ArrayList[N];
+		lcm = 1;
+
+		for (int i = 0; i < al.length; i++) {
+			al[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < N - 1; i++) {
+
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int p = Integer.parseInt(st.nextToken());
+			int q = Integer.parseInt(st.nextToken());
+
+			al[a].add(new int[] { b, p, q });
+			al[b].add(new int[] { a, q, p });
+
+			lcm *= p * q / gcd(p, q);
+
+		}
+
+		D[0] = lcm;
+		dfs(0);
+		long mgcd = D[0];
+		for (int i = 1; i < N; i++) {
+			mgcd = gcd(mgcd, D[i]);
+		}
+		for (int i = 0; i < N; i++) {
+			System.out.print(D[i] / mgcd + " ");
+		}
+
+	}
+
+	public static void dfs(int index) {
+
+		visited[index] = true;
+		for (int i = 0; i < al[index].size(); i++) {
+			int next = al[index].get(i)[0];
+			if (!visited[next]) {
+				D[next] = D[index] * al[index].get(i)[2] / al[index].get(i)[1];
+				dfs(next);
+			}
+		}
+
+	}
+
+	public static long gcd(long a, long b) {
+
+		long max = a > b ? a : b;
+		long min = a < b ? a : b;
+
+		while (max % min != 0) {
+
+			long temp = max;
+			max = min;
+			min = temp % min;
+
+		}
+		return min;
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(V + E) — V개 노드, E=N-1개 간선으로 DFS 탐색
+- 공간: O(V + E) — 그래프 인접 리스트와 방문 배열

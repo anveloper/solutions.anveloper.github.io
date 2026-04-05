@@ -1,0 +1,65 @@
+---
+title: "BOJ 2558 - A+B - 2"
+date: "2023-07-10"
+description: "구현, 사칙연산, 수학 문제"
+tags: ["구현", "사칙연산", "수학"]
+platform: "boj"
+problem_number: "2558"
+problem_url: "https://www.acmicpc.net/problem/2558"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2558 - A+B - 2](https://www.acmicpc.net/problem/2558)
+
+두 정수 A와 B가 각각 한 줄에 하나씩 주어질 때, A+B를 출력한다.
+
+### 입력
+
+첫째 줄에 A, 둘째 줄에 B가 주어진다 (0 이상 10 이하).
+
+### 출력
+
+A+B를 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `1` `2` | `3`  |
+
+## 풀이
+
+각 줄에서 정수를 읽어 합을 출력한다.
+
+1. Scanner로 정수 a, b를 읽는다
+2. a + b를 출력한다
+
+**핵심 아이디어**: 기본 A+B 문제의 변형으로, 입력이 한 줄이 아닌 두 줄로 주어지는 점만 다르다.
+
+## 코드
+
+```java
+package day549;
+
+import java.util.Scanner;
+
+public class Day519BOJ2558ab2 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int a = sc.nextInt();
+    int b = sc.nextInt();
+    sc.close();
+
+    System.out.println(a + b);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

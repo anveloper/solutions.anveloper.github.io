@@ -1,0 +1,82 @@
+---
+title: "BOJ 1769 - 3의 배수"
+date: "2023-12-23"
+description: "수학, 구현, 문자열 문제"
+tags: ["수학", "구현", "문자열"]
+platform: "boj"
+problem_number: "1769"
+problem_url: "https://www.acmicpc.net/problem/1769"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1769 - 3의 배수](https://www.acmicpc.net/problem/1769)
+
+자연수 X가 주어질 때, 각 자릿수의 합으로 대체하는 변환을 한 자릿수가 될 때까지 반복한다. 변환 횟수와 최종 결과가 3의 배수인지를 출력하라.
+
+### 입력
+
+자연수 X가 주어진다 (최대 수백만 자리).
+
+### 출력
+
+첫째 줄에 변환 횟수, 둘째 줄에 3의 배수이면 "YES", 아니면 "NO"를 출력한다.
+
+### 예제
+
+| 입력      | 출력     |
+| --------- | -------- |
+| `1234567` | `2` `NO` |
+
+## 풀이
+
+자릿수 합 변환을 반복하여 한 자릿수로 만든 뒤, 3의 배수 여부를 판별한다.
+
+1. 문자열 길이가 1이 될 때까지 각 자릿수의 합을 구한다
+2. 합을 새로운 문자열로 치환하고 변환 횟수를 증가시킨다
+3. 최종 한 자릿수가 3의 배수인지 확인한다
+
+**핵심 아이디어**: 자릿수 합은 원래 수와 3으로 나눈 나머지가 같으므로(합동), 한 자릿수까지 줄여도 3의 배수 판별 결과는 보존된다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day690BOJ1769삼의배수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringBuilder sb = new StringBuilder();
+
+    String str = br.readLine();
+    long ans = 0, cnt = 0;
+    while (true) {
+      ans = 0;
+      if (str.length() == 1) {
+        break;
+      }
+      char[] array = str.toCharArray();
+      for (int i = 0; i < array.length; i++) {
+        ans += (int) (array[i] - '0');
+      }
+      str = String.valueOf(ans);
+      cnt++;
+    }
+    sb.append(cnt).append('\n').append(Integer.parseInt(String.valueOf(str)) % 3 == 0 ? "YES" : "NO");
+    bw.write(sb.toString());
+    br.close();
+    bw.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 첫 변환에서 전체 자릿수 순회, 이후는 급격히 줄어듦
+- 공간: O(N) — 입력 문자열 저장

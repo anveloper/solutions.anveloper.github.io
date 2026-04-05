@@ -1,0 +1,129 @@
+---
+title: "BOJ 3085 - 사탕 게임"
+date: "2022-11-19"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "3085"
+problem_url: "https://www.acmicpc.net/problem/3085"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3085 - 사탕 게임](https://www.acmicpc.net/problem/3085)
+
+N x N 보드에 색이 다른 사탕이 채워져 있다. 인접한 두 사탕을 교환했을 때, 같은 색으로 이루어진 가장 긴 연속 부분의 길이를 구하라.
+
+### 입력
+
+첫째 줄에 N (3 ≤ N ≤ 50), 이후 N줄에 C(빨강), P(파랑), Z(초록), Y(노랑) 사탕이 주어진다.
+
+### 출력
+
+교환 후 가장 긴 연속 부분의 최대 길이를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `CCP` `CCP` `PPC` | `3`  |
+
+## 풀이
+
+모든 인접한 쌍을 교환하고, 영향받는 행과 열만 검사하여 최대 연속 길이를 구한다.
+
+1. 가로 인접 쌍 (i, j)-(i, j+1)을 교환 후 해당 행과 두 열을 검사한다
+2. 세로 인접 쌍 (j, i)-(j+1, i)을 교환 후 해당 두 행과 열을 검사한다
+3. 각 검사에서 같은 색 연속 길이의 최댓값을 갱신한다
+4. 교환을 되돌리고 다음 쌍으로 진행한다
+
+**핵심 아이디어**: 교환은 해당 행과 열에만 영향을 주므로, 전체 보드가 아닌 관련 행/열만 검사하여 효율성을 높인다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Day285BOJ3085사탕게임구현 {
+
+	static char[][] board;
+	static int n;
+	static int result = Integer.MIN_VALUE;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		n = Integer.parseInt(br.readLine());
+		board = new char[n][n];
+
+		for (int i = 0; i < n; i++) {
+			String row = br.readLine();
+
+			for (int j = 0; j < n; j++) {
+				board[i][j] = row.charAt(j);
+			}
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n - 1; j++) {
+				swap(i, j, i, j + 1);
+				searchRow(i);
+				searchCol(j);
+				searchCol(j + 1);
+				swap(i, j, i, j + 1);
+
+				swap(j, i, j + 1, i);
+				searchRow(j);
+				searchRow(j + 1);
+				searchCol(i);
+				swap(j, i, j + 1, i);
+			}
+		}
+
+		System.out.println(result);
+	}
+
+	static void searchCol(int col) {
+		int count = 1;
+		for (int i = 1; i < n; i++) {
+			if (board[i][col] == board[i - 1][col]) {
+				count++;
+			} else {
+				result = Math.max(result, count);
+				count = 1;
+			}
+		}
+		result = Math.max(result, count);
+	}
+
+	static void searchRow(int row) {
+		int count = 1;
+		for (int i = 1; i < n; i++) {
+			if (board[row][i] == board[row][i - 1]) {
+				count++;
+			} else {
+				result = Math.max(result, count);
+				count = 1;
+			}
+		}
+		result = Math.max(result, count);
+	}
+
+	static void swap(int x1, int y1, int x2, int y2) {
+		char temp = board[x1][y1];
+		board[x1][y1] = board[x2][y2];
+		board[x2][y2] = temp;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N³)
+- 공간: O(N²)

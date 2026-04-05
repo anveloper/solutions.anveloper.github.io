@@ -1,0 +1,77 @@
+---
+title: "BOJ 10820 - 문자열 분석"
+date: "2024-10-03"
+description: "문자열에서 소문자, 대문자, 숫자, 공백의 개수를 세는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "10820"
+problem_url: "https://www.acmicpc.net/problem/10820"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10820 - 문자열 분석](https://www.acmicpc.net/problem/10820)
+
+문자열이 주어질 때, 소문자, 대문자, 숫자, 공백의 개수를 각각 출력하라.
+
+### 입력
+
+여러 줄에 걸쳐 문자열이 주어진다 (EOF까지).
+
+### 출력
+
+각 줄마다 소문자, 대문자, 숫자, 공백의 개수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력             | 출력       |
+| ---------------- | ---------- |
+| `This is String` | `10 2 0 2` |
+
+## 풀이
+
+각 문자를 ASCII 범위로 분류하여 카운트한다.
+
+1. `getline`으로 한 줄씩 읽는다
+2. 각 문자가 소문자, 대문자, 숫자, 공백 중 어디에 해당하는지 조건문으로 판별한다
+3. 각 카운트를 공백으로 구분하여 출력한다
+
+**핵심 아이디어**: 문자의 ASCII 범위(`'a'-'z'`, `'A'-'Z'`, `'0'-'9'`, `' '`)로 분류하면 O(L)에 해결된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+  string s;
+  while (getline(cin, s))
+  {
+    int a = 0, b = 0, c = 0, d = 0;
+    for (int i = 0; i < s.size(); i++)
+    {
+      if (s[i] >= 'a' && s[i] <= 'z')
+        a++;
+      else if (s[i] >= 'A' && s[i] <= 'Z')
+        b++;
+      else if (s[i] >= '0' && s[i] <= '9')
+        c++;
+      else if (s[i] == ' ')
+        d++;
+    }
+    cout << a << " " << b << " " << c << " " << d << '\n';
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* L) (T: 줄 수, L: 문자열 길이)
+- 공간: O(L)

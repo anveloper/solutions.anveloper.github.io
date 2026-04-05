@@ -1,0 +1,104 @@
+---
+title: "BOJ 2096 - 내려가기"
+date: "2022-06-09"
+description: "다이나믹 프로그래밍, 슬라이딩 윈도우 문제"
+tags: ["다이나믹 프로그래밍", "슬라이딩 윈도우"]
+platform: "boj"
+problem_number: "2096"
+problem_url: "https://www.acmicpc.net/problem/2096"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2096 - 내려가기](https://www.acmicpc.net/problem/2096)
+
+N줄에 걸쳐 각 줄에 3개의 숫자가 있다. 첫 줄에서 시작하여 아래로 내려갈 때 같은 열이나 인접 열로만 이동할 수 있다. N줄을 모두 내려갔을 때 얻을 수 있는 점수의 최댓값과 최솟값을 동시에 구하는 문제다. N이 최대 100,000이므로 메모리 4MB 제한 조건 내에서 DP를 처리하려면 이전 행 결과만 유지하는 슬라이딩 윈도우 방식이 필요하다.
+
+### 입력
+
+- 첫째 줄: 줄 수 N (1 이상 100,000 이하)
+- 둘째 줄부터 N개 줄: 0 이상 9 이하 숫자 3개
+
+### 출력
+
+최댓값과 최솟값을 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                        | 출력   |
+| --------------------------- | ------ |
+| `3` `1 2 3` `4 5 6` `4 9 0` | `19 4` |
+
+## 풀이
+
+이전 행의 DP 값 배열(`maxDP`, `minDP`) 크기 3만을 유지하며 한 행씩 갱신하는 슬라이딩 윈도우 DP를 적용한다.
+
+1. 첫 번째 행으로 `maxDP`와 `minDP`를 초기화
+2. 두 번째 행부터 현재 행의 값을 읽어 이전 DP 값을 임시 저장(`tmpDP`)
+3. 좌측 열(0): 이전 `tmpDP[0]`과 `tmpDP[1]` 중 최대/최솟값에 현재 값 더함
+4. 우측 열(2): 이전 `tmpDP[1]`과 `tmpDP[2]` 중 최대/최솟값에 현재 값 더함
+5. 중간 열(1): 이전 `tmpDP[0]`, `tmpDP[1]`, `tmpDP[2]` 중 최대/최솟값에 현재 값 더함
+6. N행 처리 후 `maxDP`, `minDP` 각각의 최대/최솟값 출력
+
+**핵심 아이디어:** 전체 N×3 DP 테이블 대신 크기 3 배열 2개만 유지함으로써 메모리를 O(1)로 줄여 4MB 제한을 통과한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.StringTokenizer;
+
+public class Day122BOJ2096내려가기SlidingWindow { // 2096 내려가기 슬라이딩 윈도우
+	static StringTokenizer st;
+	static int N, max, min;
+	static int[] tmp, tmpDP, maxDP, minDP;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		N = Integer.parseInt(br.readLine());
+		st = new StringTokenizer(br.readLine());
+		tmp = new int[] { ipsn(), ipsn(), ipsn() };
+		maxDP = new int[] { tmp[0], tmp[1], tmp[2] };
+		minDP = new int[] { tmp[0], tmp[1], tmp[2] };
+
+		for (int i = 1; i < N; i++) { // init에서 1줄 사용
+			st = new StringTokenizer(br.readLine());
+			tmp = new int[] { ipsn(), ipsn(), ipsn() };
+
+			tmpDP = new int[] { maxDP[0], maxDP[1], maxDP[2] };
+			maxDP[0] = Math.max(tmpDP[0], tmpDP[1]) + tmp[0];
+			maxDP[2] = Math.max(tmpDP[1], tmpDP[2]) + tmp[2];
+			maxDP[1] = Math.max(Math.max(tmpDP[0], tmpDP[1]), tmpDP[2]) + tmp[1];
+
+			tmpDP = new int[] { minDP[0], minDP[1], minDP[2] };
+			minDP[0] = Math.min(tmpDP[0], tmpDP[1]) + tmp[0];
+			minDP[2] = Math.min(tmpDP[1], tmpDP[2]) + tmp[2];
+			minDP[1] = Math.min(Math.min(tmpDP[0], tmpDP[1]), tmpDP[2]) + tmp[1];
+		}
+
+		bw.write(Math.max(maxDP[0], Math.max(maxDP[1], maxDP[2])) + " ");
+		bw.write(Math.min(minDP[0], Math.min(minDP[1], minDP[2])) + "\n");
+		bw.flush();
+		bw.close();
+		br.close();
+	}
+
+	static int ipsn() { // 토큰 바로 배열 만들기
+		return Integer.parseInt(st.nextToken());
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 행을 한 번씩 처리
+- 공간: O(1) — 크기 3 배열 2개만 유지 (슬라이딩 윈도우)

@@ -1,0 +1,73 @@
+---
+title: "BOJ 4299 - AFC 윔블던"
+date: "2024-08-03"
+description: "두 팀의 점수 합과 차로 각 팀의 점수를 구하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "4299"
+problem_url: "https://www.acmicpc.net/problem/4299"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4299 - AFC 윔블던](https://www.acmicpc.net/problem/4299)
+
+두 팀의 점수 합 A와 점수 차 B가 주어질 때, 각 팀의 점수를 구하라. 불가능하면 -1을 출력한다.
+
+### 입력
+
+점수 합 A와 점수 차 B가 주어진다.
+
+### 출력
+
+높은 점수와 낮은 점수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `3 1` | `2 1` |
+
+## 풀이
+
+연립방정식 `x + y = A`, `x - y = B`를 풀어 각 점수를 구한다.
+
+1. `A < B`이면 불가능하므로 -1을 출력한다
+2. `x = (A + B) / 2`, `y = (A - B) / 2`로 계산한다
+3. `x + y == A`이고 `x - y == B`인지 검증한다 (정수 해 존재 확인)
+4. 검증 실패 시 -1, 성공 시 x와 y를 출력한다
+
+**핵심 아이디어**: A+B가 홀수이면 정수 해가 없으므로 불가능하다. 검증 과정에서 이를 자연스럽게 걸러낸다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  int a, b, x, y;
+  cin >> a >> b;
+  if (a < b)
+    cout << "-1";
+  else
+  {
+    x = (a + b) / 2;
+    y = (a - b) / 2;
+    if (x + y == a && x - y == b)
+      cout << x << " " << y;
+    else
+      cout << "-1";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

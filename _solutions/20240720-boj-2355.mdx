@@ -1,0 +1,70 @@
+---
+title: "BOJ 2355 - 시그마"
+date: "2024-07-20"
+description: "A부터 B까지의 합을 등차수열의 합 공식으로 구하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "2355"
+problem_url: "https://www.acmicpc.net/problem/2355"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2355 - 시그마](https://www.acmicpc.net/problem/2355)
+
+두 정수 A, B가 주어질 때, A부터 B까지 모든 정수의 합을 구하라.
+
+### 입력
+
+두 정수 A, B가 주어진다.
+
+### 출력
+
+A부터 B까지의 합을 출력한다.
+
+### 예제
+
+| 입력    | 출력   |
+| ------- | ------ |
+| `1 100` | `5050` |
+
+## 풀이
+
+등차수열의 합 공식을 사용하여 O(1)에 계산한다.
+
+1. A와 B 중 작은 값을 A, 큰 값을 B로 swap한다
+2. 등차수열의 합 공식 `(B - A + 1) * (A + B) / 2`를 적용한다
+3. 결과를 출력한다
+
+**핵심 아이디어**: 1부터 N까지의 합 공식을 일반화하여 임의 구간의 합을 O(1)에 구한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+
+  long long a, b;
+  scanf("%lld %lld", &a, &b);
+
+  if (a > b)
+  {
+    swap(a, b);
+  }
+  printf("%lld", (b - a + 1) * (b + a) / 2);
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

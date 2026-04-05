@@ -1,0 +1,118 @@
+---
+title: "BOJ 4096 - 팰린드로미터"
+date: "2025-09-04"
+description: "문자열, 브루트포스 알고리즘 문제"
+tags: ["문자열", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "4096"
+problem_url: "https://www.acmicpc.net/problem/4096"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4096 - 팰린드로미터](https://www.acmicpc.net/problem/4096)
+
+앞뒤로 읽어도 같은 숫자를 팰린드롬 수라고 한다. 주어진 숫자(앞에 0이 붙을 수 있는 고정 자릿수 문자열)에서 시작하여 몇 번을 1씩 증가해야 팰린드롬 수가 되는지 구한다.
+
+### 입력
+
+한 줄에 하나씩 고정 자릿수 정수 문자열이 주어진다. 앞에 0이 붙어 있을 수 있으며, `"0"`이 입력되면 종료한다.
+
+```
+0001
+0009
+0
+```
+
+### 출력
+
+각 숫자에 대해 팰린드롬이 될 때까지 더한 횟수를 출력한다.
+
+```
+0
+2
+```
+
+### 예제
+
+| 입력   | 출력   |
+| ------ | ------ |
+| `0001` | `0`    |
+| `0009` | `2`    |
+| `0`    | (종료) |
+
+## 풀이
+
+주어진 고정 자릿수 문자열을 팰린드롬 검사하고, 아니면 1씩 증가하며 반복한다. 자릿수를 유지하기 위해 증가 후 앞자리에 `0`을 패딩한다.
+
+1. `"0"`이 입력되면 종료한다.
+2. 현재 문자열의 앞쪽 절반과 뒤쪽 절반을 비교하여 팰린드롬인지 확인한다.
+3. 팰린드롬이면 현재까지의 증가 횟수를 출력한다.
+4. 팰린드롬이 아니면 `count`를 1 증가시키고 숫자를 1 더한 뒤 원래 자릿수에 맞춰 앞에 `0`을 채운다.
+5. 팰린드롬이 될 때까지 2~4를 반복한다.
+
+**핵심 아이디어**: 입력이 고정 자릿수 문자열이므로 정수 변환과 자릿수 패딩을 함께 처리해야 한다. 팰린드롬 검사는 양 끝 포인터를 좁혀가며 O(N) 시간에 수행한다. 팰린드롬 수의 밀도가 높아 증가 횟수가 많지 않으므로 브루트포스가 유효하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(0), cin.tie(0);
+  string str;
+  while (true)
+  {
+    cin >> str;
+    if (str == "0")
+    {
+      break;
+    }
+
+    int count = 0;
+    int size = str.size();
+    while (true)
+    {
+      bool isFind = true;
+
+      for (int i = 0; i < size / 2; ++i)
+      {
+        if (str[i] != str[size - 1 - i])
+        {
+          isFind = false;
+          break;
+        }
+      }
+
+      if (isFind)
+      {
+        cout << count << "\n";
+        break;
+      }
+
+      ++count;
+      int num = stoi(str);
+
+      string next = to_string(num + 1);
+      str = "";
+      for (int i = 0; i < size - next.size(); ++i)
+      {
+        str.push_back('0');
+      }
+      str += next;
+    }
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(K \* N) — K는 팰린드롬까지의 증가 횟수, N은 문자열 길이
+- 공간: O(N) — 문자열 저장

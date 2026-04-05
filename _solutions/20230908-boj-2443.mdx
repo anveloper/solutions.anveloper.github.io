@@ -1,0 +1,70 @@
+---
+title: "BOJ 2443 - 별 찍기 - 6"
+date: "2023-09-08"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2443"
+problem_url: "https://www.acmicpc.net/problem/2443"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2443 - 별 찍기 - 6](https://www.acmicpc.net/problem/2443)
+
+첫째 줄에 2\*N-1개, ..., N째 줄에 1개의 별을 가운데 정렬하여 출력한다 (역삼각형).
+
+### 입력
+
+첫째 줄에 N이 주어진다 (1 이상 100 이하).
+
+### 출력
+
+N줄에 걸쳐 가운데 정렬된 역삼각형 별을 출력한다.
+
+### 예제
+
+| 입력 | 출력                 |
+| ---- | -------------------- |
+| `3`  | `*****` ` ***` `  *` |
+
+## 풀이
+
+각 줄마다 공백과 별의 개수를 계산하여 역삼각형을 출력한다.
+
+1. i행(0~N-1)에서 공백은 i개, 별은 2\*(N-i)-1개를 출력한다
+2. StringBuilder에 모아 한 번에 출력한다
+
+**핵심 아이디어**: 별 찍기 5의 반대 패턴으로, 공백이 증가하고 별이 감소하는 역삼각형이다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day613BOJ2443별찍기6 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < i; j++)
+        sb.append(" ");
+      for (int j = 1; j <= 2 * (n - i) - 1; j++)
+        sb.append("*");
+      sb.append("\n");
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(N^2) — StringBuilder 누적

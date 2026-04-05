@@ -1,0 +1,72 @@
+---
+title: "BOJ 1357 - 뒤집힌 덧셈"
+date: "2023-11-12"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1357"
+problem_url: "https://www.acmicpc.net/problem/1357"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1357 - 뒤집힌 덧셈](https://www.acmicpc.net/problem/1357)
+
+자연수 X와 Y가 주어질 때, `Rev(Rev(X) + Rev(Y))`를 구하라. `Rev(n)`은 n을 뒤집은 수이다 (예: `Rev(123)` = 321).
+
+### 입력
+
+X와 Y가 공백으로 구분되어 한 줄에 주어진다 (1 이상 9999 이하).
+
+### 출력
+
+`Rev(Rev(X) + Rev(Y))`의 결과를 출력한다.
+
+### 예제
+
+| 입력      | 출력  |
+| --------- | ----- |
+| `305 794` | `317` |
+
+## 풀이
+
+숫자를 뒤집는 `Rev` 함수를 구현하고, `Rev(Rev(X) + Rev(Y))` 공식을 그대로 적용한다.
+
+1. `Rev` 함수에서 n을 10으로 나누며 나머지를 문자열에 이어 붙여 뒤집는다
+2. `Rev(X)`와 `Rev(Y)`를 더한 후 다시 `Rev`를 적용한다
+3. 결과를 출력한다
+
+**핵심 아이디어**: 숫자를 10으로 반복 나누며 나머지를 역순으로 조합하면 뒤집은 수를 얻는다.
+
+## 코드
+
+```java
+package day649;
+
+import java.util.*;
+
+public class Day645BOJ1357뒤집힌덧셈 {
+  public static void main(String args[]) {
+    Scanner sc = new Scanner(System.in);
+    System.out.println(Rev(Rev(sc.nextInt()) + Rev(sc.nextInt())));
+    sc.close();
+  }
+
+  private static int Rev(int n) {
+    String s = "";
+    while (n > 0) {
+      s += n % 10;
+      n /= 10;
+    }
+    return Integer.parseInt(s);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(d) — d는 숫자의 자릿수
+- 공간: O(d) — 뒤집은 문자열 저장

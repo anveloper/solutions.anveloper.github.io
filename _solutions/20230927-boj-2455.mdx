@@ -1,0 +1,73 @@
+---
+title: "BOJ 2455 - 지능형 기차"
+date: "2023-09-27"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "2455"
+problem_url: "https://www.acmicpc.net/problem/2455"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2455 - 지능형 기차](https://www.acmicpc.net/problem/2455)
+
+기차가 4개의 역을 지나며 각 역에서 내리는 사람과 타는 사람이 주어질 때, 기차에 가장 많이 타고 있던 순간의 인원 수를 구한다.
+
+### 입력
+
+4줄에 걸쳐 각 역에서 내리는 수와 타는 수가 주어진다.
+
+### 출력
+
+기차에 가장 많이 타고 있던 인원 수를 출력한다.
+
+### 예제
+
+| 입력                         | 출력 |
+| ---------------------------- | ---- |
+| `0 32` `3 13` `28 25` `17 5` | `42` |
+
+## 풀이
+
+4개의 역을 시뮬레이션하며 현재 인원과 최대 인원을 추적한다.
+
+1. 각 역에서 내리는 수를 빼고 타는 수를 더하여 현재 인원을 갱신한다
+2. 매 역마다 현재 인원과 최대값을 비교하여 갱신한다
+3. 최종 최대값을 출력한다
+
+**핵심 아이디어**: 고정 4개 역에 대한 단순 시뮬레이션으로, 누적값의 최대를 추적한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day600BOJ2455지능형기차 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int max = 0;
+    int now = 0;
+    for (int i = 0; i < 4; i++) {
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      int out = Integer.parseInt(st.nextToken());
+      int in = Integer.parseInt(st.nextToken());
+      now -= out;
+      now += in;
+      max = Math.max(max, now);
+    }
+    System.out.print(max);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 4회 반복
+- 공간: O(1)

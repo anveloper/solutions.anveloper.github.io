@@ -1,0 +1,76 @@
+---
+title: "BOJ 2675 - 문자열 반복"
+date: "2023-01-26"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2675"
+problem_url: "https://www.acmicpc.net/problem/2675"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2675 - 문자열 반복](https://www.acmicpc.net/problem/2675)
+
+문자열 S의 각 문자를 R번 반복하여 새 문자열 P를 만들어 출력하라. T개의 테스트 케이스가 주어진다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T (1 ≤ T ≤ 1000), 이후 각 줄에 반복 횟수 R (1 ≤ R ≤ 8)과 문자열 S (길이 1 이상 20 이하)가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 문자열 P를 한 줄에 출력한다.
+
+### 예제
+
+| 입력                 | 출력                                |
+| -------------------- | ----------------------------------- |
+| `2` `3 ABC` `5 /HTP` | `AAABBBCCC` `/////HHHHHTTTTTTPPPPP` |
+
+## 풀이
+
+문자열의 각 문자를 순회하며 R번씩 반복 출력한다.
+
+1. T개의 테스트 케이스를 반복한다
+2. 각 케이스에서 R(반복 횟수)과 S(문자열)를 파싱한다
+3. S의 각 문자에 대해 R번 반복하여 `print`로 출력한다
+4. 한 테스트 케이스 출력 후 줄바꿈한다
+
+**핵심 아이디어**: 문자열 전체를 반복하는 것이 아니라, 각 문자를 개별적으로 R번 반복하는 것이 핵심이다.
+
+## 코드
+
+```java
+
+import java.io.*;
+
+public class Day353BOJ2675문자열반복 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
+
+        for (int i = 0; i < T; i++) {
+            String[] str = br.readLine().split(" ");
+
+            int R = Integer.parseInt(str[0]);
+            String S = str[1];
+
+            for (int j = 0; j < S.length(); j++) {
+                for (int k = 0; k < R; k++) {
+                    System.out.print(S.charAt(j));
+                }
+            }
+            System.out.println();
+        }
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(T _ R _ L) (L: 문자열 길이)
+- 공간: O(1)

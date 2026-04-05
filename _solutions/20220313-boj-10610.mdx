@@ -1,0 +1,89 @@
+---
+title: "BOJ 10610 - 30"
+date: "2022-03-13"
+description: "수학, 그리디 알고리즘, 문자열 문제"
+tags: ["수학", "그리디 알고리즘", "문자열", "정렬", "정수론"]
+platform: "boj"
+problem_number: "10610"
+problem_url: "https://www.acmicpc.net/problem/10610"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10610 - 30](https://www.acmicpc.net/problem/10610)
+
+수 N이 주어졌을 때, N의 각 자릿수를 재배열하여 만들 수 있는 30의 배수 중 가장 큰 수를 구하는 문제다. 불가능하면 -1을 출력한다.
+
+### 입력
+
+- 첫째 줄: 양의 정수 N (최대 10^5자리)
+
+### 출력
+
+만들 수 있는 30의 배수 중 가장 큰 수, 불가능하면 -1
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `30`  | `30`  |
+| `102` | `210` |
+| `2`   | `-1`  |
+
+## 풀이
+
+30의 배수가 되려면 두 조건을 동시에 만족해야 한다: (1) 각 자릿수의 합이 3의 배수, (2) 0을 포함해야 한다(10의 배수). 이 조건을 먼저 검사하고, 통과하면 자릿수를 내림차순으로 배열해 가장 큰 수를 만든다.
+
+1. 입력 문자열의 각 자릿수를 파싱해 `cnt[0..9]` 배열에 빈도를 기록하고, 자릿수 합(`total`)을 계산한다.
+2. `0`이 없거나 `total % 3 != 0`이면 `-1`을 출력하고 종료한다.
+3. 조건을 통과하면 9부터 0까지 역순으로 `cnt[i]`만큼 해당 숫자를 StringBuilder에 추가한다.
+4. 결과를 출력한다.
+
+**핵심 아이디어**: 30의 배수 = 2의 배수(자릿수에 0 포함) AND 3의 배수(자릿수 합이 3의 배수). 조건 충족 시 내림차순 정렬이 가장 큰 수를 보장한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day07BOJ10610삼십 { // 10610 30
+	public static void main(String[] args) {
+		StringBuilder sb = new StringBuilder();
+		Scanner sc = new Scanner(System.in);
+		String str = sc.nextLine();
+		String[] strArr = str.split("");
+		long total = 0;
+		int[] cnt = new int[10];
+		int[] arr = new int[strArr.length];
+		for (int i = 0; i < strArr.length; i++) {
+			arr[i] = Integer.parseInt(strArr[i]);
+			cnt[arr[i]]++;
+			total += arr[i];
+		}
+
+		if (!str.contains("0") || total % 3 != 0) {
+			System.out.println("-1");
+//			return; // 노란줄
+		} else {
+			for (int i = 9; i >= 0; i--) {
+				while (cnt[i] > 0) {
+					sb.append(i);
+					cnt[i]--;
+				}
+			}
+			System.out.println(sb);
+		}
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

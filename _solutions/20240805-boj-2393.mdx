@@ -1,0 +1,70 @@
+---
+title: "BOJ 2393 - Rook"
+date: "2024-08-05"
+description: "체스 룩 모양의 ASCII 아트를 출력하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2393"
+problem_url: "https://www.acmicpc.net/problem/2393"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2393 - Rook](https://www.acmicpc.net/problem/2393)
+
+체스의 룩 모양 ASCII 아트를 출력하라.
+
+### 입력
+
+없음.
+
+### 출력
+
+정해진 룩 모양 ASCII 아트를 출력한다.
+
+### 예제
+
+| 입력   | 출력                 |
+| ------ | -------------------- |
+| (없음) | (룩 모양 ASCII 아트) |
+
+## 풀이
+
+정해진 13줄의 ASCII 아트를 printf로 그대로 출력한다.
+
+1. 룩의 상단 톱니, 몸통, 하단 받침 등 13줄을 순서대로 출력한다
+
+**핵심 아이디어**: 고정 출력 문제로, 주어진 형태를 정확히 재현하면 된다.
+
+## 코드
+
+```cpp
+#include <stdio.h>
+
+int main()
+{
+  printf("  ___  ___  ___\n");
+  printf("  | |__| |__| |\n");
+  printf("  |           |\n");
+  printf("   \\_________/\n");
+  printf("    \\_______/\n");
+  printf("     |     |\n");
+  printf("     |     |\n");
+  printf("     |     |\n");
+  printf("     |     |\n");
+  printf("     |_____|\n");
+  printf("  __/       \\__\n");
+  printf(" /             \\\n");
+  printf("/_______________\\\n");
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

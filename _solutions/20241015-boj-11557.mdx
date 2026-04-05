@@ -1,0 +1,81 @@
+---
+title: "BOJ 11557 - Yangjojang of The Year"
+date: "2024-10-15"
+description: "술 소비량이 가장 많은 학교를 출력하는 정렬 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "11557"
+problem_url: "https://www.acmicpc.net/problem/11557"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11557 - Yangjojang of The Year](https://www.acmicpc.net/problem/11557)
+
+N개 학교의 이름과 술 소비량이 주어질 때, 가장 많이 소비한 학교를 출력하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 학교 수 N과 학교 이름/소비량 쌍이 주어진다.
+
+### 출력
+
+각 케이스마다 소비량이 가장 많은 학교 이름을 출력한다.
+
+### 예제
+
+| 입력                                     | 출력    |
+| ---------------------------------------- | ------- |
+| `1` `3` `Korea 10` `Japan 20` `China 30` | `China` |
+
+## 풀이
+
+학교 이름과 소비량을 pair로 저장하고 정렬하여 최댓값을 찾는다.
+
+1. 학교 이름과 소비량을 `pair<int, string>`으로 벡터에 저장한다
+2. 내림차순 정렬한다
+3. 첫 번째 원소의 이름을 출력한다
+
+**핵심 아이디어**: `pair`의 기본 비교가 first 기준이므로, 소비량을 first에 넣으면 정렬만으로 최대를 찾을 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+
+  int T;
+  cin >> T;
+
+  while (T--)
+  {
+    int N;
+    cin >> N;
+    vector<pair<int, string>> v;
+    for (int i = 0; i < N; i++)
+    {
+      string S;
+      int L;
+      cin >> S >> L;
+      v.push_back({L, S});
+    }
+    sort(v.begin(), v.end(), greater<>());
+    cout << v.front().second << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N log N)
+- 공간: O(N)

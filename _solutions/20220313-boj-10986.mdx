@@ -1,0 +1,81 @@
+---
+title: "BOJ 10986 - 나머지 합"
+date: "2022-03-13"
+description: "수학, 누적 합 문제"
+tags: ["수학", "누적 합"]
+platform: "boj"
+problem_number: "10986"
+problem_url: "https://www.acmicpc.net/problem/10986"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10986 - 나머지 합](https://www.acmicpc.net/problem/10986)
+
+N개의 수와 M이 주어졌을 때, 연속된 부분 구간의 합이 M으로 나누어 떨어지는 구간의 수를 구하는 문제다. N은 최대 10^6, M은 최대 10^3이다.
+
+### 입력
+
+- 첫째 줄: N, M
+- 둘째 줄: N개의 수
+
+### 출력
+
+합이 M으로 나누어 떨어지는 연속 구간의 수
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `5 3` `1 2 3 1 2` | `7`  |
+
+## 풀이
+
+구간 합 `sum(i,j) = prefix[j] - prefix[i-1]`이 M의 배수이려면 `prefix[j] % M == prefix[i-1] % M`이어야 한다. 따라서 누적 합의 나머지 값이 같은 인덱스 쌍의 수를 조합(combination)으로 계산한다.
+
+1. 누적 합을 계산하면서 동시에 M으로 나눈 나머지를 `arr[나머지]` 배열에 기록한다.
+2. 누적 합 자체가 M의 배수인 경우(`arr[0]`)도 구간으로 카운트하므로 `ans = arr[0]`으로 초기화한다.
+3. 나머지가 같은 인덱스가 `arr[i]`개 있으면 그 중 2개를 선택하는 경우의 수 `arr[i] * (arr[i]-1) / 2`를 합산한다.
+4. 결과를 long 타입으로 출력한다.
+
+**핵심 아이디어**: `prefix[j] % M == prefix[i-1] % M`이면 `(j, i-1)` 쌍이 유효한 구간이다. 같은 나머지 값을 갖는 인덱스 k개에서 2개를 고르는 조합 C(k,2) = k\*(k-1)/2를 이용해 O(N+M)으로 모든 쌍을 셀 수 있다. 답이 int 범위를 초과할 수 있으므로 long 사용 필수다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day31BOJ10986나머지합테케양주의시간초과무조건 { // 10986 나머지 합
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		int cnt = 0;
+		int[] arr = new int[M]; // 나머지 갯수 배열
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			cnt = (cnt + Integer.parseInt(st.nextToken())) % M;
+			arr[cnt]++;
+		}
+		long ans = arr[0]; // 시간초과 유도됨...
+		for (int i = 0; i < M; i++) {
+			ans += (long) arr[i] * (arr[i] - 1) / 2;
+		}
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N + M)
+- 공간: O(M) — 나머지 빈도 배열 크기

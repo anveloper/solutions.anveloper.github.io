@@ -1,0 +1,75 @@
+---
+title: "BOJ 2312 - 수 복원하기"
+date: "2025-01-16"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정", "에라토스테네스의 체", "소인수분해"]
+platform: "boj"
+problem_number: "2312"
+problem_url: "https://www.acmicpc.net/problem/2312"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2312 - 수 복원하기](https://www.acmicpc.net/problem/2312)
+
+양의 정수 N을 소인수분해하여 각 소인수와 지수를 출력하라.
+
+### 입력
+
+테스트 케이스 수와 각 정수 N이 주어진다 (N은 100,000 이하).
+
+### 출력
+
+각 소인수와 지수를 오름차순으로 출력한다.
+
+### 예제
+
+| 입력     | 출력        |
+| -------- | ----------- |
+| `1` `12` | `2 2` `3 1` |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 구한 뒤 소인수분해한다.
+
+1. 317(= sqrt(100000))까지 체를 구성하여 소수 목록을 만든다
+2. 각 소수로 N을 나누어 떨어질 때까지 나누며 지수를 센다
+3. N이 1보다 크게 남으면 그 자체가 소인수이다
+
+**핵심 아이디어**: sqrt(N)까지의 소수로만 나누면 모든 소인수를 찾을 수 있다.
+
+## 코드
+
+```python
+import sys
+input = sys.stdin.readline
+
+sieve = [True]*100001
+primes = [2]
+for i in range(3, 317, 2):
+    if sieve[i]:
+        sieve[i*i::2*i] = [False]*((100000-i*i)//(2*i)+1)
+        primes.append(i)
+
+for tc in range(int(input())):
+    n = int(input())
+
+    for p in primes:
+        if n == 1: break
+        if n%p == 0:
+            cnt = 0
+            while n%p == 0:
+                n //= p
+                cnt += 1
+            print(p, cnt)
+
+    if n > 1: print(n, 1)
+```
+
+## 복잡도
+
+- 시간: O(N log log N)
+- 공간: O(N)

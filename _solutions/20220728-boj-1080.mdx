@@ -1,0 +1,144 @@
+---
+title: "BOJ 1080 - 행렬"
+date: "2022-07-28"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "1080"
+problem_url: "https://www.acmicpc.net/problem/1080"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1080 - 행렬](https://www.acmicpc.net/problem/1080)
+
+두 행렬 A와 B가 주어졌을 때, 행렬 A를 행렬 B로 바꾸는 데 필요한 연산의 최솟값을 구하는 문제이다. 연산은 행렬의 임의의 3×3 부분 행렬을 선택해서 0은 1로, 1은 0으로 뒤집는 것이다.
+
+### 입력
+
+첫째 줄에 행렬의 크기 N과 M이 주어진다. (1 ≤ N, M ≤ 50)
+
+둘째 줄부터 N개의 줄에는 행렬 A가 주어지고, 그 다음 N개의 줄에는 행렬 B가 주어진다. 행렬의 원소는 0 또는 1이다.
+
+### 출력
+
+행렬 A를 행렬 B로 바꾸는 데 필요한 연산의 최솟값을 출력한다. 만약 A를 B로 바꿀 수 없다면 -1을 출력한다.
+
+### 예제
+
+**입력:**
+
+```
+3 4
+0100
+0110
+0110
+0000
+0100
+0100
+```
+
+**출력:**
+
+```
+1
+```
+
+## 풀이
+
+**핵심 아이디어:** 그리디 알고리즘을 이용한다. 3×3 연산을 가장 왼쪽 위 셀이 결정하므로, (0,0)부터 (N-3, M-3)까지 순서대로 스캔하면서 A[i][j] != B[i][j]인 경우 해당 위치를 왼쪽 위로 하는 3×3 블록을 뒤집는다.
+
+핵심 관찰: 연산을 결정하는 셀 (i, j)에 대해, 왼쪽/위쪽에서 영향을 받을 수 없으므로 탐욕적 선택이 최적이다.
+
+단계별 풀이:
+
+1. N 또는 M이 3 미만이면 연산이 불가능하므로, A == B일 때 0, 아니면 -1 출력.
+2. (i, j)를 (0,0)부터 (N-3, M-3)까지 순차적으로 탐색한다.
+3. A[i][j] != B[i][j]이면 i,j를 좌상단으로 하는 3×3 블록을 뒤집고 연산 횟수를 증가시킨다.
+4. 모든 순회 후 A == B이면 연산 횟수를 출력, 아니면 -1 출력.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day171BOJ1080행렬뒤집기 { // 1080
+	static int N, M;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		boolean[][] A = new boolean[N][M];
+		boolean[][] B = new boolean[N][M];
+
+		for (int i = 0; i < N; i++) {
+			String str = br.readLine();
+			for (int j = 0; j < M; j++) {
+				if(str.charAt(j)=='1') A[i][j] = true;
+			}
+		}
+
+		for (int i = 0; i < N; i++) {
+			String str = br.readLine();
+			for (int j = 0; j < M; j++) {
+				if(str.charAt(j)=='1') B[i][j] = true;
+			}
+		}
+
+		if(N < 3 || M < 3) {
+			if(isSame(A, B)) System.out.println(0);
+			else System.out.println(-1);
+			System.exit(0);
+		}
+
+		int ans = 0;
+
+		for (int i = 0; i < N - 2; i++) {
+			for (int j = 0; j < M - 2; j++) {
+				if(A[i][j] != B[i][j]) {
+					reverseMatrix(A, i, j);
+					ans++;
+				}
+			}
+		}
+
+		if(isSame(A, B)) System.out.println(ans);
+		else System.out.println(-1);
+
+	}
+
+	private static void reverseMatrix(boolean[][] a, int x, int y) {
+		for (int i = x; i < x+3; i++) {
+			for (int j = y; j < y+3; j++) {
+				a[i][j] = !a[i][j];
+			}
+		}
+	}
+
+	private static boolean isSame(boolean[][] a, boolean[][] b) {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if(a[i][j] != b[i][j]) return false;
+			}
+		}
+		return true;
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N × M) — N×M 크기 행렬을 순회하며 각 위치에서 O(1) 연산(3×3 블록 뒤집기)을 수행
+- 공간: O(N × M) — 두 행렬 A, B를 저장하는 배열

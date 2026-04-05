@@ -1,0 +1,86 @@
+---
+title: "BOJ 25378 - 조약돌"
+date: "2023-02-03"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "25378"
+problem_url: "https://www.acmicpc.net/problem/25378"
+difficulty: "플래티넘 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 25378 - 조약돌](https://www.acmicpc.net/problem/25378)
+
+N개의 조약돌이 일렬로 놓여 있고 각각 무게가 주어진다. 연속 구간에서 인접한 조약돌 쌍의 무게 차이가 교대로 부호가 바뀌며 합이 0이 되는 "균형 구간"을 최대한 많이 선택할 때, 제거해야 하는 최소 조약돌 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 N개의 조약돌 무게가 주어진다.
+
+### 출력
+
+제거해야 하는 최소 조약돌 수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `5` `1 3 1 2 4` | `1`  |
+
+## 풀이
+
+DP로 균형 구간에 포함되는 최대 조약돌 수를 구한 뒤 N에서 뺀다.
+
+1. `dp[i]`를 i번째까지 고려했을 때 균형 구간에 포함되는 최대 조약돌 수로 정의한다
+2. 각 위치 i에서 j를 역방향으로 탐색하며 교대 차이의 누적합 k를 계산한다
+3. `k`가 음수가 되면 탐색을 중단한다 (유효하지 않은 구간)
+4. `k == 0`이면 구간 `[j, i]`가 균형이므로 `dp[i] = max(dp[i-1], dp[j-1] + 1)`로 갱신한다
+5. `N - dp[N]`을 출력한다
+
+**핵심 아이디어**: 각 위치에서 역방향으로 균형 구간을 찾고, 이전까지의 최적해와 결합하는 DP. 교대 차이가 음수가 되면 조기 종료하여 효율성을 확보한다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Day361BOJ25378조약돌 {
+    static int N;
+    static int[] arr, dp;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        arr = new int[N + 1];
+        dp = new int[N + 1];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i < N + 1; i++)
+            arr[i] = Integer.parseInt(st.nextToken());
+
+        for (int i = 2; i < N + 1; i++) {
+            int tmp = dp[i - 1];
+            for (int j = i - 1, k = arr[i]; j > 0; j--) {
+                k = arr[j] - k;
+                if (k < 0)
+                    break;
+                if (k == 0 && tmp <= dp[j - 1])
+                    tmp = dp[j - 1] + 1;
+            }
+            dp[i] = tmp;
+        }
+        System.out.println(N - dp[N]);
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

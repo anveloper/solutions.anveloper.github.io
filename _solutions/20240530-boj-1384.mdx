@@ -1,0 +1,80 @@
+---
+title: "BOJ 1384 - 메시지"
+date: "2024-05-30"
+description: "비밀 산타 게임에서 누가 누구에 대해 나쁜 메시지를 보냈는지 찾는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1384"
+problem_url: "https://www.acmicpc.net/problem/1384"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1384 - 메시지](https://www.acmicpc.net/problem/1384)
+
+N명이 원형으로 앉아 쪽지를 돌리며 각 사람에 대해 P(nice) 또는 N(nasty) 메시지를 적는다. 누가 누구에 대해 나쁜 메시지를 보냈는지 찾아 출력하라.
+
+### 입력
+
+여러 그룹이 주어진다. 각 그룹마다 N, 이후 N줄에 이름과 N-1개의 P/N이 주어진다. N이 0이면 종료.
+
+### 출력
+
+각 그룹에 대해 nasty 메시지를 보낸 사람과 대상을 출력한다. 없으면 "Nobody was nasty"를 출력한다.
+
+### 예제
+
+| 입력                                      | 출력                                    |
+| ----------------------------------------- | --------------------------------------- |
+| `3` `Alice P N` `Bob P P` `Carol P P` `0` | `Group 1` `Carol was nasty about Alice` |
+
+## 풀이
+
+각 쪽지에서 N(nasty)의 위치를 찾아, 원형 배열에서 인덱스 차이로 보낸 사람을 역추적한다.
+
+1. 각 그룹의 학생 이름과 P/N 메시지를 입력받는다
+2. j번째 학생의 카드에서 N이 있는 위치 bad를 찾는다
+3. 원형 배열에서 `(그룹크기 + j - bad) % 그룹크기`로 nasty 메시지를 작성한 학생을 역추적한다
+4. nasty가 없으면 "Nobody was nasty"를 출력한다
+
+**핵심 아이디어**: 쪽지가 원형으로 돌아가므로, N의 위치와 현재 인덱스의 차이로 모듈러 연산하여 작성자를 O(1)에 찾는다.
+
+## 코드
+
+```python
+group = []
+groups = []
+while True:
+    num = int(input())
+    if num == 0:
+        break
+    for i in range(num):
+        student = input().split()
+        group.append(student)
+    groups.append(group)
+    group = []
+for i in range(len(groups)):
+    if i != 0:
+        print()
+    print("Group", i + 1)
+    cnt = 0
+    for j in range(len(groups[i])):
+        bad = -1
+        if "N" in groups[i][j]:
+            nasty = groups[i][j].count("N")
+            for k in range(nasty):
+                bad = groups[i][j].index("N", bad + 1)
+                badp = (len(groups[i]) + j - bad) % len(groups[i])
+                print(groups[i][badp][0], "was nasty about", groups[i][j][0])
+            cnt += 1
+    if cnt == 0:
+        print("Nobody was nasty")
+```
+
+## 복잡도
+
+- 시간: O(G \* N^2) (G는 그룹 수, N은 그룹 내 학생 수)
+- 공간: O(G \* N)

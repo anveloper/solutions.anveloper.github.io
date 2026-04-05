@@ -1,0 +1,76 @@
+---
+title: "BOJ 1436 - 영화감독 숌"
+date: "2022-03-21"
+description: "브루트포스 알고리즘 문제"
+tags: ["브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1436"
+problem_url: "https://www.acmicpc.net/problem/1436"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1436 - 영화감독 숌](https://www.acmicpc.net/problem/1436)
+
+숌은 종말의 수(666이 포함된 수)로 영화 제목을 짓는다. 종말의 수를 오름차순으로 나열했을 때 N번째 수를 구하라. (첫 번째: 666, 두 번째: 1666, ...)
+
+### 입력
+
+첫째 줄에 N (1 이상 10,000 이하)이 주어진다.
+
+### 출력
+
+N번째 종말의 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력   |
+| ---- | ------ |
+| `2`  | `1666` |
+
+## 풀이
+
+666부터 순서대로 탐색하며, "666"이 포함된 수를 카운트하여 N번째를 찾는다.
+
+1. ans를 666부터 시작하여 1씩 증가시킨다
+2. 각 수를 문자열로 변환하여 "666" 포함 여부를 확인한다
+3. 포함되면 카운트를 증가시키고, N에 도달하면 종료한다
+
+**핵심 아이디어**: N이 최대 10,000이고, 10,000번째 종말의 수는 약 2,666,799이므로 브루트포스로 충분히 탐색 가능하다. Integer.toString()과 contains()로 간단하게 판별한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day42BOJ1436영화감독숀브루트포스 { // 1436 영화감독 숀 666
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		int cnt = 0;
+		int ans = 666;
+		while (cnt != N) {
+			if (is666(ans))
+				cnt++;
+			ans++;
+		}
+
+		System.out.println(ans - 1);
+		sc.close();
+	}
+
+	private static boolean is666(int ans) {
+		return Integer.toString(ans).contains("666");
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(M \* D) — M은 N번째 종말의 수의 크기, D는 자릿수 (contains 비용)
+- 공간: O(1) — 상수 공간

@@ -1,0 +1,72 @@
+---
+title: "BOJ 8723 - Patyki"
+date: "2025-09-10"
+description: "수학, 기하학, 사칙연산 문제"
+tags: ["수학", "기하학", "사칙연산", "피타고라스 정리"]
+platform: "boj"
+problem_number: "8723"
+problem_url: "https://www.acmicpc.net/problem/8723"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8723 - Patyki](https://www.acmicpc.net/problem/8723)
+
+세 막대기의 길이가 주어질 때, 정삼각형이면 2, 직각삼각형이면 1, 둘 다 아니면 0을 출력하라.
+
+### 입력
+
+세 양의 정수가 주어진다.
+
+### 출력
+
+정삼각형이면 2, 직각삼각형이면 1, 둘 다 아니면 0을 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `3 4 5` | `1`  |
+
+## 풀이
+
+세 변을 정렬한 뒤 정삼각형과 직각삼각형 조건을 순서대로 확인한다.
+
+1. 세 변을 오름차순으로 정렬한다
+2. 세 변이 모두 같으면 정삼각형이므로 2를 출력한다
+3. `c² = a² + b²`이면 직각삼각형이므로 1을 출력한다
+4. 둘 다 아니면 0을 출력한다
+
+**핵심 아이디어**: 정렬 후 가장 긴 변을 빗변으로 놓고 피타고라스 정리를 확인하면 직각삼각형 판별이 가능하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+  int arr[3];
+  scanf("%d %d %d", &arr[0], &arr[1], &arr[2]);
+
+  sort(arr, arr + 3);
+
+  int ans = (arr[1] == arr[0]) && (arr[2] == arr[1]) ? 2 : (arr[2] * arr[2] == arr[1] * arr[1] + arr[0] * arr[0]) ? 1
+                                                                                                                  : 0;
+
+  printf("%d", ans);
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

@@ -1,0 +1,89 @@
+---
+title: "BOJ 15903 - 카드 합체 놀이"
+date: "2023-04-12"
+description: "자료 구조, 그리디 알고리즘, 우선순위 큐 문제"
+tags: ["자료 구조", "그리디 알고리즘", "우선순위 큐"]
+platform: "boj"
+problem_number: "15903"
+problem_url: "https://www.acmicpc.net/problem/15903"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15903 - 카드 합체 놀이](https://www.acmicpc.net/problem/15903)
+
+N장의 카드에 적힌 수가 있을 때, M번의 합체를 수행한 후 모든 카드 수의 합이 최소가 되도록 하라. 합체는 두 카드를 골라 합을 구한 뒤, 두 카드 모두 그 합으로 대체하는 것이다.
+
+### 입력
+
+첫째 줄에 N, M, 둘째 줄에 N개의 카드 수가 주어진다.
+
+### 출력
+
+M번 합체 후 가능한 최소 합을 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `3 1` `3 2 6` | `16` |
+
+## 풀이
+
+최소 힙으로 매 단계 가장 작은 두 수를 합체한다.
+
+1. 모든 카드를 최소 힙(PriorityQueue)에 넣는다
+2. M번 반복하며 가장 작은 두 수를 꺼내 합을 구한다
+3. 합을 두 번 힙에 넣어 두 카드를 대체한다
+4. 모든 합체 후 힙의 전체 합을 출력한다
+
+**핵심 아이디어**: 합체 시 두 수가 합으로 대체되므로 가장 작은 두 수를 합체해야 최종 합이 최소가 된다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day430BOJ15903카드합체놀이 {
+  static int N, M;
+  static long ans = 0;
+  static PriorityQueue<Long> pq = new PriorityQueue<>();
+
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+
+    st = new StringTokenizer(br.readLine());
+
+    for (int i = 0; i < N; i++)
+      pq.add(Long.parseLong(st.nextToken()));
+
+    for (int i = 0; i < M; i++) {
+      Long a = pq.poll();
+      Long b = pq.poll();
+      pq.add(a + b);
+      pq.add(a + b);
+    }
+
+    while (!pq.isEmpty())
+      ans += pq.poll();
+
+    System.out.println(ans);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O((N+M) log N)
+- 공간: O(N)

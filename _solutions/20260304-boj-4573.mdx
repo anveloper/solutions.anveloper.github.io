@@ -1,0 +1,60 @@
+---
+title: "BOJ 4573 - Pizza Pricing"
+date: "2026-03-04"
+description: "피자 메뉴에서 단위 면적당 가격이 가장 저렴한 피자를 찾는 문제"
+tags: ["수학", "구현", "기하학"]
+platform: "boj"
+problem_number: "4573"
+problem_url: "https://www.acmicpc.net/problem/4573"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4573 - Pizza Pricing](https://www.acmicpc.net/problem/4573)
+
+> 여러 피자의 지름과 가격이 주어질 때, 단위 면적당 비용이 가장 저렴한 피자의 지름을 출력하는 문제
+
+## 풀이
+
+피자의 면적은 지름의 제곱에 비례하므로(π는 공통), 가격을 `d²`로 나눈 값이 가장 작은 피자를 선택한다. 각 메뉴별로 가장 저렴한 피자의 지름을 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int n, menuCount = 1;
+  while (cin >> n && n != 0) {
+    int bestDiameter = 0;
+    double minCostPerSqInch = 1e18;
+
+    for (int i = 0; i < n; i++) {
+      double d, p;
+      cin >> d >> p;
+
+      double currentCost = p / (d * d);
+
+      if (currentCost < minCostPerSqInch) {
+        minCostPerSqInch = currentCost;
+        bestDiameter = (int)d;
+      }
+    }
+
+    cout << "Menu " << menuCount++ << ": " << bestDiameter << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 피자 개수)
+- 공간: O(1)

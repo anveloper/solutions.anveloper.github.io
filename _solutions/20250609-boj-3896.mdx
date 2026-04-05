@@ -1,0 +1,76 @@
+---
+title: "BOJ 3896 - 소수 사이 수열"
+date: "2025-06-09"
+description: "수학, 정수론, 이분 탐색 문제"
+tags: ["수학", "정수론", "이분 탐색", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "3896"
+problem_url: "https://www.acmicpc.net/problem/3896"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3896 - 소수 사이 수열](https://www.acmicpc.net/problem/3896)
+
+자연수 k가 주어질 때, k를 포함하는 소수 갭(연속 두 소수 사이 간격)의 길이를 구하라. k가 소수이면 0을 출력한다.
+
+### 입력
+
+테스트 케이스 수 T와 각 자연수 k가 주어진다.
+
+### 출력
+
+각 k에 대해 소수 갭의 길이를 출력한다. k가 소수이면 0.
+
+### 예제
+
+| 입력               | 출력        |
+| ------------------ | ----------- |
+| `3` `10` `11` `27` | `4` `0` `6` |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 구하고 이분 탐색으로 인접 소수를 찾는다.
+
+1. 충분히 큰 범위까지 에라토스테네스의 체로 소수 목록을 미리 생성한다
+2. k가 소수이면 0을 출력한다
+3. 아니면 이분 탐색으로 k 바로 위의 소수와 바로 아래의 소수를 찾아 차이를 출력한다
+
+**핵심 아이디어**: 소수 리스트를 정렬된 배열로 유지하면, `bisect`으로 O(log N)에 k를 둘러싸는 두 소수를 찾을 수 있다.
+
+## 코드
+
+```python
+import sys, bisect
+
+input = sys.stdin.readline
+
+
+def findPrimes(n):
+    primes = [0, 0] + [1] * (n - 1)
+    i = 2
+    while i**2 <= n:
+        primes[i**2 :: i] = [0] * ((n - i**2) // i + 1)
+        i += 1
+    return primes
+
+
+isPrime = findPrimes(1299710)
+primes = [i for i in range(1299710 + 1) if isPrime[i]]
+
+for _ in range(int(input())):
+    k = int(input())
+    if isPrime[k]:
+        print(0)
+        continue
+    loc = bisect.bisect(primes, k)
+    print(primes[loc] - primes[loc - 1])
+```
+
+## 복잡도
+
+- 시간: O(N log log N + T log N) (N: 체 범위)
+- 공간: O(N)

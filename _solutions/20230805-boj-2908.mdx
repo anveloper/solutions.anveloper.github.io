@@ -1,0 +1,71 @@
+---
+title: "BOJ 2908 - 상수"
+date: "2023-08-05"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "2908"
+problem_url: "https://www.acmicpc.net/problem/2908"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2908 - 상수](https://www.acmicpc.net/problem/2908)
+
+두 세 자리 수가 주어질 때, 각 수를 뒤집어서 비교하여 더 큰 수를 출력한다.
+
+### 입력
+
+첫째 줄에 두 세 자리 수 A, B가 주어진다.
+
+### 출력
+
+뒤집은 두 수 중 더 큰 수를 출력한다.
+
+### 예제
+
+| 입력      | 출력  |
+| --------- | ----- |
+| `734 893` | `437` |
+
+## 풀이
+
+두 수를 문자열로 뒤집은 후 정수로 변환하여 비교한다.
+
+1. 두 수를 문자열로 읽는다
+2. StringBuilder.reverse()로 각 문자열을 뒤집는다
+3. 정수로 변환하여 더 큰 값을 출력한다
+
+**핵심 아이디어**: StringBuilder의 reverse() 메서드를 활용하면 문자열 뒤집기를 간단히 처리할 수 있다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day545BOJ2908상수 {
+  public static void main(String[] args) throws Exception {
+
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+    int A = Integer.parseInt(new StringBuilder(st.nextToken()).reverse().toString());
+    int B = Integer.parseInt(new StringBuilder(st.nextToken()).reverse().toString());
+
+    System.out.print(A > B ? A : B);
+
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 3자리 수
+- 공간: O(1)

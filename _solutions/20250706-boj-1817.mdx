@@ -1,0 +1,67 @@
+---
+title: "BOJ 1817 - 짐 챙기는 숌"
+date: "2025-07-06"
+description: "구현, 그리디 알고리즘, 시뮬레이션 문제"
+tags: ["구현", "그리디 알고리즘", "시뮬레이션"]
+platform: "boj"
+problem_number: "1817"
+problem_url: "https://www.acmicpc.net/problem/1817"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1817 - 짐 챙기는 숌](https://www.acmicpc.net/problem/1817)
+
+N권의 책을 무게 제한 M인 박스에 순서대로 넣을 때, 필요한 최소 박스 수를 구하라.
+
+### 입력
+
+책의 수 N과 무게 제한 M, 이후 N개의 책 무게가 주어진다.
+
+### 출력
+
+필요한 박스 수를 출력한다. N이 0이면 0을 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `5 6` `1 2 3 4 5` | `3`  |
+
+## 풀이
+
+그리디하게 현재 박스에 넣을 수 있으면 넣고, 아니면 새 박스를 연다.
+
+1. 현재 박스 무게에 책을 더했을 때 M 이하이면 추가한다
+2. M을 초과하면 새 박스를 열고 해당 책을 넣는다
+3. 최종 박스 수를 출력한다
+
+**핵심 아이디어**: 책을 순서대로 넣어야 하므로, 현재 박스에 넣을 수 있는지만 확인하는 단순 그리디로 해결된다.
+
+## 코드
+
+```python
+n, m = map(int, input().split())
+
+w = 0
+cnt = 1
+if n != 0:
+    arr = list(map(int, input().split()))
+    for i in arr:
+        if w + i <= m:
+            w += i
+        else:
+            cnt += 1
+            w = i
+    print(cnt)
+else:
+    print(0)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

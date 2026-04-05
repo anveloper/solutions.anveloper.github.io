@@ -1,0 +1,65 @@
+---
+title: "BOJ 2520 - 팬케이크 사랑"
+date: "2025-02-15"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "2520"
+problem_url: "https://www.acmicpc.net/problem/2520"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2520 - 팬케이크 사랑](https://www.acmicpc.net/problem/2520)
+
+팬케이크를 만드는 데 필요한 재료(밀가루, 계란, 설탕, 소금, 기름)와 토핑 재료(바나나, 딸기, 초콜릿, 휘핑크림)가 주어진다. 팬케이크 반죽과 토핑 중 더 적게 만들 수 있는 쪽이 최종 팬케이크 수이다.
+
+### 입력
+
+테스트 케이스 수, 각 케이스마다 반죽 재료와 토핑 재료가 주어진다.
+
+### 출력
+
+각 케이스마다 만들 수 있는 팬케이크 수를 출력한다.
+
+### 예제
+
+| 입력                                     | 출력 |
+| ---------------------------------------- | ---- |
+| `1` `` `80 80 40 10 90` `10 300 250 100` | `26` |
+
+## 풀이
+
+반죽 재료와 토핑 재료 각각에서 만들 수 있는 팬케이크 수를 계산하고, 둘 중 작은 값을 출력한다.
+
+1. 반죽: 각 재료를 레시피 비율(8:8:4:1:9)로 나눈 최솟값 × 16이 반죽으로 가능한 수
+2. 토핑: 바나나 + 딸기/30 + 초콜릿/25 + 휘핑크림/10이 토핑 가능한 수
+3. 두 값 중 최솟값이 최종 팬케이크 수이다
+
+**핵심 아이디어**: 반죽과 토핑은 병목 관계이므로, 각각 독립적으로 최대 생산량을 계산한 뒤 최솟값을 취한다.
+
+## 코드
+
+```python
+import sys
+from math import floor
+
+for _ in range(int(sys.stdin.readline())):
+    sys.stdin.readline()
+
+    c, y, sugar, salt, f = map(int, sys.stdin.readline().split())
+    b, gs, gc, w = map(int, sys.stdin.readline().split())
+
+    pancake = floor(min([c / 8, y / 8, sugar / 4, salt, f / 9]) * 16)
+    topping = b + gs // 30 + gc // 25 + w // 10
+
+    print(min(pancake, topping))
+```
+
+## 복잡도
+
+- 시간: O(T) — 테스트 케이스당 O(1) 계산
+- 공간: O(1) — 상수 변수만 사용

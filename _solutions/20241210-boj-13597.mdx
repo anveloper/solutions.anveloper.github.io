@@ -1,0 +1,65 @@
+---
+title: "BOJ 13597 - Tri-du"
+date: "2024-12-10"
+description: "두 변의 길이로 정삼각형의 나머지 한 변을 구하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "13597"
+problem_url: "https://www.acmicpc.net/problem/13597"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13597 - Tri-du](https://www.acmicpc.net/problem/13597)
+
+정삼각형의 두 변이 주어졌을 때 나머지 한 변의 길이를 출력하라.
+
+### 입력
+
+정삼각형의 두 변의 길이가 주어진다.
+
+### 출력
+
+나머지 한 변의 길이를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `5 5` | `5`  |
+
+## 풀이
+
+정삼각형의 성질을 이용한다.
+
+1. 두 변의 길이 중 큰 값을 출력한다
+2. 정삼각형이므로 세 변이 모두 같다
+
+**핵심 아이디어**: 정삼각형은 세 변의 길이가 동일하므로 주어진 두 값 중 큰 값이 정답이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main(void)
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  int A, B;
+  cin >> A >> B;
+  int result = max(A, B);
+  cout << result << "\n";
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

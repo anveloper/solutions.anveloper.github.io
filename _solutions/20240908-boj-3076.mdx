@@ -1,0 +1,76 @@
+---
+title: "BOJ 3076 - 상근이의 체스판"
+date: "2024-09-08"
+description: "R x C 체스판을 A x B 크기 블록으로 확대하여 출력하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "3076"
+problem_url: "https://www.acmicpc.net/problem/3076"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3076 - 상근이의 체스판](https://www.acmicpc.net/problem/3076)
+
+R×C 체스판의 각 칸을 A×B 크기로 확대하여 출력하라. (i+j)가 짝수이면 X, 홀수이면 .으로 채운다.
+
+### 입력
+
+R, C, A, B가 주어진다.
+
+### 출력
+
+확대된 체스판을 출력한다.
+
+### 예제
+
+| 입력      | 출력                                |
+| --------- | ----------------------------------- |
+| `2 2 2 3` | `XXX...` `XXX...` `...XXX` `...XXX` |
+
+## 풀이
+
+4중 반복문으로 체스판 패턴을 확대 출력한다.
+
+1. 행 i(0~R-1), 확대 행 j(0~A-1), 열 k(0~C-1), 확대 열 l(0~B-1)를 순회한다
+2. `(i + k) % 2 == 0`이면 X, 아니면 .을 출력한다
+3. 각 확대 행이 끝나면 줄바꿈한다
+
+**핵심 아이디어**: 체스판 색상은 `(행+열)`의 홀짝으로 결정되며, 확대는 각 칸을 A×B번 반복 출력하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int r, c, a, b;
+  cin >> r >> c >> a >> b;
+  for (int i = 0; i < r; i++)
+  {
+    for (int j = 0; j < a; j++)
+    {
+      for (int k = 0; k < c; k++)
+      {
+        for (int l = 0; l < b; l++)
+        {
+          if ((i + k) % 2 == 0)
+            cout << "X";
+          else
+            cout << ".";
+        }
+      }
+      cout << endl;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(R _ C _ A \* B)
+- 공간: O(1)

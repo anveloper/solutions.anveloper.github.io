@@ -1,0 +1,86 @@
+---
+title: "BOJ 1026 - 보물"
+date: "2022-03-13"
+description: "수학, 그리디 알고리즘, 정렬 문제"
+tags: ["수학", "그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "1026"
+problem_url: "https://www.acmicpc.net/problem/1026"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1026 - 보물](https://www.acmicpc.net/problem/1026)
+
+길이 N인 두 배열 A, B가 주어진다. B는 재배열할 수 없고 A는 재배열 가능할 때, `A[0]*B[0] + A[1]*B[1] + ... + A[N-1]*B[N-1]`의 최솟값을 구하는 문제다.
+
+### 입력
+
+- 첫째 줄: N
+- 둘째 줄: 배열 A의 원소 N개
+- 셋째 줄: 배열 B의 원소 N개
+
+### 출력
+
+`f(A, B)`의 최솟값
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `5` `1 1 1 6 0` `2 7 8 3 1` | `18` |
+
+## 풀이
+
+합을 최소화하려면 큰 수와 작은 수를 짝지어야 한다는 그리디 전략을 적용한다. A를 오름차순, B를 내림차순으로 정렬한 뒤 같은 인덱스끼리 곱하면 된다. (B를 직접 재배열할 수 없지만, 결과적으로 A를 오름차순·B를 내림차순 정렬한 것과 동일한 쌍이 만들어진다.)
+
+1. A와 B를 각각 오름차순으로 정렬한다.
+2. `i`번째 A 원소와 `(N-1-i)`번째 B 원소를 곱한다 (A의 최솟값 × B의 최댓값 쌍).
+3. 곱한 값들의 합을 출력한다.
+
+**핵심 아이디어**: 곱의 합을 최소화할 때는 가장 큰 수와 가장 작은 수를 짝지으면 된다. `A[i] * B[N-1-i]` 패턴으로 정렬 후 즉시 계산 가능하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Day05BOJ1026보물 { // 1026 보물
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		int N = Integer.parseInt(br.readLine());
+		int[] A = new int[N];
+		int[] B = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for (int n = 0; n < N; n++) {
+			A[n] = Integer.parseInt(st.nextToken());
+		}
+		st = new StringTokenizer(br.readLine());
+		for (int n = 0; n < N; n++) {
+			B[n] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(A);
+		Arrays.sort(B);
+
+		int sum = 0;
+		for (int i = 0; i < N; i++) {
+			sum += A[i] * B[N - 1 - i];
+		}
+		System.out.println(sum);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

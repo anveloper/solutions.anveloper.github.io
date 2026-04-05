@@ -1,0 +1,76 @@
+---
+title: "BOJ 5532 - 방학 숙제"
+date: "2024-09-16"
+description: "방학 일수에서 숙제 완료에 필요한 최소 일수를 빼는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5532"
+problem_url: "https://www.acmicpc.net/problem/5532"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5532 - 방학 숙제](https://www.acmicpc.net/problem/5532)
+
+방학 일수 L, 국어 숙제 A페이지(하루 C페이지), 수학 숙제 B페이지(하루 D페이지)가 주어질 때, 숙제를 모두 끝내고 놀 수 있는 최대 일수를 구하라.
+
+### 입력
+
+L, A, B, C, D가 한 줄에 하나씩 주어진다.
+
+### 출력
+
+놀 수 있는 날의 수를 출력한다.
+
+### 예제
+
+| 입력                   | 출력 |
+| ---------------------- | ---- |
+| `20` `25` `30` `6` `8` | `16` |
+
+## 풀이
+
+두 과목의 숙제 완료 일수를 올림 나눗셈으로 구하고 최댓값을 방학에서 뺀다.
+
+1. 국어 숙제 완료 일수를 `ceil(A / C)`로 계산한다
+2. 수학 숙제 완료 일수를 `ceil(B / D)`로 계산한다
+3. 두 과목을 병행하므로 더 오래 걸리는 쪽이 전체 숙제 기간이 된다
+4. `L - max(국어 일수, 수학 일수)`가 놀 수 있는 일수이다
+
+**핵심 아이디어**: 두 과목 숙제는 동시에 진행 가능하므로, 각각의 소요 일수 중 큰 값만 방학에서 빼면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int main(void)
+{
+  int l, a, b, c, d, ans;
+
+  cin >> l >> a >> b >> c >> d;
+  if (a % c == 0)
+    ans = a / c;
+  else
+    ans = a / c + 1;
+
+  if (b % d == 0)
+    ans = max(ans, b / d);
+  else
+    ans = max(ans, b / d + 1);
+
+  cout << l - ans << endl;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

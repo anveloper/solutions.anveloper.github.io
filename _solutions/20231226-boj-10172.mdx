@@ -1,0 +1,52 @@
+---
+title: "BOJ 10172 - 개"
+date: "2023-12-26"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10172"
+problem_url: "https://www.acmicpc.net/problem/10172"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10172 - 개](https://www.acmicpc.net/problem/10172)
+
+주어진 개 ASCII 아트를 그대로 출력하라.
+
+### 입력
+
+없음.
+
+### 출력
+
+5줄의 개 ASCII 아트를 출력한다.
+
+## 풀이
+
+고정된 문자열을 이스케이프 시퀀스를 포함하여 한 번에 출력한다.
+
+1. 백슬래시, 따옴표 등 특수 문자를 이스케이프 처리한다
+2. `\n`으로 줄바꿈을 포함하여 `System.out.print()`로 출력한다
+
+**핵심 아이디어**: 고정 출력 문제로, Java 문자열 내 특수 문자 이스케이프만 정확히 처리하면 된다.
+
+## 코드
+
+```java
+package day699;
+
+public class Day693BOJ10172개 {
+  public static void main(String[] args) {
+    System.out.print("|\\_/|\n|q p|   /}\n( 0 )\"\"\"\\\n|\"^\"`    |\n||_/=\\\\__|");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 출력
+- 공간: O(1) — 고정 문자열

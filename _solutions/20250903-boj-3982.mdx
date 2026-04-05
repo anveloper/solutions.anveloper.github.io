@@ -1,0 +1,113 @@
+---
+title: "BOJ 3982 - Soccer Bets"
+date: "2025-09-03"
+description: "구현, 자료 구조, 집합과 맵 문제"
+tags: ["구현", "자료 구조", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "3982"
+problem_url: "https://www.acmicpc.net/problem/3982"
+difficulty: "실버 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3982 - Soccer Bets](https://www.acmicpc.net/problem/3982)
+
+4개 팀이 참가하는 축구 그룹 리그에서 각 팀이 다른 모든 팀과 한 번씩 경기를 치른다. 총 6경기(4팀 중 2팀 선택: C(4,2) = 6)가 진행되며, 4전 전승인 팀이 존재할 경우 그 팀의 이름을 출력한다. 무승부는 없다고 가정한다.
+
+### 입력
+
+첫 번째 줄에 테스트 케이스 수 `c`가 주어진다. 각 테스트 케이스는 16줄로 구성되며, 각 줄에 두 팀 이름과 각 팀의 득점이 주어진다.
+
+```
+c
+team1 team2 goal1 goal2
+...
+```
+
+### 출력
+
+각 테스트 케이스마다 4전 전승 팀의 이름을 출력한다.
+
+### 예제
+
+| 입력                        | 출력    |
+| --------------------------- | ------- |
+| `1` `TeamA TeamB 3 0` `...` | `TeamA` |
+
+## 풀이
+
+각 경기 결과를 읽어 팀별 승패를 `unordered_map`으로 집계한 뒤, 4승 0패인 팀을 찾아 출력한다.
+
+1. 입력에서 테스트 케이스 수 `c`를 읽는다.
+2. 각 테스트 케이스마다 16경기 결과를 순회한다.
+3. 두 팀 이름과 득점을 읽어 득점이 높은 팀에 승(wins), 낮은 팀에 패(losses)를 기록한다.
+4. 모든 경기가 끝난 뒤 `stat` 맵을 순회하여 `wins == 4 && losses == 0`인 팀을 찾는다.
+5. 해당 팀 이름을 출력한다.
+
+**핵심 아이디어**: 4팀 리그에서 각 팀은 3경기를 치르는데, 4전 전승 팀이 존재하려면 16경기 데이터에서 팀별 승패를 해시맵으로 O(1) 집계 후 조건 탐색만으로 해결된다. 무승부가 없으므로 항상 유일한 챔피언이 존재한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <array>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int c;
+  if (!(cin >> c))
+    return 0;
+
+  while (c--)
+  {
+    unordered_map<string, array<int, 2>> stat; // [0]=wins, [1]=losses
+
+    for (int i = 0; i < 16; ++i)
+    {
+      string t1, t2;
+      int g1, g2;
+      cin >> t1 >> t2 >> g1 >> g2;
+
+      if (g1 > g2)
+      {
+        ++stat[t1][0]; // t1 win
+        ++stat[t2][1]; // t2 loss
+      }
+      else
+      {
+        ++stat[t2][0]; // t2 win
+        ++stat[t1][1]; // t1 loss
+      }
+    }
+
+    string champion;
+    for (const auto &kv : stat)
+    {
+      if (kv.second[0] == 4 && kv.second[1] == 0)
+      {
+        champion = kv.first;
+        break; // 유일하므로 즉시 종료
+      }
+    }
+
+    cout << champion << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(C \* M) — C는 테스트 케이스 수, M은 경기 수(고정 16)이므로 실질적으로 O(C)
+- 공간: O(T) — T는 등장하는 팀 이름 수 (최대 4 \* C)

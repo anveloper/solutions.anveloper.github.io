@@ -1,0 +1,74 @@
+---
+title: "BOJ 5585 - 거스름돈"
+date: "2023-01-28"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "5585"
+problem_url: "https://www.acmicpc.net/problem/5585"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5585 - 거스름돈](https://www.acmicpc.net/problem/5585)
+
+1000엔짜리를 내고 물건을 살 때, 거스름돈을 500, 100, 50, 10, 5, 1엔 동전으로 받는 최소 동전 수를 구하라.
+
+### 입력
+
+물건 가격이 주어진다 (1 이상 999 이하).
+
+### 출력
+
+거스름돈 동전의 최소 개수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `380` | `4`  |
+
+## 풀이
+
+큰 동전부터 최대한 사용하는 그리디로 최소 동전 수를 구한다.
+
+1. 거스름돈 = 1000 - 가격을 계산한다
+2. 500, 100, 50, 10, 5, 1엔 순으로 사용 가능한 개수를 더한다
+3. 각 동전에서 `거스름돈 / 동전값`만큼 사용하고 나머지를 다음 동전으로 넘긴다
+
+**핵심 아이디어**: 각 동전이 작은 동전의 배수 관계이므로 큰 동전부터 그리디하게 사용하면 항상 최적이다.
+
+## 코드
+
+```java
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Day355BOJ5585거스름돈 {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int cost = Integer.parseInt(br.readLine());
+        int[] coinArr = { 500, 100, 50, 10, 5, 1 };
+        cost = 1000 - cost;
+        int num = 0;
+        for (int i = 0; i < 6; i++) {
+            if (cost / coinArr[i] > 0) {
+                num += cost / coinArr[i];
+                cost = cost % coinArr[i];
+            }
+        }
+        System.out.println(num);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) - 고정 6종류 동전
+- 공간: O(1)

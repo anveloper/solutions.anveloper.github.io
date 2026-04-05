@@ -1,0 +1,78 @@
+---
+title: "BOJ 2525 - 오븐 시계"
+date: "2023-07-27"
+description: "사칙연산, 수학 문제"
+tags: ["사칙연산", "수학"]
+platform: "boj"
+problem_number: "2525"
+problem_url: "https://www.acmicpc.net/problem/2525"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2525 - 오븐 시계](https://www.acmicpc.net/problem/2525)
+
+현재 시각(A시 B분)에서 C분 후의 시각을 구하라.
+
+### 입력
+
+첫째 줄에 A, B, 둘째 줄에 C가 주어진다.
+
+### 출력
+
+C분 후의 시와 분을 출력한다.
+
+### 예제
+
+| 입력         | 출력    |
+| ------------ | ------- |
+| `14 30` `20` | `14 50` |
+
+## 풀이
+
+전체 시간을 분 단위로 변환한 뒤 24시간 모듈로 연산으로 시와 분을 구한다.
+
+1. 현재 시각을 총 분으로 변환한다 (60\*A + B)
+2. C분을 더한다
+3. 시 = (총 분 / 60) % 24, 분 = 총 분 % 60
+
+**핵심 아이디어**: 분 단위로 통일하면 시간 계산이 간단해지고, 24시간 순환은 모듈로 연산으로 처리한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day536BOJ2525오븐시계 {
+  public static void main(String[] args) throws Exception {
+
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+    int A = Integer.parseInt(st.nextToken());
+    int B = Integer.parseInt(st.nextToken());
+
+    int C = Integer.parseInt(br.readLine());
+
+    int min = 60 * A + B;
+    min += C;
+
+    int hour = (min / 60) % 24;
+    int minute = min % 60;
+
+    System.out.println(hour + " " + minute);
+
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

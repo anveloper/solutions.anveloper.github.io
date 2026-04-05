@@ -1,0 +1,94 @@
+---
+title: "BOJ 5637 - 가장 긴 단어"
+date: "2025-08-06"
+description: "문자열, 파싱, 정규 표현식 문제"
+tags: ["문자열", "파싱", "정규 표현식"]
+platform: "boj"
+problem_number: "5637"
+problem_url: "https://www.acmicpc.net/problem/5637"
+difficulty: "실버 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5637 - 가장 긴 단어](https://www.acmicpc.net/problem/5637)
+
+영문 텍스트에서 가장 긴 단어를 찾아 소문자로 출력하라. 단어는 알파벳과 하이픈으로만 구성된다.
+
+### 입력
+
+여러 줄의 텍스트가 주어지며, `E-N-D`로 종료한다.
+
+### 출력
+
+가장 긴 단어를 소문자로 출력한다.
+
+### 예제
+
+| 입력                      | 출력          |
+| ------------------------- | ------------- |
+| `Hello world-class E-N-D` | `world-class` |
+
+## 풀이
+
+각 토큰에서 알파벳과 하이픈만 추출하여 최장 단어를 추적한다.
+
+1. 입력에서 공백으로 구분된 토큰을 읽는다
+2. 각 토큰에서 알파벳과 하이픈만 남기는 전처리를 수행한다
+3. 전처리된 결과의 길이가 현재 최댓값보다 길면 갱신한다
+4. 최종 결과를 소문자로 변환하여 출력한다
+
+**핵심 아이디어**: 구두점이 단어에 붙어 있을 수 있으므로, 알파벳과 하이픈만 필터링하는 전처리가 필요하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+string preprocess(string str)
+{
+  string result = "";
+
+  for (auto iter = str.begin(); iter != str.end(); iter++)
+  {
+    if (isalpha(*iter) || *iter == '-')
+    {
+      result += *iter;
+    }
+  }
+  return result;
+}
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  string max = "";
+  string str;
+
+  while (true)
+  {
+    cin >> str;
+    if (str == "E-N-D")
+      break;
+    str = preprocess(str);
+    max = max.length() < str.length() ? str : max;
+  }
+
+  for (auto iter = max.begin(); iter != max.end(); iter++)
+    *iter = tolower(*iter);
+
+  cout << max;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

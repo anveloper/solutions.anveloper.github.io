@@ -1,0 +1,76 @@
+---
+title: "BOJ 5648 - 역원소 정렬"
+date: "2025-08-01"
+description: "정렬 문제"
+tags: ["정렬"]
+platform: "boj"
+problem_number: "5648"
+problem_url: "https://www.acmicpc.net/problem/5648"
+difficulty: "실버 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5648 - 역원소 정렬](https://www.acmicpc.net/problem/5648)
+
+N개의 정수가 주어질 때, 각 수의 자릿수를 뒤집어 오름차순으로 정렬하여 출력하라.
+
+### 입력
+
+정수 개수 N과 N개의 정수가 주어진다.
+
+### 출력
+
+뒤집은 수를 오름차순으로 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력          | 출력           |
+| ------------- | -------------- |
+| `3 12 304 50` | `3` `21` `403` |
+
+## 풀이
+
+각 수의 자릿수를 뒤집고 정렬하여 출력한다.
+
+1. 각 수의 자릿수를 반복 나눗셈으로 뒤집는다
+2. 뒤집은 수를 배열에 저장한다
+3. 오름차순 정렬하여 출력한다
+
+**핵심 아이디어**: `x % 10`으로 마지막 자릿수를 추출하고 `x / 10`으로 제거하는 반복으로 O(자릿수)에 뒤집을 수 있다.
+
+## 코드
+
+```cpp
+#include <stdio.h>
+#include <algorithm>
+using namespace std;
+typedef long long ll;
+ll a[1000002], i, n, x, y;
+int main()
+{
+  scanf("%lld", &n);
+  for (i = 0; i < n; ++i)
+  {
+    scanf("%lld", &x);
+    y = 0;
+    while (x > 0)
+    {
+      y = 10 * y + (x % 10);
+      x /= 10;
+    }
+    a[i] = y;
+  }
+  sort(a, a + n);
+  for (i = 0; i < n; ++i)
+    printf("%lld\n", a[i]);
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

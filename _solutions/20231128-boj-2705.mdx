@@ -1,0 +1,86 @@
+---
+title: "BOJ 2705 - 팰린드롬 파티션"
+date: "2023-11-28"
+description: "다이나믹 프로그래밍, 재귀 문제"
+tags: ["다이나믹 프로그래밍", "재귀"]
+platform: "boj"
+problem_number: "2705"
+problem_url: "https://www.acmicpc.net/problem/2705"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2705 - 팰린드롬 파티션](https://www.acmicpc.net/problem/2705)
+
+정수 N을 팰린드롬 형태의 파티션(합이 좌우 대칭)으로 나타내는 경우의 수를 구하라.
+
+### 입력
+
+첫째 줄에 T, 이후 T줄에 N이 주어진다 (1 이상 1000 이하).
+
+### 출력
+
+각 N에 대해 팰린드롬 파티션 수를 출력한다.
+
+### 예제
+
+| 입력            | 출력        |
+| --------------- | ----------- |
+| `3` `1` `2` `4` | `1` `2` `4` |
+
+## 풀이
+
+DP로 팰린드롬 파티션 수를 구한다. 양끝에 같은 값 j를 배치하면 중앙에 (N-2j)/2의 파티션이 남는다.
+
+1. dp[0] = 1로 초기화한다
+2. N이 짝수면 양끝에 짝수 j를, 홀수면 홀수 j를 배치할 수 있다
+3. 양끝 j를 빼면 중앙 (N-j)/2에 대한 파티션이 재귀적으로 결정된다
+4. dp[i] = sum(dp[(i-j)/2]) for valid j
+
+**핵심 아이디어**: 팰린드롬 대칭성으로 양끝을 결정하면 중앙 값만 재귀적으로 결정하면 된다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day661BOJ2705펠린드롬파티션 {
+  final static int MAX = 1_001;
+
+  static int T, N;
+  static int[] dp = new int[MAX];
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+
+    dp[0] = 1;
+    for (int i = 1; i < MAX; i++) {
+      if (i % 2 == 0) {
+        for (int j = 0; j <= i; j += 2)
+          dp[i] += dp[(i - j) / 2];
+      } else {
+        for (int j = 1; j <= i; j += 2)
+          dp[i] += dp[(i - j) / 2];
+      }
+    }
+
+    T = Integer.parseInt(br.readLine());
+
+    for (int t = 1; t <= T; t++)
+      sb.append(dp[Integer.parseInt(br.readLine())]).append("\n");
+
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

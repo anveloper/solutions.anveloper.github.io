@@ -1,0 +1,89 @@
+---
+title: "BOJ 2290 - LCD Test"
+date: "2025-01-18"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2290"
+problem_url: "https://www.acmicpc.net/problem/2290"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2290 - LCD Test](https://www.acmicpc.net/problem/2290)
+
+크기 s가 주어지면 7세그먼트 LCD 스타일로 숫자를 출력하라. 가로 세그먼트는 `-`로 s개, 세로 세그먼트는 `|`로 s개를 사용한다.
+
+### 입력
+
+s와 숫자 문자열 n이 공백으로 주어진다.
+
+### 출력
+
+LCD 스타일로 숫자를 출력한다. 각 숫자 사이에 공백 1칸을 둔다.
+
+### 예제
+
+| 입력           | 출력            |
+| -------------- | --------------- |
+| `2 1234567890` | (LCD 형태 출력) |
+
+## 풀이
+
+각 숫자의 7세그먼트(a~g)를 2D 배열로 구성한 뒤, 행 단위로 합쳐 출력한다.
+
+1. 각 숫자에 대해 `(s+2) × (2s+3)` 크기의 2D 배열을 생성한다
+2. 숫자별로 해당하는 세그먼트 위치에 `-` 또는 `|`를 채운다
+3. 세그먼트 a~g 각각에 어떤 숫자가 해당하는지 조건문으로 판별한다
+4. `zip(*display)`로 모든 숫자의 같은 행을 합쳐 출력한다
+
+**핵심 아이디어**: 7세그먼트의 각 위치를 행/열 좌표로 매핑하고, 숫자별 활성 세그먼트를 조건문으로 처리한다.
+
+## 코드
+
+```python
+import sys
+input = sys.stdin.readline
+def getInts(): return map(int, input().split())
+
+
+h, v = '-', '|'
+s, n = input().split()
+s = int(s)
+
+
+def construct_segment(n):
+    lcd = [[' ']*(s+2) for _ in range(2*s + 3)]
+    for i in range(1, s+1):
+        if n in '02356789':
+            lcd[0][i] = h  # a
+        if n in '01234789':
+            lcd[i][-1] = v  # b
+        if n in '013456789':
+            lcd[s+1+i][-1] = v  # c
+        if n in '0235689':
+            lcd[2*s + 2][i] = h  # d
+        if n in '0268':
+            lcd[s+1+i][0] = v  # e
+        if n in '045689':
+            lcd[i][0] = v  # f
+        if n in '2345689':
+            lcd[s+1][i] = h  # g
+    return lcd
+
+
+display = [construct_segment(i) for i in n]
+
+for line in zip(*display):
+    for r in line:
+        print(''.join(r), end=' ')
+    print()
+```
+
+## 복잡도
+
+- 시간: O(D \* s) — D는 자릿수, 각 숫자에 s 크기 세그먼트 처리
+- 공간: O(D \* s²) — 숫자별 2D 배열

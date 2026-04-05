@@ -1,0 +1,75 @@
+---
+title: "BOJ 7789 - 텔레프라임"
+date: "2025-11-17"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정"]
+platform: "boj"
+problem_number: "7789"
+problem_url: "https://www.acmicpc.net/problem/7789"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7789 - 텔레프라임](https://www.acmicpc.net/problem/7789)
+
+전화번호 n과 이동 규칙 m이 주어질 때, n과 `n + m * 10⁶`이 모두 소수인지 판별하라.
+
+### 입력
+
+전화번호 n과 이동값 m이 주어진다.
+
+### 출력
+
+둘 다 소수이면 `Yes`, 아니면 `No`를 출력한다.
+
+### 예제
+
+| 입력   | 출력  |
+| ------ | ----- |
+| `13 2` | `Yes` |
+
+## 풀이
+
+두 수 각각에 대해 소수 판정을 수행한다.
+
+1. `isPrime(n)`으로 n이 소수인지 확인한다
+2. `isPrime(n + m * 1000000)`으로 변환된 수도 소수인지 확인한다
+3. 둘 다 소수이면 `Yes`, 아니면 `No`를 출력한다
+
+**핵심 아이디어**: 각 수에 대해 `sqrt(N)`까지 나눗셈으로 소수 판정하는 기본 방법을 적용한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+bool isPrime(int n)
+{
+  if (n < 2)
+    return false;
+  for (int i = 2; i * i <= n; i++)
+  {
+    if (n % i == 0)
+      return false;
+  }
+  return true;
+}
+
+int main()
+{
+  int n, m;
+  cin >> n >> m;
+  cout << ((isPrime(n) && isPrime(n + m * 1000000)) ? "Yes" : "No");
+}
+```
+
+## 복잡도
+
+- 시간: O(sqrt(n + m \* 10⁶))
+- 공간: O(1)

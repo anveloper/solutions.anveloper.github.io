@@ -1,0 +1,70 @@
+---
+title: "BOJ 10102 - 개표"
+date: "2024-01-09"
+description: "문자열 문제"
+tags: ["문자열"]
+platform: "boj"
+problem_number: "10102"
+problem_url: "https://www.acmicpc.net/problem/10102"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10102 - 개표](https://www.acmicpc.net/problem/10102)
+
+A와 B 두 후보의 투표 결과 문자열이 주어질 때, 승자를 판별하라.
+
+### 입력
+
+첫째 줄에 투표 수 N, 둘째 줄에 'A'와 'B'로 이루어진 문자열이 주어진다.
+
+### 출력
+
+A가 더 많으면 "A", B가 더 많으면 "B", 같으면 "Tie"를 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `7` `ABBABAB` | `B`  |
+
+## 풀이
+
+문자열을 순회하며 A와 B의 개수를 세고 비교한다.
+
+1. 투표 문자열을 소문자로 변환 후 문자 배열로 순회한다
+2. 'a'이면 a 카운트, 아니면 b 카운트를 증가시킨다
+3. 최종 카운트를 비교하여 "A", "B", 또는 "Tie"를 출력한다
+
+**핵심 아이디어**: 단순 카운팅 문제로, 문자열을 한 번 순회하면 O(N)에 해결된다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+
+public class Day707BOJ10102개표 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    br.readLine();
+    int a = 0, b = 0;
+    for (char c : br.readLine().toLowerCase().toCharArray()) {
+      if (c == 'a')
+        a++;
+      else
+        b++;
+    }
+    System.out.println((a > b) ? "A" : (a < b) ? "B" : "Tie");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

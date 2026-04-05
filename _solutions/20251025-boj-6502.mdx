@@ -1,0 +1,80 @@
+---
+title: "BOJ 6502 - 동혁 피자"
+date: "2025-10-25"
+description: "수학, 구현, 기하학 문제"
+tags: ["수학", "구현", "기하학", "피타고라스 정리"]
+platform: "boj"
+problem_number: "6502"
+problem_url: "https://www.acmicpc.net/problem/6502"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6502 - 동혁 피자](https://www.acmicpc.net/problem/6502)
+
+원형 피자와 직사각형 테이블이 있다. 피자의 반지름 `x`와 테이블의 가로 `y`, 세로 `z`가 주어질 때, 피자가 테이블 위에 올라가는지 판단한다. 피자가 테이블에 올라가려면 피자의 지름이 테이블의 대각선 이하여야 한다. 입력이 0이면 종료한다.
+
+### 입력
+
+줄마다 피자 반지름 `x`, 테이블 가로 `y`, 테이블 세로 `z`가 주어진다. `x`가 0이면 종료한다.
+
+### 출력
+
+각 케이스에 대해 `Pizza N fits on the table.` 또는 `Pizza N does not fit on the table.`을 출력한다.
+
+### 예제
+
+| 입력        | 출력                         |
+| ----------- | ---------------------------- |
+| `5 6 8` `0` | `Pizza 1 fits on the table.` |
+
+## 풀이
+
+피자 반지름과 테이블 대각선의 절반을 비교하여 올라가는지 판단한다.
+
+1. 반지름 `x`, 가로 `y`, 세로 `z`를 입력받는다. `x == 0`이면 종료한다.
+2. 테이블의 대각선 길이는 피타고라스 정리에 의해 `sqrt(y² + z²)`이며, 그 절반은 `sqrt((y/2)² + (z/2)²)`이다.
+3. 피자 반지름 `x`가 대각선 절반 이상이면 테이블에 올라갈 수 있다. 즉 `x >= sqrt(z/2 * z/2 + y/2 * y/2)` 조건을 검사한다.
+4. 조건에 따라 `fits` 또는 `does not fit` 메시지를 출력하고 케이스 번호를 증가시킨다.
+
+**핵심 아이디어**: 원형 피자가 직사각형 테이블에 올라가려면 피자의 반지름이 테이블 대각선의 절반(즉, 테이블 중심에서 꼭짓점까지의 거리) 이상이어야 한다. 피타고라스 정리를 적용하면 `sqrt((y/2)² + (z/2)²)`와의 비교로 단순화된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main()
+{
+  int cnt = 1;
+  while (1)
+  {
+    double x;
+    cin >> x;
+    if (x == 0)
+      break;
+    double y, z;
+    cin >> y >> z;
+    if (x >= sqrt(z / 2 * z / 2 + y / 2 * y / 2))
+    {
+      cout << "Pizza " << cnt << " fits on the table.\n";
+    }
+    else
+    {
+      cout << "Pizza " << cnt << " does not fit on the table.\n";
+    }
+    cnt++;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N은 테스트 케이스 수
+- 공간: O(1) — 상수 크기 변수만 사용

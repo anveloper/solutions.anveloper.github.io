@@ -1,0 +1,84 @@
+---
+title: "BOJ 4201 - Snakes and Ladders"
+date: "2026-02-15"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "4201"
+problem_url: "https://www.acmicpc.net/problem/4201"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4201 - Snakes and Ladders](https://www.acmicpc.net/problem/4201)
+
+뱀과 사다리 보드게임을 시뮬레이션한다. 1~100까지의 칸이 있는 보드에서 N명의 플레이어가 번갈아 가며 주사위 값만큼 이동한다. 특정 칸에는 뱀이나 사다리가 연결되어 있어 도착 즉시 연결된 칸으로 이동한다. 100번 칸에 도달하면 게임이 종료된다.
+
+### 입력
+
+- 첫 줄: N(플레이어 수), M(뱀/사다리 연결 수), K(주사위 던지는 횟수)
+- 다음 M줄: 각각 연결 시작 칸 a, 도착 칸 b (a에 도달하면 b로 이동)
+- 다음 K줄 또는 K개 값: 순서대로의 주사위 결과
+
+### 출력
+
+각 플레이어의 최종 위치를 다음 형식으로 출력한다.
+
+```
+Position of player {i} is {pos}.
+```
+
+### 예제
+
+| 입력                             | 출력                                                       |
+| -------------------------------- | ---------------------------------------------------------- |
+| `2 2 4` `3 20` `90 10` `3 5 6 2` | `Position of player 1 is 20.` `Position of player 2 is 6.` |
+
+## 풀이
+
+N명의 플레이어가 순서대로 주사위를 굴리며 보드 위를 이동하는 시뮬레이션이다. 뱀과 사다리는 연결 배열로 처리하여 도착 즉시 적용한다.
+
+1. N, M, K를 입력받아 플레이어 위치 배열을 모두 1로, 연결 배열 `connections[i] = i`로 초기화한다.
+2. M개의 뱀/사다리 연결 `(a, b)`를 읽어 `connections[a] = b`로 설정한다.
+3. K번의 주사위 값을 순서대로 읽으며 `i % N`번 플레이어에게 적용한다.
+4. 해당 플레이어의 위치에 주사위 값을 더한 뒤, `connections[]`를 통해 뱀/사다리 이동을 처리한다.
+5. 위치가 100이 되면 즉시 루프를 종료한다.
+6. 모든 플레이어의 최종 위치를 출력한다.
+
+**핵심 아이디어**: 뱀과 사다리를 별도로 구분하지 않고 `connections[]` 배열 하나로 통합 관리한다. 연결이 없는 칸은 자기 자신을 가리키므로(`connections[i] = i`) 이동 후 항상 `connections[pos]`를 적용하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+  int n, m, k, a, b, num;
+  cin >> n >> m >> k;
+  int positions[n], connections[101];
+  for (int i = 0; i < n; i ++) positions[i] = 1;
+  for (int i = 0; i < 101; i ++) connections[i] = i;
+  while (m --) {
+    cin >> a >> b;
+    connections[a] = b;
+  }
+  for (int i = 0; i < k; i ++) {
+    cin >> num;
+    positions[i % n] += num;
+    positions[i % n] = connections[positions[i % n]];
+    if (positions[i % n] == 100) break;
+  }
+  for (int i = 0; i < n; i ++) {
+    cout << "Position of player " << i + 1 << " is " << positions[i] << ".\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(M + K) — 연결 설정 O(M) + 주사위 시뮬레이션 O(K)
+- 공간: O(N + 101) — 플레이어 위치 배열 O(N) + 연결 배열 O(101)

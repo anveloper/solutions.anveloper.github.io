@@ -1,0 +1,136 @@
+---
+title: "BOJ 5205 - School Colors"
+date: "2025-08-25"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "5205"
+problem_url: "https://www.acmicpc.net/problem/5205"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5205 - School Colors](https://www.acmicpc.net/problem/5205)
+
+n개의 RGB 색상이 주어질 때, 유클리드 거리가 가장 큰 색상 쌍을 찾는 문제다. 즉, RGB 공간에서 두 색상 (r1,g1,b1)과 (r2,g2,b2)의 거리가 `sqrt((r1-r2)^2 + (g1-g2)^2 + (b1-b2)^2)`로 정의될 때 이 거리가 최대인 쌍을 모두 출력한다.
+
+### 입력
+
+- 첫 줄에 테스트 케이스 수 K가 주어진다.
+- 각 케이스는 색상 수 n 다음에 n개의 `r g b` 값으로 구성된다.
+
+### 출력
+
+- 각 테스트 케이스에 대해 `Data Set k:`를 출력하고, 최대 대비 색상 쌍의 인덱스(1-기반)를 오름차순으로 출력한다.
+
+### 예제
+
+| 입력                                    | 출력                |
+| --------------------------------------- | ------------------- |
+| `1` `3` `0 0 0` `255 255 255` `128 0 0` | `Data Set 1:` `1 2` |
+
+## 풀이
+
+모든 색상 쌍에 대해 유클리드 거리를 계산하고 최대값을 갱신하는 브루트포스 방식으로 해결한다.
+
+1. K개의 테스트 케이스를 처리한다.
+2. n개의 RGB 색상을 배열에 저장한다.
+3. 모든 i `<` j 쌍에 대해 `getContrast(rgbs[i], rgbs[j])`를 계산한다.
+4. 현재 최대 거리보다 크면 결과 목록을 초기화하고 새 쌍을 추가, 같으면 목록에 추가한다.
+5. 결과를 i, j 오름차순으로 정렬하여 출력한다.
+
+**핵심 아이디어**: 거리 비교 시 `sqrt`를 생략하고 제곱 거리로 비교하면 정확도 손실 없이 연산량을 줄일 수 있지만, 이 풀이는 `sqrt`를 유지하며 `double` 비교를 사용한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+typedef struct
+{
+  int r, g, b;
+} RGB;
+
+typedef struct
+{
+  int i, j;
+} Idx;
+
+bool cmp(Idx a, Idx b)
+{
+  if (a.i < b.i)
+  {
+    return true;
+  }
+  if (a.i == b.i)
+  {
+    return a.j < b.j;
+  }
+  return false;
+}
+
+double getContrast(RGB rgb, RGB rgb2)
+{
+  return sqrt((rgb.r - rgb2.r) * (rgb.r - rgb2.r) + (rgb.g - rgb2.g) * (rgb.g - rgb2.g) + (rgb.b - rgb2.b) * (rgb.b - rgb2.b));
+}
+
+int main(void)
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+
+  int K;
+  cin >> K;
+
+  for (int k = 1; k <= K; k++)
+  {
+    int n;
+    cin >> n;
+    vector<RGB> rgbs(n);
+    for (int i = 0; i < n; i++)
+    {
+      RGB rgb;
+      cin >> rgb.r >> rgb.g >> rgb.b;
+      rgbs[i] = rgb;
+    }
+    double temp = 0.0;
+    vector<Idx> results;
+    for (int i = 0; i < n; i++)
+    {
+      for (int j = i + 1; j < n; j++)
+      {
+        if (temp < getContrast(rgbs[i], rgbs[j]))
+        {
+          results.clear();
+          results.push_back({i + 1, j + 1});
+          temp = getContrast(rgbs[i], rgbs[j]);
+        }
+        else if (temp == getContrast(rgbs[i], rgbs[j]))
+        {
+          results.push_back({i + 1, j + 1});
+        }
+      }
+    }
+    sort(results.begin(), results.end(), cmp);
+    cout << "Data Set " << k << ":\n";
+    for (Idx result : results)
+    {
+      cout << result.i << " " << result.j << "\n";
+    }
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — 모든 색상 쌍 조합 탐색, 쌍의 수는 N\*(N-1)/2
+- 공간: O(N) — 색상 배열 및 결과 인덱스 저장

@@ -1,0 +1,66 @@
+---
+title: "BOJ 1668 - 트로피 진열"
+date: "2024-06-29"
+description: "왼쪽과 오른쪽에서 각각 보이는 트로피의 개수를 구하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1668"
+problem_url: "https://www.acmicpc.net/problem/1668"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1668 - 트로피 진열](https://www.acmicpc.net/problem/1668)
+
+N개의 트로피가 일렬로 진열되어 있다. 왼쪽과 오른쪽에서 각각 볼 수 있는 트로피 수를 구하라. 앞의 트로피보다 높은 트로피만 보인다.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 트로피의 높이가 주어진다.
+
+### 출력
+
+왼쪽에서 보이는 수와 오른쪽에서 보이는 수를 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                    | 출력    |
+| ----------------------- | ------- |
+| `5` `1` `2` `3` `4` `5` | `5` `1` |
+
+## 풀이
+
+양쪽에서 각각 순회하며, 지금까지의 최대 높이보다 높은 트로피가 나타나면 카운트를 증가시킨다.
+
+1. 왼쪽→오른쪽으로 순회하며 현재 최대보다 높으면 카운트 증가
+2. 오른쪽→왼쪽으로 역순 순회하며 동일하게 처리
+3. 각각의 카운트를 출력한다
+
+**핵심 아이디어**: 앞의 트로피에 가려지지 않으려면 이전 최대값보다 커야 하므로, 최대값 갱신 횟수가 보이는 트로피 수이다.
+
+## 코드
+
+```python
+N = int(input())
+li = [int(input()) for _ in range(N)]
+left_cnt = right_cnt = 0
+left_max = right_max = 0
+for n in li:
+    if n > left_max:
+        left_max = n
+        left_cnt += 1
+for n in li[::-1]:
+    if n > right_max:
+        right_max = n
+        right_cnt += 1
+print(left_cnt)
+print(right_cnt)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

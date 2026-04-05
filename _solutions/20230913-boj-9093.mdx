@@ -1,0 +1,79 @@
+---
+title: "BOJ 9093 - 단어 뒤집기"
+date: "2023-09-13"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "9093"
+problem_url: "https://www.acmicpc.net/problem/9093"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9093 - 단어 뒤집기](https://www.acmicpc.net/problem/9093)
+
+문장이 주어질 때, 각 단어의 글자 순서를 뒤집어 출력한다. 단어 순서는 유지한다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T가 주어진다. 각 줄에 문장이 주어진다.
+
+### 출력
+
+각 문장의 단어를 뒤집어 출력한다.
+
+### 예제
+
+| 입력                   | 출력               |
+| ---------------------- | ------------------ |
+| `1` `I am happy today` | `I ma yppah yadot` |
+
+## 풀이
+
+스택을 사용하여 각 단어의 문자를 역순으로 출력한다.
+
+1. 문장의 각 문자를 순회한다
+2. 공백이나 줄바꿈을 만나면 스택에서 문자를 모두 pop하여 출력한다
+3. 그 외 문자는 스택에 push한다
+
+**핵심 아이디어**: 스택의 LIFO 특성을 활용하면 push 후 pop할 때 자연스럽게 역순이 된다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.Stack;
+
+public class Day586BOJ9093단어뒤집기 {
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    int t = Integer.parseInt(br.readLine());
+
+    while (t-- > 0) {
+      Stack<Character> stack = new Stack<>();
+      String str = br.readLine() + "\n";
+      for (char ch : str.toCharArray()) {
+        if (ch == ' ' || ch == '\n') {
+          while (!stack.isEmpty()) {
+            bw.write(stack.pop());
+          }
+          bw.write(ch);
+        } else
+          stack.push(ch);
+      }
+    }
+    bw.flush();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

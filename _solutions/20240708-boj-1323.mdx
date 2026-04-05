@@ -1,0 +1,65 @@
+---
+title: "BOJ 1323 - 숫자 연결하기"
+date: "2024-07-08"
+description: "숫자 N을 반복 연결하여 K로 나누어떨어지는 최소 횟수를 나머지 연산으로 구하는 문제"
+tags: ["수학", "정수론"]
+platform: "boj"
+problem_number: "1323"
+problem_url: "https://www.acmicpc.net/problem/1323"
+difficulty: "골드 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1323 - 숫자 연결하기](https://www.acmicpc.net/problem/1323)
+
+숫자 N을 여러 번 이어 붙여 만든 수가 K의 배수가 되는 최소 반복 횟수를 구하라. 불가능하면 -1을 출력한다.
+
+### 입력
+
+N과 K가 주어진다.
+
+### 출력
+
+최소 반복 횟수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `12 8` | `2`  |
+
+## 풀이
+
+N과 K를 GCD로 약분한 뒤, 이어 붙이기를 나머지 연산으로 시뮬레이션한다.
+
+1. N과 K의 GCD를 구해 약분하여 검사 범위를 줄인다
+2. 현재 나머지에 `10^(자릿수)`를 곱하고 N을 더한 뒤 K로 나눈 나머지를 추적한다
+3. 나머지가 0이 되면 현재 횟수를 출력한다
+4. 최대 K번 반복 후에도 0이 아니면 비둘기집 원리에 의해 사이클이므로 -1을 출력한다
+
+**핵심 아이디어**: 실제로 큰 수를 만들지 않고 나머지만 추적하면 되며, 나머지는 최대 K가지이므로 K번 안에 답이 결정된다.
+
+## 코드
+
+```python
+import math, sys
+
+N, K = map(int, input().split())
+len = len(str(N))
+N, K = N // math.gcd(N, K), K // math.gcd(N, K)
+tmp = N
+for i in range(K):
+    if tmp % K == 0:
+        print(i + 1)
+        sys.exit()
+    tmp = (tmp * 10**len + N) % K
+print(-1)
+```
+
+## 복잡도
+
+- 시간: O(K)
+- 공간: O(1)

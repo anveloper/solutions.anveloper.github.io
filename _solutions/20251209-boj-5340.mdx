@@ -1,0 +1,84 @@
+---
+title: "BOJ 5340 - Secret Location"
+date: "2025-12-09"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "5340"
+problem_url: "https://www.acmicpc.net/problem/5340"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5340 - Secret Location](https://www.acmicpc.net/problem/5340)
+
+비밀 위치(secret location)를 위도(latitude)와 경도(longitude)로 인코딩하는 문제이다. 좌표는 6개의 줄로 주어지며, 각 줄의 문자열 길이가 위도/경도의 도(degree), 분(minute), 초(second)에 해당한다.
+
+처음 3개의 줄은 위도(Latitude)의 도:분:초를, 나머지 3개의 줄은 경도(Longitude)의 도:분:초를 나타낸다.
+
+### 입력
+
+- 6개의 줄이 주어진다. 각 줄은 공백이 포함될 수 있는 문자열이다.
+- 줄 끝에 공백이 붙어 있을 수 있다.
+
+### 출력
+
+- `Latitude d:m:s` 형식으로 출력한다.
+- `Longitude d:m:s` 형식으로 출력한다.
+
+### 예제
+
+| 입력                                | 출력                               |
+| ----------------------------------- | ---------------------------------- |
+| `abc` `de` `fghij` `xyz` `mn` `opq` | `Latitude 3:2:5` `Longitude 3:2:3` |
+
+## 풀이
+
+6개의 줄을 읽어 각 줄의 순수 문자열 길이를 좌표로 사용한다.
+
+1. 크기 6의 정수 배열 `coord`를 선언한다.
+2. 6개의 줄을 `getline()`으로 읽는다.
+3. 각 줄의 끝에 공백이 있으면 제거한다.
+4. 줄의 길이를 `coord[i]`에 저장한다.
+5. `coord[0]:coord[1]:coord[2]`를 위도로, `coord[3]:coord[4]:coord[5]`를 경도로 출력한다.
+
+**핵심 아이디어**: 문자열 길이가 곧 좌표 값이다. `getline()`으로 공백을 포함해 읽은 뒤, 후미 공백만 제거하면 순수 길이를 바로 사용할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  vector<int> coord(6);
+  for (int i = 0; i < 6; i++)
+  {
+    string line;
+    getline(cin, line);
+    if (*(line.end() - 1) == ' ')
+      line.pop_back();
+    coord[i] = line.length();
+  }
+
+  cout << "Latitude " << coord[0] << ":" << coord[1] << ":" << coord[2] << "\n";
+  cout << "Longitude " << coord[3] << ":" << coord[4] << ":" << coord[5] << "\n";
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(L) — 6개의 줄 각각의 길이 L만큼 처리
+- 공간: O(L) — 줄 문자열 저장

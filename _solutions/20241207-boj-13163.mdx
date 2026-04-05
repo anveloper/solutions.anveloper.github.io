@@ -1,0 +1,90 @@
+---
+title: "BOJ 13163 - 닉네임에 갓 붙이기"
+date: "2024-12-07"
+description: "닉네임의 첫 단어를 god으로 바꾸어 출력하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "13163"
+problem_url: "https://www.acmicpc.net/problem/13163"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13163 - 닉네임에 갓 붙이기](https://www.acmicpc.net/problem/13163)
+
+공백으로 구분된 닉네임에서 첫 번째 단어를 "god"으로 교체하고 나머지 단어를 이어 붙여 출력하라.
+
+### 입력
+
+닉네임 수 N, 각 줄에 공백으로 구분된 닉네임이 주어진다.
+
+### 출력
+
+각 줄마다 첫 단어를 "god"으로 바꾸고 나머지를 이어 붙인 결과를 출력한다.
+
+### 예제
+
+| 입력            | 출력      |
+| --------------- | --------- |
+| `1` `baek joon` | `godjoon` |
+
+## 풀이
+
+문자열을 공백 기준으로 분리하여 첫 단어만 "god"으로 교체한다.
+
+1. 한 줄을 입력받아 공백 기준으로 단어를 추출한다
+2. 첫 번째 단어는 "god"으로 대체한다
+3. 이후 단어들은 공백 없이 이어 붙여 출력한다
+
+**핵심 아이디어**: 첫 단어만 교체하고 나머지는 공백을 제거하여 연결하는 문자열 처리 문제이다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+  int n;
+  cin >> n;
+  cin.ignore();
+
+  while (n--)
+  {
+    string s;
+    string ans = "";
+    int cnt = 0;
+    cin.clear();
+    getline(cin, s);
+
+    for (int i = 0; i < s.size(); i++)
+    {
+
+      string tmp = "";
+      int j = i;
+      while (s[j] != ' ' && j != s.size())
+        tmp += s[j++];
+      i = j;
+      if (!cnt)
+      {
+        ans += "god";
+        cnt = 1;
+        continue;
+      }
+      else
+      {
+        ans += tmp;
+      }
+    }
+    cout << ans << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N × L) (L: 각 줄의 길이)
+- 공간: O(L)

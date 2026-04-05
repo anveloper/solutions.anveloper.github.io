@@ -1,0 +1,98 @@
+---
+title: "BOJ 5464 - 주차장"
+date: "2025-06-22"
+description: "구현, 자료 구조, 시뮬레이션 문제"
+tags: ["구현", "자료 구조", "시뮬레이션", "우선순위 큐", "큐"]
+platform: "boj"
+problem_number: "5464"
+problem_url: "https://www.acmicpc.net/problem/5464"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5464 - 주차장](https://www.acmicpc.net/problem/5464)
+
+N개의 주차 공간과 M대의 차량이 있다. 각 주차 공간은 단위 무게당 요금이 다르고, 빈 공간이 없으면 대기한다. 총 수입을 구하라.
+
+### 입력
+
+주차 공간 수 N, 차량 수 M, 각 공간의 요금, 각 차량의 무게, 2M개의 입출차 이벤트가 주어진다.
+
+### 출력
+
+총 수입을 출력한다.
+
+### 예제
+
+| 입력                                                                          | 출력   |
+| ----------------------------------------------------------------------------- | ------ |
+| `3 4` `2` `3` `5` `200` `100` `300` `250` `3` `2` `-3` `1` `4` `-2` `-4` `-1` | `5050` |
+
+## 풀이
+
+주차장 상태를 시뮬레이션하며 대기열을 관리한다.
+
+1. 차량 도착 시 빈 공간이 있으면 번호가 작은 공간에 주차하고 요금을 계산한다
+2. 빈 공간이 없으면 대기열에 추가한다
+3. 차량 출차 시 해당 공간이 비면, 대기열의 첫 차량을 그 공간에 주차한다
+
+**핵심 아이디어**: FIFO 대기열로 대기 차량을 관리하고, 출차 시 비어진 공간에 바로 대기 차량을 배정하면 된다.
+
+## 코드
+
+```python
+import sys
+from collections import deque
+
+input = sys.stdin.readline
+
+N, M = map(int, input().split())
+parking_rates = [int(input()) for _ in range(N)]
+car_weights = [int(input()) for _ in range(M)]
+
+parking_lot = [None] * N
+
+car_location = {}
+
+waiting = deque()
+
+total_income = 0
+
+for _ in range(2 * M):
+    event = int(input())
+    if event > 0:
+        car_num = event - 1
+        parked = False
+
+        for i in range(N):
+            if parking_lot[i] is None:
+                parking_lot[i] = car_num
+                car_location[car_num] = i
+                total_income += car_weights[car_num] * parking_rates[i]
+                parked = True
+                break
+
+        if not parked:
+            waiting.append(car_num)
+
+    else:
+        car_num = -event - 1
+        lot_index = car_location[car_num]
+        parking_lot[lot_index] = None
+
+        if waiting:
+            next_car = waiting.popleft()
+            parking_lot[lot_index] = next_car
+            car_location[next_car] = lot_index
+            total_income += car_weights[next_car] * parking_rates[lot_index]
+
+print(total_income)
+```
+
+## 복잡도
+
+- 시간: O(MN)
+- 공간: O(N + M)

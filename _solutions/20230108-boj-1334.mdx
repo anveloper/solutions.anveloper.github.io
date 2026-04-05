@@ -1,0 +1,111 @@
+---
+title: "BOJ 1334 - 다음 팰린드롬 수"
+date: "2023-01-08"
+description: "구현, 문자열, 많은 조건 분기 문제"
+tags: ["구현", "문자열", "많은 조건 분기"]
+platform: "boj"
+problem_number: "1334"
+problem_url: "https://www.acmicpc.net/problem/1334"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1334 - 다음 팰린드롬 수](https://www.acmicpc.net/problem/1334)
+
+주어진 수보다 큰 가장 작은 팰린드롬 수를 구하라. 수는 최대 100자리까지 가능하다.
+
+### 입력
+
+첫째 줄에 수가 주어진다 (최대 100자리).
+
+### 출력
+
+주어진 수보다 큰 가장 작은 팰린드롬 수를 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `121` | `131` |
+
+## 풀이
+
+양끝에서 중앙으로 좁혀가며 왼쪽을 오른쪽에 복사하여 팰린드롬을 만들고, 필요 시 중앙부터 올림(carry) 처리한다.
+
+1. 양 끝에서 중앙으로 이동하며 left와 right 자릿수를 비교한다
+2. `left > right`이면 왼쪽 값으로 복사 (이미 원본보다 큰 팰린드롬)
+3. `left < right`이면 왼쪽 값으로 복사하되, 올림이 필요함을 표시(bigger = true)
+4. 올림 필요 시: 중앙에서부터 +1하고, '9'인 경우 '0'으로 바꾸며 바깥으로 전파
+5. 모든 자리가 '9'여서 올림이 넘치면 자릿수가 늘어남 (예: 999 → 1001)
+
+**핵심 아이디어**: 팰린드롬은 좌반부가 결정되면 우반부도 결정된다. 왼쪽을 오른쪽에 미러링하여 후보를 만들고, 원본보다 작거나 같으면 중앙에서 +1한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day335BOJ1334다음펠린드롬수 {
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        char[] number = br.readLine().trim().toCharArray();
+
+        int mid = number.length / 2;
+
+        int left = 0, right = number.length - 1;
+
+        boolean bigger = false;
+        boolean plus = false;
+        int sameCount = 0;
+
+        if (number.length == 1)
+            bigger = true;
+        while (left <= right) {
+            if (number[left] == number[right] && left != right) {
+                sameCount++;
+                if (sameCount == mid)
+                    bigger = true;
+            } else if (number[left] < number[right]) {
+                bigger = true;
+                number[right] = number[left];
+            } else if (number[left] > number[right]) {
+                bigger = false;
+                number[right] = number[left];
+            }
+            if (bigger && (left == right || right - left == 1)) {
+                while (number[left] == '9') {
+                    number[right] = number[left] = '0';
+                    left--;
+                    right++;
+                    if (left == -1) {
+                        plus = true;
+                        number[right - 1] = '1';
+                        break;
+                    }
+                }
+                if (!plus)
+                    number[right] = ++number[left];
+                break;
+            }
+            left++;
+            right--;
+        }
+        if (plus)
+            System.out.print(1 + String.valueOf(number));
+        else
+            System.out.print(number);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

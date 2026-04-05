@@ -1,0 +1,61 @@
+---
+title: "BOJ 2183 - 테니스 시합"
+date: "2025-11-03"
+description: "구현, 문자열, 애드 혹 문제"
+tags: ["구현", "문자열", "애드 혹"]
+platform: "boj"
+problem_number: "2183"
+problem_url: "https://www.acmicpc.net/problem/2183"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2183 - 테니스 시합](https://www.acmicpc.net/problem/2183)
+
+두 행성 Alpha Centauri A와 B가 테니스 리그전을 치른다. N번의 경기가 진행되며, 각 경기의 승자 이름 첫 글자(A 또는 B)가 순서대로 주어진다. 최종 우승팀은 가장 많이 이긴 팀이며, 마지막에 이긴 팀이 모든 상황에서 우승을 결정짓는다.
+
+### 입력
+
+- 첫 번째 줄: 경기 수 N과 승자 기록 문자열 (A 또는 B로 구성)
+
+### 출력
+
+- 마지막 경기를 이긴 팀의 이름 첫 글자 (A 또는 B)
+
+### 예제
+
+| 입력      | 출력 |
+| --------- | ---- |
+| `5 AABBA` | `A`  |
+
+## 풀이
+
+승자 문자열에서 마지막 문자를 출력하면 된다. 테니스 리그에서 마지막으로 이긴 팀이 최종 우승팀을 결정하는 구조이기 때문이다.
+
+1. N과 승자 기록 문자열을 입력받는다.
+2. 문자열의 마지막 문자를 출력한다.
+
+**핵심 아이디어**: 문자열의 마지막 원소(`winners.back()`)만 출력하면 된다. 리그전 결과의 마지막 경기 승자가 곧 최종 우승팀이다. `string::back()`으로 O(1)에 처리 가능하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int N;
+string winners;
+int main()
+{
+  cin >> N >> winners;
+  cout << winners.back();
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 문자열 입력
+- 공간: O(N) — 승자 문자열 저장

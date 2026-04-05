@@ -1,0 +1,81 @@
+---
+title: "BOJ 2953 - 나는 요리사다"
+date: "2024-01-13"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "2953"
+problem_url: "https://www.acmicpc.net/problem/2953"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2953 - 나는 요리사다](https://www.acmicpc.net/problem/2953)
+
+5명의 참가자가 각각 4개의 점수를 받을 때, 총점이 가장 높은 참가자의 번호와 총점을 출력하라.
+
+### 입력
+
+5줄에 걸쳐 각각 4개의 점수가 주어진다.
+
+### 출력
+
+우승자의 번호(1~5)와 총점을 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                                              | 출력   |
+| ------------------------------------------------- | ------ |
+| `5 4 4 5` `5 4 4 4` `5 5 4 4` `5 5 5 4` `4 4 4 5` | `4 19` |
+
+## 풀이
+
+5명의 점수를 합산하며 최댓값과 해당 인덱스를 추적한다.
+
+1. 5줄을 읽으며 각 줄의 4개 점수를 합산한다
+2. 현재 합이 기존 최댓값보다 크면 최댓값과 인덱스를 갱신한다
+3. 최종 우승자 번호(1-indexed)와 총점을 출력한다
+
+**핵심 아이디어**: 고정 5명이므로 단순 순회로 최댓값을 찾는다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day711BOJ2953나는요리사다 {
+  static StringTokenizer st;
+
+  static int sum(String score) {
+    int result = 0;
+    st = new StringTokenizer(score);
+    while (st.hasMoreTokens())
+      result += Integer.parseInt(st.nextToken());
+    return result;
+  }
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int idx = 0, ans = 0;
+    for (int i = 0; i < 5; i++) {
+      int sum = sum(br.readLine());
+      if (ans < sum) {
+        ans = sum;
+        idx = i + 1;
+      }
+    }
+    System.out.println(idx + " " + ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 5명 × 4점수 = 20번 연산
+- 공간: O(1) — 상수 변수만 사용

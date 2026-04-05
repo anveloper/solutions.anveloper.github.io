@@ -1,0 +1,84 @@
+---
+title: "BOJ 5211 - 가단조와 다장조"
+date: "2024-12-25"
+description: "음계 구성을 분석하여 가단조인지 다장조인지 판별하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "5211"
+problem_url: "https://www.acmicpc.net/problem/5211"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5211 - 가단조와 다장조](https://www.acmicpc.net/problem/5211)
+
+음표 시퀀스에서 마디의 첫 음을 분석하여 A단조인지 C장조인지 판별하라.
+
+### 입력
+
+파이프(`|`)로 구분된 음표 시퀀스 문자열이 주어진다.
+
+### 출력
+
+"A-minor" 또는 "C-major"를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- | --- | --------- |
+| `A   | C    | E`  | `A-minor` |
+
+## 풀이
+
+각 마디의 첫 음을 확인하여 조성을 판별한다.
+
+1. 마디의 첫 음이 A/D/E이면 A-minor 카운트를 증가시킨다
+2. C/F/G이면 C-major 카운트를 증가시킨다
+3. 동점이면 마지막 음표로 최종 판별한다
+
+**핵심 아이디어**: 각 마디의 시작 음표만 확인하여 조성의 특성음 비율로 판별한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  string s;
+  cin >> s;
+  int A = 0, C = 0;
+  for (int i = 0; i < s.size(); ++i)
+  {
+    if (i == 0 || s[i - 1] == '|')
+    {
+      if (s[i] == 'A' || s[i] == 'D' || s[i] == 'E')
+        A++;
+      if (s[i] == 'C' || s[i] == 'F' || s[i] == 'G')
+        C++;
+    }
+  }
+  if (A == C)
+  {
+    A += (s[(int)s.size() - 1] == 'A');
+    C += (s[(int)s.size() - 1] == 'C');
+  }
+  if (A > C)
+    cout << "A-minor\n";
+  else
+    cout << "C-major\n";
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 문자열 길이)
+- 공간: O(N)

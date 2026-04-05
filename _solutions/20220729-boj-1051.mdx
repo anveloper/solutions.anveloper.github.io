@@ -1,0 +1,97 @@
+---
+title: "BOJ 1051 - 숫자 정사각형"
+date: "2022-07-29"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1051"
+problem_url: "https://www.acmicpc.net/problem/1051"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1051 - 숫자 정사각형](https://www.acmicpc.net/problem/1051)
+
+N x M 크기의 직사각형에서 네 꼭짓점에 쓰인 숫자가 모두 같은 가장 큰 정사각형의 크기(넓이)를 구하라.
+
+### 입력
+
+첫째 줄에 N, M (1 ≤ N, M ≤ 50), 이후 N줄에 M자리 숫자가 주어진다.
+
+### 출력
+
+가장 큰 정사각형의 넓이를 출력한다.
+
+### 예제
+
+| 입력                          | 출력 |
+| ----------------------------- | ---- |
+| `3 5` `42101` `22100` `22101` | `9`  |
+
+## 풀이
+
+모든 가능한 정사각형을 브루트포스로 탐색하여 네 꼭짓점의 숫자가 같은 최대 크기를 찾는다.
+
+1. 모든 좌상단 좌표 (x, y)에 대해 가능한 변의 길이 i를 순회한다
+2. (x, y), (x, y+i), (x+i, y), (x+i, y+i) 네 점이 격자 안에 있는지 확인한다
+3. 네 점의 숫자가 모두 같으면 넓이 (i+1)^2의 최댓값을 갱신한다
+
+**핵심 아이디어**: N, M이 50 이하로 작아 O(N _ M _ min(N,M))의 3중 루프로 충분하다. 한 자리 숫자이므로 네 꼭짓점만 비교하면 된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day172BOJ1051사각형찾기구현 { // 1051
+	static int N, M, ans, min;
+	static char[][] map;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken()); // N
+		M = Integer.parseInt(st.nextToken()); // M
+		ans = 0;
+		min = Math.min(N, M);
+		map = new char[N][M];
+
+		for (int i = 0; i < N; i++) {
+			String l = br.readLine();
+			for (int j = 0; j < M; j++) {
+				map[i][j] = l.charAt(j);
+			}
+		}
+
+		int m = 0;
+		for (int x = 0; x < N; x++) {
+			for (int y = 0; y < M; y++) {
+				for (int i = 0; i < min; i++) {
+					int nx = x + i;
+					int ny = y + i;
+					if (nx < N && ny < M) {
+						if (map[x][y] == map[x][ny] && map[x][y] == map[nx][y] && map[x][y] == map[nx][ny]) {
+							m = (i + 1) * (i + 1);
+							ans = Math.max(ans, m);
+						}
+					}
+				}
+			}
+		}
+		System.out.println(ans);
+		br.readLine();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N _ M _ min(N, M))
+- 공간: O(N \* M)

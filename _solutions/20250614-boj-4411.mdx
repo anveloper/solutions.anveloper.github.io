@@ -1,0 +1,61 @@
+---
+title: "BOJ 4411 - The Trip"
+date: "2025-06-14"
+description: "수학, 그리디 알고리즘, 정렬 문제"
+tags: ["수학", "그리디 알고리즘", "정렬", "사칙연산"]
+platform: "boj"
+problem_number: "4411"
+problem_url: "https://www.acmicpc.net/problem/4411"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4411 - The Trip](https://www.acmicpc.net/problem/4411)
+
+N명의 여행자가 각각 다른 금액을 지출했을 때, 모두 같은 금액이 되도록 정산하기 위한 최소 이체 금액을 구하라.
+
+### 입력
+
+여러 테스트 케이스가 주어지며, 각 케이스에 인원 수 N과 각 지출액이 주어진다. N=0이면 종료.
+
+### 출력
+
+각 케이스마다 최소 이체 금액을 달러 형식으로 출력한다.
+
+### 예제
+
+| 입력                            | 출력     |
+| ------------------------------- | -------- |
+| `3` `10.00` `20.00` `30.00` `0` | `$10.00` |
+
+## 풀이
+
+평균보다 적게 쓴 사람이 보내야 할 금액의 합을 계산한다.
+
+1. 전체 평균 지출액을 계산한다
+2. 평균보다 적게 쓴 사람들의 부족액 합과, 많이 쓴 사람들의 초과액 합을 각각 구한다
+3. 둘 중 작은 값이 최소 이체 금액이다 (반올림 오차 처리)
+
+**핵심 아이디어**: 센트 단위에서 반올림 차이가 발생할 수 있으므로, 부족액 합과 초과액 합 중 작은 값을 취한다.
+
+## 코드
+
+```python
+while True:
+    n = int(input())
+    if n == 0:
+        break
+    expenses = [float(input()) for _ in range(n)]
+    avg = sum(expenses) / n
+    value_1 = sum(filter(lambda x: x > 0, [round(avg - i, 2) for i in expenses]))
+    value_2 = sum(filter(lambda x: x > 0, [round(i - avg, 2) for i in expenses]))
+    print(f"${min(value_1, value_2):.2f}")
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

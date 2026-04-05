@@ -1,0 +1,88 @@
+---
+title: "BOJ 6064 - 카잉 달력"
+date: "2023-04-26"
+description: "수학, 브루트포스 알고리즘, 정수론 문제"
+tags: ["수학", "브루트포스 알고리즘", "정수론", "중국인의 나머지 정리"]
+platform: "boj"
+problem_number: "6064"
+problem_url: "https://www.acmicpc.net/problem/6064"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6064 - 카잉 달력](https://www.acmicpc.net/problem/6064)
+
+카잉 달력은 `<x:y>` 형태로 표현되며, M과 N의 주기로 순환한다. `<M:N>`이 마지막 해일 때 `<x:y>`가 몇 번째 해인지 구하라. 불가능하면 -1을 출력한다.
+
+### 입력
+
+테스트 케이스 수 T, 각 줄에 M, N, x, y가 주어진다.
+
+### 출력
+
+각 경우에 대해 해 번호를 출력한다.
+
+### 예제
+
+| 입력                                    | 출력           |
+| --------------------------------------- | -------------- |
+| `3` `10 12 3 9` `10 12 7 2` `13 11 5 6` | `33` `-1` `83` |
+
+## 풀이
+
+x를 만족하는 해를 M 간격으로 탐색하며, 그중 y도 만족하는 해를 찾는다.
+
+1. 0-indexed로 변환한다 (x-1, y-1)
+2. x-1부터 M 간격으로 해를 늘려가며 `해 % N == y-1`인지 확인한다
+3. 최대 탐색 범위는 lcm(M, N) = M\*N까지이다
+4. 찾으면 해+1(1-indexed), 못 찾으면 -1을 출력한다
+
+**핵심 아이디어**: x 조건을 만족하는 후보만 M 간격으로 순회하므로 최대 N번의 확인으로 답을 찾을 수 있다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day444BOJ6064카잉달력 {
+  static int T;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = null;
+    T = Integer.parseInt(br.readLine());
+
+    for (int s = 0; s < T; s++) {
+      st = new StringTokenizer(br.readLine());
+      boolean check = false;
+      int m = Integer.parseInt(st.nextToken());
+      int n = Integer.parseInt(st.nextToken());
+      int x = Integer.parseInt(st.nextToken()) - 1;
+      int y = Integer.parseInt(st.nextToken()) - 1;
+
+      for (int i = x; i < (n * m); i += m) {
+        if (i % n == y) {
+          System.out.println(i + 1);
+          check = true;
+          break;
+        }
+      }
+
+      if (!check) {
+        System.out.println(-1);
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N) - 각 케이스 최대 N번 확인
+- 공간: O(1)

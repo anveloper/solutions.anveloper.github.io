@@ -1,0 +1,72 @@
+---
+title: "BOJ 2238 - 경매"
+date: "2025-06-05"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2238"
+problem_url: "https://www.acmicpc.net/problem/2238"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2238 - 경매](https://www.acmicpc.net/problem/2238)
+
+경매에서 가장 적은 수의 사람이 입찰한 가격이 낙찰가이다. 같은 최소 입찰 인원인 가격이 여러 개면 가장 낮은 가격이 낙찰된다. 해당 가격의 첫 번째 입찰자가 낙찰자이다.
+
+### 입력
+
+첫째 줄에 상한가 U와 입찰 횟수 N, 이후 N줄에 이름과 입찰가가 주어진다.
+
+### 출력
+
+낙찰자의 이름과 낙찰가를 출력한다.
+
+### 예제
+
+| 입력                                       | 출력     |
+| ------------------------------------------ | -------- |
+| `5 4` `clue 1` `ctrl 3` `eul 1` `acsian 5` | `ctrl 3` |
+
+## 풀이
+
+각 가격별 입찰 인원을 세고, 최소 인원의 가격에서 첫 번째 입찰자를 찾는다.
+
+1. 각 가격별로 입찰자 목록과 입찰 횟수를 기록한다
+2. 입찰이 있는 가격 중 최소 입찰 인원을 찾는다
+3. 최소 인원인 가격 중 가장 작은 가격의 첫 번째 입찰자를 출력한다
+
+**핵심 아이디어**: 가격을 오름차순으로 순회하므로, 최소 인원 조건을 만족하는 첫 번째 가격이 자동으로 가장 낮은 가격이 된다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+U, N = map(int, input().split())
+p = [[] for _ in range(10001)]
+num = [0 for _ in range(10001)]
+m = 10001
+for _ in range(N):
+    name, price = input().split()
+    price = int(price)
+    p[price].append(name)
+    num[price] += 1
+for i in range(10001):
+    if num[i] != 0:
+        m = min(num[i], m)
+for i in range(10001):
+    if m == num[i]:
+        print(p[i][0], i)
+        break
+```
+
+## 복잡도
+
+- 시간: O(N + U) — 입찰 처리 + 가격 순회
+- 공간: O(N + U) — 가격별 입찰자 목록

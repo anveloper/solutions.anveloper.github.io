@@ -1,0 +1,115 @@
+---
+title: "BOJ 1139 - 울타리"
+date: "2024-03-18"
+description: "다이나믹 프로그래밍, 비트마스킹, 비트필드를 이용한 다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍", "비트마스킹", "비트필드를 이용한 다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "1139"
+problem_url: "https://www.acmicpc.net/problem/1139"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1139 - 울타리](https://www.acmicpc.net/problem/1139)
+
+N개의 울타리 막대가 주어질 때, 겹치지 않는 삼각형들을 만들어 넓이의 합을 최대화하라. 각 막대는 최대 한 번만 사용할 수 있다.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 N개의 울타리 길이가 주어진다.
+
+### 출력
+
+만들 수 있는 삼각형 넓이 합의 최댓값을 출력한다.
+
+### 예제
+
+| 입력              | 출력                 |
+| ----------------- | -------------------- |
+| `6` `1 2 3 4 5 6` | `11.399013115177997` |
+
+## 풀이
+
+비트마스크 DP로 사용한 막대 집합을 상태로 관리하며, 삼각형을 추가해 최대 넓이를 구한다.
+
+1. 3중 반복으로 유효한 삼각형(두 변의 합이 나머지 한 변보다 큰 경우)을 모두 생성한다
+2. 각 삼각형의 비트마스크와 헤론의 공식으로 계산한 넓이를 저장한다
+3. 모든 비트마스크 상태를 순회하며, 현재 사용 집합과 겹치지 않는 삼각형을 추가하여 DP를 갱신한다
+4. 전체 DP 배열에서 최댓값이 답이다
+
+**핵심 아이디어**: 비트마스크로 막대 사용 여부를 추적하면 겹침 없이 삼각형을 조합할 수 있으며, N이 최대 15이므로 2^15 상태가 관리 가능하다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day776BOJ1139울타리 {
+  static class Triangle {
+    int side;
+    double area;
+
+    public Triangle(int[] sides, int a, int b, int c) {
+      this.side = (1 << a | 1 << b | 1 << c);
+      this.area = getArea(sides, a, b, c);
+    }
+
+    private double getArea(int[] sides, int a, int b, int c) {
+      double p = (double) (sides[a] + sides[b] + sides[c]) / 2;
+      return Math.sqrt(p * (p - sides[a]) * (p - sides[b]) * (p - sides[c]));
+    }
+  }
+
+  public double solve(int[] fences, int n) {
+    double max_area = 0;
+    double[] DP = new double[1 << (n + 1)];
+    List<Triangle> triangles = new LinkedList<>();
+
+    Arrays.sort(fences, 0, n);
+
+    for (int a = 0; a < n; ++a)
+      for (int b = a + 1; b < n; ++b)
+        for (int c = b + 1; c < n; ++c)
+          if (fences[a] + fences[b] > fences[c])
+            triangles.add(new Triangle(fences, a, b, c));
+
+    for (Triangle t : triangles)
+      DP[t.side] = t.area;
+
+    for (int i = 0; i < DP.length; ++i)
+      if (DP[i] != 0)
+        for (Triangle t : triangles)
+          if ((i & t.side) == 0)
+            DP[i | t.side] = Math.max(DP[i | t.side], DP[i] + t.area);
+
+    for (int i = 0; i < DP.length; ++i)
+      max_area = Math.max(max_area, DP[i]);
+
+    return max_area;
+  }
+
+  public static void main(String[] args) throws IOException, NumberFormatException {
+    Day776BOJ1139울타리 problem = new Day776BOJ1139울타리();
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+    int[] fences = new int[n];
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    for (int i = 0; i < n; ++i)
+      fences[i] = Integer.parseInt(st.nextToken());
+
+    System.out.println(problem.solve(fences, n));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* 2^N) (T: 유효한 삼각형 수, 최대 C(N,3))
+- 공간: O(N \* 2^N)

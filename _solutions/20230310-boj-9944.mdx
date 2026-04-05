@@ -1,0 +1,178 @@
+---
+title: "BOJ 9944 - NxM 보드 완주하기"
+date: "2023-03-10"
+description: "구현, 브루트포스 알고리즘, 백트래킹 문제"
+tags: ["구현", "브루트포스 알고리즘", "백트래킹"]
+platform: "boj"
+problem_number: "9944"
+problem_url: "https://www.acmicpc.net/problem/9944"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9944 - NxM 보드 완주하기](https://www.acmicpc.net/problem/9944)
+
+N×M 보드에서 빈 칸('.')을 모두 방문해야 한다. 공은 한 방향으로 벽이나 장애물을 만날 때까지 미끄러진다. 모든 빈 칸을 방문하는 최소 이동 횟수를 구하라.
+
+### 입력
+
+여러 테스트 케이스. 각각 N, M과 보드가 주어진다 ('.'은 빈 칸, '\*'은 장애물).
+
+### 출력
+
+각 테스트 케이스에 대해 최소 이동 횟수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                    | 출력        |
+| ----------------------- | ----------- |
+| `3 3` `...` `...` `...` | `Case 1: 4` |
+
+## 풀이
+
+모든 빈 칸에서 출발하여 백트래킹으로 최소 이동 횟수를 탐색한다.
+
+1. 모든 빈 칸을 시작점으로 시도한다
+2. 4방향 각각에 대해 벽이나 장애물을 만날 때까지 미끄러지며 방문 처리한다
+3. 미끄러진 칸이 있으면 이동 횟수+1로 재귀한다
+4. 모든 빈 칸을 방문하면 최소 이동 횟수를 갱신한다
+5. 백트래킹 시 방문 표시를 해제한다
+
+**핵심 아이디어**: 한 번에 여러 칸을 미끄러지므로 일반 DFS와 다르다. 각 이동에서 연속으로 미끄러진 모든 칸을 방문 처리/해제해야 한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day397BOJ9944NxM순회 {
+  static char[][] map;
+  static boolean[][] isVisit;
+  static int N, M;
+  static int length;
+  static int answer = 1000001;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuffer sb = new StringBuffer();
+    String ss = "";
+    int t = 1;
+    while ((ss = br.readLine()) != null && !ss.isEmpty()) {
+      StringTokenizer st = new StringTokenizer(ss);
+      N = Integer.parseInt(st.nextToken());
+      M = Integer.parseInt(st.nextToken());
+      map = new char[N][M];
+      isVisit = new boolean[N][M];
+      length = 0;
+      for (int i = 0; i < N; i++) {
+        String s = br.readLine();
+        for (int j = 0; j < M; j++) {
+          map[i][j] = s.charAt(j);
+          if (map[i][j] == '.')
+            length++;
+        }
+      }
+      for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+          if (map[i][j] == '.') {
+            isVisit[i][j] = true;
+            dfs(i, j, 1, 0);
+            isVisit[i][j] = false;
+          }
+        }
+      }
+      sb.append("Case " + t + ": ").append(answer == 1000001 ? -1 : answer).append("\n");
+      t++;
+      answer = 1000001;
+    }
+    System.out.println(sb);
+  }
+
+  public static void dfs(int x, int y, int cnt, int total) {
+    if (length == cnt) {
+      answer = Math.min(answer, total);
+      return;
+    }
+    // 동쪽
+    int x1 = x;
+    int y1 = y + 1;
+    int go = 0;
+    while (y1 < M && !isVisit[x1][y1] && map[x1][y1] == '.') {
+      go++;
+      isVisit[x1][y1] = true;
+      y1++;
+    }
+    if (go != 0) {
+      dfs(x1, y1 - 1, cnt + go, total + 1);
+      for (int i = y1 - 1; i > y; i--) {
+        isVisit[x1][i] = false;
+      }
+    }
+
+    // 서쪽
+    int x2 = x;
+    int y2 = y - 1;
+    go = 0;
+    while (y2 >= 0 && !isVisit[x2][y2] && map[x2][y2] == '.') {
+      go++;
+      isVisit[x2][y2] = true;
+      y2--;
+    }
+    if (go != 0) {
+      dfs(x2, y2 + 1, cnt + go, total + 1);
+      for (int i = y2 + 1; i < y; i++)
+        isVisit[x2][i] = false;
+    }
+
+    // 남쪽
+    int x3 = x + 1;
+    int y3 = y;
+    go = 0;
+    while (x3 < N && !isVisit[x3][y3] && map[x3][y3] == '.') {
+      go++;
+      isVisit[x3][y3] = true;
+      x3++;
+    }
+    if (go != 0) {
+      dfs(x3 - 1, y3, cnt + go, total + 1);
+      for (int i = x3 - 1; i > x; i--)
+        isVisit[i][y3] = false;
+    }
+
+    // 북쪽
+    int x4 = x - 1;
+    int y4 = y;
+    go = 0;
+    while (x4 >= 0 && !isVisit[x4][y4] && map[x4][y4] == '.') {
+      go++;
+      isVisit[x4][y4] = true;
+      x4--;
+    }
+    if (go != 0) {
+      dfs(x4 + 1, y4, cnt + go, total + 1);
+      for (int i = x4 + 1; i < x; i++)
+        isVisit[i][y4] = false;
+    }
+  }
+
+  static class Point {
+    int x, y, cnt;
+
+    Point(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N*M * 4^(N\*M)) - 최악의 경우 지수적, 백트래킹 가지치기로 실제 탐색량 제한
+- 공간: O(N \* M) - 방문 배열 및 재귀 스택

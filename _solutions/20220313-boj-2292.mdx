@@ -1,0 +1,75 @@
+---
+title: "BOJ 2292 - 벌집"
+date: "2022-03-13"
+description: "수학 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "2292"
+problem_url: "https://www.acmicpc.net/problem/2292"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2292 - 벌집](https://www.acmicpc.net/problem/2292)
+
+육각형 벌집의 중앙 방(1번)에서 시작하여 N번 방까지 최소 몇 개의 방을 지나야 하는지 구하는 문제이다. 벌집은 중앙을 기준으로 층을 이루며 퍼져나가고, k번째 층에는 6k개의 방이 존재한다.
+
+### 입력
+
+첫째 줄에 N (1 이상 1,000,000,000 이하)이 주어진다.
+
+### 출력
+
+첫째 줄에 최소 방의 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `13` | `4`  |
+
+## 풀이
+
+벌집의 층별 방 번호 범위를 이용한 수학적 규칙으로 해결한다. 1번 방은 0층(1개), 1층에는 2~7번(6개), 2층에는 8~19번(12개), k층에는 6k개의 방이 있다. 누적 방 수는 `1 + 6×1 + 6×2 + ... + 6×k`이다.
+
+1. 합계 `sum`을 1로 초기화한다(1번 방).
+2. 층 번호 i를 1부터 증가시키면서 `sum += i × 6`을 누적한다.
+3. `sum >= N`이 되는 순간의 층 번호 `i + 1`이 답이다(시작 방 포함).
+4. N의 최댓값인 10억을 커버하려면 약 18,258번째 층까지 순회하면 충분하다.
+
+**핵심 아이디어:** 층 k까지의 누적 방 수는 `1 + 3k(k+1)`이다. 이 값이 N 이상이 되는 최소 k를 찾으면 되며, 방문하는 방의 수는 `k + 1`이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day12BOJ2292벌집 { // 2292
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		int N = sc.nextInt();
+		int sum = 1;// += 1 + i * 6
+		int ans = 0; // 18258번째가 N의 최대인 1000_000_000을 넘음
+		for (int i = 0; i < 18258; i++) {
+			sum += i * 6;
+			if (sum >= N) {
+				ans = i + 1;
+				break;
+			}
+		}
+		System.out.println(ans);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(sqrt(N)) — 누적 합이 N에 도달할 때까지 층 수만큼 순회 (최대 약 18,258회)
+- 공간: O(1) — 추가 배열 없음

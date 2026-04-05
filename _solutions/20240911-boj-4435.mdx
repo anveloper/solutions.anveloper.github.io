@@ -1,0 +1,81 @@
+---
+title: "BOJ 4435 - 중간계 전쟁"
+date: "2024-09-11"
+description: "두 진영의 전투력을 계산하여 승자를 판별하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "4435"
+problem_url: "https://www.acmicpc.net/problem/4435"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4435 - 중간계 전쟁](https://www.acmicpc.net/problem/4435)
+
+선의 진영(6종 유닛)과 악의 진영(7종 유닛)의 병력 수가 주어질 때, 각 유닛별 전투력 가중치를 적용한 총 전투력을 비교하여 승자를 출력하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 선의 진영 6개 유닛 수와 악의 진영 7개 유닛 수가 주어진다.
+
+### 출력
+
+선의 진영이 크면 "Good triumphs over Evil", 악이 크면 "Evil eradicates all trace of Good", 같으면 "No victor on this battle field"을 출력한다.
+
+### 예제
+
+| 입력                              | 출력                                          |
+| --------------------------------- | --------------------------------------------- |
+| `1` `1 1 1 1 1 1` `1 1 1 1 1 1 1` | `Battle 1: Evil eradicates all trace of Good` |
+
+## 풀이
+
+각 진영의 유닛별 가중치 배열을 미리 정의하고, 병력 수를 곱해 합산한다.
+
+1. 선의 진영 가중치 배열 `{1, 2, 3, 3, 4, 10}`으로 6개 유닛의 전투력을 합산한다
+2. 악의 진영 가중치 배열 `{1, 2, 2, 2, 3, 5, 10}`으로 7개 유닛의 전투력을 합산한다
+3. 두 진영의 총 전투력을 비교하여 결과 문자열을 출력한다
+
+**핵심 아이디어**: 가중치 배열을 미리 정의해두면 유닛 수와 곱하여 O(1)에 총 전투력을 계산할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main(void)
+{
+  int t, g, s, gan[6] = {1, 2, 3, 3, 4, 10}, sa[7] = {1, 2, 2, 2, 3, 5, 10}, ganScore, saScore;
+  cin >> t;
+  for (int i = 1; i <= t; i++)
+  {
+    ganScore = saScore = 0;
+    for (int i = 0; i < 6; i++)
+    {
+      cin >> g;
+      ganScore += gan[i] * g;
+    }
+    for (int i = 0; i < 7; i++)
+    {
+      cin >> s;
+      saScore += sa[i] * s;
+    }
+
+    cout << "Battle " << i << ": ";
+    if (ganScore > saScore)
+      cout << "Good triumphs over Evil\n";
+    else if (ganScore == saScore)
+      cout << "No victor on this battle field\n";
+    else
+      cout << "Evil eradicates all trace of Good\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

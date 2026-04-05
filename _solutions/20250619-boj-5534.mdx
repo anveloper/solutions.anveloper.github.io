@@ -1,0 +1,78 @@
+---
+title: "BOJ 5534 - 간판"
+date: "2025-06-19"
+description: "문자열, 브루트포스 알고리즘 문제"
+tags: ["문자열", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "5534"
+problem_url: "https://www.acmicpc.net/problem/5534"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5534 - 간판](https://www.acmicpc.net/problem/5534)
+
+키워드 문자열이 주어지고, N개의 단어가 주어진다. 각 단어에서 일정한 간격으로 문자를 선택했을 때 키워드가 나타나는 단어의 수를 구하는 문제다. 간격은 1 이상의 정수이며, 시작 위치와 간격을 자유롭게 선택할 수 있다.
+
+### 입력
+
+- 첫 줄: 단어 수 N
+- 다음 줄: 키워드 문자열
+- 다음 N줄: 각 단어
+
+### 출력
+
+키워드를 포함하는 단어의 수를 출력한다.
+
+### 예제
+
+| 입력                               | 출력 |
+| ---------------------------------- | ---- |
+| `3` `ABC` `AABBCC` `AABABCC` `ABC` | `3`  |
+
+## 풀이
+
+각 단어에서 키워드의 첫 글자와 일치하는 위치를 시작점으로 삼아, 가능한 모든 등간격 부분열을 브루트포스로 탐색한다.
+
+1. 각 단어의 모든 위치에서 키워드 첫 글자와 일치하는 경우를 찾는다.
+2. 해당 위치를 시작으로 `check` 함수를 호출하여 등간격 매칭을 시도한다.
+3. `check` 함수는 간격을 1부터 늘려가며 슬라이싱으로 추출한 문자열과 키워드를 비교한다.
+4. 매칭되면 해당 단어를 카운트하고 다음 단어로 넘어간다.
+
+**핵심 아이디어**: 파이썬 슬라이싱 `word[start::gap]`을 활용하면 등간격 추출을 간결하게 구현할 수 있다. 키워드 길이만큼의 슬라이스 결과와 키워드를 비교해 매칭 여부를 판단한다.
+
+## 코드
+
+```python
+def check(key, word):
+    length = len(key)
+    gap = 1
+    while length <= len(word):
+        tmp = word[:length:gap]
+        if tmp == key:
+            return True
+        length += len(key) - 1
+        gap += 1
+    return False
+
+
+n = int(input())
+key = input()
+ans = 0
+for _ in range(n):
+    val = input()
+    for i in range(len(val)):
+        ch = val[i]
+        if ch == key[0] and check(key, val[i:]):
+            ans += 1
+            break
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

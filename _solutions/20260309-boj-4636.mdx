@@ -1,0 +1,73 @@
+---
+title: "BOJ 4636 - Clay Bully"
+date: "2026-03-09"
+description: "점토 부피가 가장 큰 학생과 가장 작은 학생을 찾는 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "4636"
+problem_url: "https://www.acmicpc.net/problem/4636"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4636 - Clay Bully](https://www.acmicpc.net/problem/4636)
+
+> 각 학생의 점토 상자 세 변의 길이가 주어질 때, 부피가 가장 큰 학생(bully)과 가장 작은 학생(victim)을 찾는 문제
+
+## 풀이
+
+각 학생의 점토 부피를 세 변의 곱으로 계산하고, 최대·최소 부피를 가진 학생의 이름을 추적하여 결과를 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Student {
+  int volume;
+  string name;
+};
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int n;
+  while (cin >> n && n != -1) {
+    vector<Student> students;
+    int max_vol = -1, min_vol = 1000000;
+    string bully, victim;
+
+    for (int i = 0; i < n; ++i) {
+      int a, b, c;
+      string name;
+      cin >> a >> b >> c >> name;
+      int vol = a * b * c;
+
+      if (vol > max_vol) {
+        max_vol = vol;
+        bully = name;
+      }
+      if (vol < min_vol) {
+        min_vol = vol;
+        victim = name;
+      }
+    }
+    cout << bully << " took clay from " << victim << ".\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 학생 수)
+- 공간: O(1)

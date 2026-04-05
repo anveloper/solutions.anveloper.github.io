@@ -1,0 +1,77 @@
+---
+title: "BOJ 6190 - Another Cow Number Game"
+date: "2025-12-11"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "6190"
+problem_url: "https://www.acmicpc.net/problem/6190"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6190 - Another Cow Number Game](https://www.acmicpc.net/problem/6190)
+
+콜라츠 추측(Collatz conjecture)을 기반으로 한 수 게임이다. 자연수 N에서 시작해 다음 규칙을 반복한다.
+
+- N이 홀수이면 `N = 3 * N + 1`
+- N이 짝수이면 `N = N / 2`
+
+N이 1이 될 때까지 이 과정을 반복한 횟수를 출력한다.
+
+### 입력
+
+- 한 줄에 정수 N이 주어진다. (N `>=` 1)
+
+### 출력
+
+N이 1이 될 때까지 수행한 연산 횟수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `6`  | `8`  |
+
+## 풀이
+
+콜라츠 수열을 N = 1이 될 때까지 반복하며 횟수를 센다.
+
+1. N을 입력받는다.
+2. N이 1이 아닌 동안 반복한다.
+3. N이 홀수이면 `N = 3 * N + 1`, 짝수이면 `N = N / 2`를 수행한다.
+4. 각 연산마다 `score`를 1 증가시킨다.
+5. 반복 종료 후 `score`를 출력한다.
+
+**핵심 아이디어**: 콜라츠 추측은 모든 자연수에 대해 유한한 횟수 만에 1에 도달한다는 미증명 가설이다. 이 문제에서는 이 과정을 직접 시뮬레이션하며 횟수를 카운팅한다. N이 커질 수 있으므로 `long long` 타입을 사용해 오버플로를 방지한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#define ll long long
+using namespace std;
+ll n, score;
+
+int main()
+{
+  cin >> n;
+  while (n != 1)
+  {
+    if (n % 2)
+      n = 3 * n + 1;
+    else
+      n /= 2;
+    score++;
+  }
+  cout << score;
+}
+```
+
+## 복잡도
+
+- 시간: O(S) — 콜라츠 수열의 단계 수 S에 비례 (N에 따라 가변적)
+- 공간: O(1) — 상수 개의 변수만 사용

@@ -1,0 +1,73 @@
+---
+title: "BOJ 2659 - 십자카드 문제"
+date: "2025-03-08"
+description: "구현, 브루트포스 알고리즘, 정렬 문제"
+tags: ["구현", "브루트포스 알고리즘", "정렬", "집합과 맵"]
+platform: "boj"
+problem_number: "2659"
+problem_url: "https://www.acmicpc.net/problem/2659"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2659 - 십자카드 문제](https://www.acmicpc.net/problem/2659)
+
+4자리 시계수(4방향 회전 중 최솟값)가 주어질 때, 해당 시계수가 몇 번째 시계수인지 구하라.
+
+### 입력
+
+4개의 숫자 (0이 아닌 1~9)가 주어진다.
+
+### 출력
+
+해당 시계수의 순번을 출력한다.
+
+### 예제
+
+| 입력      | 출력 |
+| --------- | ---- |
+| `2 1 3 2` | `3`  |
+
+## 풀이
+
+1111부터 주어진 시계수까지 모든 시계수를 세어 순번을 구한다.
+
+1. 4자리 수를 4방향 회전하여 최솟값(시계수)을 구하는 함수를 정의한다
+2. 1111부터 입력 시계수 미만까지 순회하며 0이 없고 시계수가 자기 자신인 수를 센다
+3. 카운트 + 1이 순번이다
+
+**핵심 아이디어**: 시계수는 4방향 회전의 최솟값으로, 같은 시계수를 중복 세지 않으려면 숫자 자체가 시계수와 같은 경우만 카운팅한다.
+
+## 코드
+
+```python
+import sys
+
+nums = list(map(int, sys.stdin.readline().split()))
+
+
+def get_clock_num(n):
+    min = int("".join(map(str, n)))
+    for i in range(1, 4):
+        tmp = int("".join(map(str, n[i:] + n[:i])))
+        if min > tmp:
+            min = tmp
+    return min
+
+
+clk_num = get_clock_num(nums)
+cnt = 1
+
+for i in range(1111, clk_num):
+    if "0" not in list(str(i)) and i == get_clock_num(list(map(int, str(i)))):
+        cnt += 1
+print(cnt)
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

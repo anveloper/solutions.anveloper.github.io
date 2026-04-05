@@ -1,0 +1,91 @@
+---
+title: "BOJ 2477 - 참외밭"
+date: "2022-03-13"
+description: "수학, 구현, 기하학 문제"
+tags: ["수학", "구현", "기하학"]
+platform: "boj"
+problem_number: "2477"
+problem_url: "https://www.acmicpc.net/problem/2477"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2477 - 참외밭](https://www.acmicpc.net/problem/2477)
+
+1m^2당 참외 개수 K와 ㄱ자 모양 밭의 6개 변의 방향과 길이가 주어질 때, 밭에서 수확할 수 있는 참외의 수를 구하라. 밭은 큰 직사각형에서 작은 직사각형을 뺀 형태이다.
+
+### 입력
+
+첫째 줄에 1m^2당 참외 개수 K가 주어진다. 둘째 줄부터 6줄에 걸쳐 각 변의 방향(1:동, 2:서, 3:남, 4:북)과 길이가 주어진다.
+
+### 출력
+
+수확할 수 있는 참외의 수를 출력한다.
+
+### 예제
+
+| 입력                                            | 출력    |
+| ----------------------------------------------- | ------- |
+| `7` `4 50` `2 160` `3 30` `1 60` `3 20` `1 100` | `47600` |
+
+## 풀이
+
+큰 직사각형의 넓이에서 작은 직사각형의 넓이를 빼서 ㄱ자 모양의 넓이를 구한다.
+
+1. 6개 변에서 가로 최대값(maxWidth)과 세로 최대값(maxHeight)을 구한다
+2. 파인 부분의 변을 찾는다: 양쪽 인접 변의 합이 최대값과 같은 변이 파인 변이다
+3. 넓이 = (maxWidth _ maxHeight - innerWidth _ innerHeight) \* K를 계산한다
+
+**핵심 아이디어**: ㄱ자 밭은 큰 직사각형에서 작은 직사각형을 뺀 형태이다. 파인 변은 양옆 인접 변의 합이 최대 변과 같다는 성질로 찾을 수 있고, 원형 인덱스((i+5)%6, (i+1)%6)로 인접 변을 참조한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day12BOJ2477참외밭 { // 2477
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int N = Integer.parseInt(sc.nextLine());
+		int[][] arr = new int[6][2];
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 2; j++) {
+				arr[i][j] = sc.nextInt();
+			}
+		}
+		int maxWidth = 0;
+		int maxHeight = 0;
+		for (int i = 0; i < 6; i++) {
+			if (i % 2 == 0)
+				maxWidth = arr[i][1] > maxWidth ? arr[i][1] : maxWidth;
+			else
+				maxHeight = arr[i][1] > maxHeight ? arr[i][1] : maxHeight;
+		}
+		int innerWidth = 0;
+		int innerHeight = 0;
+		for (int i = 0; i < 6; i++) {
+			if (i % 2 == 0) { // width를 돌때는 height로 검증
+				if (maxHeight == arr[(i + 5) % 6][1] + arr[(i + 1) % 6][1])
+					innerWidth = arr[i][1];
+			} else { // idx에러 조심..
+				if (maxWidth == arr[(i + 5) % 6][1] + arr[(i + 1) % 6][1])
+					innerHeight = arr[i][1];
+			}
+
+		}
+
+		System.out.println((maxWidth * maxHeight - innerWidth * innerHeight) * N);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 6개 변만 순회
+- 공간: O(1) — 6×2 배열

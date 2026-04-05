@@ -1,0 +1,94 @@
+---
+title: "BOJ 6970 - Sentences"
+date: "2026-02-03"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "6970"
+problem_url: "https://www.acmicpc.net/problem/6970"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6970 - Sentences](https://www.acmicpc.net/problem/6970)
+
+주어진 세 그룹의 단어 목록에서 각 그룹에서 하나씩 선택하여 만들 수 있는 모든 문장을 출력하는 문제이다. 각 테스트 케이스마다 세 그룹의 단어 수 A, B, C가 주어지고, 각 그룹의 단어들을 읽어 A×B×C개의 문장을 순서대로 출력한다.
+
+### 입력
+
+- 첫 줄에 테스트 케이스 수 T가 주어진다.
+- 각 테스트 케이스마다:
+  - 세 정수 A B C가 주어진다 (각 그룹의 단어 수).
+  - 이후 A개의 단어(그룹1), B개의 단어(그룹2), C개의 단어(그룹3)가 한 줄씩 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 그룹1[i] + " " + 그룹2[j] + " " + 그룹3[k] + "." 형식으로 A×B×C개의 문장을 출력한다. 테스트 케이스 사이에는 빈 줄을 출력한다.
+
+### 예제
+
+| 입력                                      | 출력                                                        |
+| ----------------------------------------- | ----------------------------------------------------------- |
+| `1` `2 1 2` `The` `A` `cat` `sat` `slept` | `The cat sat.` `The cat slept.` `A cat sat.` `A cat slept.` |
+
+## 풀이
+
+세 그룹의 단어 목록을 각각 배열에 저장한 뒤, 3중 반복문으로 모든 조합을 순서대로 출력하는 완전 탐색 구현 문제이다.
+
+1. 테스트 케이스 수 T를 입력받는다.
+2. 각 케이스마다 세 그룹의 단어 수 A, B, C를 읽고, 이어서 각 그룹의 단어들을 줄 단위로 읽어 배열에 저장한다.
+3. 3중 for 루프 (i, j, k)를 돌며 `arr[0][i] + " " + arr[1][j] + " " + arr[2][k] + "."` 형식으로 출력한다.
+4. 각 테스트 케이스 뒤에 빈 줄을 출력한다.
+
+**핵심 아이디어**: `cin >> a[i]` 이후 `getline`으로 나머지 줄을 읽을 때 버퍼에 남은 개행 문자를 소비하기 위해 첫 번째 `getline` 호출이 필요하다. 이후 각 단어를 줄 단위로 읽어 3중 반복문으로 조합하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <array>
+#include <vector>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int t;
+  array<vector<string>, 3> arr;
+  array<int, 3> a;
+  string s;
+  cin >> t;
+  while (t--)
+  {
+    for (int i = 0; i < 3; ++i)
+    {
+      arr[i].clear();
+      cin >> a[i];
+    }
+    getline(cin, s);
+
+    for (int i = 0; i < 3; ++i)
+      for (int j = 0; j < a[i]; ++j)
+      {
+        getline(cin, s);
+        arr[i].push_back(s);
+      }
+    for (int i = 0; i < a[0]; ++i)
+      for (int j = 0; j < a[1]; ++j)
+        for (int k = 0; k < a[2]; ++k)
+          cout << arr[0][i] + " " + arr[1][j] + " " + arr[2][k] + ".\n";
+    cout << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T × A × B × C) — 세 그룹 단어 수의 곱만큼 반복
+- 공간: O(A + B + C) — 세 그룹의 단어를 저장하는 배열 크기

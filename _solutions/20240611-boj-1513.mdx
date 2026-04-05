@@ -1,0 +1,109 @@
+---
+title: "BOJ 1513 - 경로 찾기"
+date: "2024-06-11"
+description: "오락실을 순서대로 방문하며 (1,1)에서 (N,M)까지 가는 경로 수를 DP로 구하는 문제"
+tags: ["DP"]
+platform: "boj"
+problem_number: "1513"
+problem_url: "https://www.acmicpc.net/problem/1513"
+difficulty: "골드 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1513 - 경로 찾기](https://www.acmicpc.net/problem/1513)
+
+N×M 격자에서 (1,1)에서 (N,M)까지 오른쪽 또는 아래로만 이동한다. C개의 오락실이 있고, 오락실은 번호 오름차순으로만 방문할 수 있을 때, 0~C개 오락실을 방문하는 각 경우의 경로 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, C, 이후 C줄에 각 오락실의 좌표가 주어진다.
+
+### 출력
+
+0개, 1개, ..., C개 오락실을 방문하는 경로 수를 공백으로 구분하여 출력한다 (mod 1,000,007).
+
+### 예제
+
+| 입력                | 출력    |
+| ------------------- | ------- |
+| `3 3 2` `2 2` `3 2` | `2 2 1` |
+
+## 풀이
+
+`dp[방문 수][마지막 오락실 번호][행][열]`의 4차원 DP로 상태를 관리한다.
+
+1. 격자에 오락실 번호를 기록하고, 시작점의 상태를 초기화한다
+2. 모든 상태를 순회하며 오른쪽/아래 방향으로 전이한다
+3. 다음 칸이 빈 칸이면 방문 수/오락실 번호 유지, 오락실이면 번호가 더 클 때만 전이한다
+4. (N,M)에서 각 방문 수별 DP 값을 합산하여 출력한다
+
+**핵심 아이디어**: 오락실 방문 순서를 강제하기 위해 "마지막 방문 오락실 번호"를 상태에 포함시켜 번호 역행을 방지한다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+DIRECTIONS = ((1, 0), (0, 1))
+MOD = 1_000_007
+N, M, C = map(int, input().split())
+
+_map = [[0] * (M + 1) for _ in range(N + 1)]
+for i in range(1, C + 1):
+    r, c = map(int, input().split())
+    _map[r][c] = i
+
+dp = [[[[0] * 51 for _ in range(51)] for _ in range(51)] for _ in range(51)]
+
+if _map[1][1]:
+    dp[1][_map[1][1]][1][1] = 1
+else:
+    dp[0][0][1][1] = 1
+
+
+def find():
+    for i in range(C + 1):
+        for j in range(C + 1):
+            for k in range(1, N + 1):
+                for l in range(1, M + 1):
+                    if not dp[i][j][k][l]:
+                        continue
+                    if l + 1 <= M and _map[k][l + 1] == 0:
+                        dp[i][j][k][l + 1] = (dp[i][j][k][l + 1] + dp[i][j][k][l]) % MOD
+                    elif l + 1 <= M and _map[k][l + 1] > j:
+                        dp[i + 1][_map[k][l + 1]][k][l + 1] = (
+                            dp[i + 1][_map[k][l + 1]][k][l + 1] + dp[i][j][k][l]
+                        ) % MOD
+
+                    if k + 1 <= N and _map[k + 1][l] == 0:
+                        dp[i][j][k + 1][l] = (dp[i][j][k + 1][l] + dp[i][j][k][l]) % MOD
+                    elif k + 1 <= N and _map[k + 1][l] > j:
+                        dp[i + 1][_map[k + 1][l]][k + 1][l] = (
+                            dp[i + 1][_map[k + 1][l]][k + 1][l] + dp[i][j][k][l]
+                        ) % MOD
+
+
+def main():
+    find()
+    ans = []
+    for i in range(C + 1):
+        temp = 0
+        for j in range(C + 1):
+            temp = (temp + dp[i][j][N][M]) % MOD
+        ans.append(temp)
+    print(" ".join(map(str, ans)))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## 복잡도
+
+- 시간: O(C^2 _ N _ M)
+- 공간: O(C^2 _ N _ M)

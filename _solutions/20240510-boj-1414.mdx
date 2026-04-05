@@ -1,0 +1,94 @@
+---
+title: "BOJ 1414 - 불우이웃돕기"
+date: "2024-05-10"
+description: "컴퓨터를 모두 연결하면서 기부할 수 있는 최대 랜선 길이"
+tags: ["그래프", "MST", "크루스칼"]
+platform: "boj"
+problem_number: "1414"
+problem_url: "https://www.acmicpc.net/problem/1414"
+difficulty: "골드 III"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1414 - 불우이웃돕기](https://www.acmicpc.net/problem/1414)
+
+N개의 컴퓨터가 랜선으로 연결되어 있다. 모든 컴퓨터가 연결된 상태를 유지하면서 기부할 수 있는 최대 랜선 길이를 구하라. 모두 연결할 수 없으면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 N개의 문자로 이루어진 인접 행렬이 주어진다. 소문자 a~z는 1~26, 대문자 A~Z는 27~52, 0은 연결 없음을 의미한다.
+
+### 출력
+
+기부할 수 있는 최대 랜선 길이를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `abc` `def` `ghi` | `40` |
+
+## 풀이
+
+크루스칼 알고리즘으로 최소 신장 트리(MST)를 구한 뒤, 전체 랜선 합에서 MST 가중치를 빼면 기부 가능한 최대 길이이다.
+
+1. 문자 인접 행렬을 숫자로 변환하여 간선 리스트를 만든다 (소문자: 1~26, 대문자: 27~52)
+2. 간선을 가중치 오름차순으로 정렬한다
+3. Union-Find로 크루스칼 알고리즘을 수행하여 MST를 구한다
+4. MST 간선이 N-1개가 아니면 -1, 아니면 전체 합 - MST 합을 반환한다
+
+**핵심 아이디어**: 기부를 최대화하려면 연결 유지에 필요한 최소 비용(MST)만 남기면 된다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  const map = input.slice(1).map((elem) =>
+    elem.split("").map((ee) => {
+      if (ee == "0") return 0;
+      if (ee.charCodeAt(0) >= 97) return ee.charCodeAt(0) - "A".charCodeAt(0) - 31;
+      return ee.charCodeAt(0) - "A".charCodeAt(0) + 27;
+    })
+  );
+  const nodes = [];
+  for (let i = 0; i < N; i++)
+    for (let j = 0; j < N; j++) {
+      if (map[i][j] === 0) continue;
+      nodes.push([i, j, map[i][j]]);
+    }
+  nodes.sort((a, b) => a[2] - b[2]);
+  const parents = Array.from(Array(N), (_, k) => k);
+  const find = (a) => {
+    if (a === parents[a]) return a;
+    return (parents[a] = find(parents[a]));
+  };
+  const union = (a, b) => {
+    a = find(a);
+    b = find(b);
+    if (a === b) return;
+    parents[Math.max(a, b)] = Math.min(a, b);
+  };
+  let ans = 0,
+    cnt = 0;
+  for (const [s, e, w] of nodes) {
+    if (find(s) === find(e)) continue;
+    union(s, e);
+    cnt++;
+    ans += w;
+  }
+  for (const parent of parents) find(parent);
+  return cnt !== N - 1 ? -1 : map.flat().reduce((pv, cv) => pv + cv, 0) - ans;
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N² log N²)
+- 공간: O(N²)

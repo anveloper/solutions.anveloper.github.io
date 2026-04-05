@@ -1,0 +1,94 @@
+---
+title: "BOJ 1124 - 언더프라임"
+date: "2024-02-20"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정", "에라토스테네스의 체", "소인수분해"]
+platform: "boj"
+problem_number: "1124"
+problem_url: "https://www.acmicpc.net/problem/1124"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1124 - 언더프라임](https://www.acmicpc.net/problem/1124)
+
+A 이상 B 이하의 자연수 중, 소인수의 개수(중복 포함)가 소수인 수(언더프라임)의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 A, B가 주어진다 (2 이상 100,000 이하).
+
+### 출력
+
+언더프라임의 개수를 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `2 10` | `5`  |
+
+## 풀이
+
+에라토스테네스의 체를 변형하여 각 수의 소인수 개수를 구하고, 그 개수가 소수인지 판별한다.
+
+1. 에라토스테네스의 체로 소수를 구하되, 합성수의 소인수 개수를 동시에 계산한다
+2. 각 소수 i의 배수 j에 대해 i로 나눌 수 있는 만큼 나누며 `cnt[j]`를 증가시킨다
+3. A부터 B까지 순회하며 `cnt[i]`가 소수이면 카운트한다
+
+**핵심 아이디어**: 에라토스테네스의 체 과정에서 소인수분해를 동시에 수행하여 소인수 개수를 효율적으로 구한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day749BOJ1124언더프라임 {
+  static int A, B;
+  static boolean[] prime = new boolean[100001];
+  static int[] cnt = new int[100001];
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    A = Integer.parseInt(st.nextToken());
+    B = Integer.parseInt(st.nextToken());
+
+    prime[0] = true;
+    prime[1] = true;
+
+    for (int i = 2; i < 100001; i++) {
+      if (prime[i])
+        continue;
+      for (int j = i * 2; j < 100001; j += i) {
+        prime[j] = true;
+        int tmp = j;
+        while (tmp % i == 0) {
+          tmp = tmp / i;
+          cnt[j]++;
+        }
+      }
+    }
+
+    int ans = 0;
+    for (int i = A; i <= B; i++) {
+      if (!prime[cnt[i]]) {
+        ans++;
+      }
+    }
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N)
+- 공간: O(N)

@@ -1,0 +1,76 @@
+---
+title: "BOJ 5354 - J박스"
+date: "2024-12-26"
+description: "크기 N의 정사각형에서 테두리는 #, 내부는 J로 채워 출력하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5354"
+problem_url: "https://www.acmicpc.net/problem/5354"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5354 - J박스](https://www.acmicpc.net/problem/5354)
+
+N x N 크기의 박스에서 테두리는 `#`으로, 내부는 `J`로 채워 출력하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 정수 N이 주어진다.
+
+### 출력
+
+각 케이스마다 N x N 박스를 출력한다.
+
+### 예제
+
+| 입력    | 출력                        |
+| ------- | --------------------------- |
+| `1` `4` | `####` `#JJ#` `#JJ#` `####` |
+
+## 풀이
+
+이중 반복문으로 테두리와 내부를 구분하여 출력한다.
+
+1. N x N 격자를 순회하며 현재 위치가 테두리인지 확인한다
+2. 첫/마지막 행 또는 첫/마지막 열이면 `#`을, 아니면 `J`를 출력한다
+3. 각 케이스 사이에 빈 줄을 출력한다
+
+**핵심 아이디어**: 테두리 조건 `i == 0 || i == N-1 || j == 0 || j == N-1`로 간단히 구분한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int t;
+  cin >> t;
+  while (t--)
+  {
+    int box;
+    cin >> box;
+    for (int i = 0; i < box; i++)
+    {
+      for (int j = 0; j < box; j++)
+      {
+        if (i != 0 && i != box - 1 && j != 0 && j != box - 1)
+          cout << "J";
+        else
+          cout << "#";
+      }
+      cout << '\n';
+    }
+    cout << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T × N^2)
+- 공간: O(1)

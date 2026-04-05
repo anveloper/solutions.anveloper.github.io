@@ -1,0 +1,85 @@
+---
+title: "BOJ 6378 - 디지털 루트"
+date: "2024-09-21"
+description: "각 자릿수의 합을 한 자리가 될 때까지 반복하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "6378"
+problem_url: "https://www.acmicpc.net/problem/6378"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6378 - 디지털 루트](https://www.acmicpc.net/problem/6378)
+
+양의 정수가 주어질 때, 각 자릿수의 합을 한 자리 수가 될 때까지 반복하여 디지털 루트를 구하라.
+
+### 입력
+
+여러 줄에 걸쳐 양의 정수가 주어진다. 0이 입력되면 종료한다.
+
+### 출력
+
+각 수의 디지털 루트를 출력한다.
+
+### 예제
+
+| 입력          | 출력    |
+| ------------- | ------- |
+| `24` `39` `0` | `6` `3` |
+
+## 풀이
+
+문자열로 큰 수를 입력받아 자릿수 합을 반복 계산한다.
+
+1. 수를 문자열로 입력받는다 (큰 수 대응)
+2. 각 자릿수를 더하여 합을 구한다
+3. 합이 10 이상이면 합을 문자열로 변환하여 다시 자릿수 합을 구한다
+4. 한 자리 수가 되면 출력한다
+
+**핵심 아이디어**: 큰 수를 문자열로 처리하고, 자릿수 합이 한 자리가 될 때까지 반복하면 디지털 루트를 구할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main(int argc, const char *argv[])
+{
+  string s;
+  int sum = 0;
+  while (1)
+  {
+    cin >> s;
+    if (s == "0")
+      break;
+
+    sum = 0;
+    while (1)
+    {
+      for (int i = 0; i < s.length(); i++)
+        sum += s[i] - '0';
+
+      if (sum < 10)
+        break;
+      else
+      {
+        s = to_string(sum);
+        sum = 0;
+      }
+    }
+    cout << sum << '\n';
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* log N) (T: 테스트 케이스 수, N: 입력 수의 크기)
+- 공간: O(log N)

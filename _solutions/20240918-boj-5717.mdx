@@ -1,0 +1,65 @@
+---
+title: "BOJ 5717 - 상근이의 친구들"
+date: "2024-09-18"
+description: "남자 친구 수와 여자 친구 수의 합을 출력하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5717"
+problem_url: "https://www.acmicpc.net/problem/5717"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5717 - 상근이의 친구들](https://www.acmicpc.net/problem/5717)
+
+남자 친구 수 M과 여자 친구 수 F가 주어질 때, 친구의 총 수를 출력하라. 0 0이 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 M과 F가 주어진다. 마지막 줄은 0 0이다.
+
+### 출력
+
+각 줄마다 M + F를 출력한다.
+
+### 예제
+
+| 입력               | 출력     |
+| ------------------ | -------- |
+| `2 3` `10 0` `0 0` | `5` `10` |
+
+## 풀이
+
+두 수를 반복적으로 입력받아 합을 출력한다.
+
+1. M과 F를 입력받는다
+2. 둘 다 0이면 종료한다
+3. 아니면 `M + F`를 출력하고 다음 입력으로 넘어간다
+
+**핵심 아이디어**: 종료 조건이 "0 0"인 반복 입출력 문제로, `while(1)` + `break` 패턴으로 처리한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int m, f;
+  while (1)
+  {
+    cin >> m >> f;
+    if (m == 0 && f == 0)
+      break;
+    cout << m + f << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T) (T: 입력 횟수)
+- 공간: O(1)

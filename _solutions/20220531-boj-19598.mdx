@@ -1,0 +1,89 @@
+---
+title: "BOJ 19598 - 최소 회의실 개수"
+date: "2022-05-31"
+description: "자료 구조, 그리디 알고리즘, 정렬 문제"
+tags: ["자료 구조", "그리디 알고리즘", "정렬", "스위핑", "우선순위 큐"]
+platform: "boj"
+problem_number: "19598"
+problem_url: "https://www.acmicpc.net/problem/19598"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 19598 - 최소 회의실 개수](https://www.acmicpc.net/problem/19598)
+
+N개의 회의가 주어지고, 각 회의는 시작 시간과 끝 시간을 가진다. 모든 회의를 진행하기 위해 필요한 최소 회의실 수를 구하는 문제이다. 끝 시간과 시작 시간이 겹치지 않으면 같은 회의실을 사용할 수 있다(끝 시간 == 다른 회의 시작 시간이면 동시에 2개의 회의가 진행 중인 것).
+
+### 입력
+
+- 첫째 줄: 회의의 수 N (1 이상 100,000 이하)
+- 다음 N줄: 시작 시간, 끝 시간 (0 이상 10^9 이하 정수)
+
+### 출력
+
+- 필요한 최소 회의실 수
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `0 5` `2 7` `4 9` | `3`  |
+
+## 풀이
+
+스위핑(Sweeping) 기법을 활용한다. 회의 시작/종료 이벤트를 시간순으로 정렬하여 동시에 진행되는 회의의 최댓값을 구한다.
+
+1. 각 회의를 시작 이벤트(+1)와 종료 이벤트(-1)로 분리하여 우선순위 큐에 넣는다.
+2. 우선순위 큐를 시간 순서대로 처리한다.
+3. 이벤트를 처리하면서 현재 진행 중인 회의 수(`tmp`)를 시작 시 +1, 종료 시 -1한다.
+4. 진행 중인 회의 수의 최댓값(`ans`)을 기록한다.
+5. 최종 `ans`가 필요한 최소 회의실 수이다.
+
+**핵심 아이디어**: 어느 시점에 동시에 진행되는 회의 수의 최댓값이 곧 필요한 회의실 수이다. 시작/종료 이벤트를 시간순으로 처리하는 스위핑으로 O(N log N)에 해결한다. 시작과 종료가 같은 시간이면 종료를 먼저 처리해야 하지만, 이 풀이에서는 이벤트 정렬 시 우선순위 큐가 동일 시간의 종료를 먼저 처리하도록 `c` 값(-1 or +1)으로 구분한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+public class Day113BOJ19598최소회의실갯수 { // 19598 최소회의실 갯수, 고민시간이 2시간이 되서 구선생님 도움받았습니다.
+	static class Room { int t, c; Room(int t, boolean c) { this.t = t; this.c = c ? 1 : -1; }}
+	static int N, ans;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+		ans = 0;
+		PriorityQueue<Room> pq = new PriorityQueue<>((o1, o2) -> (o1.t - o2.t));
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			pq.offer(new Room(u, true));
+			pq.offer(new Room(v, false));
+		}
+		int tmp = 0;
+		while (!pq.isEmpty()) {
+			Room r = pq.poll();
+			tmp += r.c;
+			ans = Math.max(ans, tmp);
+		}
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

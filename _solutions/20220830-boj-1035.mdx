@@ -1,0 +1,164 @@
+---
+title: "BOJ 1035 - 조각 움직이기"
+date: "2022-08-30"
+description: "그래프 이론, 브루트포스 알고리즘, 그래프 탐색 문제"
+tags: ["그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "너비 우선 탐색", "비트마스킹"]
+platform: "boj"
+problem_number: "1035"
+problem_url: "https://www.acmicpc.net/problem/1035"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1035 - 조각 움직이기](https://www.acmicpc.net/problem/1035)
+
+5×5 격자에 별(`*`) 모양 조각이 최대 5개 있다. 각 조각을 이동하여 모든 조각이 상하좌우로 연결된 상태를 만들 때, 이동 횟수의 합의 최솟값을 구한다.
+
+- 각 조각은 맨해튼 거리만큼 이동한다.
+- 조각의 목적지는 격자 내 임의의 위치로 설정할 수 있다.
+
+### 입력
+
+5줄에 걸쳐 5×5 격자가 주어진다. (`*`는 조각, `.`은 빈 칸)
+
+### 출력
+
+이동 횟수의 합의 최솟값을 출력한다.
+
+### 예제
+
+입력:
+
+```
+.....
+.*...
+.....
+...*.
+.....
+```
+
+출력:
+
+```
+4
+```
+
+## 풀이
+
+**핵심 아이디어**: 조각 수가 최대 5개이고 격자가 5×5로 작으므로 브루트포스로 모든 목적지 조합을 시도한다. 각 조각의 목적지를 재귀적으로 배치하고 모든 조각이 연결되는지 확인한다.
+
+단계별 흐름:
+
+1. 입력에서 `*` 위치를 `points` 배열에 저장한다 (최대 5개).
+2. `bruteForce(dep, disSum)`: `dep`번째 조각의 목적지를 격자 내 비어 있는 모든 칸에 배치해본다.
+   - `disSum >= min`이면 가지치기(현재까지 이동 합이 최솟값 이상이면 중단).
+   - 목적지 칸을 `map[i][j] = true`로 표시하고, 맨해튼 거리를 `disSum`에 더해 재귀 호출한다.
+   - 마지막 조각까지 배치하면 `allConnected()`로 연결 여부를 확인한다.
+3. `allConnected()`: DFS로 `map`에서 첫 번째 `true` 칸에서 시작하여 연결된 칸의 수가 `pointsSize`와 같은지 확인한다.
+4. 연결되면 `min`을 갱신한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day249;
+
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Day204BOJ1035조각움직이기 {
+	static Point[] points = new Point[5];
+	static int pointsSize = 0;
+	static boolean[][] map = new boolean[7][7];
+	static boolean[][] visited = new boolean[7][7];
+	static int min = 1987654321;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		// n은 조각 개수
+		for (int i = 1; i <= 5; i++) {
+			String[] strs = br.readLine().split("");
+			for (int j = 1; j <= 5; j++) {
+				if ("*".equals(strs[j - 1])) {
+					points[pointsSize++] = new Point(i, j);
+				}
+			}
+		}
+		bruteForce(0, 0);
+		System.out.println(min);
+	}
+
+	private static void bruteForce(int dep, int disSum) {
+		if (disSum >= min)
+			return;
+
+		if (dep == pointsSize) {
+			if (allConnected())
+				min = Math.min(min, disSum);
+			return;
+		}
+
+		// depth까지 다음 지점 탐색
+		for (int i = 1; i <= 5; i++) {
+			for (int j = 1; j <= 5; j++) {
+				if (map[i][j])
+					continue;
+
+				map[i][j] = true;
+				int dis = Math.abs(points[dep].x - i) + Math.abs(points[dep].y - j);
+				bruteForce(dep + 1, disSum + dis);
+				map[i][j] = false;
+			}
+		}
+	}
+
+	private static boolean allConnected() {
+		init(visited);
+		return count(findFirstPoint()) == pointsSize;
+	}
+
+	private static int count(Point pnt) {
+		int cnt = 1;
+		int x = pnt.x, y = pnt.y;
+		visited[x][y] = true;
+
+		int[] dx = { 1, -1, 0, 0 };
+		int[] dy = { 0, 0, -1, 1 };
+		for (int k = 0; k < 4; k++) {
+			int mx = x + dx[k];
+			int my = y + dy[k];
+			if (map[mx][my] && !visited[mx][my]) {
+				cnt += count(new Point(mx, my));
+			}
+		}
+		return cnt;
+	}
+
+	private static Point findFirstPoint() {
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				if (map[i][j])
+					return new Point(i, j);
+			}
+		}
+		return new Point(-1, -1);
+	}
+
+	private static void init(boolean[][] arr) {
+		for (int i = 0; i < arr.length; i++) {
+			for (int j = 0; j < arr[i].length; j++) {
+				arr[i][j] = false;
+			}
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(25^5 × 25) — 5개의 조각 각각에 대해 25칸 배치를 시도하고 연결성 확인 (가지치기로 실제 탐색 공간은 훨씬 작음)
+- 공간: O(1) — 5×5 고정 크기 배열 사용

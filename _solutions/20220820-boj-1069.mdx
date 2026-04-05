@@ -1,0 +1,89 @@
+---
+title: "BOJ 1069 - 집으로"
+date: "2022-08-20"
+description: "애드 혹, 기하학, 많은 조건 분기 문제"
+tags: ["애드 혹", "기하학", "많은 조건 분기"]
+platform: "boj"
+problem_number: "1069"
+problem_url: "https://www.acmicpc.net/problem/1069"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1069 - 집으로](https://www.acmicpc.net/problem/1069)
+
+(X, Y)에서 원점(0, 0)까지 이동한다. 걷기는 1초에 1만큼, 점프는 T초에 정확히 D만큼(직선) 이동할 때, 최소 시간을 구하라.
+
+### 입력
+
+X, Y, D, T가 주어진다 (1 ≤ X, Y ≤ 1,000, 1 ≤ D ≤ 10,000, 1 ≤ T ≤ 10,000).
+
+### 출력
+
+최소 이동 시간을 출력한다.
+
+### 예제
+
+| 입력      | 출력  |
+| --------- | ----- |
+| `6 8 5 3` | `6.0` |
+
+## 풀이
+
+걷기와 점프를 조합하는 여러 케이스를 비교하여 최솟값을 구한다.
+
+1. 원점까지의 직선 거리 dis를 구한다
+2. `T >= D`: 점프가 걷기보다 느리므로 걷기만 사용 (time = dis)
+3. `dis > D`: jump횟수 \* T와 나머지 걷기, 또는 (jump+1)번 점프 중 최솟값
+4. `dis == D`: 한 번 점프(T) vs 걷기(dis) 중 최솟값
+5. `dis < D`: 걷기(dis), 2번 점프(2T, 지나쳤다 돌아오기), 1번 점프 후 초과분 걷기 중 최솟값
+
+**핵심 아이디어**: 점프는 정확히 D만큼만 이동하므로, 거리가 D의 배수가 아닌 경우 남은 거리를 걷거나 한 번 더 점프 후 되돌아오는 전략을 비교해야 한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day194BOJ1069집으로 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int x = Integer.parseInt(st.nextToken());
+		int y = Integer.parseInt(st.nextToken());
+		int d = Integer.parseInt(st.nextToken());
+		int t = Integer.parseInt(st.nextToken());
+
+		double dis = Math.sqrt(x * x + y * y);
+
+		int jump = (int) dis / d;
+
+		double time;
+		if (t >= d)
+			time = dis;
+		else if (dis > d) {
+			time = Math.min((jump + 1) * t, jump * t + (dis - jump * d));
+		} else if (dis == d) {
+			time = Math.min(dis, t);
+		} else {
+			time = Math.min(dis, 2 * t);
+			time = Math.min(time, ((jump + 1) * d) - dis + (jump + 1) * t);
+
+		}
+		System.out.println(time);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

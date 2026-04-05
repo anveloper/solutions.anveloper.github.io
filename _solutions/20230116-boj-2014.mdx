@@ -1,0 +1,101 @@
+---
+title: "BOJ 2014 - 소수의 곱"
+date: "2023-01-16"
+description: "수학, 자료 구조, 정수론 문제"
+tags: ["수학", "자료 구조", "정수론", "집합과 맵", "우선순위 큐"]
+platform: "boj"
+problem_number: "2014"
+problem_url: "https://www.acmicpc.net/problem/2014"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2014 - 소수의 곱](https://www.acmicpc.net/problem/2014)
+
+K개의 소수가 주어진다. 이 소수들만을 소인수로 가지는 수들(각 소수들의 곱으로만 나타낼 수 있는 수)을 오름차순으로 나열할 때, N번째 수를 구한다. 단, 각 소수 자체도 포함한다.
+
+예를 들어 소수가 `{2, 5}`이면 수열은 2, 4, 5, 8, 10, 16, 20, 25, ...이다.
+
+### 입력
+
+첫째 줄에 K와 N이 주어진다. (1 ≤ K ≤ 100, 1 ≤ N ≤ 100,000)
+
+둘째 줄에 K개의 소수가 주어진다. 각 소수는 2 이상 100 이하이다.
+
+### 출력
+
+N번째 수를 출력한다.
+
+### 예제
+
+**입력**
+
+```
+4 19
+2 3 5 7
+```
+
+**출력**
+
+```
+54
+```
+
+## 풀이
+
+**핵심 아이디어**: 최소 힙(우선순위 큐)을 사용하여 항상 가장 작은 수를 꺼내고, 꺼낸 수에 각 소수를 곱한 새로운 수를 힙에 넣는 방식으로 N번째 수를 구한다. 중복 삽입을 방지하기 위해 각 수를 생성할 때 해당 수를 만든 소수보다 작은 소수와의 곱은 건너뛴다.
+
+1. **초기화**: K개의 소수를 모두 우선순위 큐에 넣는다.
+2. **N-1번 반복**: 큐에서 최솟값 n을 꺼낸 뒤, K개의 소수 `prime[j]`에 대해 순서대로 `n * prime[j]`를 큐에 삽입한다.
+3. **중복 방지**: `n % prime[j] == 0`이면 n에는 이미 `prime[j]`가 포함된 것이므로, 그보다 큰 소수와의 곱은 다른 경로로 이미 생성됐거나 생성될 것임을 의미한다. 따라서 `break`한다.
+4. **오버플로우 방지**: 곱이 `2L << 30`을 초과하면 추가하지 않고 중단한다.
+5. **N번째 수**: N-1번 꺼낸 후 큐의 최솟값을 출력한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.*;
+
+public class Day343BOJ2014소수의곱 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int K = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
+
+        long prime[] = new long[K];
+        PriorityQueue<Long> pq = new PriorityQueue<>();
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < K; i++) {
+            prime[i] = Long.parseLong(st.nextToken());
+            pq.offer(prime[i]);
+        }
+
+        for (int i = 0; i < N - 1; i++) {
+            long n = pq.poll();
+            for (int j = 0; j < K; j++) {
+                long temp = n * prime[j];
+                if (temp >= (long) 2 << 30) {
+                    break;
+                }
+                pq.offer(temp);
+                if (n % prime[j] == 0) {
+                    break;
+                }
+            }
+        }
+        System.out.println(pq.poll());
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

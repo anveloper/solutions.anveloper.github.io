@@ -1,0 +1,69 @@
+---
+title: "BOJ 3000 - 직각 삼각형"
+date: "2025-04-13"
+description: "수학, 기하학, 집합과 맵 문제"
+tags: ["수학", "기하학", "집합과 맵", "조합론"]
+platform: "boj"
+problem_number: "3000"
+problem_url: "https://www.acmicpc.net/problem/3000"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3000 - 직각 삼각형](https://www.acmicpc.net/problem/3000)
+
+N개의 점이 주어질 때, 축에 평행한 두 변을 가지는 직각 삼각형의 개수를 구하라.
+
+### 입력
+
+점의 수 N과 각 점의 좌표 (x, y)가 주어진다.
+
+### 출력
+
+축에 평행한 직각 삼각형의 개수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `0 0` `0 1` `1 0` | `1`  |
+
+## 풀이
+
+각 점을 직각 꼭짓점으로 보고, 같은 x/y 좌표의 점 수로 삼각형 수를 계산한다.
+
+1. 각 x좌표, y좌표별로 점의 개수를 딕셔너리로 집계한다
+2. 각 점 (x, y)에 대해, 같은 x에 있는 다른 점 수 `(x_count-1)`과 같은 y에 있는 다른 점 수 `(y_count-1)`을 곱한다
+3. 모든 점에 대한 곱의 합이 총 직각 삼각형 수이다
+
+**핵심 아이디어**: 직각 꼭짓점을 고정하면 수평/수직 방향으로 각각 선택할 수 있는 점의 수의 곱이 해당 꼭짓점에서 만들 수 있는 삼각형 수이다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+n = int(input())
+x_dic, y_dic = {}, {}
+points = []
+for _ in range(n):
+    x, y = map(int, input().split())
+    x_dic[x] = x_dic.get(x, 0) + 1
+    y_dic[y] = y_dic.get(y, 0) + 1
+    points.append((x, y))
+
+ans = 0
+for x, y in points:
+    ans += (x_dic[x] - 1) * (y_dic[y] - 1)
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

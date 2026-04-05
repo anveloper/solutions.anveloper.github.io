@@ -1,0 +1,130 @@
+---
+title: "BOJ 18258 - 큐 2"
+date: "2022-03-13"
+description: "자료 구조, 큐 문제"
+tags: ["자료 구조", "큐"]
+platform: "boj"
+problem_number: "18258"
+problem_url: "https://www.acmicpc.net/problem/18258"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 18258 - 큐 2](https://www.acmicpc.net/problem/18258)
+
+정수를 저장하는 큐를 구현하고 push, pop, size, empty, front, back 6가지 명령을 처리하는 프로그램을 작성하라. 명령 수가 최대 2,000,000개이므로 빠른 입출력이 필요하다.
+
+### 입력
+
+첫째 줄에 명령의 수 N (1 이상 2,000,000 이하)이 주어진다. 둘째 줄부터 N개의 명령이 하나씩 주어진다.
+
+### 출력
+
+출력이 필요한 명령마다 한 줄에 하나씩 결과를 출력한다.
+
+### 예제
+
+| 입력                                                                                                                  | 출력                                      |
+| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `15` `push 1` `push 2` `push 3` `pop` `pop` `pop` `pop` `push 4` `push 5` `front` `back` `size` `empty` `empty` `pop` | `1` `2` `3` `-1` `4` `5` `2` `0` `1` `-1` |
+
+## 풀이
+
+Deque를 사용하여 큐의 6가지 연산을 구현하고, BufferedReader/StringBuilder로 빠른 입출력을 처리한다.
+
+1. push X: Deque의 뒤에 X를 추가한다
+2. pop: 비어있으면 -1, 아니면 앞 원소를 제거하고 출력한다
+3. size: 현재 원소 개수를 출력한다
+4. empty: 비어있으면 1, 아니면 0을 출력한다
+5. front/back: 비어있으면 -1, 아니면 앞/뒤 원소를 출력한다
+6. 모든 출력을 StringBuilder에 모아 한 번에 출력한다
+
+**핵심 아이디어**: BOJ 10845(큐)와 동일한 문제이나 N이 최대 200만으로 크므로, Scanner 대신 BufferedReader + StringBuilder를 사용해야 시간 초과를 피할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+public class Day24BOJ18258큐2 { // 18258 큐 2
+	static int N;
+	static Deque<Integer> q = new LinkedList<>();
+	static StringBuilder sb = new StringBuilder();
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+
+		for (int n = 0; n < N; n++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+
+			String str = st.nextToken();
+
+			if (st.hasMoreTokens()) {
+				push(Integer.parseInt(st.nextToken()));
+				continue;
+			} else if (str.equals("pop")) {
+				sb.append(pop());
+			} else if (str.equals("size")) {
+				sb.append(size());
+			} else if (str.equals("empty")) {
+				sb.append(empty());
+			} else if (str.equals("front")) {
+				sb.append(front());
+			} else if (str.equals("back")) {
+				sb.append(back());
+			}
+			sb.append("\n");
+		}
+		System.out.println(sb);
+	}
+
+	public static void push(int i) {
+		q.add(i);
+	}
+
+	public static int pop() {
+		if (q.isEmpty())
+			return -1;
+		return q.pop();
+	}
+
+	public static int size() {
+		if (q.isEmpty())
+			return 0;
+		return q.size();
+	}
+
+	public static int empty() {
+		if (q.isEmpty())
+			return 1;
+		return 0;
+	}
+
+	public static int front() {
+		if (q.isEmpty())
+			return -1;
+		return q.getFirst();
+	}
+
+	public static int back() {
+		if (q.isEmpty())
+			return -1;
+		return q.getLast();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

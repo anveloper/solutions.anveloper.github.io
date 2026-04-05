@@ -1,0 +1,87 @@
+---
+title: "BOJ 11399 - ATM"
+date: "2022-03-13"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "11399"
+problem_url: "https://www.acmicpc.net/problem/11399"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11399 - ATM](https://www.acmicpc.net/problem/11399)
+
+N명이 ATM 앞에 줄을 서 있고, 각자 돈을 인출하는 데 걸리는 시간이 주어진다. 각 사람이 돈을 인출하기까지 기다리는 시간의 합을 최소화했을 때 그 값을 구하는 문제다.
+
+### 입력
+
+- 첫째 줄: N
+- 둘째 줄: N명의 인출 시간
+
+### 출력
+
+모든 사람의 대기 시간 합의 최솟값
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `5` `3 1 4 3 2` | `32` |
+
+## 풀이
+
+i번째 사람의 대기 시간은 앞에 선 모든 사람의 인출 시간 합이다. 대기 시간의 합을 최소화하려면 인출 시간이 짧은 사람을 앞에 세워야 한다는 그리디 원리를 적용한다.
+
+1. N개의 인출 시간을 배열에 저장한다.
+2. 버블 정렬로 오름차순 정렬한다 (입력 크기가 작아 O(N^2)도 통과).
+3. 정렬된 배열에서 `arr[i] * (N - i)`를 합산한다. (`arr[i]`는 자신 포함 뒤에 남은 N-i명의 대기 시간에 기여)
+4. 합계를 출력한다.
+
+**핵심 아이디어**: 각 사람의 인출 시간은 자신 포함 뒤쪽 모든 사람의 대기에 누적된다. 따라서 오름차순 정렬 후 `arr[i] * (N-i)`의 합산이 전체 대기 시간의 최솟값이 된다. N이 최대 1,000이라 버블 정렬 O(N^2)도 허용된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day03BOJ11399ATM { // 11399 ATM
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		int num = sc.nextInt();
+		int[] arr = new int[num];
+		for (int i = 0; i < num; i++) {
+			arr[i] = sc.nextInt();
+		}
+		sc.nextLine();
+
+		for (int i = num - 1; i >= 0; i--) {
+			for (int j = 0; j < i; j++) {
+				if (arr[j] > arr[j + 1]) {
+					int tmp = arr[j];
+					arr[j] = arr[j+1];
+					arr[j+1] = tmp;
+				}
+			}
+		} // bubble, tc가 온화해서 n^2복잡도로도 가능
+
+		int sum = 0;
+		for (int i = 0; i < num; i++) {
+			sum += (arr[i] * (num - i)); // 가장 시간이 짧은 사람이 여러번 겹쳐져야 한다.
+		}
+		System.out.println(sum);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) — 버블 정렬 사용 (N 최대 1,000이라 허용)
+- 공간: O(N)

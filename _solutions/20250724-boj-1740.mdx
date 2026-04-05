@@ -1,0 +1,80 @@
+---
+title: "BOJ 1740 - 거듭제곱"
+date: "2025-07-24"
+description: "수학, 비트마스킹 문제"
+tags: ["수학", "비트마스킹"]
+platform: "boj"
+problem_number: "1740"
+problem_url: "https://www.acmicpc.net/problem/1740"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1740 - 거듭제곱](https://www.acmicpc.net/problem/1740)
+
+서로 다른 3의 거듭제곱의 합으로 표현 가능한 수를 오름차순으로 나열했을 때, N번째 수를 구하라.
+
+### 입력
+
+자연수 N이 주어진다.
+
+### 출력
+
+N번째 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `5`  | `10` |
+
+## 풀이
+
+N의 이진 표현에서 각 비트를 3의 거듭제곱에 대응시킨다.
+
+1. N을 이진수로 변환한다
+2. 이진수의 i번째 비트가 1이면 `3^i`를 합에 더한다
+3. 최종 합이 N번째 수이다
+
+**핵심 아이디어**: 3의 거듭제곱 부분집합의 합을 오름차순으로 나열하면, N번째 원소는 N의 이진 표현에서 비트 위치를 3의 거듭제곱으로 대체한 것과 같다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <bitset>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  long long n;
+  cin >> n;
+
+  string temp = bitset<64>(n).to_string();
+
+  long long result = 0;
+  long long seq = 1;
+  for (int i = temp.length() - 1; i > -1; i--)
+  {
+    if (temp[i] == '1')
+    {
+      result += seq;
+    }
+    seq *= 3;
+  }
+
+  cout << result;
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(log N)

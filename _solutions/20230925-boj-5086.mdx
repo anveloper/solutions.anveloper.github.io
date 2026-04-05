@@ -1,0 +1,90 @@
+---
+title: "BOJ 5086 - 배수와 약수"
+date: "2023-09-25"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5086"
+problem_url: "https://www.acmicpc.net/problem/5086"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5086 - 배수와 약수](https://www.acmicpc.net/problem/5086)
+
+두 수가 주어질 때, 첫 번째 수가 두 번째 수의 약수인지, 배수인지, 둘 다 아닌지 판별하라.
+
+### 입력
+
+여러 줄에 두 정수가 주어지며, 0 0이 입력되면 종료한다.
+
+### 출력
+
+약수면 "factor", 배수면 "multiple", 둘 다 아니면 "neither"를 출력한다.
+
+### 예제
+
+| 입력                       | 출력                          |
+| -------------------------- | ----------------------------- |
+| `8 16` `32 4` `17 5` `0 0` | `factor` `multiple` `neither` |
+
+## 풀이
+
+나머지 연산으로 약수/배수 관계를 판별한다.
+
+1. b % a == 0이면 a는 b의 약수이므로 "factor"를 출력한다
+2. a % b == 0이면 a는 b의 배수이므로 "multiple"을 출력한다
+3. 둘 다 아니면 "neither"를 출력한다
+
+**핵심 아이디어**: 나머지 연산 한 번으로 약수/배수 관계를 O(1)에 판별한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day598BOJ5086배수와약수 {
+  public static void main(String[] args) throws Exception {
+
+    String f = "factor\n";
+    String m = "multiple\n";
+    String n = "neither\n";
+
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    StringTokenizer st;
+
+    while (true) {
+
+      st = new StringTokenizer(br.readLine(), " ");
+
+      int first = Integer.parseInt(st.nextToken());
+      int second = Integer.parseInt(st.nextToken());
+
+      if (first == 0 && second == 0)
+        break;
+
+      if (second % first == 0) {
+        sb.append(f);
+      } else if (first % second == 0) {
+        sb.append(m);
+      } else {
+        sb.append(n);
+      }
+
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T) - T는 테스트 케이스 수
+- 공간: O(1)

@@ -1,0 +1,75 @@
+---
+title: "BOJ 3052 - 나머지"
+date: "2022-03-13"
+description: "수학, 집합과 맵, 사칙연산 문제"
+tags: ["수학", "집합과 맵", "사칙연산"]
+platform: "boj"
+problem_number: "3052"
+problem_url: "https://www.acmicpc.net/problem/3052"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3052 - 나머지](https://www.acmicpc.net/problem/3052)
+
+10개의 수를 입력받아 각각 42로 나눈 나머지를 구한다. 이 나머지 중 서로 다른 값이 몇 개인지 출력하는 문제이다.
+
+### 입력
+
+10개의 줄에 자연수가 한 줄에 하나씩 주어진다. 각 수는 1 이상 1,000 이하이다.
+
+### 출력
+
+서로 다른 나머지의 개수를 출력한다.
+
+### 예제
+
+| 입력                                     | 출력 |
+| ---------------------------------------- | ---- |
+| `1` `2` `3` `4` `5` `6` `7` `8` `9` `10` | `10` |
+
+## 풀이
+
+42로 나눈 나머지의 범위는 0 ~ 41이므로 크기 42의 카운팅 배열로 각 나머지의 등장 여부를 추적한다.
+
+1. 크기 42의 정수 배열 `s[]`를 선언한다(나머지 0 ~ 41 대응).
+2. 10개의 정수를 읽으면서 `n % 42` 인덱스의 카운트를 증가시킨다.
+3. `s[]`를 순회하여 값이 0이 아닌 원소의 수를 센다.
+4. 해당 수를 출력한다.
+
+**핵심 아이디어:** 나머지 값이 같은 수들은 동일한 버킷에 기록된다. 카운팅 배열을 사용하면 `HashSet` 없이도 고유한 나머지 개수를 O(1) 공간(크기 42 고정)으로 구할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day09BOJ3052나머지 { // 3052
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int T = 10;
+		int[] s = new int[42]; // 나머지는 0 ~ 41
+		for (int tc = 0; tc < T; tc++) {
+			int n = sc.nextInt();
+			s[n % 42]++;
+		}
+		int cnt = 0;
+		for (int i : s) {
+			if (i != 0)
+				cnt++;
+		}
+		System.out.println(cnt);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 입력이 10개로 고정, 배열 순회도 크기 42로 고정
+- 공간: O(1) — 크기 42의 고정 배열

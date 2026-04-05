@@ -1,0 +1,152 @@
+---
+title: "BOJ 9376 - 탈옥"
+date: "2022-06-18"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "최단 경로", "데이크스트라", "0-1 너비 우선 탐색"]
+platform: "boj"
+problem_number: "9376"
+problem_url: "https://www.acmicpc.net/problem/9376"
+difficulty: "플래티넘 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9376 - 탈옥](https://www.acmicpc.net/problem/9376)
+
+H×W 크기의 감옥 격자에 죄수 2명(`$`)과 벽(`.`), 문(`#`), 장벽(`*`)이 있다. 외부의 협력자가 문을 열어주며, 두 죄수를 모두 탈출시키기 위해 열어야 하는 문의 최소 개수를 구하는 문제다. 죄수와 협력자가 함께 이동하므로, 외부(경계 밖)를 출발지로 하는 3개의 출발점 각각에서 0-1 BFS(문 통과 비용=1, 빈 칸 이동 비용=0)를 실행한 뒤 각 셀에서의 비용 합산으로 최솟값을 구한다.
+
+### 입력
+
+- 첫째 줄: 테스트 케이스 수 T
+- 각 테스트 케이스 첫 줄: H W (격자 크기)
+- 이후 H개 줄: 격자 정보 (`.` 빈 칸, `#` 문, `*` 벽, `$` 죄수)
+
+### 출력
+
+각 테스트 케이스마다 열어야 하는 문의 최솟값을 출력한다.
+
+### 예제
+
+| 입력                                       | 출력 |
+| ------------------------------------------ | ---- |
+| `1` `3 8` `*..*...*` `*$#..#$*` `*..*...*` | `2`  |
+
+## 풀이
+
+격자 외부를 하나의 가상 노드(0,0)로 설정하고 죄수 2명 + 외부 협력자 총 3곳에서 0-1 BFS를 실행한다.
+
+1. H+2 × W+2 크기 확장 맵을 사용해 격자 외부를 경계(`.`)로 처리
+2. `counts[r][c][idx]`: idx번 출발점에서 (r,c)까지 열어야 하는 최소 문 개수
+3. 0-1 BFS: 빈 칸 이동은 비용 0(덱 앞에 삽입), 문 통과는 비용 +1(덱 뒤에 삽입)
+4. 모든 셀에서 3개 출발점의 비용 합산: `counts[r][c][0] + counts[r][c][1] + counts[r][c][2] - 3`
+5. 해당 셀이 문(`#`)이면 세 경로가 겹쳐 3번 카운트된 문을 2번 빼야 하므로 `-2` 추가 감산
+
+**핵심 아이디어:** 세 출발점에서 독립적으로 0-1 BFS를 실행하고 합산하는 방식은, "모든 경로가 어느 셀을 반드시 지나야 하는가"를 역방향으로 계산하는 것과 동치다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+public class Day131BOJ9376탈옥Dijkstra {
+
+	private static int H, W;
+	private static char[][] map;
+	private static int[][][] counts;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+		for (int t = Integer.parseInt(br.readLine()); t > 0; t--) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+
+			H = Integer.parseInt(st.nextToken());
+			W = Integer.parseInt(st.nextToken());
+			map = new char[H + 2][W + 2];
+			counts = new int[H + 2][W + 2][3];
+
+			Deque<int[]> dq = new LinkedList<>();
+			int idx = 0;
+
+			for (int i = 1; i <= H; i++) {
+				String str = br.readLine();
+
+				for (int j = 1; j <= W; j++) {
+					map[i][j] = str.charAt(j - 1);
+
+					if (map[i][j] == '$') {
+						dq.add(new int[] { i, j, 1, idx });
+						counts[i][j][idx++] = 1;
+					}
+				}
+			}
+			dq.add(new int[] { 0, 0, 1, idx });
+			counts[0][0][idx] = 1;
+
+			bw.write(solve(dq) + "\n");
+		}
+		bw.close();
+	}
+
+	static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+
+	private static int solve(Deque<int[]> dq) {
+		int min = Integer.MAX_VALUE;
+
+		while (!dq.isEmpty()) {
+			int[] node = dq.pollFirst();
+
+			int r = node[0];
+			int c = node[1];
+			int count = node[2];
+			int idx = node[3];
+
+			if (counts[r][c][0] != 0 && counts[r][c][1] != 0 && counts[r][c][2] != 0) {
+				int sum = counts[r][c][0] + counts[r][c][1] + counts[r][c][2] - 3;
+
+				if (map[r][c] == '#') {
+					min = Math.min(min, sum - 2);
+				} else {
+					min = Math.min(min, sum);
+				}
+			}
+
+			for (int i = 0; i < 4; i++) {
+				int nr = r + dr[i];
+				int nc = c + dc[i];
+
+				if (index(nc, nr) && map[nr][nc] != '*' && counts[nr][nc][idx] == 0) {
+					if (map[nr][nc] == '#') {
+						dq.addLast(new int[] { nr, nc, count + 1, idx });
+						counts[nr][nc][idx] = count + 1;
+					} else {
+						dq.addFirst(new int[] { nr, nc, count, idx });
+						counts[nr][nc][idx] = count;
+					}
+				}
+			}
+		}
+		return min;
+	}
+
+	private static boolean index(int x, int y) {
+		return !(x < 0 || x > W + 1 || y < 0 || y > H + 1);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O((V + E) log V)
+- 공간: O(V + E)

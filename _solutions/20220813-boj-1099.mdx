@@ -1,0 +1,128 @@
+---
+title: "BOJ 1099 - 알 수 없는 문장"
+date: "2022-08-13"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "1099"
+problem_url: "https://www.acmicpc.net/problem/1099"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1099 - 알 수 없는 문장](https://www.acmicpc.net/problem/1099)
+
+N개의 단어로 이루어진 언어에서 단어의 문자 순서를 바꿀 수 있다. 주어진 문장을 단어들의 조합으로 해석할 때, 순서를 바꾼 비용(위치가 다른 문자 수)의 합이 최소인 경우를 구하라. 해석이 불가능하면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 문장(최대 50자), 둘째 줄에 단어 수 N(최대 50), 이후 N개의 줄에 각 단어가 주어진다.
+
+### 출력
+
+최소 비용을 출력한다. 해석 불가 시 -1을 출력한다.
+
+### 예제
+
+| 입력                                          | 출력 |
+| --------------------------------------------- | ---- |
+| `neotowheret` `4` `one` `two` `three` `there` | `8`  |
+
+## 풀이
+
+재귀 + 메모이제이션으로 문장을 단어 조합으로 분리하며 최소 비용을 구한다.
+
+1. 각 단어의 알파벳 빈도(`wordAlphabet`)를 미리 계산해둔다
+2. 문장의 위치 start부터 각 단어를 대입하여 아나그램 여부를 확인한다 (알파벳 빈도 일치 검사)
+3. 아나그램이면 위치별 문자 차이 수를 비용으로 계산하고 `wordCost[i][start]`에 캐싱한다
+4. `minCost[pos]` 배열로 각 위치까지의 최소 비용을 추적하며 가지치기한다
+5. 문장 끝에 도달하면 누적 비용을 result와 비교하여 최솟값을 갱신한다
+
+**핵심 아이디어**: 단어의 문자 구성이 같은지(아나그램)를 빈도 배열로 O(L)에 판별하고, 비용 캐싱과 minCost 가지치기로 탐색 공간을 줄인다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Day187BOJ1099알수없는문장 { // 구
+	static String[] word;
+	static String text;
+	static int result = -1;
+	static int N;
+	static int[][] wordCost;
+	static int[][] wordAlphabet;
+	static int[] minCost;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		text = br.readLine();
+		N = Integer.parseInt(br.readLine());
+		word = new String[N];
+		wordCost = new int[N][50];
+		wordAlphabet = new int[N]['z' - 'a' + 1];
+		minCost = new int[text.length() + 1];
+		Arrays.fill(minCost, Integer.MAX_VALUE);
+		for (int i = 0; i < N; i++) {
+			word[i] = br.readLine();
+			Arrays.fill(wordCost[i], -1);
+			for (int j = 0; j < word[i].length(); j++) {
+				wordAlphabet[i][word[i].charAt(j) - 'a']++;
+			}
+		}
+		search(0, 0);
+
+		System.out.println(result);
+	}
+
+	private static void search(int start, int c) {
+		if (start == text.length()) {
+			if (result == -1 || result > c) {
+				result = c;
+			}
+		}
+		L: for (int i = 0; i < N; i++) {
+			if (start + word[i].length() > text.length()) {
+				continue;
+			}
+
+			int cost = 0;
+			if (wordCost[i][start] != -1) {
+				cost = wordCost[i][start];
+			} else {
+				int[] tmp = wordAlphabet[i].clone();
+				for (int j = start; j < start + word[i].length(); j++) {
+					if (--tmp[text.charAt(j) - 'a'] < 0) {
+						continue L;
+					}
+					if (text.charAt(j) != word[i].charAt(j - start)) {
+						cost++;
+					}
+				}
+				wordCost[i][start] = cost;
+			}
+			if (minCost[start + word[i].length()] > c + cost) {
+				minCost[start + word[i].length()] = c + cost;
+			} else {
+				continue;
+			}
+
+			search(start + word[i].length(), c + cost);
+		}
+
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(S _ N _ L) - S: 문장 길이, N: 단어 수, L: 단어 최대 길이 (가지치기로 실제 더 빠름)
+- 공간: O(N \* S) - wordCost 캐싱 배열

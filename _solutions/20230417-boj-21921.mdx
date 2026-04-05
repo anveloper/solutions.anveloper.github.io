@@ -1,0 +1,95 @@
+---
+title: "BOJ 21921 - 블로그"
+date: "2023-04-17"
+description: "누적 합, 슬라이딩 윈도우 문제"
+tags: ["누적 합", "슬라이딩 윈도우"]
+platform: "boj"
+problem_number: "21921"
+problem_url: "https://www.acmicpc.net/problem/21921"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 21921 - 블로그](https://www.acmicpc.net/problem/21921)
+
+N일간의 블로그 방문자 수가 주어질 때, 연속 X일간 방문자 수의 최댓값과 그 기간의 수를 구하라. 최댓값이 0이면 "SAD"를 출력한다.
+
+### 입력
+
+첫째 줄에 N, X, 둘째 줄에 N일간의 방문자 수가 주어진다.
+
+### 출력
+
+최대 방문자 수와 해당 기간 수를 출력한다. 최댓값이 0이면 "SAD"를 출력한다.
+
+### 예제
+
+| 입력              | 출력    |
+| ----------------- | ------- |
+| `5 2` `1 4 2 5 1` | `7` `1` |
+
+## 풀이
+
+슬라이딩 윈도우로 길이 X인 구간 합의 최댓값과 출현 횟수를 구한다.
+
+1. 처음 X일의 합을 초기 윈도우 합으로 설정한다
+2. 윈도우를 한 칸씩 이동하며 새 원소를 더하고 빠지는 원소를 뺀다
+3. 최댓값이 갱신되면 cnt를 1로, 같으면 cnt를 증가시킨다
+4. 최댓값이 0이면 "SAD"를 출력한다
+
+**핵심 아이디어**: 슬라이딩 윈도우로 연속 구간 합을 O(1)에 갱신하여 O(N)에 해결한다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day435BOJ21921블로그 {
+  static int N, X, sum, ans, cnt;
+  static int[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    X = Integer.parseInt(st.nextToken());
+
+    arr = new int[N];
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    sum = 0;
+    for (int i = 0; i < X; i++)
+      sum += arr[i];
+
+    ans = sum;
+    cnt = 1;
+    for (int i = X; i < N; i++) {
+      sum += arr[i] - arr[i - X];
+      if (ans == sum)
+        cnt++;
+      else if (ans < sum) {
+        ans = sum;
+        cnt = 1;
+      }
+    }
+    if (ans == 0) {
+      System.out.println("SAD");
+      return;
+    }
+    System.out.println(ans + "\n" + cnt);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

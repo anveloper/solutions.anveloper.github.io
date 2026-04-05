@@ -1,0 +1,74 @@
+---
+title: "BOJ 13410 - 거꾸로 구구단"
+date: "2024-12-09"
+description: "N의 구구단 결과를 뒤집어 최댓값을 구하는 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "13410"
+problem_url: "https://www.acmicpc.net/problem/13410"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13410 - 거꾸로 구구단](https://www.acmicpc.net/problem/13410)
+
+N의 1단부터 K단까지 각 결과를 뒤집었을 때 가장 큰 값을 출력하라.
+
+### 입력
+
+정수 N과 K가 주어진다.
+
+### 출력
+
+뒤집은 값 중 최댓값을 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `2 9` | `81` |
+
+## 풀이
+
+모든 곱셈 결과를 뒤집어 최댓값을 구한다.
+
+1. 1부터 K까지 반복하며 `N * i`를 계산한다
+2. 결과를 문자열로 변환 후 `reverse`로 뒤집는다
+3. `stoi`로 정수 변환 후 최댓값을 갱신한다
+
+**핵심 아이디어**: 문자열 변환과 역순 처리로 숫자를 뒤집고, K개 중 최댓값을 선택한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int n, k;
+int ans = 0;
+
+int main()
+{
+  cin >> n >> k;
+
+  for (int i = 1; i <= k; i++)
+  {
+    int res = n * i;
+    string str = to_string(res);
+    reverse(str.begin(), str.end());
+    ans = max(ans, stoi(str));
+  }
+
+  cout << ans;
+}
+```
+
+## 복잡도
+
+- 시간: O(K × D) (D: 자릿수)
+- 공간: O(D)

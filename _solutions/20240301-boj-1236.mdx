@@ -1,0 +1,90 @@
+---
+title: "BOJ 1236 - 성 지키기"
+date: "2024-03-01"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1236"
+problem_url: "https://www.acmicpc.net/problem/1236"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1236 - 성 지키기](https://www.acmicpc.net/problem/1236)
+
+N×M 크기의 성이 주어진다. 각 칸은 빈 칸(`.`) 또는 경비원(`X`)이다. 모든 행과 모든 열에 최소 1명의 경비원이 있도록 추가 배치할 때, 최소 경비원 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, M이 주어진다. 이후 N줄에 성의 상태가 주어진다.
+
+### 출력
+
+추가로 배치해야 하는 최소 경비원 수를 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `4 4` `....` `....` `....` `....` | `4`  |
+
+## 풀이
+
+경비원이 없는 행의 수와 경비원이 없는 열의 수 중 큰 값이 답이다.
+
+1. 각 행을 읽으며 `X`가 포함되지 않은 행의 수를 센다
+2. 각 열을 순회하며 모든 행에서 해당 열이 `.`인 열의 수를 센다
+3. 두 값 중 최댓값을 출력한다
+
+**핵심 아이디어**: 한 명의 경비원을 배치하면 해당 행과 열을 동시에 커버하므로, 부족한 행과 열 중 큰 쪽이 최소 필요 인원이다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day759BOJ1236성지키기 {
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		int count = 0;
+		String[] arr = new String[N];
+
+		for(int i = 0; i < N; i++) {
+			arr[i] = br.readLine();
+			if(arr[i].contains("X") == false) {
+				count++;
+			}
+		}
+		int max = count;
+		count = 0;
+
+		for(int i = 0; i < M; i++) {
+			int counts = 0;
+			for(int j = 0; j < N; j++) {
+				if(arr[j].charAt(i) == '.') {
+					counts++;
+				}
+			}
+			if(counts == N) count++;
+		}
+		max = Math.max(max, count);
+
+		System.out.println(max);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* M) — 행 순회 + 열 순회
+- 공간: O(N \* M) — 성 배열 저장

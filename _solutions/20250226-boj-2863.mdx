@@ -1,0 +1,63 @@
+---
+title: "BOJ 2863 - 이게 분수?"
+date: "2025-02-26"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "2863"
+problem_url: "https://www.acmicpc.net/problem/2863"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2863 - 이게 분수?](https://www.acmicpc.net/problem/2863)
+
+2x2 행렬의 네 원소 a, b, c, d가 주어진다. 이 행렬을 시계 방향으로 90도씩 회전할 때, `a/c + b/d` 값이 최대가 되는 회전 횟수를 구하라.
+
+### 입력
+
+첫 줄에 a, b, 둘째 줄에 c, d가 주어진다.
+
+### 출력
+
+`a/c + b/d` 값이 최대가 되는 회전 횟수(0~3)를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `1 2` `3 4` | `3`  |
+
+## 풀이
+
+2x2 행렬을 0~3회 회전시킨 각 경우의 분수 값을 계산하여 최댓값의 인덱스를 구한다.
+
+1. 원래 배치 `(a,b,c,d)`에서 `a/c + b/d`를 계산한다
+2. 90도 회전하면 `(c,a,d,b)` → `c/d + a/b`가 된다
+3. 180도 회전하면 `(d,c,b,a)` → `d/b + c/a`가 된다
+4. 270도 회전하면 `(b,d,a,c)` → `b/a + d/c`가 된다
+5. 네 값 중 최댓값의 인덱스를 출력한다
+
+**핵심 아이디어**: 2x2 행렬의 시계 방향 90도 회전은 `(a,b,c,d)` → `(c,a,d,b)`이다. 4번 회전하면 원래로 돌아오므로 0~3회만 확인하면 된다.
+
+## 코드
+
+```python
+a, b = map(int, input().split())
+c, d = map(int, input().split())
+f = []
+f.append(a / c + b / d)
+f.append(c / d + a / b)
+f.append(d / b + c / a)
+f.append(b / a + d / c)
+f_max = max(f)
+print(f.index(f_max))
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정된 4번의 계산
+- 공간: O(1) — 4개의 값만 저장

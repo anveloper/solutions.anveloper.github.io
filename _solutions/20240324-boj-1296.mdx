@@ -1,0 +1,90 @@
+---
+title: "BOJ 1296 - 팀 이름 정하기"
+date: "2024-03-24"
+description: "LOVE 알파벳 빈도로 팀 궁합 점수를 계산하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1296"
+problem_url: "https://www.acmicpc.net/problem/1296"
+difficulty: "브론즈 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1296 - 팀 이름 정하기](https://www.acmicpc.net/problem/1296)
+
+본인 이름과 각 팀 이름을 합쳐 L, O, V, E 글자 개수를 센 뒤, 궁합 공식으로 점수를 계산하여 가장 높은 팀을 출력한다.
+
+### 입력
+
+첫째 줄에 본인 이름, 둘째 줄에 팀 수 N, 이후 N줄에 팀 이름이 주어진다.
+
+### 출력
+
+궁합 점수가 가장 높은 팀 이름을 출력한다. 동점이면 사전순으로 앞선 팀을 출력한다.
+
+### 예제
+
+| 입력                             | 출력    |
+| -------------------------------- | ------- |
+| `LOVE` `3` `HATE` `PASTE` `LATE` | `PASTE` |
+
+## 풀이
+
+각 팀 이름과 본인 이름을 합쳐 L, O, V, E 개수를 세고, 조합 공식 `((L+O)*(L+V)*(L+E)*(O+V)*(O+E)*(V+E)) % 100`으로 궁합 점수를 계산한다.
+
+1. 팀 이름을 사전순으로 정렬한다
+2. 각 팀에 대해 본인 이름과 합친 문자열에서 L, O, V, E 빈도를 센다
+3. 조합 공식으로 점수를 계산하고 최대 점수인 팀을 선택한다
+4. 사전순 정렬 후 순회하므로 동점 시 자동으로 사전순 앞선 팀이 선택된다
+
+**핵심 아이디어**: 사전순 정렬을 먼저 하면 동점 처리가 자연스럽게 해결된다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const name = input[0].trim();
+  const N = +input[1];
+  const teams = [];
+
+  for (let i = 2; i < 2 + N; i++) {
+    teams.push(input[i].trim());
+  }
+
+  const count = (str, ch) => [...str].filter((c) => c === ch).length;
+
+  let maxScore = -1;
+  let result = "";
+
+  teams.sort();
+
+  for (const team of teams) {
+    const combined = name + team;
+    const L = count(combined, "L");
+    const O = count(combined, "O");
+    const V = count(combined, "V");
+    const E = count(combined, "E");
+
+    const score = ((L + O) * (L + V) * (L + E) * (O + V) * (O + E) * (V + E)) % 100;
+
+    if (score > maxScore) {
+      maxScore = score;
+      result = team;
+    }
+  }
+
+  return result;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N × L) (L: 이름 길이)
+- 공간: O(N)

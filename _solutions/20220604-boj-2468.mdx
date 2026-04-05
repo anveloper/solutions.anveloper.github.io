@@ -1,0 +1,112 @@
+---
+title: "BOJ 2468 - 안전 영역"
+date: "2022-06-04"
+description: "그래프 이론, 브루트포스 알고리즘, 그래프 탐색 문제"
+tags: ["그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "2468"
+problem_url: "https://www.acmicpc.net/problem/2468"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2468 - 안전 영역](https://www.acmicpc.net/problem/2468)
+
+N×N 크기의 지역 고도 정보가 주어질 때, 특정 높이 h 이하가 모두 물에 잠긴다고 가정하면 h보다 높은 곳들이 안전 영역을 이룬다. 가능한 모든 강수량 h에 대해 안전 영역의 최대 개수를 구하는 문제다. h=0(잠기지 않음)부터 최대 고도까지 브루트포스로 탐색하고, 각 경우에 DFS로 연결 영역 수를 센다.
+
+### 입력
+
+- 첫째 줄: 지역 크기 N (2 이상 100 이하)
+- 둘째 줄부터 N개 줄: N개의 고도 값 (1 이상 100 이하)
+
+### 출력
+
+안전 영역의 최대 개수를 출력한다.
+
+### 예제
+
+| 입력                                                            | 출력 |
+| --------------------------------------------------------------- | ---- |
+| `5` `6 8 2 6 2` `3 2 3 4 6` `6 7 3 3 2` `7 2 5 3 6` `8 9 5 2 7` | `5`  |
+
+## 풀이
+
+모든 강수량 h(0부터 최대 고도)에 대해 DFS로 안전 영역 개수를 구하고, 그 최댓값을 갱신한다.
+
+1. 입력을 받으면서 최대 고도 `max`를 함께 기록
+2. 강수량 h를 0부터 max까지 1씩 증가시키며 반복
+3. 각 h에 대해 `visited` 배열 초기화 후, 방문하지 않은 `map[i][j] > h` 셀마다 DFS 시작
+4. DFS가 호출될 때마다 연결된 안전 영역 카운트를 1 증가
+5. 모든 h에 걸쳐 최대 카운트를 갱신하여 출력
+
+**핵심 아이디어:** 강수량 범위가 최대 100이고 지역 크기도 최대 100×100이므로, O(max _ N^2) = O(100 _ 10000) = O(10^6)으로 브루트포스가 충분히 통과된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day117BOJ2468안전영역DFS { // 2468 안전영역
+	static int N, ans, max;
+	static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+	static int[][] map;
+	static boolean[][] visited;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+		ans = 0;
+		max = 0;
+		map = new int[N][N];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++)
+				max = Math.max(max, map[i][j] = Integer.parseInt(st.nextToken()));
+		}
+		for (int h = 0; h < max + 1; h++) {
+			visited = new boolean[N][N];
+			int cnt = 0;
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					if (!visited[i][j] && h < map[i][j])
+						cnt += dfs(i, j, h);
+				}
+			}
+			ans = Math.max(ans, cnt);
+		}
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static int dfs(int idx, int jdx, int h) {
+		visited[idx][jdx] = true;
+		for (int i = 0; i < 4; i++) {
+			int nr = idx + dr[i];
+			int nc = jdx + dc[i];
+
+			if (index(nr, nc) || visited[nr][nc])
+				continue;
+			if (map[nr][nc] > h)
+				dfs(nr, nc, h);
+		}
+		return 1;
+	}
+
+	private static boolean index(int nr, int nc) {
+		return nr < 0 || nc < 0 || nr >= N || nc >= N;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(max \* N^2) — 강수량 범위(최대 100) × 격자 탐색(N^2)
+- 공간: O(N^2) — 맵 배열 및 visited 배열

@@ -1,0 +1,77 @@
+---
+title: "BOJ 2966 - 찍기"
+date: "2025-03-31"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2966"
+problem_url: "https://www.acmicpc.net/problem/2966"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2966 - 찍기](https://www.acmicpc.net/problem/2966)
+
+N개 객관식 문제의 정답이 주어진다. Adrian은 `ABC` 반복, Bruno는 `BABC` 반복, Goran은 `CCAABB` 반복 패턴으로 찍는다. 가장 많이 맞힌 점수와 해당 학생의 이름을 출력하라.
+
+### 입력
+
+문제 수 N과 정답 문자열(A, B, C로 구성)이 주어진다.
+
+### 출력
+
+최고 점수를 첫 줄에 출력하고, 해당 점수를 받은 학생 이름을 Adrian, Bruno, Goran 순서로 출력한다. 동점이면 모두 출력한다.
+
+### 예제
+
+| 입력        | 출력        |
+| ----------- | ----------- |
+| `5` `BAACC` | `3` `Bruno` |
+
+## 풀이
+
+세 학생의 찍기 패턴을 N개 길이로 생성한 뒤, 정답과 비교하여 맞힌 개수를 센다.
+
+1. 각 학생의 반복 패턴을 N 길이만큼 생성한다 — Adrian: `ABC`, Bruno: `BABC`, Goran: `CCAABB`
+2. N개 문제를 순회하며 각 학생의 패턴과 정답을 비교하여 맞힌 수를 센다
+3. 세 학생 중 최대 점수를 출력한다
+4. 최대 점수와 동일한 점수를 가진 학생의 이름을 순서대로 출력한다
+
+**핵심 아이디어**: 각 학생의 찍기 규칙은 고정된 주기의 반복이므로, 해당 주기 문자열을 N 길이로 확장하여 직접 비교한다.
+
+## 코드
+
+```python
+N = int(input())
+S = input()
+Adrian = "ABC" * (N // 3) + "ABC"[: N % 3]
+Bruno = "BABC" * (N // 4) + "BABC"[: N % 4]
+Goran = "CCAABB" * (N // 6) + "CCAABB"[: N % 6]
+
+A = 0
+B = 0
+G = 0
+for i in range(N):
+    if S[i] == Adrian[i]:
+        A += 1
+    if S[i] == Bruno[i]:
+        B += 1
+    if S[i] == Goran[i]:
+        G += 1
+
+print(max(A, B, G))
+if max(A, B, G) == A:
+    print("Adrian")
+if max(A, B, G) == B:
+    print("Bruno")
+if max(A, B, G) == G:
+    print("Goran")
+```
+
+## 복잡도
+
+- 시간: O(N) — 문제 수만큼 순회
+- 공간: O(N) — 패턴 문자열 저장

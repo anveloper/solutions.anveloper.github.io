@@ -1,0 +1,78 @@
+---
+title: "BOJ 1094 - 막대기"
+date: "2022-08-10"
+description: "수학, 비트마스킹 문제"
+tags: ["수학", "비트마스킹"]
+platform: "boj"
+problem_number: "1094"
+problem_url: "https://www.acmicpc.net/problem/1094"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1094 - 막대기](https://www.acmicpc.net/problem/1094)
+
+길이 64cm 막대를 가장 짧은 것부터 반으로 자르고, 합이 X 이상이면 절반을 버리는 과정을 반복하여 정확히 Xcm를 만들 때 필요한 막대 개수를 구하라.
+
+### 입력
+
+첫째 줄에 X가 주어진다 (1 이상 64 이하).
+
+### 출력
+
+필요한 막대의 개수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `23` | `4`  |
+| `32` | `1`  |
+| `64` | `1`  |
+| `48` | `2`  |
+
+## 풀이
+
+64cm 막대에서 시작하여 절반씩 줄여가며 X를 만드는 시뮬레이션을 수행한다.
+
+1. s를 64로 초기화하고, X가 0보다 큰 동안 반복한다
+2. s가 X보다 크면 s를 절반으로 줄인다 (막대를 자르고 절반 버림)
+3. s가 X 이하이면 막대를 사용하고(ans++), X에서 s를 뺀다
+4. 최종 ans가 필요한 막대 개수이다
+
+**핵심 아이디어**: X를 이진수로 표현했을 때 1의 개수가 곧 답이다. 예: 23 = 10111(2) → 4개, 32 = 100000(2) → 1개. 사용 가능한 막대 길이가 2의 거듭제곱이므로 이진 분해와 동일하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.util.Scanner;
+
+public class Day184BOJ1094막대기 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int x = sc.nextInt();
+		int s = 64;
+		int ans = 0;
+		while (x > 0) {
+			if (s > x)
+				s /= 2;
+			else {
+				ans++;
+				x -= s;
+			}
+		}
+		System.out.println(ans);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(log X) - 최대 6번 반복 (64 = 2^6)
+- 공간: O(1)

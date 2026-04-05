@@ -1,0 +1,93 @@
+---
+title: "BOJ 2022 - 사다리"
+date: "2023-01-14"
+description: "수학, 기하학, 이분 탐색 문제"
+tags: ["수학", "기하학", "이분 탐색", "피타고라스 정리"]
+platform: "boj"
+problem_number: "2022"
+problem_url: "https://www.acmicpc.net/problem/2022"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2022 - 사다리](https://www.acmicpc.net/problem/2022)
+
+두 건물 사이 골목에 두 개의 사다리가 X자 모양으로 교차하고 있다. 두 사다리의 길이가 각각 x, y이고, 두 사다리의 교차점 높이가 c일 때, 두 건물 사이의 골목 너비 w를 소수점 셋째 자리까지 구한다.
+
+골목 너비를 w라 하면 두 사다리의 발이 각 건물 밑에 닿으므로, 피타고라스 정리에 의해 각 사다리가 이루는 높이는 각각 `h1 = sqrt(x²-w²)`, `h2 = sqrt(y²-w²)`이다. 이때 교차점 높이 c는 `c = (h1 * h2) / (h1 + h2)`를 만족한다.
+
+### 입력
+
+첫째 줄에 x, y, c가 주어진다. (1 ≤ x, y ≤ 100,000, 1 ≤ c ≤ min(x, y), 소수점 셋째 자리까지)
+
+### 출력
+
+두 건물 사이 너비 w를 소수점 셋째 자리까지 출력한다.
+
+### 예제
+
+**입력**
+
+```
+100 100 50
+```
+
+**출력**
+
+```
+86.603
+```
+
+## 풀이
+
+**핵심 아이디어**: 골목 너비 w에 대해 교차점 높이 `f(w) = (h1*h2)/(h1+h2)`는 단조 감소 함수이므로, 이분 탐색으로 `f(w) = c`를 만족하는 w를 구할 수 있다.
+
+1. **이분 탐색 범위 설정**: 너비 w의 범위는 `[0, min(x, y)]`이다. w가 클수록 h1, h2가 작아져 교차점 높이도 낮아진다.
+2. **중간값 계산**: `width = (left + right) / 2`로 중간 너비를 정한다.
+3. **함수 계산**: 피타고라스 정리로 `h1 = sqrt(x²-width²)`, `h2 = sqrt(y²-width²)`를 구하고 `res = (h1*h2)/(h1+h2)`를 계산한다.
+4. **범위 조정**:
+   - `res >= c`이면: 너비를 더 크게 해야 하므로 `left = width`
+   - `res < c`이면: 너비를 더 작게 해야 하므로 `right = width`
+5. **종료 조건**: `right - left < 0.001`이 될 때까지 반복한다. 정밀도가 소수점 3자리이므로 오차 범위 0.001로 충분하다.
+6. **출력**: `right` 값을 소수점 3자리로 포맷하여 출력한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+
+public class Day341BOJ2022사다리 {
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String[] input = reader.readLine().split(" ");
+        double x = Double.parseDouble(input[0]);
+        double y = Double.parseDouble(input[1]);
+        double c = Double.parseDouble(input[2]);
+
+        double left = 0, right = Math.min(x, y);
+
+        while (right - left >= 0.001) {
+            double width = (left + right) / 2;
+            double h1 = Math.sqrt(Math.pow(x, 2) - Math.pow(width, 2));
+            double h2 = Math.sqrt(Math.pow(y, 2) - Math.pow(width, 2));
+            double res = (h1 * h2) / (h1 + h2);
+
+            if (res >= c)
+                left = width;
+            else
+                right = width;
+        }
+        System.out.println(String.format("%.3f", right));
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(log(1/ε)) — ε=0.001 오차 기준, 이분 탐색 반복 횟수 약 17회
+- 공간: O(1) — 상수 개의 변수만 사용

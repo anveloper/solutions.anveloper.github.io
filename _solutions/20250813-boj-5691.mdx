@@ -1,0 +1,72 @@
+---
+title: "BOJ 5691 - 평균 중앙값 문제"
+date: "2025-08-13"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5691"
+problem_url: "https://www.acmicpc.net/problem/5691"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5691 - 평균 중앙값 문제](https://www.acmicpc.net/problem/5691)
+
+세 수의 평균이 a이고 중앙값이 b일 때, 나머지 한 수를 구하라.
+
+### 입력
+
+여러 줄에 a와 b가 주어지며, 모두 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 나머지 수를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `2 3` `0 0` | `1`  |
+
+## 풀이
+
+세 수의 합에서 알려진 두 수를 빼서 나머지를 구한다.
+
+1. 세 수의 합은 `3 * a`이다
+2. 중앙값 b와 나머지 한 수의 합이 `3a - b`이므로, 답은 `3a - 2b`... 가 아니라 `2a - b`이다
+3. 실제로 세 수 중 두 수의 평균이 a이고 중앙값이 b이므로, 나머지 = `2a - b`
+
+**핵심 아이디어**: 두 수의 평균이 a이면 합은 2a이고, 하나가 b이면 나머지는 `2a - b`이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  int a, b;
+  while (1)
+  {
+    cin >> a >> b;
+    if (a == 0 && b == 0)
+    {
+      break;
+    }
+
+    cout << 2 * a - b << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

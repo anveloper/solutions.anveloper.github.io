@@ -1,0 +1,86 @@
+---
+title: "BOJ 1276 - PLATFORME"
+date: "2024-04-11"
+description: "플랫폼 양쪽 끝에서 아래 플랫폼까지의 기둥 높이 합을 구하는 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "1276"
+problem_url: "https://www.acmicpc.net/problem/1276"
+difficulty: "실버 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1276 - PLATFORME](https://www.acmicpc.net/problem/1276)
+
+여러 플랫폼이 주어질 때, 각 플랫폼 양쪽 끝에서 바닥 또는 아래 플랫폼까지 필요한 기둥 높이의 총합을 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 플랫폼의 높이, 왼쪽 끝, 오른쪽 끝이 주어진다.
+
+### 출력
+
+기둥 높이의 총합을 출력한다.
+
+### 예제
+
+| 입력                      | 출력  |
+| ------------------------- | ----- |
+| `2` `50 10 30` `40 20 50` | `160` |
+
+## 풀이
+
+높이순 정렬 후, 각 플랫폼의 양쪽 기둥이 닿는 지지 플랫폼을 찾는다.
+
+1. 플랫폼을 높이 오름차순으로 정렬한다
+2. 각 플랫폼의 왼쪽/오른쪽 끝에서 아래에 있는 플랫폼 중 해당 x좌표를 포함하는 가장 높은 것을 찾는다
+3. 지지 플랫폼이 없으면 바닥(높이 0)까지의 거리를 더한다
+4. 양쪽 기둥의 높이를 모두 합산한다
+
+**핵심 아이디어**: 높이순 정렬로 아래 플랫폼을 먼저 처리하면, 각 기둥의 지지점을 역순 탐색으로 찾을 수 있다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  const platforms = [];
+  for (let i = 1; i <= N; i++) {
+    const [y, x1, x2] = input[i].trim().split(" ").map(Number);
+    platforms.push([y, x1, x2]);
+  }
+
+  platforms.sort((a, b) => a[0] - b[0]);
+
+  let result = 0;
+
+  for (let i = 0; i < N; i++) {
+    const [h, left, right] = platforms[i];
+
+    let leftSupport = 0;
+    let rightSupport = 0;
+
+    for (let j = i - 1; j >= 0; j--) {
+      const [h2, l2, r2] = platforms[j];
+      if (l2 < left && left < r2 && h2 > leftSupport) leftSupport = h2;
+      if (l2 < right && right < r2 && h2 > rightSupport) rightSupport = h2;
+    }
+
+    result += h - leftSupport + (h - rightSupport);
+  }
+
+  return result;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

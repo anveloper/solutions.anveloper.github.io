@@ -1,0 +1,68 @@
+---
+title: "BOJ 2057 - 팩토리얼 분해"
+date: "2025-01-13"
+description: "수학, 그리디 알고리즘, 브루트포스 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2057"
+problem_url: "https://www.acmicpc.net/problem/2057"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2057 - 팩토리얼 분해](https://www.acmicpc.net/problem/2057)
+
+양의 정수 N이 서로 다른 팩토리얼의 합으로 표현 가능한지 판별하라.
+
+### 입력
+
+양의 정수 N이 주어진다.
+
+### 출력
+
+가능하면 "YES", 불가능하면 "NO"를 출력한다.
+
+### 예제
+
+| 입력 | 출력  |
+| ---- | ----- |
+| `3`  | `YES` |
+
+## 풀이
+
+큰 팩토리얼부터 그리디하게 선택한다.
+
+1. 0!부터 20!까지 미리 계산한다
+2. 20!부터 역순으로 현재 합에 더했을 때 N 이하이면 선택한다
+3. 합이 N과 같아지면 "YES", 끝까지 도달하지 못하면 "NO"를 출력한다
+
+**핵심 아이디어**: 팩토리얼 값은 급격히 증가하므로, 큰 것부터 그리디하게 선택하면 유일한 분해를 찾을 수 있다.
+
+## 코드
+
+```python
+n = int(input())
+
+fact = [1, 1]
+for i in range(2, 21):
+    fact.append(fact[i-1]*i)
+
+sum = 0
+
+for i in range(20, -1, -1):
+    if sum+fact[i] < n:
+        sum += fact[i]
+    elif sum+fact[i] == n:
+        print("YES")
+        exit(0)
+
+print("NO")
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

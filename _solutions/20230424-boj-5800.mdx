@@ -1,0 +1,101 @@
+---
+title: "BOJ 5800 - 성적 통계"
+date: "2023-04-24"
+description: "구현, 정렬 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "5800"
+problem_url: "https://www.acmicpc.net/problem/5800"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5800 - 성적 통계](https://www.acmicpc.net/problem/5800)
+
+K개 반의 학생 점수가 주어질 때, 각 반의 최댓값, 최솟값, 인접 점수 간 최대 차이를 구하라.
+
+### 입력
+
+첫째 줄에 K, 이후 각 반의 학생 수와 점수가 주어진다.
+
+### 출력
+
+각 반에 대해 "Class i", "Max ..., Min ..., Largest gap ..."을 출력한다.
+
+### 예제
+
+| 입력                                   | 출력                                                                                  |
+| -------------------------------------- | ------------------------------------------------------------------------------------- |
+| `2` `5 30 25 76 23 78` `4 40 50 60 70` | `Class 1` `Max 78, Min 23, Largest gap 46` `Class 2` `Max 70, Min 40, Largest gap 10` |
+
+## 풀이
+
+각 반의 점수를 정렬한 뒤 최대/최소 및 인접 원소 간 최대 차이를 구한다.
+
+1. 점수를 오름차순 정렬한다
+2. 정렬된 배열에서 최댓값, 최솟값을 추출한다
+3. 인접한 원소 간 차이의 최댓값(Largest gap)을 구한다
+
+**핵심 아이디어**: 정렬 후 인접 원소 간 차이가 가장 큰 것이 전체 점수 간 최대 격차이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day442BOJ5800성적통계 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    StringBuilder sb = new StringBuilder();
+    int K = Integer.parseInt(br.readLine());
+    for (int i = 1; i <= K; i++)
+      sb.append(solve(i, br.readLine())).append('\n');
+
+    System.out.println(sb);
+    br.close();
+  }
+
+  private static String solve(int classNum, String data) {
+    StringTokenizer st = new StringTokenizer(data, " ");
+    int cnt = Integer.parseInt(st.nextToken());
+    int[] arr = new int[cnt];
+    for (int i = 0; i < cnt; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    Arrays.sort(arr);
+
+    int org = arr[arr.length - 1];
+    int max = org;
+    int min = org;
+    int gap = -1;
+    for (int i = arr.length - 2; i >= 0; i--) {
+      int now = arr[i];
+      max = Math.max(max, now);
+      min = Math.min(min, now);
+      gap = Math.max(gap, org - now);
+      org = now;
+    }
+
+    StringBuilder res = new StringBuilder();
+    res.append("Class " + classNum + '\n');
+    res.append("Max " + max + ", ");
+    res.append("Min " + min + ", ");
+    res.append("Largest gap " + gap);
+
+    return res.toString();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

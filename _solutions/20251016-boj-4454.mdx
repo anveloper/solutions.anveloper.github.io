@@ -1,0 +1,94 @@
+---
+title: "BOJ 4454 - 상근이의 여자친구"
+date: "2025-10-16"
+description: "이분 탐색, 매개 변수 탐색 문제"
+tags: ["이분 탐색", "매개 변수 탐색"]
+platform: "boj"
+problem_number: "4454"
+problem_url: "https://www.acmicpc.net/problem/4454"
+difficulty: "실버 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4454 - 상근이의 여자친구](https://www.acmicpc.net/problem/4454)
+
+연료 소비 함수 `f(v) = m(av³ + bv² + cv + d)`가 주어질 때, 연료 t로 갈 수 있는 최대 속도를 구하라.
+
+### 입력
+
+여러 테스트 케이스에 a, b, c, d, m, t가 주어진다.
+
+### 출력
+
+각 케이스마다 최대 속도를 소수점 둘째 자리까지 출력한다 (내림).
+
+### 예제
+
+| 입력            | 출력     |
+| --------------- | -------- |
+| `0 0 1 0 1 100` | `100.00` |
+
+## 풀이
+
+이분 탐색으로 연료 함수의 역함수를 구하여 최대 속도를 찾는다.
+
+1. 속도 범위 `[0, 10⁸]`에서 이분 탐색을 수행한다
+2. 중간값 mid에서의 연료 소비 `f(mid)`가 t 이하이면 속도를 높인다
+3. 초과이면 속도를 낮춘다
+4. 오차 0.00001 이내로 수렴하면 소수점 둘째 자리에서 내림하여 출력한다
+
+**핵심 아이디어**: 연료 소비 함수가 속도에 대해 단조 증가하므로, 이분 탐색으로 최대 속도를 O(log(범위/오차))에 찾을 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cmath>
+typedef long double lld;
+using namespace std;
+
+lld calc(lld a, lld b, lld c, lld d, lld m, lld v)
+{
+  return m * (a * v * v * v + b * v * v + c * v + d);
+}
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  cout << fixed;
+  cout.precision(2);
+
+  lld a, b, c, d, m, t;
+  while (cin >> a >> b >> c >> d >> m >> t)
+  {
+    lld start = 0;
+    lld end = 1e8;
+    lld mid = 0;
+    while (end > start + 0.00001)
+    {
+      mid = (start + end) / 2;
+      if (t >= calc(a, b, c, d, m, mid))
+      {
+        start = mid;
+      }
+      else
+      {
+        end = mid;
+      }
+    }
+    lld answer = trunc(start * 100) / 100;
+    cout << answer << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(log(범위/오차)) (약 50회 반복)
+- 공간: O(1)

@@ -1,0 +1,78 @@
+---
+title: "BOJ 2792 - 보석 상자"
+date: "2025-02-11"
+description: "이분 탐색, 매개 변수 탐색 문제"
+tags: ["이분 탐색", "매개 변수 탐색"]
+platform: "boj"
+problem_number: "2792"
+problem_url: "https://www.acmicpc.net/problem/2792"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2792 - 보석 상자](https://www.acmicpc.net/problem/2792)
+
+N명에게 M종류의 보석을 나눠줄 때, 한 사람이 받는 보석의 최댓값을 최소화하라. 같은 종류의 보석만 받을 수 있다.
+
+### 입력
+
+학생 수 N과 보석 종류 M, 각 종류의 보석 수가 주어진다.
+
+### 출력
+
+질투심(한 사람이 받는 최대 보석 수)의 최솟값을 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `5 3` `7 3 5` | `3`  |
+
+## 풀이
+
+이분 탐색으로 한 사람당 최대 보석 수를 결정한다.
+
+1. 한 사람당 mid개까지 받을 수 있다고 가정한다
+2. 각 종류의 보석을 mid개씩 나누면 필요한 사람 수를 계산할 수 있다
+3. 필요한 사람 수가 N 이하이면 mid를 줄이고, 초과하면 mid를 늘린다
+
+**핵심 아이디어**: "최댓값의 최솟값" 문제는 이분 탐색(매개변수 탐색)의 전형적인 패턴이다.
+
+## 코드
+
+```python
+import sys
+import math
+
+input = sys.stdin.readline
+
+N, M = map(int, input().split())
+
+arr = [int(input()) for _ in range(M)]
+
+left = 1
+right = 1000000000
+
+while left <= right:
+    mid = (left + right) // 2
+
+    count = 0
+
+    for val in arr:
+        count += math.ceil(val / mid)
+
+    if count <= N:
+        right = mid - 1
+    else:
+        left = mid + 1
+
+print(left)
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

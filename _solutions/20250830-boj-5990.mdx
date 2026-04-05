@@ -1,0 +1,74 @@
+---
+title: "BOJ 5990 - Barn Echoes"
+date: "2025-08-30"
+description: "문자열, 브루트포스 알고리즘 문제"
+tags: ["문자열", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "5990"
+problem_url: "https://www.acmicpc.net/problem/5990"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5990 - Barn Echoes](https://www.acmicpc.net/problem/5990)
+
+두 문자열 A와 B가 주어질 때, A의 접미사와 B의 접두사가 일치하는 최대 길이 또는 B의 접미사와 A의 접두사가 일치하는 최대 길이 중 더 큰 값을 구하는 문제다.
+
+### 입력
+
+- 두 줄에 걸쳐 문자열 A와 B가 주어진다.
+
+### 출력
+
+- 두 문자열의 최대 겹침 길이를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `abcde` `cdefg` | `3`  |
+
+## 풀이
+
+A의 접미사와 B의 접두사, B의 접미사와 A의 접두사를 각각 비교하여 최대 겹침 길이를 구한다.
+
+1. 함수 `ov(a, b)`는 a의 접미사와 b의 접두사가 일치하는 최대 길이 k를 반환한다.
+2. 최대 가능한 길이 m = min(len(a), len(b))부터 1까지 감소하면서 확인한다.
+3. `a.substr(a.size() - k) == b.substr(0, k)`가 성립하면 k를 반환한다.
+4. `ov(a, b)`와 `ov(b, a)` 중 더 큰 값을 출력한다.
+
+**핵심 아이디어**: 문자열 겹침(overlap)을 양방향으로 체크하여 최대값을 선택한다. 접미사 배열이나 KMP 없이도 브루트포스로 충분히 해결 가능한 문자열 크기다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int ov(const string &a, const string &b)
+{
+  int m = min(a.size(), b.size());
+  for (int k = m; k > 0; --k)
+    if (a.substr(a.size() - k) == b.substr(0, k))
+      return k;
+  return 0;
+}
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  string a, b;
+  cin >> a >> b;
+  cout << max(ov(a, b), ov(b, a)) << '\n';
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — N은 문자열 길이, 각 접미사/접두사 비교에 O(N), 최대 N번 반복
+- 공간: O(N) — `substr` 임시 문자열 생성

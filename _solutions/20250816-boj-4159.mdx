@@ -1,0 +1,103 @@
+---
+title: "BOJ 4159 - 알래스카"
+date: "2025-08-16"
+description: "정렬 문제"
+tags: ["정렬"]
+platform: "boj"
+problem_number: "4159"
+problem_url: "https://www.acmicpc.net/problem/4159"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4159 - 알래스카](https://www.acmicpc.net/problem/4159)
+
+알래스카 고속도로(1422마일)를 따라 충전소가 있다. 전기차가 완충 시 최대 200마일을 주행할 수 있을 때, 편도 여행이 가능한지 판별하라.
+
+### 입력
+
+여러 테스트 케이스가 주어진다. 각 케이스에 충전소 수 N과 각 충전소의 마일 위치가 주어진다. N이 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 여행 가능 여부를 `POSSIBLE` 또는 `IMPOSSIBLE`로 출력한다.
+
+### 예제
+
+| 입력                      | 출력       |
+| ------------------------- | ---------- |
+| `4` `100 200 300 400` `0` | `POSSIBLE` |
+
+## 풀이
+
+충전소를 위치순으로 정렬한 뒤, 인접 충전소 간 간격이 200마일을 초과하는지 확인한다.
+
+1. 충전소 위치를 오름차순으로 정렬한다
+2. 인접한 두 충전소 사이의 거리가 200마일을 초과하면 불가능이다
+3. 마지막 충전소에서 종점(1422마일)까지의 왕복 거리도 200마일 이내인지 확인한다
+4. 모든 간격이 조건을 만족하면 `POSSIBLE`, 아니면 `IMPOSSIBLE`을 출력한다
+
+**핵심 아이디어**: 정렬 후 인접 간격의 최댓값만 확인하면 된다. 마지막 충전소에서 종점까지는 왕복해야 하므로 거리의 2배가 200 이하여야 한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+  int input, n;
+  int answer;
+  vector<int> v;
+
+  while (1)
+  {
+    answer = 1;
+    cin >> input;
+    if (input == 0)
+      break;
+
+    for (int i = 0; i < input; i++)
+    {
+      cin >> n;
+      v.push_back(n);
+    }
+
+    sort(v.begin(), v.end());
+
+    for (int i = 1; i < v.size(); i++)
+    {
+      if (v[i] - v[i - 1] > 200)
+      {
+        answer = 0;
+        break;
+      }
+    }
+
+    if ((1422 - v[v.size() - 1]) * 2 > 200)
+    {
+      answer = 0;
+    }
+
+    if (answer == 1)
+      cout << "POSSIBLE" << endl;
+    else
+      cout << "IMPOSSIBLE" << endl;
+    v.clear();
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

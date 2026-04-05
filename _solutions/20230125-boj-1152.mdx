@@ -1,0 +1,64 @@
+---
+title: "BOJ 1152 - 단어의 개수"
+date: "2023-01-25"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1152"
+problem_url: "https://www.acmicpc.net/problem/1152"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1152 - 단어의 개수](https://www.acmicpc.net/problem/1152)
+
+영어 대소문자와 공백으로 이루어진 문자열이 주어졌을 때, 단어의 개수를 구하라. 단어는 공백으로 구분된다.
+
+### 입력
+
+첫째 줄에 문자열이 주어진다 (길이 1 이상 1,000,000 이하). 앞뒤에 공백이 있을 수 있다.
+
+### 출력
+
+단어의 개수를 출력한다.
+
+### 예제
+
+| 입력                                  | 출력 |
+| ------------------------------------- | ---- |
+| `The Curious Case of Benjamin Button` | `6`  |
+
+## 풀이
+
+StringTokenizer로 공백 기준 토큰 분리 후 개수를 세면 된다.
+
+1. 입력 문자열을 공백 구분자로 StringTokenizer에 전달한다
+2. `countTokens()` 메서드로 토큰 수를 바로 출력한다
+3. StringTokenizer는 앞뒤 공백과 연속 공백을 자동으로 처리한다
+
+**핵심 아이디어**: StringTokenizer는 빈 토큰을 생성하지 않으므로, 앞뒤 공백이나 연속 공백이 있어도 정확한 단어 수를 반환한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day352BOJ1152단어의갯수 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        System.out.print(st.countTokens());
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 문자열 길이)
+- 공간: O(L)

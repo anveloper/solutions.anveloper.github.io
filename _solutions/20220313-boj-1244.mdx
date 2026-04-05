@@ -1,0 +1,108 @@
+---
+title: "BOJ 1244 - 스위치 켜고 끄기"
+date: "2022-03-13"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "1244"
+problem_url: "https://www.acmicpc.net/problem/1244"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1244 - 스위치 켜고 끄기](https://www.acmicpc.net/problem/1244)
+
+1번부터 N번까지 스위치가 있고, 학생들이 성별에 따라 다른 규칙으로 스위치를 토글한다. 남학생은 받은 수의 배수 번호 스위치를 모두 토글하고, 여학생은 받은 수의 스위치를 중심으로 좌우 대칭인 가장 넓은 구간의 스위치를 토글한다.
+
+### 입력
+
+첫째 줄에 스위치 개수 (100 이하), 둘째 줄에 초기 상태 (0 또는 1), 셋째 줄에 학생 수 (100 이하), 이후 각 줄에 성별(1: 남, 2: 여)과 받은 수가 주어진다.
+
+### 출력
+
+최종 스위치 상태를 한 줄에 20개씩 출력한다.
+
+### 예제
+
+| 입력                                  | 출력              |
+| ------------------------------------- | ----------------- |
+| `8` `0 1 0 1 0 0 0 1` `2` `1 3` `2 4` | `1 0 0 0 1 1 0 0` |
+
+## 풀이
+
+남학생과 여학생의 규칙을 각각 구현하여 시뮬레이션한다.
+
+1. N개의 스위치 초기 상태를 배열에 저장한다
+2. 남학생(male==1): 받은 수의 배수에 해당하는 모든 스위치를 토글한다 (n % sw == 0)
+3. 여학생(male==2): 받은 수 위치의 스위치를 토글한 뒤, 좌우로 확장하며 대칭인 동안 양쪽 스위치를 토글한다
+4. 출력 시 20개마다 줄바꿈을 한다
+
+**핵심 아이디어**: 남학생은 배수 관계로 단순 반복, 여학생은 중심에서 양쪽으로 확장하며 대칭 여부를 확인하는 시뮬레이션 문제이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day13BOJ1244스위치켜고끄기 { // 1244
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+
+		int N = Integer.parseInt(br.readLine());
+		int[] arr = new int[N + 1];
+		st = new StringTokenizer(br.readLine());
+		for (int n = 1; n <= N; n++) {
+			arr[n] = Integer.parseInt(st.nextToken());
+		}
+		int M = Integer.parseInt(br.readLine());
+
+		for (int m = 0; m < M; m++) {
+			st = new StringTokenizer(br.readLine());
+			int male = Integer.parseInt(st.nextToken());
+			int sw = Integer.parseInt(st.nextToken());
+			if (male == 1) {
+				for (int n = 1; n <= N; n++) {
+					if (n % sw == 0) {
+						arr[n] = (arr[n] + 1) % 2;
+					}
+				}
+			} else {
+				arr[sw] = (arr[sw] + 1) % 2;
+				for (int j = 1; j < N + 1 / 2; j++) {
+					if (sw + j > N || sw - j < 1)
+						break;
+					if (arr[sw - j] == arr[sw + j]) {
+						arr[sw - j] = (arr[sw] - j) % 2;
+						arr[sw + j] = (arr[sw] + j) % 2;
+					} else
+						break;
+				}
+			}
+		}
+		int line = 20;
+		for (int n = 1; n <= N; n++) {
+			System.out.print(arr[n] + " ");
+			line--;
+			if (line == 0) {
+				System.out.println();
+				line = 20;
+			}
+
+		}
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(M \* N) — 학생 수 M, 각 학생이 최대 N개 스위치를 토글
+- 공간: O(N) — 스위치 배열

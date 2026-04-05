@@ -1,0 +1,109 @@
+---
+title: "BOJ 3584 - 가장 가까운 공통 조상"
+date: "2022-04-13"
+description: "그래프 이론, 그래프 탐색, 트리 문제"
+tags: ["그래프 이론", "그래프 탐색", "트리", "깊이 우선 탐색", "최소 공통 조상"]
+platform: "boj"
+problem_number: "3584"
+problem_url: "https://www.acmicpc.net/problem/3584"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3584 - 가장 가까운 공통 조상](https://www.acmicpc.net/problem/3584)
+
+루트가 있는 트리에서 두 노드의 가장 가까운 공통 조상(LCA, Lowest Common Ancestor)을 찾는 문제다. 여러 테스트 케이스가 주어지며, 각 케이스마다 트리의 간선 정보와 두 노드 번호가 입력된다. 두 노드에서 각각 루트 방향으로 거슬러 올라가면서 처음으로 만나는 공통 노드를 출력해야 한다.
+
+### 입력
+
+- 첫째 줄: 테스트 케이스 수 T
+- 각 테스트 케이스 첫째 줄: 노드 수 N (2 ≤ N ≤ 10000)
+- 다음 N-1개의 줄: 부모-자식 관계 `u v` (u가 v의 부모)
+- 마지막 줄: LCA를 구할 두 노드 번호 `a b`
+
+### 출력
+
+각 테스트 케이스마다 두 노드의 LCA를 출력한다.
+
+### 예제
+
+| 입력                                                                                                                  | 출력 |
+| --------------------------------------------------------------------------------------------------------------------- | ---- |
+| `1` `16` `1 14` `8 5` `10 16` `5 9` `4 6` `8 4` `4 10` `1 13` `6 15` `10 11` `6 7` `10 2` `16 3` `8 1` `16 12` `16 7` | `4`  |
+
+## 풀이
+
+각 노드의 부모 정보를 배열에 저장한 뒤, 두 노드에서 각각 루트까지 거슬러 올라가며 방문 여부를 표시하는 방식으로 LCA를 구한다. 별도의 깊이 계산 없이 간단한 DFS 탐색으로 풀 수 있다.
+
+1. 부모 배열 `p[]`를 선언하고, N-1개의 간선 정보를 읽어 `p[자식] = 부모`로 저장한다.
+2. 첫 번째 노드 `n1`에서 `dfs(n1)`을 호출하여 루트 방향으로 거슬러 올라가며 방문한 노드를 `visited[]`에 표시한다.
+3. 두 번째 노드 `n2`에서 `dfs(n2)`을 호출하여 루트 방향으로 올라가다 이미 방문한 노드를 만나면 그 노드가 LCA이다.
+4. `visited[n]`이 `true`인 노드를 발견하면 `ans = n`으로 저장하고 종료한다.
+
+**핵심 아이디어**: 두 노드에서 루트 방향으로 순서대로 방문 표시를 하면, 두 번째 탐색에서 처음으로 이미 방문된 노드가 바로 두 경로의 교차점, 즉 LCA가 된다. 부모 배열만 있으면 별도의 전처리 없이 O(N) 시간에 LCA를 구할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day65BOJ3584공통조상찾기 {
+	static int N, ans;
+	static int[] p;
+	static boolean[] visited;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = null;
+
+		int T = Integer.parseInt(br.readLine());
+		for (int tc = 1; tc <= T; tc++) {
+			N = Integer.parseInt(br.readLine());
+			ans = 0;
+			p = new int[N + 1];
+			visited = new boolean[N + 1];
+
+			for (int i = 0; i < N - 1; i++) {
+				st = new StringTokenizer(br.readLine());
+				int par = Integer.parseInt(st.nextToken());
+				p[Integer.parseInt(st.nextToken())] = par;
+			}
+			st = new StringTokenizer(br.readLine());
+			int n1 = Integer.parseInt(st.nextToken());
+			int n2 = Integer.parseInt(st.nextToken());
+
+			dfs(n1);
+			dfs(n2);
+
+			sb.append(ans).append("\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void dfs(int n) {
+		if (n == 0)
+			return;
+		if (visited[n]) {
+			ans = n;
+			return;
+		}
+		visited[n] = true;
+
+		dfs(p[n]);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 노드는 최대 한 번씩 방문
+- 공간: O(N) — 부모 배열과 방문 배열 저장

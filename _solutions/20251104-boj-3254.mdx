@@ -1,0 +1,139 @@
+---
+title: "BOJ 3254 - 김밥 21개"
+date: "2025-11-04"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "3254"
+problem_url: "https://www.acmicpc.net/problem/3254"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3254 - 김밥 21개](https://www.acmicpc.net/problem/3254)
+
+두 플레이어 sk(1번)와 ji(2번)가 7행 7열 보드에서 번갈아 돌을 놓는 게임을 한다. 각 열에 돌은 아래에서 위로 쌓이며, 가로/세로/대각선 방향으로 4개 이상 연속된 돌을 놓으면 승리한다.
+
+최대 21번의 라운드에 걸쳐 각 플레이어가 한 열씩 선택해 돌을 놓는다. 승자와 승리 라운드를 출력하거나, 승부가 나지 않으면 `ss`를 출력한다.
+
+### 입력
+
+- 21줄에 걸쳐 두 플레이어가 선택한 열 번호 `s j`가 주어진다 (1-indexed).
+
+### 출력
+
+- sk가 이기면 `sk 라운드번호`
+- ji가 이기면 `ji 라운드번호`
+- 승부 없으면 `ss`
+
+### 예제
+
+| 입력                          | 출력   |
+| ----------------------------- | ------ |
+| `1 2` `1 2` `1 2` `1 2` `...` | `sk 4` |
+
+## 풀이
+
+매 라운드마다 두 플레이어가 선택한 열에 돌을 놓고, 놓은 후 즉시 4개 이상 연속 여부를 확인한다.
+
+1. 각 열에 돌이 쌓인 높이를 추적하는 인덱스 배열(`index[]`)을 초기화한다.
+2. 21라운드 동안 각 라운드마다 두 플레이어의 열 선택을 입력받는다.
+3. 각 플레이어의 돌을 해당 열의 현재 높이에 배치하고 높이를 증가시킨다.
+4. `CheckContinuous` 함수로 8방향 중 4방향 축에서 연속 4개 이상인지 검사한다.
+5. 연속 조건을 만족하면 승자와 현재 라운드 번호를 기록하고 종료한다.
+6. 21라운드가 끝나도 승자가 없으면 `ss`를 출력한다.
+
+**핵심 아이디어**: 돌을 놓은 위치를 중심으로 4방향(가로, 세로, 대각선 2개) 각각 양쪽으로 탐색하여 연속된 돌의 수를 센다. 방향 벡터 배열을 `dir[0..3]`과 `dir[4..7]`로 쌍으로 구성하면 반대 방향을 깔끔하게 처리할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+pair<int, int> dir[8] = {
+    {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}};
+
+bool CheckContinuous(int board[7][8], int sx, int sy, int who)
+{
+  for (int d = 0; d < 4; d++)
+  {
+    int ns = sx + dir[d].first;
+    int ny = sy + dir[d].second;
+    int cnt = 1;
+    while (ns > 0 && ns < 7 && ny > 0 && ny < 8 && board[ns][ny] == who)
+    {
+      cnt++;
+      ns += dir[d].first;
+      ny += dir[d].second;
+    }
+    ns = sx + dir[d + 4].first;
+    ny = sy + dir[d + 4].second;
+    while (ns > 0 && ns < 7 && ny > 0 && ny < 8 && board[ns][ny] == who)
+    {
+      cnt++;
+      ns += dir[d + 4].first;
+      ny += dir[d + 4].second;
+    }
+    if (cnt >= 4)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+int main()
+{
+  cin.tie(NULL);
+  ios_base::sync_with_stdio(false);
+  int board[7][8] = {0};
+  int index[8] = {0, 1, 1, 1, 1, 1, 1, 1};
+  int winner = 0, idx;
+  for (int i = 0; i < 21; i++)
+  {
+    int s, j;
+    cin >> s >> j;
+    int sy = index[s]++;
+    int jy = index[j]++;
+    board[sy][s] = 1;
+    board[jy][j] = 2;
+
+    bool sr = CheckContinuous(board, sy, s, 1);
+    bool jr = CheckContinuous(board, jy, j, 2);
+    if (sr == true)
+    {
+      winner = 1;
+      idx = i + 1;
+      break;
+    }
+    else if (jr == true)
+    {
+      winner = 2;
+      idx = i + 1;
+      break;
+    }
+  }
+  if (winner == 0)
+  {
+    cout << "ss";
+  }
+  else if (winner == 1)
+  {
+    cout << "sk " << idx;
+  }
+  else if (winner == 2)
+  {
+    cout << "ji " << idx;
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(21 _ 8 _ R) — 라운드당 8방향 탐색, R은 보드 크기에 비례 (실질적으로 O(1))
+- 공간: O(1) — 고정 크기 7x8 보드 사용

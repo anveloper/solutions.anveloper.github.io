@@ -1,0 +1,102 @@
+---
+title: "BOJ 1064 - 평행사변형"
+date: "2023-01-10"
+description: "수학, 기하학, 피타고라스 정리 문제"
+tags: ["수학", "기하학", "피타고라스 정리"]
+platform: "boj"
+problem_number: "1064"
+problem_url: "https://www.acmicpc.net/problem/1064"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1064 - 평행사변형](https://www.acmicpc.net/problem/1064)
+
+세 점이 주어졌을 때, 네 번째 점을 추가하여 만들 수 있는 평행사변형 둘레의 최댓값과 최솟값 차이를 구하라. 세 점이 일직선 위에 있으면 -1을 출력한다.
+
+### 입력
+
+한 줄에 세 점의 좌표 x1 y1 x2 y2 x3 y3이 주어진다.
+
+### 출력
+
+둘레 최댓값과 최솟값의 차이를 출력한다. 일직선이면 -1을 출력한다.
+
+### 예제
+
+| 입력          | 출력                 |
+| ------------- | -------------------- |
+| `0 0 1 0 0 1` | `1.6568542494923806` |
+
+## 풀이
+
+세 점으로 만들 수 있는 3가지 평행사변형의 둘레를 비교한다.
+
+1. 세 점이 일직선인지 기울기(외적)로 판별한다. 일직선이면 -1을 출력한다
+2. 세 점 사이 거리 3개를 계산한다: AB, AC, BC
+3. 네 번째 점의 위치에 따라 3가지 평행사변형이 가능하며, 둘레는 각각 `2*(AB+AC)`, `2*(AC+BC)`, `2*(AB+BC)`이다
+4. 세 둘레 중 최댓값과 최솟값의 차이를 출력한다
+
+**핵심 아이디어**: 평행사변형의 둘레는 대변 쌍의 합 × 2이다. 세 점에서 어떤 두 변을 대변 쌍으로 선택하느냐에 따라 3가지 경우가 생긴다.
+
+## 코드
+
+```java
+package day349;
+
+import java.util.Scanner;
+
+public class Day337BOJ1064평행사변형 {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Pair[] arr = new Pair[3];
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+        double[] leng = new double[3];
+        for (int i = 0; i < 3; i++) {
+            arr[i] = new Pair(sc.nextInt(), sc.nextInt());
+        }
+
+        if ((arr[1].y - arr[0].y) * (arr[2].x - arr[1].x) == (arr[1].x - arr[0].x) * (arr[2].y - arr[1].y))
+            System.out.println("-1");
+
+        else {
+            double one = Math.sqrt(Math.pow(arr[1].y - arr[0].y, 2) + Math.pow(arr[1].x - arr[0].x, 2));
+            double two = Math.sqrt(Math.pow(arr[2].y - arr[0].y, 2) + Math.pow(arr[2].x - arr[0].x, 2));
+            double three = Math.sqrt(Math.pow(arr[2].y - arr[1].y, 2) + Math.pow(arr[2].x - arr[1].x, 2));
+            leng[0] = one + two;
+            leng[1] = two + three;
+            leng[2] = one + three;
+
+            for (int i = 0; i < 3; i++) {
+                if (min > leng[i])
+                    min = leng[i];
+                if (max < leng[i])
+                    max = leng[i];
+            }
+
+            System.out.println(2 * max - 2 * min);
+        }
+        sc.close();
+    }
+
+    static class Pair {
+        int x;
+        int y;
+
+        public Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) - 고정된 3개 점 연산
+- 공간: O(1)

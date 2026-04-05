@@ -1,0 +1,161 @@
+---
+title: "BOJ 2699 - 격자점 컨벡스헐"
+date: "2022-05-21"
+description: "기하학, 볼록 껍질 문제"
+tags: ["기하학", "볼록 껍질"]
+platform: "boj"
+problem_number: "2699"
+problem_url: "https://www.acmicpc.net/problem/2699"
+difficulty: "플래티넘 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2699 - 격자점 컨벡스헐](https://www.acmicpc.net/problem/2699)
+
+격자점(정수 좌표) 집합이 주어질 때, 볼록 껍질(Convex Hull)을 구하라. 시작점은 y좌표가 가장 크고, 같으면 x좌표가 가장 작은 점이며, 시계 방향으로 출력한다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T, 각 테스트 케이스마다 점의 개수 N(1 ≤ N ≤ 50)이 주어지고 한 줄에 최대 5개씩 x y 좌표가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 볼록 껍질의 꼭짓점 수를 출력하고, 시작점부터 시계 방향으로 꼭짓점 좌표를 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                      | 출력                        |
+| ------------------------- | --------------------------- |
+| `1` `4` `0 0 1 0 0 1 1 1` | `4` `0 1` `1 1` `1 0` `0 0` |
+
+## 풀이
+
+Graham Scan 알고리즘을 변형하여 시계 방향 볼록 껍질을 구한다.
+
+1. y좌표 내림차순, x좌표 오름차순으로 기준점을 선택한다
+2. 나머지 점들을 기준점에서의 각도(반시계 방향 기준)로 정렬한다
+3. 스택을 이용하여 CCW(반시계 방향 회전) 판정을 수행한다
+4. CCW 값이 양수(시계 방향)인 경우만 스택에 유지하여 볼록 껍질을 구성한다
+
+**핵심 아이디어**: 일반적인 Graham Scan은 반시계 방향이지만, 이 문제는 시계 방향 출력을 요구하므로 CCW 판정 조건을 반전시킨다. 기준점도 y가 최대인 점을 선택한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Stack;
+import java.util.StringTokenizer;
+
+public class Day103BOJ2699 { // 2699 격자점 컨벡스헐.. 하루를 공으로 날렸네.. 구선생님 도움이요..
+	static class Pos implements Comparable<Pos> {
+		int r, c;
+
+		public Pos(int r, int c) {
+			this.r = r;
+			this.c = c;
+		}
+
+		@Override
+		public int compareTo(Pos o) {
+			if (this.c == o.c)
+				return Integer.compare(this.r, o.r);
+			return Integer.compare(o.c, this.c);
+		}
+	}
+
+	static int N;
+	static Pos[] list;
+	static Stack<Pos> stack;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		StringBuilder sb = new StringBuilder();
+		int T = Integer.parseInt(br.readLine());
+
+		for (int tc = 1; tc <= T; tc++) {
+			N = Integer.parseInt(br.readLine());
+			list = new Pos[N];
+			stack = new Stack<Pos>();
+			int idx = 0;
+			for (int i = 0; i < (N - 1) / 5 + 1; i++) {
+				st = new StringTokenizer(br.readLine());
+				while (st.hasMoreTokens())
+					list[idx++] = new Pos(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+
+			}
+
+			Arrays.sort(list);
+			Arrays.sort(list, 1, N, new Comparator<Pos>() {
+				@Override
+				public int compare(Pos o1, Pos o2) {
+					int ccw = ccw(list[0], o1, o2);
+
+					if (ccw > 0)
+						return -1;
+					else if (ccw < 0)
+						return 1;
+					else
+						return Long.compare(dist(list[0], o1), dist(list[0], o2));
+				}
+			});
+
+			stack.push(list[0]);
+			stack.push(list[1]);
+
+			for (int i = 2; i < N; i++) {
+				Pos next = list[i];
+
+				while (stack.size() >= 2) {
+					Pos second = stack.pop();
+					Pos first = stack.peek();
+
+					int ccw = ccw(first, second, next);
+					if (ccw > 0) {
+						stack.push(second);
+						break;
+					}
+				}
+				stack.push(next);
+			}
+
+			sb.append(stack.size()).append("\n");
+			for (int i = 0; i < stack.size(); i++)
+				sb.append(stack.get(i).r).append(" ").append(stack.get(i).c).append("\n");
+		}
+		sb.setLength(sb.length() - 1);
+		System.out.print(sb);
+		br.close();
+	}
+
+
+	public static int ccw(Pos r, Pos p, Pos q) {
+		int result = (p.r - r.r) * (q.c - r.c) - (p.c - r.c) * (q.r - r.r);
+
+		if (result > 0)
+			return -1;
+		else if (result == 0)
+			return 0;
+		else
+			return 1;
+	}
+
+	public static long dist(Pos p1, Pos p2) {
+		return (p2.r - p1.r) * (p2.r - p1.r) + (p2.c - p1.c) * (p2.c - p1.c);
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

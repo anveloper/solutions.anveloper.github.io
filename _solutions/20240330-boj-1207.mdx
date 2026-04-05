@@ -1,0 +1,138 @@
+---
+title: "BOJ 1207 - 종이 자르기"
+date: "2024-03-30"
+description: "5개의 퍼즐 조각으로 L×L 격자를 채우는 문제"
+tags: ["구현", "브루트포스", "백트래킹"]
+platform: "boj"
+problem_number: "1207"
+problem_url: "https://www.acmicpc.net/problem/1207"
+difficulty: "골드 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1207 - 종이 자르기](https://www.acmicpc.net/problem/1207)
+
+5개의 퍼즐 조각을 L x L 격자에 빈틈없이 배치하는 방법을 구하라. 불가능하면 "gg"를 출력한다.
+
+### 입력
+
+첫째 줄에 L, 이후 5개 조각의 크기와 모양이 주어진다.
+
+### 출력
+
+격자에 조각을 배치한 결과를 출력한다. 불가능하면 "gg"를 출력한다.
+
+### 예제
+
+| 입력                                        | 출력        |
+| ------------------------------------------- | ----------- |
+| `3` `1 3` `###` `1 3` `###` `1 3` `###` ... | (배치 결과) |
+
+## 풀이
+
+5개 조각의 순열을 생성하고, 각 순열에서 격자의 빈 칸을 왼쪽 위부터 순서대로 채운다.
+
+1. 각 조각의 '#' 위치를 상대 좌표로 파싱한다
+2. 5! = 120가지 순열을 생성한다
+3. 각 순열에서 격자를 왼쪽 위부터 순회하며 빈 칸을 발견하면 다음 조각을 배치한다
+4. 조각의 상대 좌표가 격자 범위 내이고 빈 칸이면 배치 성공, 아니면 실패 처리한다
+5. 유효한 배치를 찾으면 즉시 결과를 반환한다
+
+**핵심 아이디어**: 5! = 120으로 순열 수가 적고, 각 순열에서 그리디하게 왼쪽 위부터 채우므로 빠르게 탐색된다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const L = +input.shift();
+  const pieces = new Array(L * L).fill(0).map(() => new Array(3).fill(0));
+  const visited = new Array(6).fill(0);
+  const cntPieces = new Array(6).fill(0);
+  cntPieces[0] = -1;
+  const seq = new Array(5).fill(0);
+  const graph = new Array(L).fill(0).map(() => new Array(L).fill(0));
+  let idx = 0,
+    flag = 0,
+    ans = "";
+
+  try {
+    for (let i = 1; i <= 5; i++) {
+      const [r, c] = input.shift().split(" ").map(Number);
+      let k = -1;
+      for (let j = 0; j < r; j++) {
+        const rC = input.shift().trim().split("");
+        for (let l = 0; l < c; l++) {
+          if (rC[l] === "#") {
+            if (k === -1) k = l;
+            pieces[idx][0] = i;
+            pieces[idx][1] = j;
+            pieces[idx][2] = l - k;
+            cntPieces[i] = idx;
+            idx++;
+          }
+        }
+      }
+    }
+  } catch (err) {
+    return "gg";
+  }
+
+  if (pieces[pieces.length - 1][0] === 0) return "gg";
+
+  const permutation = (node) => {
+    if (flag === 1) return;
+    if (node === 5) {
+      let idx = 0;
+      for (let i = 0; i < L; i++) {
+        for (let j = 0; j < L; j++) {
+          if (graph[i][j] === 0) {
+            if (!check(i, j, seq[idx++])) {
+              for (let row of graph) row.fill(0);
+              return;
+            }
+          }
+        }
+      }
+      flag = 1;
+      for (let i = 0; i < L; i++) ans += graph[i].join("") + "\n";
+      return;
+    }
+    for (let i = 1; i <= 5; i++) {
+      if (visited[i] === 0) {
+        visited[i] = 1;
+        seq[node] = i;
+        permutation(node + 1);
+        visited[i] = 0;
+      }
+    }
+  };
+
+  const check = (r, c, n) => {
+    for (let j = cntPieces[n - 1] + 1; j <= cntPieces[n]; j++) {
+      const nr = r + pieces[j][1];
+      const nc = c + pieces[j][2];
+      if (nr >= 0 && nr < L && nc >= 0 && nc < L && graph[nr][nc] === 0) {
+        graph[nr][nc] = n;
+      } else {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  permutation(0);
+  return flag === 0 ? "gg" : ans;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(5! × L²)
+- 공간: O(L²)

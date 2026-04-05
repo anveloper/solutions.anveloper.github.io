@@ -1,0 +1,112 @@
+---
+title: "BOJ 7795 - 먹을 것인가 먹힐 것인가"
+date: "2023-03-22"
+description: "정렬, 이분 탐색, 두 포인터 문제"
+tags: ["정렬", "이분 탐색", "두 포인터"]
+platform: "boj"
+problem_number: "7795"
+problem_url: "https://www.acmicpc.net/problem/7795"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7795 - 먹을 것인가 먹힐 것인가](https://www.acmicpc.net/problem/7795)
+
+두 집합 A, B가 주어질 때, `A[i] > B[j]`인 쌍 (i, j)의 개수를 구하라.
+
+### 입력
+
+테스트 케이스 수 T, 각각 N, M과 A, B 배열이 주어진다.
+
+### 출력
+
+각 테스트 케이스에 대해 쌍의 수를 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `1` `3 4` `2 1 3` `3 2 1 4` | `4`  |
+
+## 풀이
+
+B를 정렬한 뒤, A의 각 원소에 대해 이분 탐색으로 B에서 작은 수의 개수를 센다.
+
+1. B 배열을 오름차순 정렬한다
+2. A의 각 원소에 대해 이분 탐색으로 `B[mid] < A[j]`인 최대 인덱스를 찾는다
+3. 해당 인덱스+1이 그 원소보다 작은 B의 개수이다
+4. 모든 A 원소의 결과를 합산한다
+
+**핵심 아이디어**: B를 정렬하면 A의 각 원소에 대해 이분 탐색으로 O(log M)에 개수를 구할 수 있다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+class Day409BOJ7795먹먹 {
+  static int T, N, M, ans = 0;
+  static int[] A, B;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    StringTokenizer st = null;
+
+    T = Integer.parseInt(br.readLine());
+    for (int i = 0; i < T; i++) {
+      st = new StringTokenizer(br.readLine());
+      N = Integer.parseInt(st.nextToken());
+      M = Integer.parseInt(st.nextToken());
+
+      A = new int[N];
+      B = new int[M];
+
+      st = new StringTokenizer(br.readLine());
+      for (int j = 0; j < N; j++) {
+        A[j] = Integer.parseInt(st.nextToken());
+      }
+
+      st = new StringTokenizer(br.readLine());
+      for (int j = 0; j < M; j++) {
+        B[j] = Integer.parseInt(st.nextToken());
+      }
+
+      Arrays.sort(B);
+      ans = 0;
+
+      for (int j = 0; j < N; j++) {
+        int l = 0;
+        int r = M - 1;
+        int index = 0;
+
+        while (l <= r) {
+          int mid = (l + r) / 2;
+          if (B[mid] < A[j]) {
+            l = mid + 1;
+            index = mid + 1;
+          } else {
+            r = mid - 1;
+          }
+        }
+        ans += index;
+      }
+
+      sb.append(Integer.toString(ans) + "\n");
+    }
+    System.out.println(sb);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O((N + M) log M) - B 정렬 + A 각각 이분 탐색
+- 공간: O(N + M)

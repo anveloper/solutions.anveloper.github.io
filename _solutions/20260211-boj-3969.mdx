@@ -1,0 +1,117 @@
+---
+title: "BOJ 3969 - My brother's diary"
+date: "2026-02-11"
+description: "수학, 구현, 문자열 문제"
+tags: ["수학", "구현", "문자열", "사칙연산"]
+platform: "boj"
+problem_number: "3969"
+problem_url: "https://www.acmicpc.net/problem/3969"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3969 - My brother's diary](https://www.acmicpc.net/problem/3969)
+
+동생이 일기를 카이사르 암호로 암호화했다. 암호화 규칙은 알파벳 각 문자를 일정한 이동량 d만큼 밀어 쓴 것이다. 암호화된 문장이 주어지면, 가장 자주 등장하는 대문자가 원문의 `E`라는 가정 하에 이동량 d와 복호화된 문장을 출력한다. 가장 자주 등장하는 문자가 유일하지 않으면 `NOT POSSIBLE`을 출력한다.
+
+### 입력
+
+- 첫 줄에 테스트 케이스 수 C가 주어진다.
+- 각 케이스마다 암호화된 문장이 한 줄로 주어진다. 대문자와 공백으로 구성된다.
+
+### 출력
+
+각 케이스마다 이동량 d와 복호화된 문장을 출력하거나, 유일한 최빈 문자가 없으면 `NOT POSSIBLE`을 출력한다.
+
+### 예제
+
+| 입력              | 출력            |
+| ----------------- | --------------- |
+| `1` `KHOOR ZRUOG` | `3 HELLO WORLD` |
+
+## 풀이
+
+암호문에서 가장 빈번한 대문자를 찾고, 그것이 `E`라는 가정 하에 이동량을 계산하여 전체 문장을 복호화하는 구현 문제이다.
+
+1. 테스트 케이스 수 C를 읽는다.
+2. 각 케이스마다 암호화된 문장을 줄 단위로 읽는다.
+3. 26개 알파벳 각각의 등장 빈도를 센다.
+4. 빈도가 가장 높은 문자를 찾는다. 동점이 있으면 `NOT POSSIBLE`을 출력한다.
+5. 최빈 문자의 인덱스가 `key_idx`이면 이동량 `d = (key_idx - 4 + 26) % 26`이다 (`E`의 인덱스가 4이므로).
+6. 문장의 각 대문자를 `(ch - 'A' - d + 26) % 26 + 'A'`로 복호화하고, 공백은 그대로 출력한다.
+
+**핵심 아이디어**: 영어에서 가장 빈번한 문자인 `E`(인덱스 4)를 기준으로 역이동량을 계산한다. `d = (key_idx - 4 + 26) % 26`에서 `+26`은 음수 모듈러 연산을 방지한다. 복호화 시에도 동일하게 `+26`으로 음수를 방지한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int c;
+  if (!(cin >> c)) return 0;
+  cin.ignore();
+
+  while (c--) {
+    string s;
+    if (!getline(cin, s)) break;
+
+    vector<int> freq(26, 0);
+    for (char ch : s) {
+      if (ch >= 'A' && ch <= 'Z') {
+        freq[ch - 'A']++;
+      }
+    }
+
+    int max_val = 0;
+    int key_idx = -1;
+    bool duplicate = false;
+
+    for (int i = 0; i < 26; ++i) {
+      if (freq[i] > max_val) {
+        max_val = freq[i];
+        key_idx = i;
+        duplicate = false;
+      } else if (freq[i] == max_val && max_val > 0) {
+        duplicate = true;
+      }
+    }
+
+    if (key_idx == -1 || duplicate) {
+      cout << "NOT POSSIBLE\n";
+      continue;
+    }
+
+    int d = (key_idx - 4 + 26) % 26;
+    cout << d << " ";
+
+    for (char ch : s) {
+      if (ch == ' ') {
+        cout << ' ';
+      } else {
+        int p = (ch - 'A' - d + 26) % 26;
+        cout << (char)(p + 'A');
+      }
+    }
+    cout << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(C × L) — C 케이스, 문장 길이 L만큼 문자 빈도 계산 및 복호화
+- 공간: O(L + 26) — 문장 저장 및 알파벳 빈도 배열

@@ -1,0 +1,68 @@
+---
+title: "BOJ 10039 - 평균 점수"
+date: "2023-10-02"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "10039"
+problem_url: "https://www.acmicpc.net/problem/10039"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10039 - 평균 점수](https://www.acmicpc.net/problem/10039)
+
+5명의 학생 점수가 주어질 때, 40점 미만은 40점으로 올려서 평균을 구하라.
+
+### 입력
+
+5줄에 각 학생의 점수가 주어진다.
+
+### 출력
+
+평균 점수를 출력한다 (정수 나눗셈).
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `10` `65` `100` `30` `95` | `60` |
+
+## 풀이
+
+각 점수를 40 이상으로 보정한 뒤 합산하고 5로 나눈다.
+
+1. 5개의 점수를 읽으며 40 미만이면 40으로 올린다
+2. 보정된 점수를 합산한다
+3. 합을 5로 나누어 평균을 출력한다
+
+**핵심 아이디어**: 삼항 연산자로 최솟값을 40으로 보정하여 간결하게 처리한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day605BOJ10039평균점수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int sum = 0;
+    for (int i = 0; i < 5; i++) {
+      int val = Integer.parseInt(br.readLine());
+      sum += val > 40 ? val : 40;
+    }
+    System.out.println(sum / 5);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

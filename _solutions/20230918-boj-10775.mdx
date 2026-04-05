@@ -1,0 +1,92 @@
+---
+title: "BOJ 10775 - 공항"
+date: "2023-09-18"
+description: "자료 구조, 그리디 알고리즘, 분리 집합 문제"
+tags: ["자료 구조", "그리디 알고리즘", "분리 집합"]
+platform: "boj"
+problem_number: "10775"
+problem_url: "https://www.acmicpc.net/problem/10775"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10775 - 공항](https://www.acmicpc.net/problem/10775)
+
+G개의 게이트가 있는 공항에 P개의 비행기가 순서대로 도착한다. i번째 비행기는 1~g_i 게이트 중 하나에 도킹해야 한다. 도킹할 수 없으면 운행이 중지된다. 최대 도킹 가능한 비행기 수를 구하라.
+
+### 입력
+
+첫째 줄에 G, 둘째 줄에 P, 이후 P줄에 각 비행기의 g_i가 주어진다.
+
+### 출력
+
+최대 도킹 가능한 비행기 수를 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `4` `3` `4` `1` `1` | `2`  |
+
+## 풀이
+
+Union-Find로 각 게이트의 "다음 사용 가능한 게이트"를 관리하여 O(α(G))에 도킹을 처리한다.
+
+1. 각 게이트를 자기 자신을 가리키는 상태로 초기화한다
+2. 비행기가 도착하면 `find(g_i)`로 도킹 가능한 게이트를 찾는다
+3. 찾은 게이트가 0이면 더 이상 도킹 불가하므로 중단한다
+4. 도킹 후 해당 게이트를 `find(gate) - 1`과 union하여 다음 도킹 시 자동으로 빈 게이트를 가리킨다
+
+**핵심 아이디어**: Union-Find로 "사용된 게이트의 다음 빈 게이트"를 체인으로 연결하여 매번 빈 게이트를 빠르게 찾는다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day591BOJ10775공항 {
+  static int[] parents;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int g = Integer.parseInt(br.readLine());
+    parents = new int[g + 1];
+    for (int i = 1; i < g + 1; i++) {
+      parents[i] = i;
+    }
+
+    int p = Integer.parseInt(br.readLine());
+    int cnt = 0;
+    for (int i = 0; i < p; i++) {
+      int l = Integer.parseInt(br.readLine());
+      if (find(l) == 0)
+        break;
+      cnt++;
+      union(find(l), find(l) - 1);
+    }
+    System.out.println(cnt);
+  }
+
+  static void union(int a, int b) {
+    a = find(a);
+    b = find(b);
+    parents[a] = b;
+  }
+
+  static int find(int x) {
+    if (x == parents[x])
+      return x;
+    return parents[x] = find(parents[x]);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N α(N))
+- 공간: O(N)

@@ -1,0 +1,77 @@
+---
+title: "BOJ 5176 - 대회 자리"
+date: "2024-09-04"
+description: "참가자들의 자리 배정에서 겹치는 수를 세는 문제"
+tags: ["구현", "집합과 맵"]
+platform: "boj"
+problem_number: "5176"
+problem_url: "https://www.acmicpc.net/problem/5176"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5176 - 대회 자리](https://www.acmicpc.net/problem/5176)
+
+P명의 참가자가 M개의 자리 중 하나를 선택할 때, 이미 선택된 자리를 고른(앉지 못한) 참가자 수를 구하라.
+
+### 입력
+
+테스트 케이스 수 K, 각 케이스마다 P, M과 P개의 자리 번호가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 앉지 못한 참가자 수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `1` `3 3` `1` `2` `1` | `1`  |
+
+## 풀이
+
+불리언 배열로 자리 배정 여부를 관리하여 충돌을 카운트한다.
+
+1. 크기 501의 배열을 false로 초기화한다
+2. 각 참가자의 자리 선택을 확인한다
+3. 이미 배정된 자리이면 충돌 카운트를 증가시킨다
+4. 미배정이면 해당 자리를 true로 표시한다
+
+**핵심 아이디어**: 배열 인덱스로 O(1) 조회/갱신이 가능하여 전체 O(P)에 해결된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int k = 0;
+  cin >> k;
+  while (k--)
+  {
+    int p = 0, m = 0;
+    cin >> p >> m;
+    bool arr[501] = {};
+    int cnt = 0;
+    for (int i = 0; i < p; i++)
+    {
+      int now = 0;
+      cin >> now;
+      if (arr[now])
+        cnt++;
+      else
+        arr[now] = 1;
+    }
+    cout << cnt << endl;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(K \* P) (K: 테스트 케이스 수, P: 참가자 수)
+- 공간: O(M) (M: 자리 수)

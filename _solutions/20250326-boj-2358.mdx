@@ -1,0 +1,84 @@
+---
+title: "BOJ 2358 - 평행선"
+date: "2025-03-26"
+description: "자료 구조, 집합과 맵, 해시를 사용한 집합과 맵 문제"
+tags: ["자료 구조", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "2358"
+problem_url: "https://www.acmicpc.net/problem/2358"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2358 - 평행선](https://www.acmicpc.net/problem/2358)
+
+N개의 점이 주어질 때, 축에 평행하면서 2개 이상의 점을 지나는 직선의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 점의 좌표가 주어진다.
+
+### 출력
+
+조건을 만족하는 직선의 수를 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `4` `0 0` `1 1` `0 1` `1 0` | `4`  |
+
+## 풀이
+
+같은 x좌표를 공유하는 점이 2개 이상이면 수직선, 같은 y좌표를 공유하면 수평선이 존재한다.
+
+1. 각 x좌표별로 점 개수를 딕셔너리에 기록한다
+2. 각 y좌표별로도 점 개수를 기록한다
+3. x좌표에 2개 이상의 점이 있으면 수직선 1개를 카운트한다
+4. y좌표에 2개 이상의 점이 있으면 수평선 1개를 카운트한다
+
+**핵심 아이디어**: 축에 평행한 직선은 하나의 좌표가 같은 점들로 결정되므로, 좌표별 점 개수를 세면 된다.
+
+## 코드
+
+```python
+import sys
+
+n = int(sys.stdin.readline())
+c = {}
+y = {}
+check_x = []
+check_y = []
+for _ in range(n):
+    a, b = map(int, sys.stdin.readline().split(" "))
+    check_x.append(a)
+    check_y.append(b)
+    if a in c:
+        c[a].append(b)
+    else:
+        c[a] = []
+
+    if b in y:
+        y[b].append(a)
+    else:
+        y[b] = []
+check_y = list(set(check_y))
+check_x = list(set(check_x))
+
+ans = 0
+for i in check_x:
+    if c[i]:
+        ans += 1
+for i in check_y:
+    if y[i]:
+        ans += 1
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

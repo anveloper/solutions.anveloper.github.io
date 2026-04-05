@@ -1,0 +1,108 @@
+---
+title: "BOJ 2632 - 피자판매"
+date: "2023-06-01"
+description: "이분 탐색, 누적 합 문제"
+tags: ["이분 탐색", "누적 합"]
+platform: "boj"
+problem_number: "2632"
+problem_url: "https://www.acmicpc.net/problem/2632"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2632 - 피자판매](https://www.acmicpc.net/problem/2632)
+
+두 종류의 원형 피자가 있고, 각 피자에서 연속된 조각들을 선택하여 합이 정확히 N이 되는 경우의 수를 구하라.
+
+### 입력
+
+첫째 줄에 원하는 피자 크기 N, 둘째 줄에 두 피자의 조각 수 m, n, 이후 각 조각의 크기가 주어진다.
+
+### 출력
+
+합이 N이 되는 경우의 수를 출력한다.
+
+### 예제
+
+| 입력                                      | 출력 |
+| ----------------------------------------- | ---- |
+| `7` `5 3` `2` `2` `1` `7` `2` `6` `8` `3` | `3`  |
+
+## 풀이
+
+각 피자에서 가능한 연속 부분합의 빈도를 구한 뒤, 두 피자의 합이 N이 되는 경우를 센다.
+
+1. 원형 피자이므로 배열을 두 배로 확장하여 연속 부분합을 구한다
+2. 각 피자별로 가능한 모든 연속 부분합의 개수를 카운팅 배열에 기록한다
+3. 전체 피자(모든 조각 선택)와 아무것도 선택하지 않는 경우도 포함한다
+4. `sumA[i] * sumB[N-i]`를 i=0부터 N까지 합산하여 답을 구한다
+
+**핵심 아이디어**: 원형 배열의 연속 부분합을 O(M²)으로 전처리한 뒤, 카운팅 배열로 O(N)에 두 피자의 조합을 구한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+
+public class Day480BOJ2632피자판매 {
+  static int N, m, n, ans = 0;
+  static int[] a, b;
+  static int[] sumA = new int[2000001], sumB = new int[2000001];
+
+  public static void main(String[] args) throws NumberFormatException, IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    String[] str = br.readLine().split(" ");
+
+    m = Integer.parseInt(str[0]);
+    n = Integer.parseInt(str[1]);
+
+    a = new int[m * 2];
+    b = new int[n * 2];
+
+    int sum = 0;
+    for (int i = 0; i < m; i++) {
+      a[i] = Integer.parseInt(br.readLine());
+      a[i + m] = a[i];
+      sum += a[i];
+    }
+    sumA[sum] = 1;
+    sumA[0] = 1;
+
+    sum = 0;
+    for (int i = 0; i < n; i++) {
+      b[i] = Integer.parseInt(br.readLine());
+      b[i + n] = b[i];
+      sum += b[i];
+    }
+    sumB[sum] = 1;
+    sumB[0] = 1;
+    funSumCnt(m, a, sumA);
+    funSumCnt(n, b, sumB);
+    for (int i = 0; i <= N; i++) {
+      ans += sumA[i] * sumB[N - i];
+    }
+    System.out.println(ans);
+  }
+
+  private static void funSumCnt(int c, int[] arr, int[] sumCnt) {
+    for (int i = 0; i < c; i++) {
+      int sum = 0;
+      for (int j = i; j < i + c - 1; j++) {
+        sum += arr[j];
+        sumCnt[sum]++;
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(M² + N² + S) - M, N은 조각 수, S는 목표 크기
+- 공간: O(S)

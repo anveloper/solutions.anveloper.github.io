@@ -1,0 +1,86 @@
+---
+title: "BOJ 15989 - 1, 2, 3 더하기 4"
+date: "2023-04-20"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "15989"
+problem_url: "https://www.acmicpc.net/problem/15989"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15989 - 1, 2, 3 더하기 4](https://www.acmicpc.net/problem/15989)
+
+정수 N을 1, 2, 3의 합으로 나타내는 방법의 수를 구하라. 순서가 다르고 구성이 같으면 같은 방법이다 (비내림차순 조합만 센다).
+
+### 입력
+
+테스트 케이스 수 T, 이후 각 줄에 N이 주어진다 (최대 10000).
+
+### 출력
+
+각 N에 대해 방법의 수를 출력한다.
+
+### 예제
+
+| 입력             | 출력         |
+| ---------------- | ------------ |
+| `3` `4` `7` `10` | `4` `8` `14` |
+
+## 풀이
+
+`dp[i][j]`를 마지막에 사용한 수가 j 이하인 i의 분할 수로 정의하여 DP를 구성한다.
+
+1. `dp[i][1]`: 1만 사용 → 항상 1가지
+2. `dp[i][2]`: 2 이하 사용 → `dp[i-2][1] + dp[i-2][2]`
+3. `dp[i][3]`: 3 이하 사용 → `dp[i-3][1] + dp[i-3][2] + dp[i-3][3]`
+4. 답은 `dp[N][1] + dp[N][2] + dp[N][3]`
+
+**핵심 아이디어**: 비내림차순을 강제하기 위해 마지막으로 사용한 수를 상태로 관리한다. 이전 결과를 재활용하므로 전처리 후 각 쿼리는 O(1)이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+
+public class Day438BOJ15989더하기DP {
+  static int N;
+  static int[][] dp;
+
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    N = Integer.parseInt(br.readLine());
+    dp = new int[10001][4];
+    dp[1][1] = 1;
+    dp[2][1] = 1;
+    dp[2][2] = 1;
+    dp[3][1] = 1;
+    dp[3][2] = 1;
+    dp[3][3] = 1;
+
+    for (int i = 4; i <= 10000; i++) {
+      dp[i][1] = dp[i - 1][1];
+      dp[i][2] = dp[i - 2][1] + dp[i - 2][2];
+      dp[i][3] = dp[i - 3][1] + dp[i - 3][2] + dp[i - 3][3];
+    }
+
+    for (int i = 0; i < N; i++) {
+      int t = Integer.parseInt(br.readLine());
+      sb.append(dp[t][1] + dp[t][2] + dp[t][3] + "\n");
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N + T) - 전처리 O(N), 쿼리 O(1)
+- 공간: O(N)

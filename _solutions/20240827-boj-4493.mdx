@@ -1,0 +1,105 @@
+---
+title: "BOJ 4493 - 가위 바위 보?"
+date: "2024-08-27"
+description: "가위바위보 게임 결과를 집계하여 승자를 판별하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4493"
+problem_url: "https://www.acmicpc.net/problem/4493"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4493 - 가위 바위 보?](https://www.acmicpc.net/problem/4493)
+
+두 플레이어의 가위바위보 N라운드 결과가 주어질 때, 승리 횟수가 많은 플레이어를 출력하라. 동률이면 TIE.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 라운드 수 N과 N줄의 선택(R/P/S)이 주어진다.
+
+### 출력
+
+각 게임의 승자 또는 TIE를 출력한다.
+
+### 예제
+
+| 입력                      | 출력       |
+| ------------------------- | ---------- |
+| `1` `3` `R S` `P R` `S S` | `Player 1` |
+
+## 풀이
+
+각 라운드의 승패를 조건 분기로 판정하고 승리 횟수를 집계한다.
+
+1. 각 라운드에서 R/P/S를 비교한다 (R은 S를, P는 R을, S는 P를 이김)
+2. 같으면 무승부, 아니면 해당 플레이어의 승리 수를 증가시킨다
+3. 모든 라운드 후 승리 횟수를 비교하여 결과를 출력한다
+
+**핵심 아이디어**: 가위바위보 규칙을 조건 분기로 구현하며, 3가지 경우(승/패/무)만 처리하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  int t;
+  cin >> t;
+
+  while (t--)
+  {
+    int n;
+    cin >> n;
+    int a = 0, b = 0;
+    while (n--)
+    {
+      char A, B;
+      cin >> A >> B;
+      if (A == B)
+        ;
+      else if (A == 'R')
+      {
+        if (B == 'P')
+          b++;
+        else if (B == 'S')
+          a++;
+      }
+      else if (A == 'P')
+      {
+        if (B == 'R')
+          a++;
+        else if (B == 'S')
+          b++;
+      }
+      else if (A == 'S')
+      {
+        if (B == 'P')
+          a++;
+        else if (B == 'R')
+          b++;
+      }
+    }
+    if (a == b)
+      cout << "TIE\n";
+    else if (a > b)
+      cout << "Player 1\n";
+    else
+      cout << "Player 2\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N) (T: 게임 수, N: 라운드 수)
+- 공간: O(1)

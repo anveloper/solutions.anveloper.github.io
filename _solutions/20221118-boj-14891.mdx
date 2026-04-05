@@ -1,0 +1,140 @@
+---
+title: "BOJ 14891 - 톱니바퀴"
+date: "2022-11-18"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "14891"
+problem_url: "https://www.acmicpc.net/problem/14891"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14891 - 톱니바퀴](https://www.acmicpc.net/problem/14891)
+
+4개의 톱니바퀴(각 8개 톱니, 0:N극/1:S극)가 있다. K번의 회전 명령에 따라 맞닿은 극이 다르면 연쇄 회전이 일어날 때, 최종 상태에서 점수를 구하라.
+
+### 입력
+
+4줄에 톱니바퀴 상태(8자리 0/1), K번의 회전 명령(톱니번호, 방향)이 주어진다.
+
+### 출력
+
+4개 톱니바퀴의 12시 방향 톱니 값에 따른 점수 합(1, 2, 4, 8점)을 출력한다.
+
+### 예제
+
+| 입력                                                         | 출력 |
+| ------------------------------------------------------------ | ---- |
+| `10101111` `01111101` `11001110` `00000010` `2` `3 -1` `1 1` | `7`  |
+
+## 풀이
+
+각 회전 명령에 대해 연쇄 회전 방향을 먼저 결정한 후, 일괄 회전시킨다.
+
+1. 회전할 톱니에서 좌우로 전파하며 맞닿은 극(인덱스 2와 6)을 비교한다
+2. 다르면 반대 방향으로 회전, 같으면 전파 중단
+3. 모든 회전 방향이 결정되면 4개 톱니를 동시에 회전한다
+4. 시계(1): 배열 오른쪽 시프트, 반시계(-1): 배열 왼쪽 시프트
+
+**핵심 아이디어**: 회전 전에 연쇄 여부를 먼저 판단해야 한다. 회전 후 비교하면 이미 극이 바뀌어 틀린 결과가 나온다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.*;
+import java.util.*;
+
+public class Day284BOJ14891톱니바퀴구현 {
+	static int gear[][];
+	static int d[];
+	static int n, m;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		gear = new int[4][8];
+
+		for (int i = 0; i < 4; i++) {
+			String s = br.readLine();
+			for (int j = 0; j < 8; j++) {
+				gear[i][j] = s.charAt(j) - '0';
+			}
+		}
+
+		int k = Integer.parseInt(br.readLine());
+
+		while (k-- > 0) {
+			st = new StringTokenizer(br.readLine());
+			int gearN = Integer.parseInt(st.nextToken()) - 1;
+			int turn = Integer.parseInt(st.nextToken());
+
+			d = new int[4];
+
+			d[gearN] = turn;
+			checkDir(gearN);
+			gearTurn();
+		}
+
+		int ans = 0;
+		if (gear[0][0] == 1)
+			ans += 1;
+		if (gear[1][0] == 1)
+			ans += 2;
+		if (gear[2][0] == 1)
+			ans += 4;
+		if (gear[3][0] == 1)
+			ans += 8;
+		System.out.println(ans);
+	}
+
+	static void checkDir(int gearN) {
+		for (int i = gearN - 1; i >= 0; i--) {
+			if (gear[i][2] != gear[i + 1][6]) {
+				d[i] = -d[i + 1];
+			} else {
+				break;
+			}
+		}
+		for (int i = gearN + 1; i < 4; i++) {
+			if (gear[i][6] != gear[i - 1][2]) {
+				d[i] = -d[i - 1];
+			} else {
+				break;
+			}
+		}
+	}
+
+	static void gearTurn() {
+		int temp = 0;
+
+		for (int i = 0; i < 4; i++) {
+			if (d[i] == 1) {
+				temp = gear[i][7];
+				for (int j = 7; j > 0; j--) {
+					gear[i][j] = gear[i][j - 1];
+				}
+				gear[i][0] = temp;
+			}
+			if (d[i] == -1) {
+				temp = gear[i][0];
+				for (int j = 0; j < 7; j++) {
+					gear[i][j] = gear[i][j + 1];
+				}
+				gear[i][7] = temp;
+			}
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(K)
+- 공간: O(1) (톱니바퀴 4x8 고정)

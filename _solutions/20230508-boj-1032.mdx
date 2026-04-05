@@ -1,0 +1,82 @@
+---
+title: "BOJ 1032 - 명령 프롬프트"
+date: "2023-05-08"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1032"
+problem_url: "https://www.acmicpc.net/problem/1032"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1032 - 명령 프롬프트](https://www.acmicpc.net/problem/1032)
+
+N개의 파일 이름이 주어졌을 때, 명령 프롬프트 패턴을 구하라. 모든 파일에서 같은 위치의 문자가 동일하면 그 문자를, 다르면 `?`를 출력한다.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 50), 이후 N줄에 파일 이름(길이 동일, 최대 50자)이 주어진다.
+
+### 출력
+
+패턴 문자열을 출력한다.
+
+### 예제
+
+| 입력                                       | 출력         |
+| ------------------------------------------ | ------------ |
+| `3` `config.sys` `config.inf` `configures` | `config.??s` |
+
+## 풀이
+
+각 위치에 대해 모든 파일의 해당 위치 문자를 비교하여 패턴을 구성한다.
+
+1. N개의 파일 이름을 배열에 저장한다
+2. 문자열 길이만큼 반복하며, 각 위치 i에 대해 첫 번째 파일의 i번째 문자를 기준으로 삼는다
+3. 나머지 파일의 i번째 문자가 모두 같으면 해당 문자를, 하나라도 다르면 `?`를 추가한다
+
+**핵심 아이디어**: 모든 파일의 길이가 동일하므로, 위치별로 문자 일치 여부만 확인하면 된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+
+public class Day456BOJ1032명령프롬프트 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+    String[] arr = new String[n];
+    for (int i = 0; i < n; i++) {
+      arr[i] = br.readLine();
+    }
+    int len = arr[0].length();
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < len; i++) {
+      boolean b = true;
+      char c = arr[0].charAt(i);
+      for (int j = 1; j < n; j++) {
+        if (c != arr[j].charAt(i))
+          b = false;
+      }
+      if (b) {
+        sb.append(c);
+      } else {
+        sb.append("?");
+      }
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (L: 파일 이름 길이)
+- 공간: O(N \* L)

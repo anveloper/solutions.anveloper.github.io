@@ -1,0 +1,101 @@
+---
+title: "BOJ 9935 - 문자열 폭발"
+date: "2022-05-30"
+description: "자료 구조, 문자열, 스택 문제"
+tags: ["자료 구조", "문자열", "스택"]
+platform: "boj"
+problem_number: "9935"
+problem_url: "https://www.acmicpc.net/problem/9935"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9935 - 문자열 폭발](https://www.acmicpc.net/problem/9935)
+
+문자열과 폭발 문자열이 주어진다. 문자열에서 폭발 문자열과 일치하는 부분이 있으면 폭발(제거)하고, 남은 문자열이 다시 합쳐진다. 폭발이 일어난 후 다시 폭발 조건이 생길 수 있다. 최종적으로 남은 문자열을 출력하고, 모두 폭발하면 "FRULA"를 출력한다.
+
+### 입력
+
+- 첫째 줄: 문자열 (최대 1,000,000자)
+- 둘째 줄: 폭발 문자열 (최대 36자)
+
+### 출력
+
+- 최종 남은 문자열 또는 "FRULA"
+
+### 예제
+
+| 입력                   | 출력        |
+| ---------------------- | ----------- |
+| `mirkovC4nizCC44` `C4` | `mirkovniz` |
+
+## 풀이
+
+스택을 이용하여 문자를 순차적으로 쌓고, 스택 상단이 폭발 문자열과 일치하면 즉시 제거하는 방식으로 처리한다.
+
+1. 문자열을 한 글자씩 스택에 push한다.
+2. 스택 크기가 폭발 문자열 길이 이상이 되면 `check()` 함수를 호출한다.
+3. `check()` 함수에서 스택 상단 M개 글자가 폭발 문자열과 일치하는지 확인한다.
+4. 일치하면 스택에서 M개 글자를 pop하여 제거한다.
+5. 모든 문자 처리 후 스택이 비어 있으면 "FRULA", 아니면 스택 내용을 출력한다.
+
+**핵심 아이디어**: 스택으로 처리하면 폭발 후 남은 문자열이 자동으로 연결된 상태가 된다. 스택의 `get(index)` 메서드를 이용해 상단 M개를 O(M) 비교로 확인할 수 있다. 전체 문자열 길이가 최대 100만이지만 각 문자는 최대 한 번 push/pop되므로 O(N×M)이 최악이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Stack;
+
+public class Day112BOJ9935문자열폭발Stack { // 9935 문자열 폭발
+	static int N, M;
+	static char[] str, bob;
+	static Stack<Character> stack;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		str = br.readLine().toCharArray();
+		N = str.length; // 전체 순회 길이 ~ 1_000_000
+		bob = br.readLine().toCharArray();
+		M = bob.length; // 부분 순회 길이 ~ 36
+		stack = new Stack<>();
+		// StringBuilder이나 Dequeue로 조건부 삽입해도 가능하나, stack이 뒤로 돌아가기 편하다.
+
+		for (int i = 0; i < N; i++) {
+			stack.push(str[i]);
+			if (stack.size() >= M)
+				check();
+		}
+
+		System.out.println(stack.size() > 0 ? stack.toString().replaceAll("[\\[\\], ]", "") : "FRULA");
+		br.close();
+	}
+
+	// i값이 부여되어야 하나 생각했는데, stack으로하면 size로 관리가능
+	private static void check() {
+		boolean bomb = true; // 다른 지 체크로 반복문 탈출
+		int st = stack.size() - M; // 현재 check 진입 시 확인 시작지점
+		for (int i = 0; i < M; i++) {
+			if (stack.get(st + i) != bob[i]) {
+				bomb = false;
+				break;
+			}
+		}
+		if (bomb)
+			for (int i = 0; i < M; i++)
+				stack.pop();
+
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N × M) — N: 문자열 길이, M: 폭발 문자열 길이
+- 공간: O(N)

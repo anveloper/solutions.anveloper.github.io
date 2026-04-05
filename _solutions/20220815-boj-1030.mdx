@@ -1,0 +1,137 @@
+---
+title: "BOJ 1030 - 프렉탈 평면"
+date: "2022-08-15"
+description: "구현, 분할 정복, 재귀 문제"
+tags: ["구현", "분할 정복", "재귀"]
+platform: "boj"
+problem_number: "1030"
+problem_url: "https://www.acmicpc.net/problem/1030"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1030 - 프렉탈 평면](https://www.acmicpc.net/problem/1030)
+
+N^s × N^s 크기의 프렉탈 평면이 있다. 이 평면은 다음과 같은 규칙으로 만들어진다.
+
+- 크기 1인 평면은 흰색(0)이다.
+- 크기 N^k인 평면은 N × N개의 크기 N^(k-1)인 평면으로 구성된다.
+- 가운데 K × K개의 서브 평면은 검은색(1)으로 칠해진다. (K = (N-K_input)/2 기준으로 중앙 K_input개)
+
+주어진 직사각형 영역 `[R1, R2] × [C1, C2]`에 해당하는 부분을 출력한다.
+
+### 입력
+
+첫째 줄에 s, N, K, R1, R2, C1, C2가 주어진다.
+
+- `1 ≤ s ≤ 6`, `2 ≤ N ≤ 5`, `1 ≤ K ≤ N-1`
+- R1, R2, C1, C2는 0 이상 N^s 미만
+
+### 출력
+
+R1행 C1열부터 R2행 C2열까지의 프렉탈 평면을 출력한다. 검은 칸은 1, 흰 칸은 0으로 출력한다.
+
+### 예제
+
+입력:
+
+```
+2 3 1 0 8 0 8
+```
+
+출력:
+
+```
+000000000
+000000000
+000000000
+000111000
+000111000
+000111000
+000000000
+000000000
+000000000
+```
+
+## 풀이
+
+**핵심 아이디어**: 분할 정복으로 N^s 평면을 재귀적으로 N×N 서브 블록으로 나누어, 각 셀이 검은색인지 판단한다.
+
+1. 전체 평면 크기는 `N^s`이다. 재귀 함수 `divide(x, y, size, isBlack)`을 정의한다.
+2. 현재 블록이 출력 범위 `[C1, C2] × [R1, R2]`와 겹치지 않으면 바로 반환한다.
+3. `size == 1`이면 해당 칸이 검은색(`isBlack`)인지 아닌지 결과 배열에 저장한다.
+4. 블록을 N × N개의 서브 블록으로 나누고, 중앙 K × K 영역(인덱스 `blackStart` ~ `blackEnd-1`)에 해당하는 서브 블록은 `isBlack = true`로 재귀 호출한다.
+5. 재귀가 끝나면 결과 배열에서 요청 범위만큼 출력한다.
+
+단계별 흐름:
+
+- `blackStart = (N - K) / 2`, `blackEnd = N - blackStart`로 중앙 K개의 인덱스 범위를 계산한다.
+- 재귀 깊이는 s이고, 각 레벨에서 N×N번 분기하므로 전체 호출 수는 출력 범위에 한정된다.
+- 범위 밖 블록은 즉시 가지치기하여 불필요한 재귀를 방지한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day189BOJ1030프렉탈구간 { // 1030
+	static int s, N, K, R1, R2, C1, C2, sSize;
+	static char[][] arr = new char[51][51];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		s = Integer.parseInt(st.nextToken());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		R1 = Integer.parseInt(st.nextToken());
+		R2 = Integer.parseInt(st.nextToken());
+		C1 = Integer.parseInt(st.nextToken());
+		C2 = Integer.parseInt(st.nextToken());
+
+		divide(0, 0, (int) Math.pow(N, s), false);
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i <= R2 - R1; i++) {
+			for (int j = 0; j <= C2 - C1; j++) {
+				sb.append(arr[i][j]);
+			}
+			sb.append("\n");
+		}
+		System.out.println(sb.toString());
+		br.close();
+	}
+
+	static void divide(int x, int y, int size, boolean isBlack) {
+		if (x > C2 || x + size <= C1 || y > R2 || y + size <= R1)
+			return;
+		if (size == 1) {
+			arr[y - R1][x - C1] = isBlack ? '1' : '0';
+			return;
+		}
+		int nSize = size / N;
+		int blackStart = (N - K) / 2;
+		int blackEnd = N - blackStart;
+		for (int i = 0; i < N; i++) {
+			int nY = y + nSize * i;
+			for (int j = 0; j < N; j++) {
+				int nX = x + nSize * j;
+				divide(nX, nY, nSize,
+						isBlack || (i >= blackStart && i < blackEnd) && (j >= blackStart && j < blackEnd));
+			}
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O((R2-R1+1) × (C2-C1+1) × s) — 출력 범위 내 셀마다 재귀 깊이 s만큼 탐색
+- 공간: O(s) — 재귀 스택 깊이 및 결과 배열 (최대 51×51)

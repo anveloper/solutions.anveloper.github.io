@@ -1,0 +1,69 @@
+---
+title: "BOJ 2857 - FBI"
+date: "2023-12-01"
+description: "문자열, 구현 문제"
+tags: ["문자열", "구현"]
+platform: "boj"
+problem_number: "2857"
+problem_url: "https://www.acmicpc.net/problem/2857"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2857 - FBI](https://www.acmicpc.net/problem/2857)
+
+5명의 요원 이름이 주어질 때, 이름에 "FBI"가 포함된 요원의 번호를 출력하라. 아무도 없으면 "HE GOT AWAY!"를 출력한다.
+
+### 입력
+
+5줄에 걸쳐 요원의 이름이 주어진다.
+
+### 출력
+
+"FBI"가 포함된 요원 번호를 공백으로 구분하여 출력하거나, 없으면 "HE GOT AWAY!"를 출력한다.
+
+### 예제
+
+| 입력                                   | 출력    |
+| -------------------------------------- | ------- |
+| `NOTFBI` `AGENT` `FBI` `NFBI` `HIDDEN` | `1 3 4` |
+
+## 풀이
+
+5개의 입력을 순회하며 "FBI" 문자열 포함 여부를 확인한다.
+
+1. 1번부터 5번까지 요원 이름을 읽는다
+2. 각 이름에 "FBI"가 포함되어 있으면 해당 번호를 결과 문자열에 추가한다
+3. 결과가 비어 있으면 "HE GOT AWAY!"를, 아니면 요원 번호를 출력한다
+
+**핵심 아이디어**: `String.contains()`로 부분 문자열 존재 여부를 판별하며, 입력이 5개로 고정되어 있어 단순 반복으로 해결된다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day664BOJ2857FBI {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    String str = "";
+    for (int i = 1; i <= 5; i++) {
+      if (br.readLine().contains("FBI"))
+        str += i + " ";
+    }
+    System.out.println(str != "" ? str.trim() : "HE GOT AWAY!");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 5개 입력, 각 이름 내 "FBI" 탐색
+- 공간: O(1) — 고정 크기 결과 문자열

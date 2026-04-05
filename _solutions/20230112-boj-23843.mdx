@@ -1,0 +1,88 @@
+---
+title: "BOJ 23843 - 콘센트"
+date: "2023-01-12"
+description: "자료 구조, 그리디 알고리즘, 정렬 문제"
+tags: ["자료 구조", "그리디 알고리즘", "정렬", "우선순위 큐"]
+platform: "boj"
+problem_number: "23843"
+problem_url: "https://www.acmicpc.net/problem/23843"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 23843 - 콘센트](https://www.acmicpc.net/problem/23843)
+
+N개의 기기를 M개의 콘센트로 충전할 때, 모든 기기의 충전이 완료되는 최소 시간을 구하라. 한 콘센트에는 한 번에 하나의 기기만 충전 가능하다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. 둘째 줄에 각 기기의 충전 시간이 주어진다.
+
+### 출력
+
+모든 기기 충전이 완료되는 최소 시간을 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `5 2` `1 1 2 3 4` | `6`  |
+
+## 풀이
+
+충전 시간이 긴 기기부터 가장 여유 있는 콘센트에 배정한다.
+
+1. 기기를 충전 시간 내림차순으로 최대 힙에 넣는다
+2. M개의 콘센트를 최소 힙으로 관리한다 (현재 총 충전 시간)
+3. 가장 오래 걸리는 기기를 꺼내, 현재 가장 빨리 비는 콘센트(최소 힙 peek)에 배정한다
+4. 해당 콘센트의 누적 시간에 기기 충전 시간을 더한 값을 힙에 다시 넣는다
+5. 모든 기기 배정 후, 콘센트들의 최대 누적 시간이 답이다
+
+**핵심 아이디어**: 충전 시간이 긴 기기를 먼저 배정해야 전체 시간이 최소화된다. 최소 힙으로 가장 여유 있는 콘센트를 O(log M)에 찾는다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+public class Day339BOJ23843콘센트 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        PriorityQueue<Integer> eq = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++)
+            eq.add(Integer.parseInt(st.nextToken()));
+
+        for (int i = 0; i < M; i++)
+            pq.add(0);
+
+        while (!eq.isEmpty())
+            pq.add(eq.poll() + pq.poll());
+
+        while (pq.size() != 1)
+            pq.poll();
+
+        System.out.println(pq.poll());
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

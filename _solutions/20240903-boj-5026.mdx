@@ -1,0 +1,86 @@
+---
+title: "BOJ 5026 - 박사 과정"
+date: "2024-09-03"
+description: "덧셈 수식 또는 특수 문자열을 처리하는 파싱 문제"
+tags: ["수학", "문자열", "파싱"]
+platform: "boj"
+problem_number: "5026"
+problem_url: "https://www.acmicpc.net/problem/5026"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5026 - 박사 과정](https://www.acmicpc.net/problem/5026)
+
+`a+b` 형태의 덧셈 수식이면 합을 출력하고, `P=NP`가 입력되면 `skipped`를 출력하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수, 이후 각 줄에 수식 또는 `P=NP`가 주어진다.
+
+### 출력
+
+각 입력에 대해 합 또는 `skipped`를 출력한다.
+
+### 예제
+
+| 입력                   | 출력              |
+| ---------------------- | ----------------- |
+| `3` `2+3` `P=NP` `0+0` | `5` `skipped` `0` |
+
+## 풀이
+
+문자열을 파싱하여 수식과 특수 입력을 구분한다.
+
+1. `P=NP`이면 `skipped`를 출력한다
+2. 그 외에는 `+` 위치를 찾아 앞뒤를 분리한다
+3. 각 부분을 정수로 변환하여 합을 출력한다
+
+**핵심 아이디어**: `string::find`와 `substr`로 `+` 기준 파싱을 수행하여 O(N)에 처리한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <stdlib.h>
+
+using namespace std;
+
+int main()
+{
+
+  int test;
+  cin >> test;
+
+  for (int i = 0; i < test; i++)
+  {
+
+    string str;
+    cin >> str;
+
+    int a, b;
+
+    if (str == "P=NP")
+    {
+      cout << "skipped" << "\n";
+    }
+
+    else
+    {
+      int sever = str.find('+');
+      a = stoi(str.substr(0, sever));
+      b = stoi(str.substr(sever + 1));
+      cout << a + b << "\n";
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N) (T: 테스트 케이스 수, N: 문자열 길이)
+- 공간: O(N)

@@ -1,0 +1,74 @@
+---
+title: "BOJ 8387 - Dyslexia"
+date: "2025-11-19"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "8387"
+problem_url: "https://www.acmicpc.net/problem/8387"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8387 - Dyslexia](https://www.acmicpc.net/problem/8387)
+
+두 문자열을 같은 위치에서 비교하여 일치하는 문자의 개수를 구하는 문제다. 난독증(Dyslexia)을 테스트하는 맥락으로, 두 문자열 중 서로 같은 위치에 있는 문자의 수를 세어 출력한다.
+
+### 입력
+
+- 첫째 줄: 정수 `N` (문자열 길이)
+- 둘째 줄: 첫 번째 문자열 (길이 N)
+- 셋째 줄: 두 번째 문자열 (길이 N)
+
+### 출력
+
+두 문자열에서 같은 위치에 동일한 문자가 있는 개수를 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `5` `hello` `hxllo` | `4`  |
+| `3` `abc` `abc`     | `3`  |
+| `4` `abcd` `dcba`   | `0`  |
+
+## 풀이
+
+두 문자열을 인덱스별로 비교하여 다른 위치의 수를 세고, 전체 길이에서 빼는 방식으로 일치 개수를 구한다.
+
+1. 문자열 길이 `N`을 입력받는다.
+2. 두 문자열 `arr1`, `arr2`를 입력받는다.
+3. 인덱스 0부터 N-1까지 순회하며 `arr1[n] != arr2[n]`인 경우 `ans`를 1 증가시킨다.
+4. 결과로 `N - ans`(일치하는 문자 수)를 출력한다.
+
+**핵심 아이디어:** 불일치 개수를 세어 전체 길이에서 빼는 방식은 일치 개수를 직접 세는 것과 동일하다. `register int`와 `++n` 형태는 과거 최적화 관용 표현으로 현대 컴파일러에서는 성능 차이가 없다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false), cin.tie(NULL);
+  register int N, ans = 0;
+  char arr1[100001], arr2[100001];
+  cin >> N;
+  cin >> arr1 >> arr2;
+  for (register int n = 0; n < N; ++n)
+    if (arr1[n] != arr2[n])
+      ++ans;
+  cout << N - ans;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 두 문자열을 한 번 순회
+- 공간: O(N) — 길이 N의 문자 배열 두 개 사용

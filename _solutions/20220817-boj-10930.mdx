@@ -1,0 +1,87 @@
+---
+title: "BOJ 10930 - SHA-256"
+date: "2022-08-17"
+description: "문자열, 구현 문제"
+tags: ["문자열", "구현"]
+platform: "boj"
+problem_number: "10930"
+problem_url: "https://www.acmicpc.net/problem/10930"
+difficulty: "Unrated"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10930 - SHA-256](https://www.acmicpc.net/problem/10930)
+
+문자열이 주어졌을 때, SHA-256 해시값을 출력하라.
+
+### 입력
+
+알파벳 소문자와 숫자로만 이루어진 문자열(길이 50 이하)이 주어진다.
+
+### 출력
+
+주어진 문자열의 SHA-256 해시값을 16진수 소문자로 출력한다.
+
+### 예제
+
+| 입력       | 출력         |
+| ---------- | ------------ |
+| `Baekjoon` | `9944e1e...` |
+
+## 풀이
+
+Java의 `MessageDigest` 클래스를 사용하여 SHA-256 해시를 계산한다.
+
+1. `MessageDigest.getInstance("SHA-256")`으로 SHA-256 인스턴스를 생성한다
+2. 입력 문자열의 바이트 배열을 `update()`로 전달한다
+3. `digest()`로 해시 바이트 배열을 얻는다
+4. 각 바이트를 16진수 2자리 문자열로 변환하여 이어붙인다
+
+**핵심 아이디어**: Java 표준 라이브러리의 `java.security.MessageDigest`가 SHA-256을 기본 제공하므로, 라이브러리 호출만으로 해결할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.StringTokenizer;
+
+public class Day191BOJ10930SHA256구현 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer token = new StringTokenizer(br.readLine());
+		System.out.println(testSHA256(token.nextToken()));
+		br.close();
+	}
+
+	public static String testSHA256(String str) {
+		String SHA = "";
+		try {
+			MessageDigest sh = MessageDigest.getInstance("SHA-256");
+			sh.update(str.getBytes());
+			byte byteData[] = sh.digest();
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < byteData.length; i++) {
+				sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+			}
+			SHA = sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			SHA = null;
+		}
+		return SHA;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 문자열 길이)
+- 공간: O(1)

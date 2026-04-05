@@ -1,0 +1,73 @@
+---
+title: "BOJ 4619 - 루트"
+date: "2024-10-26"
+description: "a^n이 b에 가장 가까운 a를 찾는 브루트포스 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "4619"
+problem_url: "https://www.acmicpc.net/problem/4619"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4619 - 루트](https://www.acmicpc.net/problem/4619)
+
+b와 n이 주어질 때, `a^n`이 b에 가장 가까운 양의 정수 a를 구하라.
+
+### 입력
+
+여러 줄에 걸쳐 b, n이 주어진다. 0 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 최적의 a를 출력한다.
+
+### 예제
+
+| 입력                | 출력    |
+| ------------------- | ------- |
+| `4 3` `100 3` `0 0` | `2` `5` |
+
+## 풀이
+
+a를 1부터 브루트포스로 탐색하며 최솟값을 추적한다.
+
+1. a를 1부터 증가시키며 `pow(a, n)`을 계산한다
+2. `abs(pow(a, n) - b)`가 최소인 a를 추적한다
+3. `pow(a, n)`이 2,000,000을 초과하면 탐색을 종료한다
+
+**핵심 아이디어**: `a^n`은 단조 증가하므로, b를 넘은 후에도 약간의 여유를 두고 탐색하면 최적 a를 찾을 수 있다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+  while (1)
+  {
+    int b, n;
+    cin >> b >> n;
+    if (!b && !n)
+      break;
+    int minDiff = 0x3f3f3f3f;
+    int minVal = 0x3f3f3f3f;
+    for (int a = 1; pow(a, n) <= 2000000; a++)
+    {
+      int diff = abs(pow(a, n) - b);
+      if (diff < minDiff)
+        minDiff = diff, minVal = a;
+    }
+    cout << minVal << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* 2000000^(1/n))
+- 공간: O(1)

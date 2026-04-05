@@ -1,0 +1,84 @@
+---
+title: "BOJ 5218 - 알파벳 거리"
+date: "2024-02-15"
+description: "수학, 구현, 문자열 문제"
+tags: ["수학", "구현", "문자열"]
+platform: "boj"
+problem_number: "5218"
+problem_url: "https://www.acmicpc.net/problem/5218"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5218 - 알파벳 거리](https://www.acmicpc.net/problem/5218)
+
+두 대문자 단어가 주어질 때, 대응하는 각 글자의 알파벳 거리를 구하라. 거리는 첫 번째 글자에서 두 번째 글자까지 순방향(A→Z)으로 이동하는 칸 수이다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 N, 이후 N줄에 두 단어가 주어진다.
+
+### 출력
+
+각 케이스마다 "Distances:" 뒤에 각 위치의 거리를 출력한다.
+
+### 예제
+
+| 입력          | 출력                |
+| ------------- | ------------------- |
+| `1` `ABC BCA` | `Distances: 1 1 24` |
+
+## 풀이
+
+각 위치에서 두 글자의 차이를 구하되, 음수이면 26을 더하여 순방향 거리를 계산한다.
+
+1. 두 단어를 읽고 같은 위치의 문자를 비교한다
+2. (b - a)가 음수이면 26을 더하여 순환 거리를 구한다
+3. 각 거리를 공백으로 구분하여 출력한다
+
+**핵심 아이디어**: 알파벳 순환을 모듈러 연산(mod 26)으로 처리한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day744BOJ5218알파벳거리 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+    int n = Integer.parseInt(br.readLine());
+
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i < n; i++) {
+      sb.append("Distances:");
+      st = new StringTokenizer(br.readLine());
+      String a = st.nextToken();
+      String b = st.nextToken();
+
+      for (int j = 0; j < a.length(); j++) {
+        char ac = a.charAt(j);
+        char bc = b.charAt(j);
+
+        int ans = bc - ac < 0 ? bc - ac + 26 : bc - ac;
+        sb.append(" " + ans);
+      }
+      sb.append("\n");
+    }
+
+    System.out.println(sb.toString().trim());
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* L) — T는 테스트 케이스 수, L은 단어 길이
+- 공간: O(L) — 결과 문자열

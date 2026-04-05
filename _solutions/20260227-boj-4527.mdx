@@ -1,0 +1,67 @@
+---
+title: "BOJ 4527 - Patterns and Pictures"
+date: "2026-02-27"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "4527"
+problem_url: "https://www.acmicpc.net/problem/4527"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4527 - Patterns and Pictures](https://www.acmicpc.net/problem/4527)
+
+여러 종류의 사진(각각 면적이 다름)이 주어지고 전체 n장을 사용할 때, 각 사진 종류별 필요 매수를 구한다. 총 면적 1296, 2592, 3888 중 각각에 대해 `면적 / (단위 면적 합)`을 계산한다.
+
+### 입력
+
+- 첫 줄: 테스트 케이스 수
+- 각 테스트 케이스: 사진 종류 수 n, 이후 n줄에 가로 세로 크기
+
+### 출력
+
+각 테스트 케이스마다 3개의 값을 출력한다.
+
+## 풀이
+
+모든 사진의 면적 합(가로 \* 세로)을 구한 뒤, 기준 면적(1296, 2592, 3888)을 면적 합으로 나눈다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int t;
+
+int main(){
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+
+  cin>>t;
+
+  while (t--){
+    int n, cnt=0;
+    cin>>n;
+    while (n--){
+      int a,b;
+      cin>>a>>b;
+      cnt+=a*b;
+    }
+    cout<<1296/cnt<<' '<<2592/cnt<<' '<<3888/cnt<<'\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N) — 테스트 케이스당 사진 종류 수만큼 순회
+- 공간: O(1) — 상수 변수만 사용

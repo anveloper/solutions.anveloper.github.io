@@ -1,0 +1,96 @@
+---
+title: "BOJ 2716 - 원숭이 매달기"
+date: "2025-10-12"
+description: "자료 구조, 트리, 스택 문제"
+tags: ["자료 구조", "트리", "스택"]
+platform: "boj"
+problem_number: "2716"
+problem_url: "https://www.acmicpc.net/problem/2716"
+difficulty: "실버 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2716 - 원숭이 매달기](https://www.acmicpc.net/problem/2716)
+
+이진 트리의 괄호 표현이 주어질 때, 트리에 매달릴 수 있는 최대 원숭이 수를 구하라. 결과는 `2^(최대 깊이)`이다.
+
+### 입력
+
+테스트 케이스 수 T와 각 케이스마다 괄호 문자열이 주어진다.
+
+### 출력
+
+각 케이스마다 `2^(최대 깊이)`를 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `1` `[[[][]]]` | `8`  |
+
+## 풀이
+
+괄호 문자열의 최대 중첩 깊이를 구하고 `2^깊이`를 계산한다.
+
+1. 문자열을 순회하며 `[`이면 깊이를 증가, `]`이면 감소시킨다
+2. 순회 중 최대 깊이를 기록한다
+3. `2^(최대 깊이)`를 출력한다
+
+**핵심 아이디어**: 이진 트리의 리프 노드 수는 최대 `2^깊이`이며, 괄호의 최대 중첩 깊이가 트리의 깊이와 같다.
+
+## 코드
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <queue>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int T;
+  cin >> T;
+  cin.ignore();
+
+  while (T--)
+  {
+    string s;
+    getline(cin, s);
+
+    int res = 0;
+    int temp = 0;
+    for (auto c : s)
+    {
+      if (c == '[')
+        temp++;
+      else
+        temp--;
+
+      res = max(res, temp);
+    }
+
+    int ans = 1;
+    for (int i = 0; i < res; i++)
+    {
+      ans *= 2;
+    }
+
+    cout << ans << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

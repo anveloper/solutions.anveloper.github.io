@@ -1,0 +1,81 @@
+---
+title: "BOJ 8595 - 히든 넘버"
+date: "2024-02-18"
+description: "문자열, 파싱 문제"
+tags: ["문자열", "파싱"]
+platform: "boj"
+problem_number: "8595"
+problem_url: "https://www.acmicpc.net/problem/8595"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8595 - 히든 넘버](https://www.acmicpc.net/problem/8595)
+
+문자열에 포함된 모든 연속 숫자(히든 넘버)의 합을 구하라.
+
+### 입력
+
+첫째 줄에 문자열 길이 N, 둘째 줄에 문자열이 주어진다.
+
+### 출력
+
+히든 넘버들의 합을 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `14` `ab13c9d07jeden` | `29` |
+
+## 풀이
+
+문자열을 순회하며 연속된 숫자를 모아 수로 변환하고 합산한다.
+
+1. 각 문자가 숫자이면 StringBuilder에 추가한다
+2. 숫자가 아닌 문자를 만나면 지금까지 모은 숫자를 Long으로 변환하여 합에 더하고 초기화한다
+3. 문자열 끝에 남은 숫자도 처리한다
+
+**핵심 아이디어**: 연속된 숫자 문자를 하나의 수로 파싱하여 합산하는 단순 순회 문제이다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+
+public class Day747BOJ8595히든넘버 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    final String N = br.readLine();
+    final String S = br.readLine();
+
+    Long ans = 0L;
+    StringBuilder sb = new StringBuilder();
+
+    for (char c : S.toCharArray()) {
+      if (Character.isDigit(c)) {
+        sb.append(c);
+      } else if (sb.length() > 0) {
+        ans += Long.parseLong(sb.toString());
+        sb.setLength(0);
+      }
+    }
+
+    if (sb.length() > 0) {
+      ans += Long.parseLong(sb.toString());
+    }
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

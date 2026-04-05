@@ -1,0 +1,114 @@
+---
+title: "BOJ 16398 - 행성 연결"
+date: "2023-02-09"
+description: "그래프 이론, 최소 스패닝 트리 문제"
+tags: ["그래프 이론", "최소 스패닝 트리"]
+platform: "boj"
+problem_number: "16398"
+problem_url: "https://www.acmicpc.net/problem/16398"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16398 - 행성 연결](https://www.acmicpc.net/problem/16398)
+
+N개의 행성을 모두 연결하는 최소 비용을 구하라. N×N 인접 행렬로 행성 간 연결 비용이 주어진다.
+
+### 입력
+
+첫째 줄에 N (1 이상 1,000 이하), 이후 N×N 비용 행렬이 주어진다.
+
+### 출력
+
+모든 행성을 연결하는 최소 비용을 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `3` `0 62 31` `62 0 20` `31 20 0` | `51` |
+
+## 풀이
+
+크루스칼 알고리즘으로 최소 스패닝 트리를 구한다.
+
+1. 인접 행렬에서 `i < j`인 간선만 추출하여 우선순위 큐에 넣는다
+2. 비용이 작은 간선부터 꺼내며 Union-Find로 사이클 여부를 확인한다
+3. 사이클이 없으면 간선을 선택하고 비용을 누적한다 (long 타입 주의)
+4. N-1개의 간선이 선택되면 종료한다
+
+**핵심 아이디어**: 완전 그래프에서의 MST 문제. 간선 수가 N(N-1)/2이므로 크루스칼의 정렬 비용이 지배적이다. 비용 합이 int 범위를 초과할 수 있어 long을 사용한다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Day367BOJ16398행성연결 {
+    static int N;
+    static long ans = 0; // 63% 부터 long..
+    static int[] p;
+    static int[][] map;
+    static PriorityQueue<int[]> pq;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+
+        p = new int[N];
+        map = new int[N][N];
+        pq = new PriorityQueue<>(new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[2] - o2[2];
+            }
+        });
+
+        for (int i = 0; i < N; i++) {
+            p[i] = i;
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < N; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+                if (i < j)
+                    pq.add(new int[] { i, j, map[i][j] });
+            }
+        }
+
+        while (!pq.isEmpty()) {
+            int[] cur = pq.poll();
+            int u = cur[0];
+            int v = cur[1];
+            int cost = cur[2];
+            if (union(u, v))
+                ans += cost;
+        }
+
+        System.out.println(ans);
+        br.close();
+    }
+
+    private static boolean union(int u, int v) {
+        u = find(u);
+        v = find(v);
+        if (u == v)
+            return false;
+        p[v] = u;
+        return true;
+    }
+
+    private static int find(int n) {
+        return p[n] = n == p[n] ? n : find(p[n]);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N² log N) - N²개 간선 정렬
+- 공간: O(N²) - 인접 행렬 및 우선순위 큐

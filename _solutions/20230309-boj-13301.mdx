@@ -1,0 +1,74 @@
+---
+title: "BOJ 13301 - 타일 장식물"
+date: "2023-03-09"
+description: "수학, 다이나믹 프로그래밍 문제"
+tags: ["수학", "다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "13301"
+problem_url: "https://www.acmicpc.net/problem/13301"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13301 - 타일 장식물](https://www.acmicpc.net/problem/13301)
+
+정사각형 타일을 피보나치 패턴으로 붙여 만든 직사각형의 둘레를 구하라. N번째까지 타일을 붙인 직사각형의 둘레를 출력한다.
+
+### 입력
+
+첫째 줄에 N (1 이상 80 이하)이 주어진다.
+
+### 출력
+
+N번째 직사각형의 둘레를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `5`  | `26` |
+
+## 풀이
+
+피보나치 수열 기반 점화식으로 둘레를 구한다.
+
+1. `dp[0] = 2`, `dp[1] = 4`로 초기화한다 (1×1, 1×2 타일의 둘레)
+2. `dp[i] = dp[i-1] + dp[i-2]`로 피보나치처럼 둘레를 계산한다
+3. `dp[N]`을 출력한다
+
+**핵심 아이디어**: 새 타일의 한 변이 피보나치 수이고, 둘레에 추가되는 길이도 피보나치 관계를 따른다. 80항까지는 long 범위 내이다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+
+public class Day396BOJ13301타일장식물 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int num = Integer.parseInt(br.readLine());
+    long[] dp = new long[num + 1];
+
+    dp[0] = 2;
+    dp[1] = 4;
+
+    for (int i = 2; i < num + 1; i++) {
+      dp[i] = dp[i - 1] + dp[i - 2];
+    }
+
+    System.out.println(dp[num]);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

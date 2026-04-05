@@ -1,0 +1,87 @@
+---
+title: "BOJ 3023 - 마술사 이민혁"
+date: "2024-08-16"
+description: "패턴의 좌우 및 상하 대칭을 만들고 특정 좌표를 반전하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "3023"
+problem_url: "https://www.acmicpc.net/problem/3023"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3023 - 마술사 이민혁](https://www.acmicpc.net/problem/3023)
+
+R×C 크기의 패턴 좌상단이 주어지면 좌우, 상하 대칭으로 2R×2C 크기로 확장한 뒤, 특정 좌표의 문자를 반전하여 출력하라.
+
+### 입력
+
+R, C, R×C 패턴, 반전할 좌표 (y, x)가 주어진다.
+
+### 출력
+
+확장 후 반전된 2R×2C 패턴을 출력한다.
+
+### 예제
+
+| 입력                  | 출력           |
+| --------------------- | -------------- |
+| `2 2` `#.` `.#` `1 3` | 확장+반전 결과 |
+
+## 풀이
+
+좌상단 패턴을 좌우 대칭으로 확장하고, 상하 대칭으로 아래 절반을 채운 뒤 좌표를 반전한다.
+
+1. R×C 패턴의 각 행을 역순으로 이어붙여 2C 너비로 확장한다
+2. 상단 R행을 역순으로 복사하여 하단 R행을 채운다 (2R 높이)
+3. 좌표 (y, x)의 문자를 `#` ↔ `.` 반전한다
+4. 전체 2R×2C 패턴을 출력한다
+
+**핵심 아이디어**: 좌상단 1/4만으로 전체 패턴을 대칭 확장하면 O(R\*C)에 생성할 수 있다.
+
+## 코드
+
+```cpp
+#include <vector>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+int r, c;
+int main(void)
+{
+  cin >> r >> c;
+  string str[2 * r];
+  for (int i = 0; i < r; i++)
+    cin >> str[i];
+  for (int i = 0; i < r; i++)
+  {
+    for (int j = c - 1; j >= 0; j--)
+    {
+      str[i] += str[i][j];
+    }
+  }
+  for (int i = 0; i < r; i++)
+  {
+    str[2 * r - 1 - i] = str[i];
+  }
+  int y, x;
+  cin >> y >> x;
+  if (str[y - 1][x - 1] == '#')
+    str[y - 1][x - 1] = '.';
+  else
+    str[y - 1][x - 1] = '#';
+  for (int i = 0; i < 2 * r; i++)
+    cout << str[i] << "\n";
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(R \* C)
+- 공간: O(R \* C)

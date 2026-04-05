@@ -1,0 +1,90 @@
+---
+title: "BOJ 6750 - Rotating letters"
+date: "2025-12-16"
+description: "문자열이 180도 회전해도 읽을 수 있는 문자로만 구성되었는지 판별하는 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "6750"
+problem_url: "https://www.acmicpc.net/problem/6750"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6750 - Rotating letters](https://www.acmicpc.net/problem/6750)
+
+주어진 문자열을 180도 회전시켜도 동일하게 읽을 수 있는지 판단한다. 180도 회전해도 의미가 유지되는 대문자는 `I`, `O`, `S`, `H`, `Z`, `X`, `N` 7가지이다. 문자열의 모든 문자가 이 집합에 속하면 `YES`, 하나라도 속하지 않으면 `NO`를 출력한다.
+
+### 입력
+
+한 줄에 대문자로 이루어진 문자열이 주어진다.
+
+### 출력
+
+모든 문자가 회전 가능한 문자이면 `YES`, 아니면 `NO`를 출력한다.
+
+### 예제
+
+| 입력    | 출력  |
+| ------- | ----- |
+| `OHIO`  | `YES` |
+| `HELLO` | `NO`  |
+
+## 풀이
+
+허용되는 문자 집합을 배열로 정의하고 입력 문자열의 각 글자를 순차적으로 검사한다.
+
+1. 허용 문자 집합 `{'I', 'O', 'S', 'H', 'Z', 'X', 'N'}`을 배열로 정의한다.
+2. 입력 문자열의 각 문자에 대해 `canUse()` 함수를 호출한다.
+3. 허용 집합에 포함되지 않는 문자가 하나라도 있으면 즉시 `NO`를 출력하고 종료한다.
+4. 모든 문자가 통과하면 `YES`를 출력한다.
+
+**핵심 아이디어**: 조건에 맞지 않는 문자를 발견하는 즉시 `return 0`으로 함수를 종료하는 얼리 리턴(early exit) 전략으로 불필요한 순회를 줄인다. 허용 문자 집합이 고정되어 있으므로 배열 선형 탐색으로 충분하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+char letter[7] = {'I', 'O', 'S', 'H', 'Z', 'X', 'N'};
+
+bool canUse(char c);
+
+bool canUse(char c)
+{
+  for (int i = 0; i < 7; i++)
+  {
+    if (c == letter[i])
+      return true;
+  }
+
+  return false;
+}
+
+int main()
+{
+  string s;
+  cin >> s;
+
+  for (int i = 0; i < s.length(); i++)
+  {
+    if (!canUse(s[i]))
+    {
+      cout << "NO\n";
+      return 0;
+    }
+  }
+
+  cout << "YES\n";
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N은 문자열 길이, 각 문자마다 크기 7의 집합 탐색으로 O(7\*N) = O(N)
+- 공간: O(1) — 고정 크기 허용 문자 배열만 사용

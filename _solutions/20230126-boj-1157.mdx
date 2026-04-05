@@ -1,0 +1,85 @@
+---
+title: "BOJ 1157 - 단어 공부"
+date: "2023-01-26"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1157"
+problem_url: "https://www.acmicpc.net/problem/1157"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1157 - 단어 공부](https://www.acmicpc.net/problem/1157)
+
+알파벳 대소문자로 이루어진 단어에서 가장 많이 사용된 알파벳을 대문자로 출력하라. 가장 많이 사용된 알파벳이 여러 개이면 `?`를 출력한다.
+
+### 입력
+
+첫째 줄에 알파벳 대소문자로 이루어진 단어가 주어진다 (길이 1 이상 1,000,000 이하).
+
+### 출력
+
+가장 많이 사용된 알파벳을 대문자로 출력한다. 여러 개이면 `?`를 출력한다.
+
+### 예제
+
+| 입력         | 출력 |
+| ------------ | ---- |
+| `Mississipi` | `?`  |
+
+## 풀이
+
+26칸 빈도 배열로 각 알파벳의 출현 횟수를 세고, 최대 빈도가 유일한지 확인한다.
+
+1. 크기 26의 배열에 각 알파벳의 등장 횟수를 센다 (대소문자를 같은 인덱스로 매핑)
+2. 소문자는 -97, 대문자는 -65로 인덱스를 계산한다
+3. 배열을 순회하며 최대값과 해당 알파벳을 추적한다
+4. 최대값이 동률이면 `?`로 갱신한다
+
+**핵심 아이디어**: 대소문자를 동일 인덱스로 매핑하여 한 번의 순회로 빈도를 세고, 최대값 탐색 시 동률 여부까지 한 번에 처리한다.
+
+## 코드
+
+```java
+
+import java.io.*;
+
+public class Day353BOJ1157단어공부 {
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int[] arr = new int[26];
+        String s = br.readLine();
+
+        for (int i = 0; i < s.length(); i++) {
+            if ('a' <= s.charAt(i) && s.charAt(i) <= 'z') {
+                arr[s.charAt(i) - 97]++;
+            } else {
+                arr[s.charAt(i) - 65]++;
+            }
+        }
+        int max = -1;
+        char ch = '?';
+        for (int i = 0; i < 26; i++) {
+
+            if (arr[i] > max) {
+                max = arr[i];
+                ch = (char) (i + 65);
+            } else if (arr[i] == max) {
+                ch = '?';
+            }
+        }
+        System.out.print(ch);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 문자열 길이)
+- 공간: O(1) (26칸 고정 배열)

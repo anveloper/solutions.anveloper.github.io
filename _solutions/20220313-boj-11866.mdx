@@ -1,0 +1,87 @@
+---
+title: "BOJ 11866 - 요세푸스 문제 0"
+date: "2022-03-13"
+description: "구현, 자료 구조, 큐 문제"
+tags: ["구현", "자료 구조", "큐"]
+platform: "boj"
+problem_number: "11866"
+problem_url: "https://www.acmicpc.net/problem/11866"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11866 - 요세푸스 문제 0](https://www.acmicpc.net/problem/11866)
+
+1번부터 N번까지 N명이 원형으로 앉아있다. K번째 사람을 반복적으로 제거하여 모두 제거될 때까지의 순서(요세푸스 순열)를 구하라. (N, K가 1,000 이하인 제한된 버전)
+
+### 입력
+
+첫째 줄에 N과 K가 주어진다 (1 이상 K 이상 N 이상 1,000 이하).
+
+### 출력
+
+요세푸스 순열을 `<n1, n2, ..., nN>` 형태로 출력한다.
+
+### 예제
+
+| 입력  | 출력                    |
+| ----- | ----------------------- |
+| `7 3` | `<3, 6, 2, 7, 5, 1, 4>` |
+
+## 풀이
+
+BOJ 1158과 동일한 로직으로, 큐를 사용하여 원형 순회를 시뮬레이션한다.
+
+1. 1부터 N까지의 수를 큐에 넣는다
+2. K-1번 카운트를 유지하며 0보다 크면 앞 원소를 뒤로 보낸다 (왼쪽 회전)
+3. 카운트가 0이 되면 해당 원소를 제거하고 결과에 추가한 뒤 카운트를 K-1로 재설정한다
+4. 마지막 한 명은 별도로 처리하여 쉼표 없이 추가한다
+
+**핵심 아이디어**: BOJ 1158과 동일한 요세푸스 문제이나 N, K 범위가 1,000 이하로 더 작다. 큐의 회전 연산으로 원형 구조를 시뮬레이션한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class Day23BOJ11866요세푸스문제0 { // 11866 요세푸스 문제 0
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		Queue<Integer> q = new LinkedList<>();
+		StringBuilder sb = new StringBuilder();
+		int N = sc.nextInt();
+		int K = sc.nextInt();
+		for (int n = 1; n <= N; n++) {
+			q.offer(n);
+		}
+		int cnt = K - 1;
+		sb.append("<");
+		while (!q.isEmpty()) {
+			if (cnt > 0) {
+				q.offer(q.poll());
+				cnt--;
+				continue;
+			}
+			if (q.size() == 1)
+				break;
+			sb.append(q.poll()).append(", ");
+			cnt = K - 1;
+		}
+		sb.append(q.poll() + ">");
+		System.out.println(sb);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* K) — N명을 제거하며 각각 최대 K번 회전
+- 공간: O(N) — 큐

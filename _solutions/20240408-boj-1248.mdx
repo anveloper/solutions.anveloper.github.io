@@ -1,0 +1,94 @@
+---
+title: "BOJ 1248 - Guess"
+date: "2024-04-08"
+description: "부분 합의 부호 행렬이 주어질 때 원래 수열을 복원하는 문제"
+tags: ["브루트포스", "백트래킹"]
+platform: "boj"
+problem_number: "1248"
+problem_url: "https://www.acmicpc.net/problem/1248"
+difficulty: "골드 III"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1248 - Guess](https://www.acmicpc.net/problem/1248)
+
+길이 N인 수열의 모든 연속 부분 합의 부호(+, -, 0)가 주어질 때, 조건을 만족하는 수열을 복원하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 부호 문자열(길이 N(N+1)/2)이 주어진다.
+
+### 출력
+
+조건을 만족하는 수열을 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력         | 출력     |
+| ------------ | -------- |
+| `3` `+0+-0-` | `1 -1 2` |
+
+## 풀이
+
+백트래킹으로 -10~10 범위의 수를 배치하며, 부분 합 부호를 즉시 검증한다.
+
+1. 부호 문자열을 2차원 배열 `sign[i][j]`로 파싱한다
+2. 위치 pos에 값을 배치할 때, 0~pos까지의 모든 부분 합 부호가 일치하는지 확인한다
+3. 부호가 불일치하면 즉시 가지치기하고 다음 값을 시도한다
+4. N개를 모두 배치하면 수열을 반환한다
+
+**핵심 아이디어**: 매 배치마다 현재까지의 부분 합을 역방향으로 검증하여 조기 가지치기를 하면, 실제 탐색 공간이 크게 줄어든다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  const str = input[1].trim();
+  const sign = Array.from({ length: N }, () => Array(N).fill(""));
+  let idx = 0;
+  for (let i = 0; i < N; i++) {
+    for (let j = i; j < N; j++) {
+      sign[i][j] = str[idx++];
+    }
+  }
+
+  const arr = Array(N).fill(0);
+
+  const check = (pos) => {
+    let sum = 0;
+    for (let i = pos; i >= 0; i--) {
+      sum += arr[i];
+      const s = sign[i][pos];
+      if (s === "+" && sum <= 0) return false;
+      if (s === "-" && sum >= 0) return false;
+      if (s === "0" && sum !== 0) return false;
+    }
+    return true;
+  };
+
+  const recur = (pos) => {
+    if (pos === N) return true;
+    for (let v = -10; v <= 10; v++) {
+      arr[pos] = v;
+      if (check(pos) && recur(pos + 1)) return true;
+    }
+    return false;
+  };
+
+  recur(0);
+  return arr.join(" ");
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(21^N) (백트래킹 가지치기로 실제 훨씬 빠름)
+- 공간: O(N²)

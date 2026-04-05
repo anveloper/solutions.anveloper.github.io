@@ -1,0 +1,93 @@
+---
+title: "BOJ 10163 - 색종이"
+date: "2022-03-13"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10163"
+problem_url: "https://www.acmicpc.net/problem/10163"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10163 - 색종이](https://www.acmicpc.net/problem/10163)
+
+평면에 N장의 직사각형 색종이를 순서대로 놓는다. 색종이가 겹칠 경우 나중에 놓인 색종이가 이전 것을 가린다. 각 색종이가 최종적으로 보이는 부분의 면적을 구하라.
+
+### 입력
+
+첫째 줄에 색종이 장수 N (1 이상 100 이하)이 주어진다. 이후 N줄에 각 색종이의 좌하단 좌표 (x, y)와 너비 w, 높이 h가 주어진다.
+
+### 출력
+
+입력 순서대로 각 색종이가 보이는 면적을 한 줄에 하나씩 출력한다. 완전히 가려진 경우 0을 출력한다.
+
+### 예제
+
+| 입력                              | 출력          |
+| --------------------------------- | ------------- |
+| `3` `0 0 5 5` `3 3 5 5` `1 1 3 3` | `16` `16` `9` |
+
+## 풀이
+
+1002x1002 크기의 격자판 배열에 각 색종이를 순서대로 해당 번호로 채워 넣는다. 나중에 놓이는 색종이가 이전 것을 덮어쓰므로, 최종 배열에서 각 번호의 개수를 세면 보이는 면적이 된다.
+
+1. N장의 색종이를 입력받으면서 좌표 (x, y)부터 너비/높이만큼의 영역을 색종이 번호(n+1)로 채운다
+2. 나중에 놓이는 색종이가 같은 좌표를 덮어쓰므로 자연스럽게 가림 처리가 된다
+3. 전체 격자를 순회하며 각 색종이 번호의 출현 횟수를 세어 면적을 구한다
+
+**핵심 아이디어**: 격자 크기가 최대 1002x1002이고 색종이가 최대 100장이므로 직접 시뮬레이션해도 충분히 빠르다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day08BOJ10163색종이 { // 10163
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		int N = Integer.parseInt(br.readLine());
+		StringBuilder sb = new StringBuilder();
+		int[][] arr = new int[1002][1002];
+		for (int n = 0; n < N; n++) {
+			st = new StringTokenizer(br.readLine());
+			int x1 = Integer.parseInt(st.nextToken());
+			int y1 = Integer.parseInt(st.nextToken());
+			int x2 = Integer.parseInt(st.nextToken());
+			int y2 = Integer.parseInt(st.nextToken());
+
+			for (int i = x1; i < x1 + x2; i++) {
+				for (int j = y1; j < y1 + y2; j++) {
+					arr[i][j] = n + 1; // 각 색종이를 상수로 덮기
+				}
+			}
+		}
+
+		for (int n = 0; n < N; n++) {
+			int cnt = 0;
+			for (int i = 0; i < 1002; i++) {
+				for (int j = 0; j < 1002; j++) {
+					if (arr[i][j] == n + 1)
+						cnt++;
+				}
+			}
+			sb.append(cnt).append("\n");
+		}
+
+		System.out.println(sb);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N _ W _ H + 1002^2) — 색종이 채우기 + 전체 격자 순회
+- 공간: O(1002^2) — 격자 배열

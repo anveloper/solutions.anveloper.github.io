@@ -1,0 +1,81 @@
+---
+title: "BOJ 2839 - 설탕 배달"
+date: "2022-03-13"
+description: "다이나믹 프로그래밍, 그리디 알고리즘, 수학 문제"
+tags: ["다이나믹 프로그래밍", "그리디 알고리즘", "수학"]
+platform: "boj"
+problem_number: "2839"
+problem_url: "https://www.acmicpc.net/problem/2839"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2839 - 설탕 배달](https://www.acmicpc.net/problem/2839)
+
+상근이는 N킬로그램의 설탕을 정확히 배달해야 한다. 설탕 봉지는 3kg짜리와 5kg짜리 두 종류만 있다. 정확히 N킬로그램을 만들 수 있는 봉지의 최소 개수를 구하는 문제이다. 불가능한 경우 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N (3 이상 5,000 이하)이 주어진다.
+
+### 출력
+
+봉지의 최소 개수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `18` | `4`  |
+
+## 풀이
+
+5kg 봉지 수와 3kg 봉지 수의 완전 탐색으로 해결한다. 5kg 봉지 최대 수는 `ceil(N/5)`, 3kg 봉지 최대 수는 `ceil(N/3)`이므로 이중 루프로 모든 조합을 시도한다.
+
+1. 5kg 봉지 수 i를 0부터 `ceil(N/5)`까지 순회한다.
+2. 3kg 봉지 수 j를 0부터 `ceil(N/3)`까지 순회한다.
+3. `5×i + 3×j == N`이 성립하면 `i + j`로 최솟값을 갱신한다.
+4. 최솟값이 갱신되지 않았다면 -1을 출력한다.
+
+**핵심 아이디어:** 실제 구현은 완전 탐색이다. 그리디 접근으로도 풀 수 있으나 이 코드는 이중 루프 완전 탐색을 사용한다. N이 최대 5,000이므로 최대 순회 횟수는 약 1,000 × 1,667으로 충분히 빠르다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day02BOJ2839설탕배달 {
+	public static void main(String[] args) {// 2839 설탕배달, 브론즈 1
+		Scanner sc = new Scanner(System.in); // 완전탐색으로 실행
+		int bag5 = 5;
+		int bag3 = 3;
+		int sugar = Integer.parseInt(sc.nextLine());
+
+		int minCnt = Integer.MAX_VALUE;
+		// 완전탐색이기 때문에 '<='까지 해야함. 인덱스랑 헷갈리지 말기.
+		for (int i = 0; i <= (int) Math.ceil((double) sugar / bag5); i++) {// 18이라면 3까지 가능.
+			for (int j = 0; j <= (int) Math.ceil((double) sugar / bag3); j++) { // 18이라면 6
+				if (sugar - (bag5 * i + bag3 * j) == 0) {
+					if (minCnt > i + j) {
+						minCnt = i + j;
+					}
+				}
+			}
+		}
+		if (minCnt == Integer.MAX_VALUE)
+			minCnt = -1;
+		System.out.println(minCnt);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — 이중 루프 완전 탐색. N ≤ 5,000이므로 최대 약 5,000,000번 연산
+- 공간: O(1) — 추가 배열 없음

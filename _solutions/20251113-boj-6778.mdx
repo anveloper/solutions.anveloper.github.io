@@ -1,0 +1,88 @@
+---
+title: "BOJ 6778 - Which Alien?"
+date: "2025-11-13"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "6778"
+problem_url: "https://www.acmicpc.net/problem/6778"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6778 - Which Alien?](https://www.acmicpc.net/problem/6778)
+
+외계인의 팔(a) 개수와 눈(e) 개수를 입력받아, 어떤 종류의 외계인인지 판별하는 문제다. 각 외계인 종족마다 팔과 눈의 조건이 다르며, 한 외계인이 여러 종족의 조건을 동시에 만족할 수도 있다. 조건을 만족하는 모든 종족을 출력한다.
+
+### 입력
+
+두 정수 `a`(팔 개수)와 `e`(눈 개수)가 주어진다.
+
+### 출력
+
+조건을 만족하는 외계인 종족을 각각 한 줄씩 출력한다.
+
+- `a >= 3`이고 `e <= 4`이면: `TroyMartian`
+- `a <= 6`이고 `e >= 2`이면: `VladSaturnian`
+- `a <= 2`이고 `e <= 3`이면: `GraemeMercurian`
+
+여러 조건을 만족하면 해당하는 종족을 모두 출력한다.
+
+### 예제
+
+| 입력  | 출력                              |
+| ----- | --------------------------------- |
+| `3 2` | `TroyMartian` `VladSaturnian`     |
+| `1 1` | `VladSaturnian` `GraemeMercurian` |
+| `4 5` | `VladSaturnian`                   |
+| `2 3` | `VladSaturnian` `GraemeMercurian` |
+
+## 풀이
+
+세 종족의 조건을 독립적인 `if` 문으로 각각 확인한다. 하나의 `if-else if` 체인이 아니라 세 개의 독립적인 `if`문을 사용하는 것이 핵심이다.
+
+1. `a`(팔 개수)와 `e`(눈 개수)를 입력받는다.
+2. TroyMartian 조건(`a >= 3 && e <= 4`)을 확인해 참이면 출력한다.
+3. VladSaturnian 조건(`a <= 6 && e >= 2`)을 확인해 참이면 출력한다.
+4. GraemeMercurian 조건(`a <= 2 && e <= 3`)을 확인해 참이면 출력한다.
+
+**핵심 아이디어:** 세 조건이 상호 배타적이지 않으므로 `if-else if`가 아닌 독립적인 `if` 문 세 개로 작성해야 여러 종족을 동시에 출력할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int a, e;
+  cin >> a >> e;
+
+  if (a >= 3 && e <= 4)
+  {
+    cout << "TroyMartian" << endl;
+  }
+  if (a <= 6 && e >= 2)
+  {
+    cout << "VladSaturnian" << endl;
+  }
+  if (a <= 2 && e <= 3)
+  {
+    cout << "GraemeMercurian" << endl;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 입력이 단 2개의 정수로 고정
+- 공간: O(1) — 변수 2개만 사용

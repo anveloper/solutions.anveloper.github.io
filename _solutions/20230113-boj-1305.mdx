@@ -1,0 +1,78 @@
+---
+title: "BOJ 1305 - 광고"
+date: "2023-01-13"
+description: "문자열, KMP 문제"
+tags: ["문자열", "KMP"]
+platform: "boj"
+problem_number: "1305"
+problem_url: "https://www.acmicpc.net/problem/1305"
+difficulty: "플래티넘 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1305 - 광고](https://www.acmicpc.net/problem/1305)
+
+길이 L인 전광판에 광고 문자열이 반복되어 표시되고 있다. 현재 전광판에 보이는 문자열이 주어졌을 때, 가능한 가장 짧은 광고 문자열의 길이를 구하라.
+
+### 입력
+
+첫째 줄에 L (1 이상 1,000,000 이하), 둘째 줄에 전광판에 보이는 문자열이 주어진다.
+
+### 출력
+
+가능한 가장 짧은 광고 문자열의 길이를 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `8` `abcaabca` | `4`  |
+
+## 풀이
+
+KMP 실패 함수(failure function)를 이용하여 최소 반복 단위를 구한다.
+
+1. 길이 L의 문자열에 대해 KMP 실패 함수 배열 `p[]`를 구성한다
+2. `j = 0`에서 시작하여, 불일치 시 `j = p[j-1]`로 되돌리고 일치 시 `j++`한다
+3. `p[L-1]`은 전체 문자열의 접두사이면서 접미사인 최대 길이이다
+4. 최소 반복 단위 길이는 `L - p[L-1]`이다
+
+**핵심 아이디어**: 문자열이 주기적으로 반복될 때, KMP 실패 함수의 마지막 값은 가장 긴 접두사-접미사 일치 길이이다. `L - p[L-1]`이 최소 주기(반복 단위)가 된다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day340BOJ1305광고 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int L = Integer.parseInt(br.readLine());
+        char[] c = br.readLine().toCharArray();
+        int[] p = new int[L];
+
+        int j = 0;
+        for (int i = 1; i < L; i++) {
+            while (j > 0 && c[j] != c[i])
+                j = p[j - 1];
+            if (c[j] == c[i])
+                j++;
+            p[i] = j;
+        }
+        System.out.println(L - p[L - 1]);
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

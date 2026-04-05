@@ -1,0 +1,80 @@
+---
+title: "BOJ 2435 - 기상청 인턴 신현수"
+date: "2023-10-24"
+description: "구현, 브루트포스 알고리즘, 누적 합 문제"
+tags: ["구현", "브루트포스 알고리즘", "누적 합"]
+platform: "boj"
+problem_number: "2435"
+problem_url: "https://www.acmicpc.net/problem/2435"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2435 - 기상청 인턴 신현수](https://www.acmicpc.net/problem/2435)
+
+N일간의 온도가 주어질 때, 연속 K일간의 온도 합이 최대인 값을 구하라.
+
+### 입력
+
+첫째 줄에 N, K, 둘째 줄에 N개의 온도가 주어진다.
+
+### 출력
+
+연속 K일의 온도 합 최댓값을 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `10 5` `3 -2 -4 -9 0 3 7 13 8 -3` | `31` |
+
+## 풀이
+
+모든 연속 K일 구간의 합을 브루트포스로 계산하여 최댓값을 구한다.
+
+1. 시작점 i를 0부터 N-K까지 반복한다
+2. 각 시작점에서 K개의 연속 원소를 합산한다
+3. 최댓값을 갱신한다
+
+**핵심 아이디어**: N과 K가 작으므로 (N 최대 100) 이중 루프로 충분하다.
+
+## 코드
+
+```java
+package day649;
+
+import java.util.*;
+
+public class Day627BOJ2435기상청인턴신현수 {
+  static int N, K, max = Integer.MIN_VALUE;
+  static int[] tmp = new int[103];
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    N = sc.nextInt();
+    K = sc.nextInt();
+
+    for (int i = 0; i < N; i++)
+      tmp[i] = sc.nextInt();
+
+    for (int i = 0; i <= N - K; i++) {
+      int sum = 0;
+      for (int j = 0; j < K; j++)
+        sum += tmp[i + j];
+      if (sum > max)
+        max = sum;
+    }
+    System.out.println(max);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(NK)
+- 공간: O(N)

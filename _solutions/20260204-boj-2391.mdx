@@ -1,0 +1,128 @@
+---
+title: "BOJ 2391 - Sascha"
+date: "2026-02-04"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2391"
+problem_url: "https://www.acmicpc.net/problem/2391"
+difficulty: "브론즈 II"
+language: "rust"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2391 - Sascha](https://www.acmicpc.net/problem/2391)
+
+Sascha가 발음한 단어(pronounced)와 가장 비슷한 단어를 후보 목록에서 찾는 문제이다. 두 단어의 유사도는 같은 위치에서 일치하는 문자 수로 측정하며, 가장 많이 일치하는 단어를 출력한다. 동점이면 앞에 나온 단어를 선택한다.
+
+### 입력
+
+- 첫 줄에 테스트 케이스 수 N이 주어진다.
+- 각 케이스마다:
+  - 발음한 단어 `pronounced`와 후보 단어 수 W가 주어진다.
+  - 이어서 W개의 후보 단어가 주어진다.
+
+### 출력
+
+각 케이스마다 후보 단어 중 `pronounced`와 같은 위치에서 가장 많이 일치하는 단어를 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                    | 출력  |
+| ----------------------- | ----- |
+| `1` `abc 3 abc abd xyz` | `abc` |
+
+## 풀이
+
+각 후보 단어를 발음한 단어와 같은 위치에서 비교하여 일치 수를 세고, 가장 많이 일치하는 단어를 선택하는 구현 문제이다.
+
+1. 테스트 케이스 수 N을 읽는다.
+2. 각 케이스마다 `pronounced`와 후보 수 W를 읽는다.
+3. W개의 후보 단어 각각에 대해 `zip`으로 같은 위치의 문자를 비교하여 일치 수 `delta`를 계산한다.
+4. `(-delta, index)` 기준으로 최솟값을 찾아 일치 수가 가장 많은 첫 번째 단어를 선택한다.
+5. 선택된 단어를 출력한다.
+
+**핵심 아이디어**: 유사도 비교를 `min_by_key`에서 `(-delta, index)` 튜플로 처리함으로써, 일치 수가 많을수록 음수가 작아지고 동점 시 인덱스가 작은(앞선) 단어가 선택된다. Rust의 이터레이터 체이닝으로 간결하게 구현할 수 있다.
+
+## 코드
+
+```rust
+#![allow(
+  unused_macros,
+  clippy::needless_collect,
+  clippy::unnecessary_lazy_evaluations
+)]
+use std::io::{self, *};
+use std::str::FromStr;
+
+struct Reader {
+  stdin: Stdin,
+}
+
+#[allow(dead_code)]
+impl Reader {
+  fn new() -> Self {
+    Self { stdin: io::stdin() }
+  }
+
+  fn lines(&self) -> impl Iterator<Item = String> + '_ {
+    BufReader::new(self.stdin.lock())
+      .lines()
+      .map(Result::unwrap)
+  }
+
+  fn string(self) -> String {
+    let mut s = String::new();
+    self.stdin.lock().read_to_string(&mut s).unwrap();
+    s
+  }
+
+  fn words(self) -> impl Iterator<Item = &'static str> {
+    let s = Box::leak(self.string().into_boxed_str());
+    s.split_ascii_whitespace()
+  }
+
+  fn numbers<T>(self) -> impl Iterator<Item = T>
+  where
+    T: FromStr,
+    <T as std::str::FromStr>::Err: std::fmt::Debug,
+  {
+    self.words().map(|x| x.parse::<T>().unwrap())
+  }
+}
+
+fn main() {
+  let mut writer = BufWriter::new(stdout());
+  macro_rules! p { ($($e:expr),*  $(,)? ) => { write!(writer, $($e),* ).unwrap() } }
+  macro_rules! puts { ( $($e:expr),* $(,)? ) => { writeln!(writer, $($e),* ).unwrap() } }
+  let reader = Reader::new();
+
+  let mut it = reader.words();
+  let n = it.next().unwrap().parse::<usize>().unwrap();
+  for _ in 0..n {
+    let pronounced = it.next().unwrap();
+    let w = it.next().unwrap().parse::<usize>().unwrap();
+    let ans = it
+      .by_ref()
+      .take(w)
+      .enumerate()
+      .min_by_key(|(i, word)| {
+        let delta = word
+          .chars()
+          .zip(pronounced.chars())
+          .filter(|(a, b)| a == b)
+          .count();
+        (-(delta as isize), *i)
+      })
+      .unwrap();
+    puts!("{}", ans.1);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N × W × L) — N 케이스, W 후보, L 단어 길이만큼 문자 비교
+- 공간: O(L) — 전체 입력을 한 번에 메모리에 올리는 `Box::leak` 방식 사용

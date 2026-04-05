@@ -1,0 +1,71 @@
+---
+title: "BOJ 1975 - Number Game"
+date: "2025-05-01"
+description: "수학, 정수론 문제"
+tags: ["수학", "정수론"]
+platform: "boj"
+problem_number: "1975"
+problem_url: "https://www.acmicpc.net/problem/1975"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1975 - Number Game](https://www.acmicpc.net/problem/1975)
+
+양의 정수 x가 주어질 때, 2부터 x까지의 각 수 b로 x를 나누어 떨어지는 횟수의 총합을 구하라.
+
+### 입력
+
+테스트 케이스 수와 각 양의 정수 x가 주어진다.
+
+### 출력
+
+각 x에 대해 결과를 출력한다.
+
+### 예제
+
+| 입력     | 출력 |
+| -------- | ---- |
+| `1` `12` | `7`  |
+
+## 풀이
+
+각 밑 b에 대해 x를 몇 번 나눌 수 있는지 재귀적으로 계산한다.
+
+1. 2부터 1000까지 모든 x에 대해 결과를 미리 계산한다
+2. 각 x에 대해 b = 2~x까지 `func(x, b)` = x를 b로 나누는 횟수를 합산한다
+3. 미리 계산된 배열에서 답을 조회하여 출력한다
+
+**핵심 아이디어**: x를 b로 반복 나누는 횟수는 재귀로 계산하며, 전처리로 O(1) 조회가 가능하다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+
+def func(x, b):
+    if x != 0 and x % b == 0:
+        return 1 + func(x // b, b)
+    else:
+        return 0
+
+
+c = [0] * 1001
+for x in range(2, 1001):
+    c[x] = sum(func(x, b) for b in range(2, x + 1))
+
+for _ in range(int(input())):
+    x = int(input())
+    print(c[x])
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

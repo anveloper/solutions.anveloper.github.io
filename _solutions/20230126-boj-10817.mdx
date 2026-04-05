@@ -1,0 +1,98 @@
+---
+title: "BOJ 10817 - 세 수"
+date: "2023-01-26"
+description: "구현, 정렬 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "10817"
+problem_url: "https://www.acmicpc.net/problem/10817"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10817 - 세 수](https://www.acmicpc.net/problem/10817)
+
+세 정수 A, B, C가 주어진다. 이 중 두 번째로 큰 수를 출력하는 프로그램을 작성하시오.
+
+### 입력
+
+첫째 줄에 세 정수 A, B, C가 공백으로 구분되어 주어진다. (1 ≤ A, B, C ≤ 100)
+
+### 출력
+
+두 번째로 큰 수를 출력한다.
+
+### 예제
+
+**입력 1**
+
+```
+1 2 3
+```
+
+**출력 1**
+
+```
+2
+```
+
+**입력 2**
+
+```
+3 3 3
+```
+
+**출력 2**
+
+```
+3
+```
+
+## 풀이
+
+**핵심 아이디어**: 세 수를 배열에 담아 정렬하면, 인덱스 1(중간 원소)이 두 번째로 큰 수가 된다.
+
+1. 세 정수를 배열 `arr[3]`에 입력받는다.
+2. 버블 정렬(또는 선택 정렬)로 오름차순 정렬한다. 원소가 3개뿐이므로 중첩 루프가 상수 시간이다.
+3. `arr[1]`이 두 번째로 큰 수이므로 출력한다.
+
+원소가 3개로 고정되어 있으므로 정렬 알고리즘의 선택이 성능에 영향을 주지 않는다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Day353BOJ10817세수 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+        int[] arr = new int[3];
+
+        for (int i = 0; i < 3; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        for (int i = 0; i < 2; i++) {
+            for (int j = i + 1; j < 3; j++) {
+                if (arr[i] > arr[j]) {
+                    int temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+        System.out.println(arr[1]);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 원소가 3개로 고정되어 있으므로 정렬이 상수 시간
+- 공간: O(1) — 고정 크기 배열만 사용

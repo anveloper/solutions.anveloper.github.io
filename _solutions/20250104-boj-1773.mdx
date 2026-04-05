@@ -1,0 +1,68 @@
+---
+title: "BOJ 1773 - 폭죽쇼"
+date: "2025-01-04"
+description: "수학, 구현, 브루트포스 알고리즘 문제"
+tags: ["수학", "구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1773"
+problem_url: "https://www.acmicpc.net/problem/1773"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1773 - 폭죽쇼](https://www.acmicpc.net/problem/1773)
+
+N개의 폭죽이 각각 정해진 주기마다 터진다. C초 동안 폭죽이 터지는 서로 다른 시각의 수를 구하라.
+
+### 입력
+
+첫째 줄에 폭죽 수 N과 총 시간 C, 이후 N줄에 각 폭죽의 주기가 주어진다.
+
+### 출력
+
+폭죽이 터지는 서로 다른 시각의 수를 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `2 10` `3` `5` | `5`  |
+
+## 풀이
+
+크기 C+1의 배열을 만들어 각 폭죽의 배수 시각을 표시하고, 표시된 칸의 수를 센다.
+
+1. 각 폭죽의 주기에 대해, 해당 주기의 배수 시각을 배열에 1로 표시한다
+2. 주기가 1인 경우 모든 시각에 터지므로 C를 바로 출력하고 종료한다
+3. 모든 폭죽 처리 후 배열의 합(1의 개수)을 출력한다
+
+**핵심 아이디어**: 배열을 사용하면 여러 폭죽이 같은 시각에 터져도 중복 없이 유일한 시각만 셀 수 있다.
+
+## 코드
+
+```python
+import sys
+input = sys.stdin.readline
+
+N, C = map(int, input().split())
+firework = [0] * (C + 1)
+
+for _ in range(N):
+    time = int(input())
+    if time == 1:
+        print(C)
+        exit()
+    else:
+        for i in range(time, C + 1, time):
+            firework[i] = 1
+
+print(sum(firework))
+```
+
+## 복잡도
+
+- 시간: O(N \* C / time_i) — 각 폭죽의 배수 시각 마킹
+- 공간: O(C) — 시각 표시 배열

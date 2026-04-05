@@ -1,0 +1,109 @@
+---
+title: "BOJ 1780 - 종이의 개수"
+date: "2022-04-08"
+description: "분할 정복, 재귀 문제"
+tags: ["분할 정복", "재귀"]
+platform: "boj"
+problem_number: "1780"
+problem_url: "https://www.acmicpc.net/problem/1780"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1780 - 종이의 개수](https://www.acmicpc.net/problem/1780)
+
+N × N 크기의 행렬이 -1, 0, 1로 채워져 있다. 이 종이를 9등분하는 쿼드트리(정확히는 9등분 트리) 방식으로 잘라, 모든 칸이 같은 수인 경우 그 수로 분류하고, 그렇지 않으면 9등분하여 재귀적으로 처리한다. 최종적으로 -1, 0, 1로만 이루어진 종이의 개수를 각각 출력한다. N은 항상 3의 거듭제곱 수이다.
+
+### 입력
+
+첫째 줄에 N이 주어진다. (1 ≤ N ≤ 2187, N은 3의 거듭제곱)
+이후 N개의 줄에 N개의 수(-1, 0, 1)가 주어진다.
+
+### 출력
+
+첫째 줄에 -1로만 이루어진 종이의 수, 둘째 줄에 0으로만 이루어진 종이의 수, 셋째 줄에 1로만 이루어진 종이의 수를 출력한다.
+
+### 예제
+
+| 입력           | 출력                        |
+| -------------- | --------------------------- |
+| `9` (9x9 행렬) | `-1 개수` `0 개수` `1 개수` |
+
+## 풀이
+
+분할 정복 기법으로 종이를 재귀적으로 9등분한다. 현재 구역의 모든 원소가 동일한지 검사하여 동일하면 해당 값의 카운트를 증가시키고, 다르면 9등분하여 재귀 호출한다.
+
+1. 입력 시 -1, 0, 1을 각각 0, 1, 2로 매핑(`map[i][j] = 값 + 1`)하여 배열 인덱스로 활용한다.
+2. `recur(idx, jdx, size)`: 좌상단 좌표 `(idx, jdx)`에서 `size × size` 구역을 처리한다.
+3. `check(idx, jdx, size)`: 해당 구역의 모든 칸이 `map[idx][jdx]`와 동일한지 검사한다.
+4. 전체가 동일하면 `ans[map[idx][jdx]]++`로 카운트를 증가시키고 반환한다.
+5. 다르면 `ns = size / 3`으로 크기를 줄이고, 3 × 3 방향으로 9개의 구역에 재귀 호출한다.
+
+**핵심 아이디어**: N이 3의 거듭제곱이므로 항상 정확히 9등분이 가능하다. 분할 정복의 전형적인 패턴으로, 문제를 9개의 동일한 하위 문제로 나눈다. -1을 0으로 매핑하면 배열의 음수 인덱스를 피할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day60BOJ1780종이의개수쿼드트리복습 { // 1780 종이의 개수 쿼드트리 재귀 복습
+	static int N, map[][], ans[];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = null;
+
+		N = Integer.parseInt(br.readLine());
+		map = new int[N][N];
+		ans = new int[3]; // -1, 0, 1
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken()) + 1;
+			} // -1, 0, 1 > 0, 1, 2
+		}
+
+		recur(0, 0, N);
+
+		System.out.println(ans[0] + "\n" + ans[1] + "\n" + ans[2]);
+		br.close();
+	}
+
+	private static void recur(int idx, int jdx, int size) {
+		if (check(idx, jdx, size)) {
+			ans[map[idx][jdx]]++;
+			return;
+		}
+		int ns = size / 3;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				recur(idx + ns * i, jdx + ns * j, ns);
+			}
+		}
+	}
+
+	private static boolean check(int idx, int jdx, int size) {
+		for (int i = idx; i < idx + size; i++) {
+			for (int j = jdx; j < jdx + size; j++) {
+				if (map[i][j] != map[idx][jdx])
+					return false;
+			}
+		}
+		return true;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2 log_3 N) — 각 레벨에서 O(N^2) 검사, 레벨 수는 log_3(N)
+- 공간: O(log_3 N) — 재귀 스택 깊이

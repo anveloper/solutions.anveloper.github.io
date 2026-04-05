@@ -1,0 +1,72 @@
+---
+title: "BOJ 4471 - The Navi-Computer is Down!"
+date: "2026-02-24"
+description: "수학, 3차원 기하학 문제"
+tags: ["수학", "문자열", "기하학", "3차원 기하학"]
+platform: "boj"
+problem_number: "4471"
+problem_url: "https://www.acmicpc.net/problem/4471"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4471 - The Navi-Computer is Down!](https://www.acmicpc.net/problem/4471)
+
+3차원 공간에서 두 행성 사이의 유클리드 거리를 계산한다. 각 행성은 이름과 3차원 좌표로 주어진다.
+
+### 입력
+
+- 첫 줄: 테스트 케이스 수
+- 각 테스트 케이스: 행성A 이름, 좌표(x, y, z), 행성B 이름, 좌표(x, y, z)
+
+### 출력
+
+각 테스트 케이스마다 `{행성A} to {행성B}: {거리}` 형식으로 소수점 2자리까지 출력한다.
+
+## 풀이
+
+3차원 유클리드 거리 공식을 적용한다: `sqrt(dx² + dy² + dz²)`
+
+입력에서 행성 이름과 좌표를 번갈아 읽어야 하므로 `getline`과 `cin`을 적절히 혼용한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cmath>
+using namespace std;
+
+int main(void) {
+  cin.tie(0);
+  ios::sync_with_stdio(0);
+
+  int testcase; cin >> testcase;
+  while (testcase--) {
+    string A, B;
+    double a, b, c, d, e, f;
+
+    getline(cin, A);
+    getline(cin, A);
+    cin >> a >> b >> c;
+    getline(cin, B);
+    getline(cin, B);
+    cin >> d >> e >> f;
+    double dx = a - d, dy = b - e, dz = c - f;
+    double answer = sqrt(dx * dx + dy * dy + dz * dz);
+    cout << fixed;
+    cout.precision(2);
+    cout << A << " to " << B << ": " << answer << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T) — 테스트 케이스당 O(1) 연산
+- 공간: O(1) — 상수 변수만 사용

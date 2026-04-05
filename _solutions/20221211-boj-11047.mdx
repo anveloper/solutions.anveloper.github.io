@@ -1,0 +1,88 @@
+---
+title: "BOJ 11047 - 동전 0"
+date: "2022-12-11"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "11047"
+problem_url: "https://www.acmicpc.net/problem/11047"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11047 - 동전 0](https://www.acmicpc.net/problem/11047)
+
+N종류의 동전이 주어졌을 때, 합이 K원이 되도록 하는 최소 동전 개수를 구하라. 각 동전의 가치는 이전 동전의 배수이다.
+
+### 입력
+
+첫째 줄에 N과 K가 주어진다 (1 이상 10 이하, 1 이상 100,000,000 이하). 둘째 줄부터 N개의 줄에 동전의 가치가 오름차순으로 주어진다.
+
+### 출력
+
+최소 동전 개수를 출력한다.
+
+### 예제
+
+| 입력                                                                  | 출력 |
+| --------------------------------------------------------------------- | ---- |
+| `10 4200` `1` `5` `10` `50` `100` `500` `1000` `5000` `10000` `50000` | `6`  |
+
+## 풀이
+
+가장 큰 동전부터 최대한 많이 사용하는 그리디 방식으로 해결한다.
+
+1. 가장 큰 동전(인덱스 N-1)부터 역순으로 순회한다
+2. 현재 동전의 가치가 남은 금액 K 이하이면, `K / coin[i]`개를 사용하고 count에 더한다
+3. 나머지 `K % coin[i]`를 다음 동전으로 넘긴다
+4. 최종 count를 출력한다
+
+**핵심 아이디어**: 각 동전이 이전 동전의 배수라는 조건 덕분에, 큰 동전부터 그리디하게 선택해도 항상 최적해가 보장된다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day307BOJ11047동전 {
+
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+
+        int[] coin = new int[N];
+
+        for (int i = 0; i < N; i++) {
+            coin[i] = Integer.parseInt(br.readLine());
+        }
+
+        int count = 0;
+
+        for (int i = N - 1; i >= 0; i--) {
+            if (coin[i] <= K) {
+                count += (K / coin[i]);
+                K = K % coin[i];
+            }
+        }
+        System.out.println(count);
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

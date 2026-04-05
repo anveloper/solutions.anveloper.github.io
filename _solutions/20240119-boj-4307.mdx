@@ -1,0 +1,85 @@
+---
+title: "BOJ 4307 - 개미"
+date: "2024-01-19"
+description: "애드 혹 문제"
+tags: ["애드 혹"]
+platform: "boj"
+problem_number: "4307"
+problem_url: "https://www.acmicpc.net/problem/4307"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4307 - 개미](https://www.acmicpc.net/problem/4307)
+
+길이 L인 막대 위에 개미들이 있고, 각 개미는 좌우 중 한 방향으로 이동한다. 두 개미가 만나면 반대 방향으로 돌아간다. 모든 개미가 떨어지는 최소/최대 시간을 구하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 막대 길이 L과 개미 수 n, 이후 n개의 개미 위치가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 최소 시간과 최대 시간을 출력한다.
+
+### 예제
+
+| 입력                   | 출력  |
+| ---------------------- | ----- |
+| `1` `10 3` `2` `6` `7` | `4 8` |
+
+## 풀이
+
+각 개미의 가까운 끝/먼 끝까지의 거리를 이용하여 최소/최대 시간을 구한다.
+
+1. 각 개미 위치에서 왼쪽 끝(ant)과 오른쪽 끝(L - ant) 거리를 계산한다
+2. 최소 시간: 각 개미가 가까운 끝으로 갈 때의 거리 중 최댓값
+3. 최대 시간: 각 개미가 먼 끝으로 갈 때의 거리 중 최댓값
+
+**핵심 아이디어**: 두 개미가 충돌하여 방향을 바꾸는 것은 서로 통과하는 것과 동일하므로, 각 개미를 독립적으로 처리할 수 있다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day717BOJ4307개미 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    StringBuilder sb = new StringBuilder();
+    int testCnt = Integer.parseInt(st.nextToken());
+
+    for (int i = 0; i < testCnt; i++) {
+      st = new StringTokenizer(br.readLine());
+      int l = Integer.parseInt(st.nextToken());
+      int c = Integer.parseInt(st.nextToken());
+
+      int min = Integer.MIN_VALUE;
+      int max = Integer.MIN_VALUE;
+
+      for (int j = 0; j < c; j++) {
+        st = new StringTokenizer(br.readLine());
+        int ant = Integer.parseInt(st.nextToken());
+
+        min = Math.max(min, Math.min(ant, l - ant));
+        max = Math.max(max, Math.max(ant, l - ant));
+      }
+      sb.append(min + " " + max + "\n");
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 개미 수만큼 순회
+- 공간: O(1) — 최솟값/최댓값만 추적

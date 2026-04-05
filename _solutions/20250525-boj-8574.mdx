@@ -1,0 +1,61 @@
+---
+title: "BOJ 8574 - Ratownik"
+date: "2025-05-25"
+description: "수학, 기하학, 피타고라스 정리 문제"
+tags: ["수학", "기하학", "피타고라스 정리"]
+platform: "boj"
+problem_number: "8574"
+problem_url: "https://www.acmicpc.net/problem/8574"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8574 - Ratownik](https://www.acmicpc.net/problem/8574)
+
+해변에 N명의 수영객이 있고 구조대원이 (x, y)에 있을 때, 반경 k 밖에 있는 수영객의 수를 구하라.
+
+### 입력
+
+수영객 수 N, 반경 k, 구조대원 위치 (x, y)와 각 수영객의 좌표가 주어진다.
+
+### 출력
+
+반경 k를 초과하는 거리에 있는 수영객 수를 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `3 5 0 0` `3 4` `6 0` `0 0` | `1`  |
+
+## 풀이
+
+각 수영객까지의 유클리드 거리를 계산하여 반경과 비교한다.
+
+1. 각 수영객 좌표와 구조대원 좌표 간의 거리를 계산한다
+2. 거리가 k보다 크면 카운트를 증가시킨다
+
+**핵심 아이디어**: 유클리드 거리 `sqrt((xi-x)² + (yi-y)²)`를 k와 비교하여 판별한다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+n, k, x, y = map(int, input().split())
+ans = 0
+for _ in range(n):
+    xi, yi = map(int, input().split())
+    if ((xi - x) ** 2 + (yi - y) ** 2) ** 0.5 > k:
+        ans += 1
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

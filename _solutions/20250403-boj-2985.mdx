@@ -1,0 +1,71 @@
+---
+title: "BOJ 2985 - 세 수"
+date: "2025-04-03"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산", "많은 조건 분기"]
+platform: "boj"
+problem_number: "2985"
+problem_url: "https://www.acmicpc.net/problem/2985"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2985 - 세 수](https://www.acmicpc.net/problem/2985)
+
+세 수 A, B, C가 주어진다. `A ? B = C` 또는 `A = B ? C` 형태의 등식이 성립하는 사칙연산(`+`, `-`, `*`, `/`)을 찾아 출력하라. 정답은 항상 하나만 존재한다.
+
+### 입력
+
+세 정수 A, B, C가 주어진다.
+
+### 출력
+
+성립하는 등식을 `A?B=C` 또는 `A=B?C` 형태로 출력한다.
+
+### 예제
+
+| 입력     | 출력     |
+| -------- | -------- |
+| `1 2 3`  | `1+2=3`  |
+| `10 2 5` | `10=2*5` |
+
+## 풀이
+
+두 가지 등식 형태와 네 가지 연산을 모두 시도하여 성립하는 조합을 찾는다.
+
+1. `A ? B = C` 형태: A+B=C, A-B=C, A\*B=C, A/B=C를 차례로 검사한다
+2. `A = B ? C` 형태: A=B+C, A=B-C, A=B\*C, A=B/C를 차례로 검사한다
+3. 조건이 성립하면 해당 등식을 출력하고 종료한다
+4. 나눗셈은 정수 나눗셈(`//`)을 사용한다
+
+**핵심 아이디어**: 등식 형태가 2가지, 연산이 4가지로 총 8가지 경우만 확인하면 되므로, 조건 분기로 모두 나열하면 된다.
+
+## 코드
+
+```python
+a, b, c = map(int, input().split())
+if a + b == c:
+    print(f"{a}+{b}={c}")
+elif a - b == c:
+    print(f"{a}-{b}={c}")
+elif a * b == c:
+    print(f"{a}*{b}={c}")
+elif a // b == c:
+    print(f"{a}/{b}={c}")
+elif a == b + c:
+    print(f"{a}={b}+{c}")
+elif a == b - c:
+    print(f"{a}={b}-{c}")
+elif a == b * c:
+    print(f"{a}={b}*{c}")
+elif a == b // c:
+    print(f"{a}={b}/{c}")
+```
+
+## 복잡도
+
+- 시간: O(1) — 최대 8가지 조건 검사
+- 공간: O(1) — 상수 공간

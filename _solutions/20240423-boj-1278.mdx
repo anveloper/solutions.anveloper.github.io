@@ -1,0 +1,73 @@
+---
+title: "BOJ 1278 - 연극"
+date: "2024-04-23"
+description: "N명의 배우가 하노이 탑 규칙으로 연극하는 횟수를 구하는 문제"
+tags: ["수학", "비트마스킹", "재귀"]
+platform: "boj"
+problem_number: "1278"
+problem_url: "https://www.acmicpc.net/problem/1278"
+difficulty: "골드 III"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1278 - 연극](https://www.acmicpc.net/problem/1278)
+
+N명의 배우가 하노이 탑 규칙에 따라 무대 위치를 옮길 때, 총 이동 횟수와 각 이동을 출력하라.
+
+### 입력
+
+첫째 줄에 N이 주어진다.
+
+### 출력
+
+첫째 줄에 총 이동 횟수, 이후 각 이동의 출발지와 목적지를 출력한다.
+
+### 예제
+
+| 입력 | 출력                  |
+| ---- | --------------------- |
+| `2`  | `3` `1 3` `1 2` `3 2` |
+
+## 풀이
+
+하노이 탑의 재귀 구조를 그대로 적용한다.
+
+1. 총 이동 횟수는 2^N - 1이다 (BigInt로 큰 수 처리)
+2. hanoi(n, from, to, via): n개의 원판을 from에서 to로 via를 경유하여 옮긴다
+3. 상위 n-1개를 via로 옮기고, n번째를 to로 옮기고, n-1개를 via에서 to로 옮긴다
+4. 각 이동을 기록하여 출력한다
+
+**핵심 아이디어**: 하노이 탑의 재귀 구조는 배우의 무대 이동과 동일하며, BigInt로 2^N - 1의 큰 수를 처리한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  const result = [];
+
+  const hanoi = (n, from, to, via) => {
+    if (n === 0) return;
+    hanoi(n - 1, from, via, to);
+    result.push(`${from} ${to}`);
+    hanoi(n - 1, via, to, from);
+  };
+
+  const total = BigInt(2) ** BigInt(N) - 1n;
+  hanoi(N, 1, 3, 2);
+
+  return [total.toString(), ...result].join("\n");
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(2^N)
+- 공간: O(2^N)

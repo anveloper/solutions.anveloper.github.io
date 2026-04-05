@@ -1,0 +1,113 @@
+---
+title: "BOJ 1022 - 소용돌이 예쁘게 출력하기"
+date: "2024-03-10"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1022"
+problem_url: "https://www.acmicpc.net/problem/1022"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1022 - 소용돌이 예쁘게 출력하기](https://www.acmicpc.net/problem/1022)
+
+(0, 0)에서 시작하여 반시계 방향으로 1부터 채워지는 소용돌이가 있다. (r1, c1)부터 (r2, c2)까지의 영역을 오른쪽 정렬하여 출력하라.
+
+### 입력
+
+r1, c1, r2, c2가 주어진다 (-5000 이상 5000 이하, 영역 크기 최대 49).
+
+### 출력
+
+소용돌이의 해당 영역을 오른쪽 정렬하여 출력한다.
+
+### 예제
+
+| 입력        | 출력                                                                                |
+| ----------- | ----------------------------------------------------------------------------------- |
+| `-3 -3 2 0` | `37 36 35 34` `38 17 16 15` `39 18  5  4` `40 19  6  1` `41 20  7  2` `42 21  8  3` |
+
+## 풀이
+
+소용돌이를 시뮬레이션하며 주어진 영역 내 좌표만 2D 배열에 기록한다.
+
+1. (0, 0)에서 시작하여 오른쪽→위→왼쪽→아래 순서로 나선형 이동한다
+2. 이동 길이는 방향 전환 2번마다 1씩 증가하는 규칙을 따른다
+3. 현재 좌표가 (r1, c1)~(r2, c2) 범위 내이면 배열에 값을 저장한다
+4. 4개 꼭짓점이 모두 채워지면 시뮬레이션을 종료한다
+5. 영역 내 최댓값의 자릿수에 맞춰 오른쪽 정렬 출력한다
+
+**핵심 아이디어**: 전체 소용돌이를 저장하지 않고 영역 내 좌표만 선택적으로 기록하여 메모리를 절약한다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day768BOJ1022소용돌이 {
+  private static int r1, c1, r2, c2, max = 0;
+  private static int[][] map;
+  private static int[] dx = { 0, -1, 0, 1 };
+  private static int[] dy = { 1, 0, -1, 0 };
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    r1 = Integer.parseInt(st.nextToken());
+    c1 = Integer.parseInt(st.nextToken());
+    r2 = Integer.parseInt(st.nextToken());
+    c2 = Integer.parseInt(st.nextToken());
+
+    map = new int[r2 - r1 + 1][c2 - c1 + 1];
+    int x = 0, y = 0, dir = 0;
+    int num = 1, dnum = 1, cnt = 0;
+
+    while (!isFinish()) {
+      if (x >= r1 && x <= r2 && y >= c1 && y <= c2) {
+        map[x - r1][y - c1] = num;
+      }
+      num++;
+      cnt++;
+      x = x + dx[dir];
+      y = y + dy[dir];
+
+      if (cnt == dnum) {
+        cnt = 0;
+        if (dir == 1 || dir == 3)
+          dnum++;
+        dir = (dir + 1) % 4;
+      }
+    }
+    max = num - 1;
+    int maxLen = (int) Math.log10(max), len;
+
+    for (int i = 0; i <= r2 - r1; i++) {
+      for (int j = 0; j <= c2 - c1; j++) {
+        len = maxLen - (int) Math.log10(map[i][j]);
+        for (int k = 0; k < len; k++) {
+          System.out.print(" ");
+        }
+        System.out.print(map[i][j] + " ");
+      }
+      System.out.println();
+    }
+  }
+
+  private static boolean isFinish() {
+    return map[0][0] != 0 && map[r2 - r1][0] != 0 && map[0][c2 - c1] != 0 && map[r2 - r1][c2 - c1] != 0;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(max(|r|, |c|)²) — 꼭짓점 좌표까지 나선형 시뮬레이션
+- 공간: O((r2-r1) \* (c2-c1)) — 출력 영역 배열

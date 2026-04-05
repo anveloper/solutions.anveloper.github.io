@@ -1,0 +1,136 @@
+---
+title: "BOJ 2667 - 단지번호붙이기"
+date: "2022-04-10"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색", "격자 그래프", "플러드 필"]
+platform: "boj"
+problem_number: "2667"
+problem_url: "https://www.acmicpc.net/problem/2667"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2667 - 단지번호붙이기](https://www.acmicpc.net/problem/2667)
+
+N × N 크기의 정사각형 격자에 0(빈 땅)과 1(집)이 채워져 있다. 상하좌우로 연결된 집들의 집합을 하나의 단지로 정의할 때, 총 단지 수와 각 단지의 집 수를 오름차순으로 출력하는 문제이다. 격자 기반의 연결 요소(Connected Component) 개수와 크기를 구하는 전형적인 플러드 필 문제이다.
+
+### 입력
+
+첫째 줄에 N이 주어진다. (5 ≤ N ≤ 25)
+이후 N개의 줄에 N자리 이진 문자열이 주어진다.
+
+### 출력
+
+첫째 줄에 단지 수를 출력하고, 각 단지의 집 수를 오름차순으로 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                                                                      | 출력            |
+| ------------------------------------------------------------------------- | --------------- |
+| `7` `0110100` `0110101` `1110101` `0000111` `0100000` `0111110` `0111000` | `3` `7` `8` `9` |
+
+## 풀이
+
+집(1)이 있는 미방문 칸에서 DFS를 수행하여 연결된 모든 집을 탐색하고, 각 DFS 호출 시 방문한 칸의 수를 단지 크기로 기록한다.
+
+1. 입력 문자열에서 `charAt(j) - 49`로 변환하여 집(1)은 0, 빈 땅(0)은 -1로 map에 저장한다.
+2. 전체 격자를 순회하며 `map[i][j] == 0`(미방문 집)인 칸에서 `dfs(i, j, 0, ++cnt)`를 호출한다.
+3. DFS에서는 현재 칸을 단지 번호 `c`로 표시하고 `tmp`(현재 단지 크기)를 1 증가시킨다.
+4. 상하좌우 인접 칸 중 범위 안에 있고 값이 0인 칸을 재귀적으로 탐색한다.
+5. DFS 종료 후 `tmp`를 최소 힙(PriorityQueue)에 삽입하여 자동으로 오름차순 정렬한다.
+6. 단지 수와 각 크기를 순서대로 출력한다.
+
+**핵심 아이디어**: 격자를 그래프로 보고 연결 요소를 DFS로 탐색하는 플러드 필 기법이다. 방문한 칸을 단지 번호로 덮어씌워 재방문을 방지한다. PriorityQueue를 활용하면 별도의 정렬 없이도 오름차순 출력이 가능하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.PriorityQueue;
+
+public class Day62BOJ2667단지번호붙DFS {
+	static int N, cnt;
+	static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+	static int[][] map;
+	static PriorityQueue<Integer> pq;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+
+		N = Integer.parseInt(br.readLine());
+		cnt = 0;
+		map = new int[N][N];
+		pq = new PriorityQueue<>(); // 오름차순 출력을 위한 최소힙
+
+		for (int i = 0; i < N; i++) {
+			String st = br.readLine();
+			for (int j = 0; j < N; j++) {
+				map[i][j] = st.charAt(j) - 49; // 0 -> -1, 1 -> 0
+			}
+		}
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (map[i][j] == 0) {
+					tmp = 0;
+					dfs(i, j, 0, ++cnt); // 좌표, 갯수, 붙힐번호=단지수
+					pq.offer(tmp);
+//					print(map); // 출력확인
+				}
+			}
+		}
+		sb.append(cnt).append("\n");
+		while (!pq.isEmpty()) {
+			sb.append(pq.poll()).append("\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	static int tmp = 0;
+
+	private static void dfs(int idx, int jdx, int t, int c) {
+		if (map[idx][jdx] == -1)
+			return;
+
+		tmp++;
+		map[idx][jdx] = c;
+
+		for (int dir = 0; dir < 4; dir++) {
+			int nr = idx + dr[dir];
+			int nc = jdx + dc[dir];
+			if (!check(nr, nc) && map[nr][nc] == 0)
+				dfs(nr, nc, t + 1, c);
+		}
+
+	}
+
+	private static boolean check(int idx, int jdx) {
+		return idx < 0 || idx >= N || jdx < 0 || jdx >= N;
+	}
+
+	private static void print(int[][] a) {
+		StringBuilder tt = new StringBuilder();
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				tt.append(map[i][j]).append("\t");
+			}
+			tt.append("\n");
+		}
+		System.out.println(tt);
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) — N × N 격자의 모든 칸을 최대 한 번 방문
+- 공간: O(N^2) — map 배열 및 재귀 스택

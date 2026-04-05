@@ -1,0 +1,101 @@
+---
+title: "BOJ 1277 - 발전소 설치"
+date: "2024-04-12"
+description: "발전소 간 최소 케이블 길이로 1번에서 N번까지 연결하는 문제"
+tags: ["그래프", "데이크스트라"]
+platform: "boj"
+problem_number: "1277"
+problem_url: "https://www.acmicpc.net/problem/1277"
+difficulty: "골드 IV"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1277 - 발전소 설치](https://www.acmicpc.net/problem/1277)
+
+N개의 발전소 좌표와 기존 연결 정보, 최대 케이블 길이 W가 주어질 때, 1번에서 N번까지 연결하는 최소 새 케이블 총 길이를 구하라.
+
+### 입력
+
+첫째 줄에 N, W, 둘째 줄에 기존 연결 수 M, 이후 좌표와 연결 정보가 주어진다.
+
+### 출력
+
+최소 케이블 길이에 1000을 곱하여 소수점 이하를 버린 값을 출력한다.
+
+### 예제
+
+| 입력                               | 출력    |
+| ---------------------------------- | ------- |
+| `4 10` `0` `0 0` `0 5` `5 5` `5 0` | `15000` |
+
+## 풀이
+
+기존 연결은 가중치 0, 새 연결은 유클리드 거리로 데이크스트라를 적용한다.
+
+1. 모든 발전소 쌍의 유클리드 거리를 계산하고, W 이하인 것만 간선으로 추가한다
+2. 기존 연결은 가중치 0으로 간선에 추가한다
+3. 1번에서 데이크스트라를 수행하여 N번까지의 최단 거리를 구한다
+4. 결과에 1000을 곱하고 소수점 이하를 버린다
+
+**핵심 아이디어**: 기존 연결을 가중치 0으로 처리하면 새로 설치해야 하는 케이블 길이만 최소화하는 최단 경로 문제가 된다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [N, W] = input[0].split(" ").map(Number);
+  const M = +input[1];
+  const coords = [];
+  for (let i = 2; i < 2 + N; i++) {
+    coords.push(input[i].trim().split(" ").map(Number));
+  }
+
+  const adj = Array.from({ length: N }, () => []);
+
+  for (let i = 0; i < N; i++) {
+    for (let j = i + 1; j < N; j++) {
+      const dist = Math.sqrt((coords[i][0] - coords[j][0]) ** 2 + (coords[i][1] - coords[j][1]) ** 2);
+      if (dist <= W) {
+        adj[i].push([j, dist]);
+        adj[j].push([i, dist]);
+      }
+    }
+  }
+
+  for (let i = 2 + N; i < 2 + N + M; i++) {
+    const [u, v] = input[i].trim().split(" ").map(Number);
+    adj[u - 1].push([v - 1, 0]);
+    adj[v - 1].push([u - 1, 0]);
+  }
+
+  const dist = Array(N).fill(Infinity);
+  dist[0] = 0;
+  const pq = [[0, 0]];
+
+  while (pq.length) {
+    pq.sort((a, b) => a[0] - b[0]);
+    const [d, u] = pq.shift();
+    if (d > dist[u]) continue;
+    for (const [v, w] of adj[u]) {
+      if (dist[u] + w < dist[v]) {
+        dist[v] = dist[u] + w;
+        pq.push([dist[v], v]);
+      }
+    }
+  }
+
+  return Math.floor(dist[N - 1] * 1000);
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N² log N)
+- 공간: O(N²)

@@ -1,0 +1,58 @@
+---
+title: "BOJ 10171 - 고양이"
+date: "2023-12-25"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10171"
+problem_url: "https://www.acmicpc.net/problem/10171"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10171 - 고양이](https://www.acmicpc.net/problem/10171)
+
+주어진 고양이 ASCII 아트를 그대로 출력하라.
+
+### 입력
+
+없음.
+
+### 출력
+
+4줄의 고양이 ASCII 아트를 출력한다.
+
+### 예제
+
+| 입력   | 출력                                      |
+| ------ | ----------------------------------------- |
+| (없음) | `\    /\` ` )  ( ')` `(  /  )` ` \(__)\|` |
+
+## 풀이
+
+고정된 4줄의 ASCII 아트 문자열을 출력한다.
+
+1. 백슬래시, 따옴표, 파이프 등 특수 문자를 이스케이프 시퀀스로 처리한다
+2. `\n`으로 줄바꿈을 포함하여 한 번에 출력한다
+
+**핵심 아이디어**: 고정 출력 문제로, 특수 문자의 이스케이프만 주의하면 된다.
+
+## 코드
+
+```java
+package day699;
+
+public class Day692BOJ10171고양이 {
+  public static void main(String[] args) {
+    System.out.print("\\    /\\\n )  ( ')\n(  /  )\n \\(__)|");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 출력
+- 공간: O(1) — 고정 문자열

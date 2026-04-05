@@ -1,0 +1,76 @@
+---
+title: "BOJ 4436 - 엘프의 검"
+date: "2024-12-20"
+description: "N의 배수들에서 0~9 모든 숫자가 등장하는 최소 배수를 구하는 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "4436"
+problem_url: "https://www.acmicpc.net/problem/4436"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4436 - 엘프의 검](https://www.acmicpc.net/problem/4436)
+
+N의 배수들을 순서대로 확인하면서, 0부터 9까지 모든 숫자가 등장하는 최소 배수 번호를 구하라.
+
+### 입력
+
+여러 줄에 걸쳐 정수 N이 주어진다 (EOF까지).
+
+### 출력
+
+각 N에 대해 0~9 모든 숫자가 등장하는 최소 배수 번호 i를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `1`  | `10` |
+
+## 풀이
+
+N의 배수를 순서대로 확인하며 등장한 숫자를 집합으로 추적한다.
+
+1. N x 1, N x 2, ... 순서대로 각 배수를 문자열로 변환한다
+2. 각 자릿수를 집합에 추가한다
+3. 집합 크기가 10이 되면(0~9 모두 등장) 해당 배수 번호를 출력한다
+
+**핵심 아이디어**: `set`을 사용하면 중복 없이 등장한 숫자를 추적할 수 있고, 크기가 10이 되면 모든 숫자가 나온 것이다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main()
+{
+  cin.tie(0)->sync_with_stdio(0);
+  ll n;
+  while (cin >> n)
+  {
+    set<int> s;
+    for (int i = 1; i < 1000; i++)
+    {
+      for (char c : to_string(n * i))
+        s.insert(c);
+      if (s.size() == 10)
+      {
+        cout << i << "\n";
+        break;
+      }
+    }
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(I × D) (I: 최소 배수 번호, D: 자릿수)
+- 공간: O(1)

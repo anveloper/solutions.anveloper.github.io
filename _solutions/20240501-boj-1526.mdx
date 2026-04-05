@@ -1,0 +1,71 @@
+---
+title: "BOJ 1526 - 가장 큰 금민수"
+date: "2024-05-01"
+description: "N 이하에서 4와 7로만 이루어진 가장 큰 수"
+tags: ["브루트포스", "재귀"]
+platform: "boj"
+problem_number: "1526"
+problem_url: "https://www.acmicpc.net/problem/1526"
+difficulty: "브론즈 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1526 - 가장 큰 금민수](https://www.acmicpc.net/problem/1526)
+
+N 이하의 수 중에서 4와 7로만 이루어진 가장 큰 수를 구하라.
+
+### 입력
+
+첫째 줄에 N이 주어진다.
+
+### 출력
+
+N 이하의 가장 큰 금민수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `100` | `77` |
+
+## 풀이
+
+4와 7만 사용하여 가능한 모든 수를 재귀적으로 생성하고 N 이하인 최대값을 찾는다.
+
+1. 재귀로 현재 수에 4 또는 7을 이어붙여 모든 금민수를 생성한다
+2. 생성된 수를 내림차순 정렬한다
+3. N 이하인 첫 번째 수가 답이다
+
+**핵심 아이디어**: D자리 금민수는 2^D개뿐이므로 모든 수를 생성해도 매우 적다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = input[0];
+  const arr = [];
+  const recur = (n) => {
+    arr.push(n);
+    if (n.length > N.length) return;
+    recur(n + "4");
+    recur(n + "7");
+  };
+  recur("4");
+  recur("7");
+  const sorted = arr.map(Number).sort((a, b) => b - a);
+  for (let i = 0; i < sorted.length; i++) {
+    if (+N >= sorted[i]) return sorted[i];
+  }
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(2^D) where D is digit count
+- 공간: O(2^D)

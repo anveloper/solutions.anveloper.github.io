@@ -1,0 +1,111 @@
+---
+title: "BOJ 5883 - 아이폰 9S"
+date: "2025-10-19"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "5883"
+problem_url: "https://www.acmicpc.net/problem/5883"
+difficulty: "실버 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5883 - 아이폰 9S](https://www.acmicpc.net/problem/5883)
+
+N개의 정수로 이루어진 수열이 주어진다. 수열에서 값이 하나인 원소를 모두 제거한 뒤, 남은 수열에서 연속으로 같은 수가 가장 많이 나타나는 최대 연속 길이를 구한다. 제거할 값을 수열에 등장하는 모든 값에 대해 시도하여 최댓값을 출력한다.
+
+### 입력
+
+첫 줄에 N이 주어진다. 이후 N개의 정수가 주어진다.
+
+### 출력
+
+최대 연속 길이를 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `7` `1 2 1 1 2 1 1` | `4`  |
+
+## 풀이
+
+수열에 등장하는 각 값을 하나씩 제거 대상으로 삼아 최대 연속 길이를 브루트포스로 탐색한다.
+
+1. 수열을 입력받으며 `check` 배열로 등장한 값들을 기록한다.
+2. `check[i]`가 참인 모든 값 `i`에 대해 반복한다. 해당 값을 제거 대상으로 설정한다.
+3. 수열을 처음부터 순회하되 값이 `i`인 원소는 건너뛴다. 나머지 원소를 순서대로 보면서 현재 최빈 값 `m`과 연속 횟수 `m_cnt`를 갱신한다.
+4. 원소가 `m`과 같으면 `m_cnt`를 증가시키고, 다르면 새 값으로 `m`을 교체하고 `m_cnt`를 1로 초기화한다.
+5. 매 원소마다 `ans = max(ans, m_cnt)`를 갱신한다. 모든 제거 대상을 시도한 뒤 `ans`를 출력한다.
+
+**핵심 아이디어**: 제거 대상을 0부터 1,000,000까지 순회하되, `check` 배열로 실제 등장한 값만 처리하여 불필요한 반복을 줄인다. 값을 건너뛰며 연속성을 판단하는 방식으로 O(V × N) (V: 고유값 수) 시간에 브루트포스를 수행한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int n;
+bool check[1000010];
+vector<int> vec;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+  cout.tie(0);
+
+  cin >> n;
+  int temp;
+  for (int i = 0; i < n; i++)
+  {
+    cin >> temp;
+    vec.push_back(temp);
+    check[temp] = 1;
+  }
+
+  int ans = 0;
+
+  for (int i = 0; i < 1000001; i++)
+  {
+    if (check[i])
+    {
+      int m = vec[0];
+      int m_cnt = 0;
+      for (int j = 0; j < n; j++)
+      {
+        if (vec[j] == i)
+          continue;
+        if (m == vec[j])
+          m_cnt++;
+        else if (m != vec[j])
+        {
+          m = vec[j];
+          m_cnt = 1;
+        }
+        else if (j == n - 1)
+        {
+          m_cnt++;
+        }
+        ans = max(ans, m_cnt);
+      }
+    }
+  }
+
+  cout << ans;
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(V × N) — V는 수열 내 고유값 수, N은 수열 길이
+- 공간: O(N + MAX_VAL) — 수열 벡터 O(N) + 체크 배열 O(1,000,001)

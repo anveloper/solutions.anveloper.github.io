@@ -1,0 +1,61 @@
+---
+title: "BOJ 2684 - 동전 게임"
+date: "2025-02-14"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2684"
+problem_url: "https://www.acmicpc.net/problem/2684"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2684 - 동전 게임](https://www.acmicpc.net/problem/2684)
+
+40번 동전을 던진 결과(H/T)에서 연속 3개씩 묶어, 8가지 패턴(TTT, TTH, ..., HHH) 각각의 등장 횟수를 구하라.
+
+### 입력
+
+테스트 케이스 수와 각 40글자의 동전 결과가 주어진다.
+
+### 출력
+
+각 케이스마다 8가지 패턴의 등장 횟수를 순서대로 출력한다.
+
+### 예제
+
+| 입력                                            | 출력              |
+| ----------------------------------------------- | ----------------- |
+| `1` `TTHTHTHHHTTTHHTTTTTHHTHTTHTTHTTHHTHTTTHTH` | `4 7 3 5 4 5 3 7` |
+
+## 풀이
+
+40글자 문자열에서 슬라이딩 윈도우(크기 3)로 각 패턴의 등장 횟수를 센다.
+
+1. 8가지 3글자 패턴에 대해 카운터를 초기화한다
+2. 인덱스 0부터 37까지 3글자 부분 문자열을 추출한다
+3. 해당 패턴의 카운터를 증가시킨다
+4. 8가지 패턴 순서대로 카운터를 출력한다
+
+**핵심 아이디어**: 고정 크기 3의 슬라이딩 윈도우로 38개 부분 문자열을 한 번 순회하면 된다.
+
+## 코드
+
+```python
+for _ in range(int(input())):
+    d = {"TTT": 0, "TTH": 0, "THT": 0, "THH": 0, "HTT": 0, "HTH": 0, "HHT": 0, "HHH": 0}
+    s = input()
+    for i in range(38):
+        d[s[i : i + 3]] += 1
+    for t, n in d.items():
+        print(n, end=" ")
+    print()
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

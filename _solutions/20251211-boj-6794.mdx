@@ -1,0 +1,68 @@
+---
+title: "BOJ 6794 - What is n, Daddy?"
+date: "2025-12-11"
+description: "수학, 런타임 전의 전처리 문제"
+tags: ["수학", "런타임 전의 전처리"]
+platform: "boj"
+problem_number: "6794"
+problem_url: "https://www.acmicpc.net/problem/6794"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6794 - What is n, Daddy?](https://www.acmicpc.net/problem/6794)
+
+두 주사위를 던져서 합이 N이 되는 경우의 수를 구하라. 단, 순서가 다른 것은 같은 경우로 친다.
+
+### 입력
+
+양의 정수 N이 주어진다.
+
+### 출력
+
+합이 N이 되는 서로 다른 주사위 쌍의 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `7`  | `3`  |
+
+## 풀이
+
+1~6 범위의 두 주사위 합이 N이 되는 순서 무관 쌍을 센다.
+
+1. i와 j를 0~5 범위에서 탐색하여 `i + j == N`인 경우를 찾는다
+2. `i <= j`인 쌍만 세어 중복을 방지한다
+3. 유효한 쌍의 수를 출력한다
+
+**핵심 아이디어**: 주사위 범위가 1~6으로 고정되어 있으므로, 가능한 모든 쌍을 직접 열거할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+bool check[6];
+int n, cnt;
+int main()
+{
+  cin >> n;
+  for (int i = 0; i <= 5; i++)
+    for (int j = 0; j <= 5; j++)
+      if (i + j == n)
+        check[i] = true;
+  for (int i = 0; i <= n / 2; i++)
+    if (check[i])
+      cnt++;
+  cout << cnt;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

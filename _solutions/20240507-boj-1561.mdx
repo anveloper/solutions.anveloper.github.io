@@ -1,0 +1,79 @@
+---
+title: "BOJ 1561 - 놀이 공원"
+date: "2024-05-07"
+description: "N명이 M개의 놀이기구를 탈 때 마지막 아이가 타는 놀이기구 번호"
+tags: ["이분 탐색"]
+platform: "boj"
+problem_number: "1561"
+problem_url: "https://www.acmicpc.net/problem/1561"
+difficulty: "골드 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1561 - 놀이 공원](https://www.acmicpc.net/problem/1561)
+
+N명의 아이들이 M개의 놀이기구를 타려고 줄을 서 있다. 각 놀이기구는 운행 시간이 다르며, 비어있는 놀이기구 중 번호가 가장 작은 것부터 탄다. 마지막 N번째 아이가 타는 놀이기구 번호를 구하라.
+
+### 입력
+
+첫째 줄에 N과 M, 둘째 줄에 각 놀이기구의 운행 시간이 주어진다 (`1 <= N <= 2 * 10^9`, `1 <= M <= 10000`).
+
+### 출력
+
+마지막 아이가 타게 되는 놀이기구 번호를 출력한다.
+
+### 예제
+
+| 입력               | 출력 |
+| ------------------ | ---- |
+| `22 5` `1 2 3 4 5` | `2`  |
+
+## 풀이
+
+이분 탐색으로 N명이 모두 탑승 가능한 최소 시간 T를 구한 뒤, 시간 T에 비어있는 놀이기구 중 마지막 아이가 타는 번호를 찾는다.
+
+1. 시간 mid까지 탑승 가능한 인원을 계산하는 check 함수를 정의한다 (각 놀이기구별 `ceil(mid / 운행시간)` 합)
+2. 이분 탐색으로 N명 이상 탑승 가능한 최소 시간 left를 구한다
+3. 시간 left-1까지 탑승한 인원 rest를 계산하고, 시간 left에 정확히 비어있는 놀이기구 목록(empty)을 구한다
+4. empty 배열에서 rest번째가 마지막 아이가 타는 놀이기구이다
+
+**핵심 아이디어**: N이 최대 20억이므로 시뮬레이션은 불가하고, 시간에 대한 이분 탐색으로 O(M log(max_time \* N))에 해결한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [N, M] = input[0].split(" ").map(Number);
+  const nums = input[1].split(" ").map(Number);
+  const check = (mid) => {
+    let cnt = 0;
+    for (let i = 0; i < M; i++) cnt += Math.ceil(mid / nums[i]);
+    return cnt >= N;
+  };
+  let left = 0,
+    right = Math.max(...nums) * N;
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+    if (check(mid)) right = mid - 1;
+    else left = mid + 1;
+  }
+  let rest = N;
+  const empty = [];
+  for (let i = 0; i < M; i++) {
+    rest -= Math.ceil((left - 1) / nums[i]);
+    if ((left - 1) % nums[i] === 0) empty.push(i + 1);
+  }
+  return empty[rest - 1];
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(M log(max_time x N))
+- 공간: O(M)

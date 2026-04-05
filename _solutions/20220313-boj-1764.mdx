@@ -1,0 +1,99 @@
+---
+title: "BOJ 1764 - 듣보잡"
+date: "2022-03-13"
+description: "자료 구조, 문자열, 정렬 문제"
+tags: ["자료 구조", "문자열", "정렬", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "1764"
+problem_url: "https://www.acmicpc.net/problem/1764"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1764 - 듣보잡](https://www.acmicpc.net/problem/1764)
+
+N명의 "듣도 못한 사람" 목록과 M명의 "보도 못한 사람" 목록이 주어질 때, 두 목록 모두에 속한 사람(듣도 보도 못한 사람)의 수와 이름을 사전순으로 출력하는 문제다.
+
+### 입력
+
+- 첫째 줄: N과 M (각 500,000 이하의 자연수)
+- 둘째 줄부터 N개 줄: 듣도 못한 사람 이름
+- 이후 M개 줄: 보도 못한 사람 이름
+
+### 출력
+
+- 첫째 줄: 듣도 보도 못한 사람의 수
+- 이후 사전순으로 이름을 한 줄에 하나씩 출력
+
+### 예제
+
+| 입력                                                                                | 출력                       |
+| ----------------------------------------------------------------------------------- | -------------------------- |
+| `3 4` `ohhenrie` `charlie` `baesoohan` `baesoohan` `ohhenrie` `mabrocle` `reinhart` | `2` `baesoohan` `ohhenrie` |
+
+## 풀이
+
+`HashSet`으로 첫 번째 목록을 O(1) 조회 가능하게 저장하고, 두 번째 목록을 순회하며 교집합을 구한 뒤 사전순 정렬하여 출력한다.
+
+1. N명의 이름을 `HashSet`에 저장한다.
+2. M명의 이름을 순회하며 `set.contains(name)`이 참이면 결과 리스트에 추가한다.
+3. 결과 리스트를 `Collections.sort`로 사전순 정렬한다.
+4. 리스트 크기와 이름을 순서대로 출력한다.
+
+**핵심 아이디어**: `HashSet`의 `contains`는 O(1)이므로 M번의 조회가 O(M)에 완료된다. 단순 리스트 검색을 사용하면 O(N\*M)이 되지만, 해시 집합을 활용하면 교집합 탐색을 O(N + M)으로 줄일 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+public class Day07BOJ1764듣보잡 { // 1764 듣보잡
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		Set<String> set = new HashSet<>();
+		List<String> list = new ArrayList<>();
+		while (N-- > 0) {
+			String name = br.readLine();
+			set.add(name);
+		}
+		while (M-- > 0) {
+			String name = br.readLine();
+			if (set.contains(name)) {
+				list.add(name);
+			}
+		}
+		Collections.sort(list);
+
+		StringBuilder ans = new StringBuilder();
+		ans.append(list.size()).append('\n');
+		for (String str : list) {
+			ans.append(str).append('\n');
+		}
+
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O((N + M) + K log K) — 집합 구성 O(N + M), 결과 정렬 O(K log K) (K는 교집합 크기)
+- 공간: O(N + K) — HashSet과 결과 리스트

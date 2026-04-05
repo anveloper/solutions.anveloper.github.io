@@ -1,0 +1,84 @@
+---
+title: "BOJ 1339 - 단어 수학"
+date: "2022-07-13"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "1339"
+problem_url: "https://www.acmicpc.net/problem/1339"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1339 - 단어 수학](https://www.acmicpc.net/problem/1339)
+
+N개의 알파벳 대문자 단어가 주어진다. 각 알파벳에 0~9 숫자를 대응시켜 단어를 수로 해석할 때, 모든 단어의 합의 최댓값을 구하라.
+
+### 입력
+
+첫째 줄에 N (1 이상 10 이하), 이후 N개의 단어가 주어진다.
+
+### 출력
+
+단어 합의 최댓값을 출력한다.
+
+### 예제
+
+| 입력              | 출력    |
+| ----------------- | ------- |
+| `2` `GCF` `ACDEB` | `99437` |
+
+## 풀이
+
+각 알파벳의 자릿값 기여도를 계산하고, 기여도가 큰 순서대로 9부터 할당한다.
+
+1. 각 단어의 각 알파벳에 대해 자릿값(`10^(길이-1-위치)`)을 누적한다
+2. 예를 들어 ABC에서 A는 100, B는 10, C는 1의 기여도를 가진다
+3. 26개 알파벳의 기여도를 내림차순 정렬한다
+4. 기여도가 큰 것부터 9, 8, 7, ... 을 곱하여 합산한다
+
+**핵심 아이디어**: 각 알파벳이 전체 합에 기여하는 가중치를 계산하면, 가장 큰 가중치에 가장 큰 숫자를 배정하는 것이 최적이다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day381BOJ1339단어수학 {
+  static int N, sum = 0, idx = 0, num = 9;
+  static Integer[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    arr = new Integer[26];
+
+    Arrays.fill(arr, 0);
+    for (int i = 0; i < N; i++) {
+      String s = br.readLine();
+      for (int j = 0; j < s.length(); j++) {
+        arr[s.charAt(j) - 'A'] += (int) Math.pow(10, s.length() - 1 - j);
+      }
+    }
+    Arrays.sort(arr, Collections.reverseOrder());
+
+    while (arr[idx] != 0) {
+      sum += num-- * arr[idx++];
+    }
+
+    System.out.println(sum);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L + 26 log 26) - N개 단어의 총 길이 L, 정렬은 상수
+- 공간: O(1) - 알파벳 26개 배열

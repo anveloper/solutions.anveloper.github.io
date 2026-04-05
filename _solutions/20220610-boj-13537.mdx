@@ -1,0 +1,166 @@
+---
+title: "BOJ 13537 - 수열과 쿼리 1"
+date: "2022-06-10"
+description: "자료 구조, 정렬, 세그먼트 트리 문제"
+tags: ["자료 구조", "정렬", "세그먼트 트리", "머지 소트 트리"]
+platform: "boj"
+problem_number: "13537"
+problem_url: "https://www.acmicpc.net/problem/13537"
+difficulty: "플래티넘 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13537 - 수열과 쿼리 1](https://www.acmicpc.net/problem/13537)
+
+길이 N의 수열과 M개의 쿼리가 주어진다. 각 쿼리 `i j k`는 수열의 i번째부터 j번째 원소 중 k보다 큰 원소의 개수를 묻는다. 구간 내 개수를 효율적으로 세기 위해 머지 소트 트리(Merge Sort Tree)를 사용한다. 세그먼트 트리의 각 노드에 해당 범위의 원소를 정렬된 상태로 저장하고, 쿼리 시 이분 탐색으로 k보다 큰 원소 수를 O(log^2 N)에 구한다.
+
+### 입력
+
+- 첫째 줄: 수열 길이 N (1 이상 100,000 이하)
+- 둘째 줄: 수열의 원소 N개 (1 이상 10^9 이하)
+- 셋째 줄: 쿼리 수 M
+- 이후 M개 줄: `i j k` (1-indexed, k보다 큰 원소의 수)
+
+### 출력
+
+각 쿼리의 결과를 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                                        | 출력        |
+| ------------------------------------------- | ----------- |
+| `5` `5 1 2 3 4` `3` `2 4 1` `4 5 2` `1 5 3` | `3` `2` `2` |
+
+## 풀이
+
+세그먼트 트리의 각 노드에 해당 구간 원소를 정렬된 배열로 저장하는 머지 소트 트리를 구성한다.
+
+1. 트리 빌드 시 리프 노드에 단일 원소 배열을 저장하고, 내부 노드는 자식 배열을 병합 정렬로 합침
+2. 쿼리 `[low, high]`에 대해 구간이 완전히 포함된 노드에서 이분 탐색 실행
+3. 이분 탐색으로 정렬된 노드 배열에서 k 이하인 마지막 인덱스를 구하고, `배열 길이 - 해당 인덱스`가 k보다 큰 원소 수
+4. 구간이 걸쳐있는 노드는 재귀적으로 좌/우 자식에 분할
+
+**핵심 아이디어:** 각 세그먼트 트리 노드에 정렬된 배열을 저장해두면 구간 쿼리를 O(log N)개 노드 방문 × O(log N) 이분 탐색 = O(log^2 N)에 처리할 수 있다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Day123BOJ13537수열과쿼리1자력xSegmentTree공부 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		StringBuilder sb = new StringBuilder();
+
+		int N = stoi(br.readLine());
+		int[] arr = new int[N];
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++)
+			arr[i] = stoi(st.nextToken());
+
+		SegmentTree segmentTree = new SegmentTree(arr);
+
+		int M = stoi(br.readLine());
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			sb.append(segmentTree.query(1, 0, N - 1, stoi(st.nextToken()) - 1, stoi(st.nextToken()) - 1,
+					stoi(st.nextToken())));
+			sb.append("\n");
+		}
+
+		bw.write(sb.toString());
+		bw.flush();
+		bw.close();
+	}
+
+	public static int stoi(String s) {
+		return Integer.parseInt(s);
+	}
+
+	public static class SegmentTree {
+		int[][] tree;
+
+		public SegmentTree(int[] array) {
+			tree = new int[array.length * 4][];
+			init(array, 1);
+		}
+
+		private int[] init(int[] array, int node) {
+			if (array.length == 1)
+				return tree[node] = array;
+
+			int mid = array.length + 1 >> 1;
+
+			return tree[node] = merge(init(Arrays.copyOfRange(array, 0, mid), node * 2),
+					init(Arrays.copyOfRange(array, mid, array.length), node * 2 + 1));
+		}
+
+		private int[] merge(int[] left, int[] right) {
+			int[] output = new int[left.length + right.length];
+			int i = 0;
+			int j = 0;
+
+			while (i < left.length || j < right.length) {
+				if (i >= left.length) {
+					output[i + j] = right[j++];
+					continue;
+				}
+				if (j >= right.length) {
+					output[i + j] = left[i++];
+					continue;
+				}
+
+				if (left[i] >= right[j])
+					output[i + j] = right[j++];
+				else
+					output[i + j] = left[i++];
+			}
+			return output;
+		}
+
+		public int query(int node, int nodeLow, int nodeHigh, int low, int high, int k) {
+			if (nodeLow > high || nodeHigh < low)
+				return 0;
+
+			int nodeMid = (nodeLow + nodeHigh) >> 1;
+
+			if (nodeLow >= low && nodeHigh <= high) {
+				int l = 0;
+				int h = tree[node].length - 1;
+				if (tree[node][h] <= k) {
+					return 0;
+				}
+				while (l < h) {
+					int m = (l + h) >> 1;
+					if (tree[node][m] <= k)
+						l = m + 1;
+					else
+						h = m;
+				}
+				return tree[node].length - h;
+			}
+
+			return query(node * 2, nodeLow, nodeMid, low, high, k)
+					+ query(node * 2 + 1, nodeMid + 1, nodeHigh, low, high, k);
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N + M log^2 N) — 트리 빌드 O(N log N), 각 쿼리 O(log^2 N)
+- 공간: O(N log N) — 각 노드에 정렬 배열 저장 (전체 원소 합 N log N)

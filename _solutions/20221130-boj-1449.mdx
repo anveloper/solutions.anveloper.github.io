@@ -1,0 +1,90 @@
+---
+title: "BOJ 1449 - 수리공 항승"
+date: "2022-11-30"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "1449"
+problem_url: "https://www.acmicpc.net/problem/1449"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1449 - 수리공 항승](https://www.acmicpc.net/problem/1449)
+
+항승이는 수도 파이프를 고치는 수리공이다. 파이프에 물이 새는 곳이 N개 있고, 각 새는 곳의 위치는 정수로 표현된다. 항승이는 길이가 L인 테이프를 무한히 가지고 있다. 항승이는 테이프를 이용해서 물이 새는 곳을 모두 막으려고 한다. 테이프를 붙이는 경우, 항상 유리하게 붙여야 한다. 즉, 테이프 한 장으로 물이 새는 곳을 최대한 많이 막아야 한다. 물이 새는 곳의 위치 Xi에 대해, 1보다 작은 위치나 N보다 큰 위치에는 물이 새지 않는다. 테이프를 최소 몇 장 사용해야 모든 곳을 막을 수 있는지 구하라.
+
+### 입력
+
+첫째 줄에 N과 L이 주어진다. (1 ≤ N ≤ 1,000, 1 ≤ L ≤ 1,000) 둘째 줄에는 N개의 정수가 주어지며, 각 정수는 물이 새는 위치이다. 위치는 1,000 이하의 자연수이다.
+
+### 출력
+
+첫째 줄에 테이프의 최소 장수를 출력한다.
+
+### 예제
+
+입력:
+
+```
+4 2
+1 2 100 101
+```
+
+출력:
+
+```
+2
+```
+
+## 풀이
+
+**핵심 아이디어**: 새는 위치를 정렬한 후, 가장 왼쪽 위치부터 테이프를 붙이기 시작하면 최소 장수를 보장한다. 각 테이프의 시작점을 `water[i] - 0.5`로 설정하면, 테이프가 `water[i] - 0.5`부터 `water[i] - 0.5 + L`까지 커버한다.
+
+1. **정렬**: 위치를 오름차순으로 정렬한다.
+2. **그리디 탐색**: 첫 번째 위치에서 테이프를 시작하고(`left = water[0] - 0.5`), 다음 위치가 현재 테이프 범위 밖(`left + L < water[i]`)이면 새 테이프를 붙이고 시작점을 갱신한다.
+3. **0.5 오프셋**: 정수 위치에서 테이프 경계를 0.5 앞에 두면 같은 위치 판단 시 정확히 처리된다. 예를 들어 L=2이면 위치 1에서 시작 시 `[0.5, 2.5]`를 커버하므로 위치 1과 2 모두 포함된다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Day296BOJ1449수리공정렬 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int L = Integer.parseInt(st.nextToken());
+		int water[] = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			water[i] = Integer.parseInt(st.nextToken());
+		}
+
+		Arrays.sort(water);
+		double left = water[0] - 0.5;
+		int cnt = 1;
+		for (int i = 0; i < N; i++) {
+			if (left + L < water[i]) {
+				cnt++;
+				left = water[i] - 0.5;
+			}
+		}
+		System.out.println(cnt);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) — 정렬 O(N log N) + 선형 탐색 O(N)
+- 공간: O(N) — 위치 배열

@@ -1,0 +1,71 @@
+---
+title: "BOJ 1855 - 암호"
+date: "2025-01-06"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1855"
+problem_url: "https://www.acmicpc.net/problem/1855"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1855 - 암호](https://www.acmicpc.net/problem/1855)
+
+암호문을 K열짜리 테이블에 지그재그(홀수 행은 왼→오, 짝수 행은 오→왼)로 채운 뒤, 열 단위로 위에서 아래로 읽어 평문을 복원하라.
+
+### 입력
+
+첫째 줄에 K, 둘째 줄에 암호문이 주어진다.
+
+### 출력
+
+복호화된 평문을 출력한다.
+
+### 예제
+
+| 입력             | 출력           |
+| ---------------- | -------------- |
+| `3` `AEIJBDFHKL` | `ABCDEFGHIJKL` |
+
+## 풀이
+
+암호문을 K 글자씩 나누어 테이블에 채우되, 짝수 행은 뒤집는다. 그 뒤 열 단위로 읽는다.
+
+1. 암호문을 K 글자씩 잘라 행 단위로 테이블에 저장한다
+2. 짝수 번째 행(0-indexed)은 문자열을 뒤집어 저장한다 (지그재그 복원)
+3. 열 인덱스 0부터 K-1까지, 각 열의 모든 행 문자를 순서대로 이어 평문을 만든다
+
+**핵심 아이디어**: 지그재그 방향 전환을 짝수 행 뒤집기로 처리하면, 열 단위 읽기만으로 올바른 평문이 복원된다.
+
+## 코드
+
+```python
+K = int(input())
+ciphertext = input()
+
+table = []
+
+for i in range(0, len(ciphertext), K * 2):
+    if i + K <= len(ciphertext):
+        table.append(ciphertext[i:i + K])
+
+    if i + (K * 2) <= len(ciphertext):
+        table.append(ciphertext[i + K:i + (K * 2)][::-1])
+
+plaintext = ''
+
+for j in range(K):
+    for char in table:
+        plaintext += char[j]
+
+print(plaintext)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

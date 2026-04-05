@@ -1,0 +1,74 @@
+---
+title: "BOJ 12756 - 고급 여관"
+date: "2024-12-11"
+description: "두 플레이어의 공격력과 체력으로 전투 결과를 시뮬레이션하는 문제"
+tags: ["수학", "구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "12756"
+problem_url: "https://www.acmicpc.net/problem/12756"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 12756 - 고급 여관](https://www.acmicpc.net/problem/12756)
+
+두 플레이어가 동시에 공격하여 체력이 0 이하가 되면 전투가 끝난다. 승자를 판별하라.
+
+### 입력
+
+플레이어 A의 공격력과 체력, 플레이어 B의 공격력과 체력이 주어진다.
+
+### 출력
+
+A가 이기면 "PLAYER A", B가 이기면 "PLAYER B", 동시에 쓰러지면 "DRAW"를 출력한다.
+
+### 예제
+
+| 입력          | 출력       |
+| ------------- | ---------- |
+| `3 10` `2 15` | `PLAYER A` |
+
+## 풀이
+
+매 턴 동시에 공격하는 전투를 시뮬레이션한다.
+
+1. 매 턴 A의 체력에서 B의 공격력을 빼고, B의 체력에서 A의 공격력을 뺀다
+2. 둘 중 하나라도 체력이 0 이하가 되면 종료한다
+3. 둘 다 0 이하면 DRAW, 하나만 0 이하면 상대가 승리한다
+
+**핵심 아이디어**: 동시 공격이므로 한 턴에 양쪽 모두 체력을 깎고, 동시에 쓰러지는 경우도 처리해야 한다.
+
+## 코드
+
+```cpp
+#include <stdio.h>
+#include <stdlib.h>
+int main()
+{
+  int a, b, c, d;
+  scanf("%d %d %d %d", &a, &b, &c, &d);
+
+  while (1)
+  {
+    b = b - c;
+    d = d - a;
+    if (b <= 0 || d <= 0)
+      break;
+  }
+
+  if (b <= 0 && d <= 0)
+    printf("DRAW\n");
+  else if (d <= 0)
+    printf("PLAYER A\n");
+  else if (b <= 0)
+    printf("PLAYER B\n");
+}
+```
+
+## 복잡도
+
+- 시간: O(min(B/C, D/A))
+- 공간: O(1)

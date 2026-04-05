@@ -1,0 +1,73 @@
+---
+title: "BOJ 3048 - 개미"
+date: "2025-04-24"
+description: "구현, 문자열, 시뮬레이션 문제"
+tags: ["구현", "문자열", "시뮬레이션"]
+platform: "boj"
+problem_number: "3048"
+problem_url: "https://www.acmicpc.net/problem/3048"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3048 - 개미](https://www.acmicpc.net/problem/3048)
+
+두 그룹의 개미가 서로 마주 보고 일렬로 걸어온다. 첫 번째 그룹은 왼쪽으로, 두 번째 그룹은 오른쪽으로 이동한다. 두 개미가 만나면 서로를 뛰어넘어 지나간다. T초 후 개미들의 순서를 출력하라.
+
+### 입력
+
+첫 줄에 두 그룹의 개미 수 N1, N2가 주어진다. 둘째 줄에 첫 번째 그룹, 셋째 줄에 두 번째 그룹의 개미 이름이 주어진다. 넷째 줄에 시간 T가 주어진다.
+
+### 출력
+
+T초 후의 개미 순서를 출력한다.
+
+### 예제
+
+| 입력                 | 출력    |
+| -------------------- | ------- |
+| `2 3` `AB` `CDX` `2` | `CDABX` |
+
+## 풀이
+
+버블 정렬과 유사한 방식으로, 매 초마다 서로 반대 방향으로 이동하는 개미 쌍을 스왑한다.
+
+1. 첫 번째 그룹을 뒤집어 두 번째 그룹 앞에 배치한다 (마주 보는 상태 구현)
+2. T초 동안 매 초마다 배열을 왼쪽에서 오른쪽으로 순회한다
+3. 현재 위치의 개미가 1번 그룹이고 다음 위치의 개미가 2번 그룹이면 스왑한다
+4. 스왑 후 방금 교환된 개미를 다시 검사하지 않도록 한 개미가 끝까지 이동하면 break한다
+5. T초 후 배열을 문자열로 합쳐 출력한다
+
+**핵심 아이디어**: 반대 방향으로 이동하는 두 그룹의 개미가 만나면 서로 뛰어넘는 것은, 매 초 인접한 (1그룹, 2그룹) 쌍을 스왑하는 버블 정렬과 동일하다.
+
+## 코드
+
+```python
+import sys
+
+n1, n2 = map(int, sys.stdin.readline().split())
+
+ant1 = list(map(str, sys.stdin.readline().rstrip("\n")))
+ant2 = list(map(str, sys.stdin.readline().rstrip("\n")))
+t = int(sys.stdin.readline())
+
+ant1.reverse()
+totalAnt = ant1 + ant2
+
+for _ in range(t):
+    for i in range(len(totalAnt) - 1):
+        if totalAnt[i] in ant1 and totalAnt[i + 1] in ant2:
+            totalAnt[i], totalAnt[i + 1] = totalAnt[i + 1], totalAnt[i]
+            if totalAnt[i + 1] == ant1[-1]:
+                break
+
+print("".join(totalAnt))
+```
+
+## 복잡도
+
+- 시간: O(T x (N1 + N2)) — 매 초마다 전체 배열 순회
+- 공간: O(N1 + N2) — 개미 배열 저장

@@ -1,0 +1,126 @@
+---
+title: "BOJ 13015 - 별 찍기 - 23"
+date: "2022-03-13"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "13015"
+problem_url: "https://www.acmicpc.net/problem/13015"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13015 - 별 찍기 - 23](https://www.acmicpc.net/problem/13015)
+
+> 정수 N이 주어질 때, X자 형태의 두 대각선 위에 별을 N개씩 채운 모래시계 모양의 패턴을 출력하라.
+
+### 입력
+
+첫째 줄에 정수 N이 주어진다.
+
+### 출력
+
+(2\*N-1)줄에 걸쳐 별 패턴을 출력한다.
+
+### 예제
+
+| 입력 | 출력                                                    |
+| ---- | ------------------------------------------------------- |
+| `3`  | `***   ***` `* * * *` `  * * *  ` `* * * *` `***   ***` |
+
+## 풀이
+
+X자 형태의 별 패턴을 세 가지 케이스로 나누어 출력한다.
+
+1. **맨 위/맨 아래 줄** (i==0 또는 i==2N-2): N개의 별 + (2N-3)개의 공백 + N개의 별
+2. **정중앙 줄** (i==N-1): (N-1)개의 공백 + 별 + (N-2)개의 공백 + 별 + (N-2)개의 공백 + 별
+3. **나머지 줄**: 절대값으로 대칭 처리하여 4개의 별을 적절한 간격으로 출력
+
+**핵심 아이디어**: 코드의 주석에 있는 패턴을 보면 X자 형태의 두 선분 위에 별이 놓이고, 각 선분은 너비 N의 직선이다. `Math.abs(num-1-i)`로 상하 대칭을 구현한다.
+
+## 코드
+
+```java
+
+package ASP_study.day049;
+
+import java.util.Scanner;
+
+public class Day01BOJ13015별찍기23 { // 13015 별찍기
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		for (int i = 0; i < num * 2 - 1; i++) {
+			if (i == 0 || i == num * 2 - 2) {
+				// case1 : 맨위, 맨아래 - 별갯수 만큼 출력과 사이 공백 계산해서 넣기
+				for (int j = 0; j < num; j++) {
+					System.out.print("*");
+				}
+				for (int j = 0; j < num * 2 - 3; j++) {
+					System.out.print(" ");
+				}
+				for (int j = 0; j < num; j++) {
+					System.out.print("*");
+				}
+				System.out.print("\n");
+			} else if (i == num - 1) {
+				// case2 : num - 1, 즉 0을 기준으로 엑스에 가운데 별 3개 값
+				for (int j = 0; j < num - 1; j++) {
+					System.out.print(" ");
+				}
+				System.out.print("*"); // 첫번째 별은 1번 열의 num번째 랑 같은 위치
+				for (int j = 0; j < num - 2; j++) {
+					System.out.print(" ");
+				}
+				System.out.print("*"); // 공백은 num-2씩 유지됨.
+				for (int j = 0; j < num - 2; j++) {
+					System.out.print(" ");
+				}
+				System.out.print("*\n");
+			} else {
+				// case3 : 별을 4개씩찍는데, 홀수 별과 짝수별의 차이는 num-2만큼 씩
+				for (int j = 0; j < (num - 1) - Math.abs(num - 1 - i); j++) {
+					System.out.print(" ");
+				} // 1/4부분 먼저 그려보고, 절대값으로 반대쪽 그리기
+				System.out.print("*");
+				for (int j = 0; j < num - 2; j++) {
+					System.out.print(" ");
+				}
+				System.out.print("*");
+				for (int j = 0; j < 2 * Math.abs((num - 1) - i) - 1; j++) {
+					System.out.print(" ");
+				}
+				System.out.print("*");
+				for (int j = 0; j < num - 2; j++) {
+					System.out.print(" ");
+				}
+				System.out.print("*\n");
+			}
+		}
+		sc.close();
+	}
+}
+//***   ***
+// * * * *
+//  * * *
+// * * * *
+//***   ***
+//
+//*****       *****
+// *   *     *   *
+//  *   *   *   *
+//   *   * *   *
+//    *   *   *
+//   *   * *   *
+//  *   *   *   *
+// *   *     *   *
+//*****       *****
+```
+
+## 복잡도
+
+- 시간: O(N^2) — (2N-1)줄 각각 최대 O(N) 문자 출력
+- 공간: O(1) — 별도 배열 없이 직접 출력

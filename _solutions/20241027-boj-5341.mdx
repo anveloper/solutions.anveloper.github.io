@@ -1,0 +1,68 @@
+---
+title: "BOJ 5341 - Pyramids"
+date: "2024-10-27"
+description: "1부터 N까지의 합을 구하는 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5341"
+problem_url: "https://www.acmicpc.net/problem/5341"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5341 - Pyramids](https://www.acmicpc.net/problem/5341)
+
+피라미드의 맨 아래 줄 블록 수 N이 주어지면, 전체 블록 수(1+2+...+N)를 구하라. 0이 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 N이 주어진다. 0이면 종료한다.
+
+### 출력
+
+각 N에 대해 1부터 N까지의 합을 출력한다.
+
+### 예제
+
+| 입력        | 출력     |
+| ----------- | -------- |
+| `5` `3` `0` | `15` `6` |
+
+## 풀이
+
+1부터 N까지의 합을 반복문으로 계산한다.
+
+1. N을 입력받고 0이면 종료한다
+2. 1부터 N까지 반복하며 합을 구한다
+3. 결과를 출력한다
+
+**핵심 아이디어**: 등차수열의 합 `N*(N+1)/2`로도 O(1)에 계산 가능하지만, 코드에서는 반복문으로 O(N)에 구현했다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int n;
+  while (1)
+  {
+    cin >> n;
+    if (!n)
+      break;
+    int sum = 0;
+    for (int i = 1; i <= n; i++)
+      sum += i;
+    cout << sum << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N)
+- 공간: O(1)

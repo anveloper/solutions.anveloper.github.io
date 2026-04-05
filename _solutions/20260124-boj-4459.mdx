@@ -1,0 +1,88 @@
+---
+title: "BOJ 4459 - Always Follow the Rules in Zombieland"
+date: "2026-01-24"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4459"
+problem_url: "https://www.acmicpc.net/problem/4459"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4459 - Always Follow the Rules in Zombieland](https://www.acmicpc.net/problem/4459)
+
+좀비랜드에는 번호가 매겨진 규칙들이 존재한다. n개의 규칙이 순서대로 주어지며, 각 규칙은 한 줄의 텍스트다. 이후 m번의 쿼리가 주어지며, 각 쿼리는 특정 번호의 규칙을 요청한다. 해당 번호의 규칙이 존재하면 내용을 출력하고, 없으면 `No such rule`을 출력한다.
+
+### 입력
+
+첫째 줄에 규칙 수 `n`이 주어진다. 이후 `n`줄에 걸쳐 규칙 텍스트가 주어진다. 그 다음 줄에 쿼리 수 `m`이 주어지고, `m`개의 규칙 번호가 한 줄에 하나씩 주어진다.
+
+### 출력
+
+각 쿼리에 대해 `Rule t: {내용}` 형식으로 출력한다. 규칙이 없으면 `Rule t: No such rule`을 출력한다.
+
+### 예제
+
+| 입력                                                               | 출력                                                                                  |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| `2` `Never go out at night` `Always stay together` `3` `1` `3` `2` | `Rule 1: Never go out at night` `Rule 3: No such rule` `Rule 2: Always stay together` |
+
+## 풀이
+
+규칙 번호를 키로, 규칙 텍스트를 값으로 하는 `map`에 저장한 뒤 쿼리를 처리한다.
+
+1. 규칙 수 `n`을 읽고, `getline`으로 `n`개의 규칙을 순서대로 `map`에 저장한다 (키: 1부터 시작).
+2. 쿼리 수 `m`을 읽는다.
+3. 각 쿼리 번호 `t`에 대해 `map`에서 탐색한다.
+4. 존재하면 `Rule t: {텍스트}`, 없으면 `Rule t: No such rule`을 출력한다.
+
+**핵심 아이디어:** 공백 포함 줄 입력이므로 `getline`을 사용하며, `cin >> n` 이후 개행 문자를 소비하기 위해 `cin.ignore()`를 호출해야 한다. `map::find()`로 O(log n) 탐색을 수행한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  int n = 0;
+
+  cin >> n;
+  string str = "";
+  map<int, string> mp;
+  cin.ignore();
+  for (int i = 0; i < n; i++)
+  {
+    getline(cin, str);
+    mp.insert({i + 1, str});
+  }
+  int m = 0;
+  int t = 0;
+  cin >> m;
+  while (m--)
+  {
+    cin >> t;
+    cout << "Rule ";
+    if (mp.find(t) != mp.end())
+      cout << t << ": " << mp[t] << '\n';
+    else
+      cout << t << ": " << "No such rule" << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N + M log N) — 규칙 저장 O(N log N), 쿼리 M번 각 O(log N)
+- 공간: O(N) — N개의 규칙 문자열 저장

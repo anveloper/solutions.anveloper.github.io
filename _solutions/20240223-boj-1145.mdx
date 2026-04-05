@@ -1,0 +1,83 @@
+---
+title: "BOJ 1145 - 적어도 대부분의 배수"
+date: "2024-02-23"
+description: "브루트포스 알고리즘 문제"
+tags: ["브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1145"
+problem_url: "https://www.acmicpc.net/problem/1145"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1145 - 적어도 대부분의 배수](https://www.acmicpc.net/problem/1145)
+
+5개의 자연수가 주어질 때, 이 중 적어도 3개의 배수인 가장 작은 자연수를 구하라.
+
+### 입력
+
+5개의 자연수가 공백으로 주어진다 (각각 100 이하).
+
+### 출력
+
+적어도 3개의 배수인 가장 작은 자연수를 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `3 5 7 11 13` | `15` |
+
+## 풀이
+
+1부터 순차적으로 증가시키며 5개 수 중 3개 이상의 배수인 수를 찾는다.
+
+1. N을 1부터 증가시킨다
+2. 각 N에 대해 5개 수로 나누어 떨어지는 개수를 센다
+3. 개수가 3 이상이면 N을 출력하고 종료한다
+
+**핵심 아이디어**: 입력값이 최대 100이므로 답이 크지 않아 브루트포스로 충분히 해결된다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day752BOJ1145적어도대부분배수 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = 0;
+    int cnt = 0;
+    int[] arr = new int[5];
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < 5; i++) {
+      arr[i] = Integer.parseInt(st.nextToken());
+    }
+
+    while (true) {
+      N++;
+      for (int i = 0; i < 5; i++) {
+        if (N >= arr[i] && N % arr[i] == 0)
+          cnt++;
+      }
+      if (cnt > 2)
+        break;
+      cnt = 0;
+    }
+    System.out.println(N);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(ans \* 5) — ans는 정답 값, 매번 5개 수로 나눗셈
+- 공간: O(1) — 크기 5 고정 배열

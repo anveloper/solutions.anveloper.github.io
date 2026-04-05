@@ -1,0 +1,115 @@
+---
+title: "BOJ 9226 - 도깨비말"
+date: "2025-12-31"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "9226"
+problem_url: "https://www.acmicpc.net/problem/9226"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9226 - 도깨비말](https://www.acmicpc.net/problem/9226)
+
+Pig Latin이라 불리는 언어 변환 규칙을 구현한다. 영어 단어를 도깨비말로 변환하는 규칙은 다음과 같다.
+
+- 단어가 모음(a, e, i, o, u)으로 시작하면 뒤에 "ay"를 붙인다.
+- 단어가 자음으로 시작하면 첫 번째 모음이 나오기 전까지의 자음 그룹을 단어 끝으로 옮기고 "ay"를 붙인다.
+- 단어에 모음이 없으면 단어 그대로 출력하고 "ay"를 붙인다.
+
+`#`이 입력되면 종료한다.
+
+### 입력
+
+단어가 한 줄에 하나씩 주어진다. `#`이 입력되면 종료한다.
+
+### 출력
+
+각 단어를 도깨비말로 변환하여 출력한다.
+
+### 예제
+
+| 입력         | 출력       |
+| ------------ | ---------- |
+| `string` `#` | `ingstray` |
+
+## 풀이
+
+단어 앞의 자음 그룹을 뒤로 이동시키는 문자열 조작으로 해결한다.
+
+1. `#`이 나올 때까지 단어를 반복 입력받는다.
+2. 단어 앞에서 모음이 나올 때까지 각 자음을 단어 뒤에 추가(append)한다.
+3. 첫 모음의 인덱스 `start`부터 단어 끝까지 출력하고 "ay"를 붙인다.
+4. 모음이 없는 경우 원래 단어 길이까지만 출력하고 "ay"를 붙인다.
+
+**핵심 아이디어**: 문자열에 자음을 직접 append하면 원본 + 이동된 자음 형태가 된다. `start` 인덱스부터 출력하면 자연스럽게 자음 그룹이 뒤로 이동한 결과를 얻는다. 모음이 없는 경우를 `flag`로 별도 처리한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+
+  while (1)
+  {
+    string word;
+
+    cin >> word;
+    if (word == "#")
+      break;
+
+    int start = 0;
+    bool flag = 0;
+    int word_len = (int)word.length();
+    while (1)
+    {
+      if (start > word_len + 1)
+      {
+        flag = 1;
+        break;
+      }
+      if (word[start] == 'a' || word[start] == 'e' || word[start] == 'i' || word[start] == 'o' || word[start] == 'u')
+        break;
+      else
+      {
+        word += word[start];
+        start++;
+      }
+    }
+
+    if (flag)
+    {
+      for (int i = 0; i < word_len; i++)
+      {
+        cout << word[i];
+      }
+    }
+    else
+    {
+      int len = (int)word.length();
+      for (int i = start; i < len; i++)
+      {
+        cout << word[i];
+      }
+    }
+
+    cout << "ay\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 단어 길이 N에 대해 앞 자음 그룹(최대 N)을 순회
+- 공간: O(N) — 자음 그룹을 뒤에 붙인 확장 문자열 저장

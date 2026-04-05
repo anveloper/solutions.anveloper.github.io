@@ -1,0 +1,105 @@
+---
+title: "BOJ 2233 - 사과나무"
+date: "2023-12-02"
+description: "자료 구조, 그래프 이론, 트리 문제"
+tags: ["자료 구조", "그래프 이론", "트리", "스택", "최소 공통 조상"]
+platform: "boj"
+problem_number: "2233"
+problem_url: "https://www.acmicpc.net/problem/2233"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2233 - 사과나무](https://www.acmicpc.net/problem/2233)
+
+이진 문자열로 인코딩된 트리에서 두 벌레 위치(X, Y)가 주어질 때, 두 벌레가 가장 먼저 만나는 노드(LCA)의 괄호 위치를 구하라.
+
+### 입력
+
+첫째 줄에 N(노드 수), 둘째 줄에 2N 길이의 이진 문자열, 셋째 줄에 X, Y가 주어진다.
+
+### 출력
+
+LCA 노드의 여는 괄호와 닫는 괄호 위치를 출력한다.
+
+### 예제
+
+| 입력                   | 출력   |
+| ---------------------- | ------ |
+| `5` `0001001100` `4 5` | `1 10` |
+
+## 풀이
+
+재귀로 괄호 문자열을 파싱하여 각 노드의 여는/닫는 위치를 기록하고, LCA를 찾는다.
+
+1. '0'이면 자식 노드로 재귀 진입, '1'이면 현재 노드의 닫는 괄호
+2. 각 노드의 여는 위치(s)와 닫는 위치(vs[s])를 기록한다
+3. X 이전의 여는 괄호 중 닫는 괄호가 Y 이후인 가장 안쪽 노드가 LCA이다
+
+**핵심 아이디어**: 괄호 문자열에서 노드의 범위를 [여는 위치, 닫는 위치]로 표현하면, LCA는 두 위치를 모두 포함하는 가장 좁은 범위이다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day665BOJ2233사과나무 {
+  static int N, X, Y;
+  static String bin;
+  static int[] vs;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    N = Integer.parseInt(br.readLine());
+
+    bin = br.readLine();
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    X = Integer.parseInt(st.nextToken());
+    Y = Integer.parseInt(st.nextToken());
+
+    if (X > Y) {
+      int temp = X;
+      X = Y;
+      Y = temp;
+    }
+
+    vs = new int[2 * N + 1];
+
+    recur();
+
+    for (int i = X; i > 0; i--) {
+      if (vs[i] == 0)
+        continue;
+      if (vs[i] < Y)
+        continue;
+
+      sb.append(i + " " + vs[i] + "\n");
+      break;
+    }
+    System.out.println(sb);
+  }
+
+  static int cur = 0;
+
+  private static void recur() {
+    int s = cur++ + 1;
+    while (bin.charAt(cur) - '0' == 0)
+      recur();
+    vs[s] = cur++ + 1;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

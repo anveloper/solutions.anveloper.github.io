@@ -1,0 +1,110 @@
+---
+title: "BOJ 1633 - 최고의 팀 만들기"
+date: "2024-06-28"
+description: "흑백 각 15명씩 선택하여 능력치 합을 최대화하는 DP 문제"
+tags: ["DP"]
+platform: "boj"
+problem_number: "1633"
+problem_url: "https://www.acmicpc.net/problem/1633"
+difficulty: "골드 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1633 - 최고의 팀 만들기](https://www.acmicpc.net/problem/1633)
+
+체스 선수들의 백/흑 능력치가 주어질 때, 백 15명 흑 15명을 선택하여 총 능력치 합을 최대화하라. 한 선수는 한 팀에만 배정된다.
+
+### 입력
+
+여러 줄에 걸쳐 각 선수의 백 능력치와 흑 능력치가 주어진다 (EOF까지).
+
+### 출력
+
+최대 능력치 합을 출력한다.
+
+### 예제
+
+| 입력      | 출력 |
+| --------- | ---- |
+| (여러 줄) | (합) |
+
+## 풀이
+
+그리디 + 힙으로 각 선수를 더 유리한 팀에 배정하되, 15명 제한을 초과하면 상대 팀으로 이동시킨다.
+
+1. 흑 능력치가 더 큰 선수는 흑 힙에, 백이 더 크면 백 힙에, 같으면 same에 넣는다
+2. 각 힙이 15명을 초과하면 가장 약한 선수를 꺼내 상대 팀으로 이동시킨다
+3. same에 남은 선수를 빈 자리가 있는 팀이나 더 이득인 팀에 배정한다
+4. 최종적으로 양쪽 힙의 능력치 합을 출력한다
+
+**핵심 아이디어**: 최소 힙으로 각 팀의 하한 능력치를 관리하면, 초과 시 가장 약한 선수를 효율적으로 재배정할 수 있다.
+
+## 코드
+
+```python
+import sys
+import heapq
+
+white = []
+black = []
+same = []
+
+
+def change():
+    while True:
+        if len(black) > 15:
+            y, x = heapq.heappop(black)
+            if not white:
+                heapq.heappush(white, (-x, -y))
+            elif -x > white[0][0]:
+                heapq.heappush(white, (-x, -y))
+            continue
+        if len(white) > 15:
+            x, y = heapq.heappop(white)
+            if not black:
+                heapq.heappush(black, (-y, -x))
+            elif -y > black[0][1]:
+                heapq.heappush(black, (-y, -x))
+            continue
+
+        break
+
+
+while True:
+    try:
+        x, y = map(int, sys.stdin.readline().split())
+        if y > x:
+            heapq.heappush(black, (y, -x))
+        elif x > y:
+            heapq.heappush(white, (x, -y))
+        else:
+            heapq.heappush(same, (x, y))
+    except:
+        break
+change()
+while same:
+    x, y = heapq.heappop(same)
+    if len(black) < 15:
+        heapq.heappush(black, (y, -x))
+    elif len(white) < 15:
+        heapq.heappush(white, (x, -y))
+    else:
+        if black[0][0] < white[0][0]:
+            heapq.heappush(black, (y, -x))
+        else:
+            heapq.heappush(white, (x, -y))
+    change()
+ans = 0
+for i in range(15):
+    ans += black[i][0]
+    ans += white[i][0]
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(P \* log P) (P: 선수 수)
+- 공간: O(P)

@@ -1,0 +1,131 @@
+---
+title: "BOJ 1963 - 소수 경로"
+date: "2023-01-11"
+description: "수학, 그래프 이론, 그래프 탐색 문제"
+tags: ["수학", "그래프 이론", "그래프 탐색", "정수론", "너비 우선 탐색", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "1963"
+problem_url: "https://www.acmicpc.net/problem/1963"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1963 - 소수 경로](https://www.acmicpc.net/problem/1963)
+
+네 자리 소수에서 한 자리씩만 바꿔 다른 네 자리 소수로 변환할 때, 시작 소수에서 목표 소수까지의 최소 변환 횟수를 구하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T, 각 케이스마다 시작 소수와 목표 소수가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 최소 변환 횟수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `1` `1033 8179` | `6`  |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 전처리한 뒤, BFS로 최소 변환 경로를 탐색한다.
+
+1. 1~9999까지 에라토스테네스의 체를 구성한다
+2. 시작 소수에서 BFS를 시작하고 방문 배열과 거리 배열을 관리한다
+3. 현재 수의 4자리 각각(천, 백, 십, 일)에 대해 0~9로 교체한 새 수를 생성한다
+4. 천의 자리는 0이 될 수 없다 (네 자리 유지)
+5. 새 수가 소수이고 미방문이면 큐에 넣고 거리를 갱신한다
+6. 목표 소수에 도달하면 `cnt[목표]`를 출력한다
+
+**핵심 아이디어**: 4자리 소수들을 정점, 한 자리 변환을 간선으로 보면 그래프 최단 경로 문제가 된다. BFS는 가중치 없는 그래프의 최단 경로를 보장한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day338BOJ1963소수경로 {
+    public static boolean[] prime = new boolean[10000];
+    public static int[] cnt;
+    public static boolean[] visited;
+    public static int[] d = { 1000, 100, 10, 1 };
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
+        StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
+
+        elatos();
+
+        for (int i = 0; i < T; i++) {
+            st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            cnt = new int[10000];
+            visited = new boolean[10000];
+            bfs(x, y);
+            sb.append(cnt[y] + "\n");
+        }
+        System.out.println(sb);
+    }
+
+    public static void elatos() {
+        prime[0] = prime[1] = true;
+        for (int i = 2; i < 10000; i++) {
+            if (!prime[i]) {
+                for (int j = i + i; j < 10000; j += i) {
+                    prime[j] = true;
+                }
+            }
+        }
+    }
+
+    public static void bfs(int s, int e) {
+        Queue<Integer> que = new LinkedList<>();
+        que.add(s);
+        visited[s] = true;
+
+        while (!que.isEmpty()) {
+            int now = que.poll();
+
+            if (now == e)
+                return;
+
+            for (int i = 0; i < 4; i++) {
+                int x = now / d[i] / 10;
+                int y = now % d[i];
+
+                for (int j = 0; j <= 9; j++) {
+                    if (i == 0 && j == 0)
+                        continue;
+
+                    int num = (x * d[i] * 10) + (j * d[i]) + y;
+                    if (!prime[num] && !visited[num]) {
+                        que.add(num);
+                        visited[num] = true;
+                        cnt[num] = cnt[now] + 1;
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N + N \* 40) - 체 구성 + BFS (각 정점당 4자리 × 10가지 변환, N = 10000)
+- 공간: O(N) - 소수 판별, 방문, 거리 배열

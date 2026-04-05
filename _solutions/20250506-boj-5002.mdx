@@ -1,0 +1,90 @@
+---
+title: "BOJ 5002 - 도어맨"
+date: "2025-05-06"
+description: "구현, 그리디 알고리즘 문제"
+tags: ["구현", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "5002"
+problem_url: "https://www.acmicpc.net/problem/5002"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5002 - 도어맨](https://www.acmicpc.net/problem/5002)
+
+줄 서 있는 사람들을 클럽에 입장시키되, 남녀 수 차이가 N 이상이 되면 안 된다. 앞사람이 입장 불가하면 바로 뒤 사람과 교체 가능하다. 최대 입장 인원을 구하라.
+
+### 입력
+
+허용 차이 N과 줄 서 있는 사람들의 성별 문자열(M/W)이 주어진다.
+
+### 출력
+
+최대 입장 인원 수를 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `1` `MWWMMMWM` | `8`  |
+
+## 풀이
+
+앞에서부터 그리디하게 입장시키되, 균형이 깨지면 뒤 사람과 교체를 시도한다.
+
+1. 현재 사람이 입장해도 차이가 N 미만이면 바로 입장시킨다
+2. 차이가 N 이상이 되면, 바로 뒤 사람이 반대 성별인지 확인하여 교체 후 입장시킨다
+3. 교체도 불가능하면 더 이상 입장시킬 수 없으므로 종료한다
+
+**핵심 아이디어**: 최대 1칸 뒤까지만 교체를 허용하므로, 현재 위치와 다음 위치만 확인하면 된다.
+
+## 코드
+
+```python
+import sys
+
+if __name__ == "__main__":
+    N = int(input())
+    arr = list(map(str, sys.stdin.readline().rstrip()))
+    m_cnt, w_cnt = 0, 0
+    ans = 0
+    for i in range(len(arr)):
+        if abs(m_cnt - w_cnt) < N:
+            if arr[i] == "M":
+                m_cnt += 1
+            else:
+                w_cnt += 1
+            ans += 1
+        else:
+            if arr[i] == "M":
+                if abs(m_cnt + 1 - w_cnt) < N:
+                    m_cnt += 1
+                    ans += 1
+                else:
+                    if i + 1 < len(arr) and arr[i + 1] == "W":
+                        arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                        w_cnt += 1
+                        ans += 1
+                    else:
+                        break
+            else:
+                if abs(w_cnt + 1 - m_cnt) < N:
+                    w_cnt += 1
+                    ans += 1
+                else:
+                    if i + 1 < len(arr) and arr[i + 1] == "M":
+                        arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                        m_cnt += 1
+                        ans += 1
+                    else:
+                        break
+    print(ans)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

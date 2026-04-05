@@ -1,0 +1,99 @@
+---
+title: "BOJ 1253 - 좋다"
+date: "2023-01-22"
+description: "자료 구조, 정렬, 이분 탐색 문제"
+tags: ["자료 구조", "정렬", "이분 탐색", "두 포인터"]
+platform: "boj"
+problem_number: "1253"
+problem_url: "https://www.acmicpc.net/problem/1253"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1253 - 좋다](https://www.acmicpc.net/problem/1253)
+
+N개의 수 중에서 다른 두 수의 합으로 나타낼 수 있는 수의 개수를 구하라. 같은 위치의 수는 사용할 수 없다.
+
+### 입력
+
+첫째 줄에 N (1 이상 2,000 이하), 둘째 줄에 N개의 수가 주어진다.
+
+### 출력
+
+"좋은 수"의 개수를 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `10` `1 2 3 4 5 6 7 8 9 10` | `8`  |
+
+## 풀이
+
+정렬 후 각 수에 대해 투 포인터로 두 수의 합이 되는지 확인한다.
+
+1. 배열을 정렬한다
+2. 각 수 `arr[i]`에 대해 양 끝 투 포인터 l=0, r=N-1로 탐색한다
+3. `arr[l] + arr[r]`이 목표보다 작으면 l++, 크면 r--한다
+4. 합이 같을 때 l==i이면 l++, r==i이면 r--로 자기 자신을 제외한다
+5. 유효한 쌍이 발견되면 ans++하고 다음 수로 넘어간다
+
+**핵심 아이디어**: 정렬된 배열에서 투 포인터는 O(N)에 두 수의 합 존재를 판별한다. 자기 자신을 제외하는 처리가 핵심이다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day378BOJ1253좋다 {
+  static int N, ans = 0;
+  static int[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    arr = new int[N];
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    Arrays.sort(arr);
+    for (int i = 0; i < N; i++) {
+      int l = 0, r = N - 1, num = arr[i];
+      while (l < r) {
+        int tmp = arr[l] + arr[r];
+        if (tmp < num)
+          l++;
+        else if (tmp > num)
+          r--;
+        else {
+          if (l == i)
+            l++;
+          else if (r == i)
+            r--;
+          else {
+            ans++;
+            break;
+          }
+        }
+      }
+    }
+    System.out.println(ans);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) - 각 수마다 투 포인터 O(N)
+- 공간: O(N)

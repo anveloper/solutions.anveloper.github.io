@@ -1,0 +1,73 @@
+---
+title: "BOJ 3003 - 킹, 퀸, 룩, 비숍, 나이트, 폰"
+date: "2023-08-12"
+description: "구현, 사칙연산, 수학 문제"
+tags: ["구현", "사칙연산", "수학"]
+platform: "boj"
+problem_number: "3003"
+problem_url: "https://www.acmicpc.net/problem/3003"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3003 - 킹, 퀸, 룩, 비숍, 나이트, 폰](https://www.acmicpc.net/problem/3003)
+
+체스 세트에 포함된 기물 개수와 정상 개수의 차이를 출력한다. 정상 세트는 킹 1, 퀸 1, 룩 2, 비숍 2, 나이트 2, 폰 8개이다.
+
+### 입력
+
+첫째 줄에 현재 체스 세트의 기물 수가 순서대로 주어진다.
+
+### 출력
+
+각 기물별로 부족하거나 넘치는 수를 출력한다 (양수: 부족, 음수: 초과).
+
+### 예제
+
+| 입력          | 출력          |
+| ------------- | ------------- |
+| `0 1 2 2 2 7` | `1 0 0 0 0 1` |
+
+## 풀이
+
+정상 기물 수에서 입력된 기물 수를 빼서 차이를 출력한다.
+
+1. 킹(1), 퀸(1), 룩(2), 비숍(2), 나이트(2), 폰(8)의 정상 수를 설정한다
+2. 입력된 각 기물 수를 정상 수에서 뺀다
+3. 결과를 공백으로 구분하여 출력한다
+
+**핵심 아이디어**: 정상 세트 구성을 하드코딩하고 단순 뺄셈으로 차이를 구한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day552BOJ3003체스 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+    int k = 1, q = 1, r = 2, b = 2, n = 2, p = 8;
+
+    k = k - Integer.parseInt(st.nextToken());
+    q = q - Integer.parseInt(st.nextToken());
+    r = r - Integer.parseInt(st.nextToken());
+    b = b - Integer.parseInt(st.nextToken());
+    n = n - Integer.parseInt(st.nextToken());
+    p = p - Integer.parseInt(st.nextToken());
+
+    System.out.println(k + " " + q + " " + r + " " + b + " " + n + " " + p + " ");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

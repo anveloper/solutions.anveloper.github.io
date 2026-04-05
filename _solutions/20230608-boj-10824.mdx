@@ -1,0 +1,64 @@
+---
+title: "BOJ 10824 - 네 수"
+date: "2023-06-08"
+description: "수학, 구현, 문자열 문제"
+tags: ["수학", "구현", "문자열", "사칙연산"]
+platform: "boj"
+problem_number: "10824"
+problem_url: "https://www.acmicpc.net/problem/10824"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10824 - 네 수](https://www.acmicpc.net/problem/10824)
+
+네 자연수 A, B, C, D가 주어졌을 때, AB(A와 B를 이어붙인 수)와 CD(C와 D를 이어붙인 수)의 합을 구하라.
+
+### 입력
+
+첫째 줄에 A, B, C, D가 주어진다 (1 ≤ A, B, C, D ≤ 1,000,000).
+
+### 출력
+
+AB + CD를 출력한다.
+
+### 예제
+
+| 입력          | 출력                 |
+| ------------- | -------------------- |
+| `10 20 30 40` | `1020 + 3040 = 4060` |
+
+## 풀이
+
+문자열 이어붙이기로 두 수를 만들고 long으로 파싱하여 더한다.
+
+1. A와 B를 문자열로 이어붙인 후 Long.parseLong으로 변환한다
+2. C와 D도 같은 방식으로 변환한다
+3. 두 수의 합을 출력한다
+
+**핵심 아이디어**: 숫자를 이어붙이는 연산은 문자열 연결(concatenation) 후 정수 파싱으로 간단히 구현된다. 결과값이 int 범위를 초과할 수 있으므로 long을 사용한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day701BOJ10824네수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    System.out.print(Long.parseLong(st.nextToken() + st.nextToken()) + Long.parseLong(st.nextToken() + st.nextToken()));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

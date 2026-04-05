@@ -1,0 +1,127 @@
+---
+title: "BOJ 1062 - 가르침"
+date: "2022-11-07"
+description: "브루트포스 알고리즘, 비트마스킹, 백트래킹 문제"
+tags: ["브루트포스 알고리즘", "비트마스킹", "백트래킹"]
+platform: "boj"
+problem_number: "1062"
+problem_url: "https://www.acmicpc.net/problem/1062"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1062 - 가르침](https://www.acmicpc.net/problem/1062)
+
+남극 언어의 모든 단어는 `anta`로 시작하고 `tica`로 끝난다. 세종학당에서 K개의 글자를 가르칠 수 있을 때, 학생이 읽을 수 있는 단어의 최대 개수를 구하는 문제이다. 단어를 읽으려면 그 단어에 포함된 모든 글자를 알고 있어야 한다.
+
+### 입력
+
+첫째 줄에 단어의 개수 N과 가르칠 글자 수 K가 주어진다. (1 ≤ N ≤ 50, 0 ≤ K ≤ 26) 둘째 줄부터 N개의 줄에 단어가 주어진다.
+
+### 출력
+
+K개의 글자를 가르쳤을 때 학생이 읽을 수 있는 단어의 최대 개수를 출력한다.
+
+### 예제
+
+| 입력                                             | 출력 |
+| ------------------------------------------------ | ---- |
+| `3 6` `antarctica` `antahellotica` `antacartica` | `3`  |
+
+## 풀이
+
+모든 단어가 `anta`와 `tica`를 포함하므로 `a`, `c`, `i`, `n`, `t` 5글자는 반드시 알아야 한다. 나머지 K-5개 글자 조합을 백트래킹으로 탐색한다.
+
+1. K가 5 미만이면 어떤 단어도 읽을 수 없으므로 0을 출력하고 종료한다
+2. K가 26이면 모든 단어를 읽을 수 있으므로 N을 출력하고 종료한다
+3. 각 단어에서 `anta`와 `tica`를 제거하여 중간 부분만 저장한다
+4. 필수 5글자를 `visited` 배열에 미리 표시하고, 나머지 K-5개를 백트래킹으로 선택한다
+5. K-5개를 모두 선택한 시점에 `visited`로 읽을 수 있는 단어 수를 세고 최댓값을 갱신한다
+
+**핵심 아이디어**: 필수 5글자를 고정하고 나머지 조합만 탐색하여 경우의 수를 `C(21, K-5)`로 줄인다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.util.*;
+
+public class Day273BOJ1062가르침BitMasking {
+
+	static int n, k;
+	static int max = Integer.MIN_VALUE;
+	static boolean[] visited;
+	static String[] word;
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		n = sc.nextInt();
+		k = sc.nextInt();
+
+		sc.nextLine();
+		word = new String[n];
+		for (int i = 0; i < n; i++) {
+			String str = sc.nextLine();
+			str = str.replace("anta", "");
+			str = str.replace("tica", "");
+			word[i] = str;
+		}
+
+		if (k < 5) {
+			System.out.println("0");
+			return;
+		} else if (k == 26) {
+			System.out.println(n);
+			return;
+		}
+
+		visited = new boolean[26];
+		visited['a' - 'a'] = true;
+		visited['c' - 'a'] = true;
+		visited['i' - 'a'] = true;
+		visited['n' - 'a'] = true;
+		visited['t' - 'a'] = true;
+
+		backtracking(0, 0);
+		System.out.println(max);
+		sc.close();
+	}
+
+	public static void backtracking(int alpha, int len) {
+		if (len == k - 5) {
+			int count = 0;
+			for (int i = 0; i < n; i++) {
+				boolean read = true;
+				for (int j = 0; j < word[i].length(); j++) {
+					if (!visited[word[i].charAt(j) - 'a']) {
+						read = false;
+						break;
+					}
+				}
+				if (read)
+					count++;
+			}
+			max = Math.max(max, count);
+			return;
+		}
+
+		for (int i = alpha; i < 26; i++) {
+			if (visited[i] == false) {
+				visited[i] = true;
+				backtracking(i, len + 1);
+				visited[i] = false;
+			}
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N!)
+- 공간: O(N)

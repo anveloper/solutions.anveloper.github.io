@@ -1,0 +1,88 @@
+---
+title: "BOJ 1024 - 수열의 합"
+date: "2022-07-25"
+description: "수학, 브루트포스 알고리즘 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1024"
+problem_url: "https://www.acmicpc.net/problem/1024"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1024 - 수열의 합](https://www.acmicpc.net/problem/1024)
+
+N과 L이 주어졌을 때, 연속된 L개 이상의 음이 아닌 정수의 합이 N이 되는 가장 짧은 수열을 출력하라. 수열의 길이가 같다면 첫 번째 원소가 작은 것을 출력한다.
+
+### 입력
+
+첫째 줄에 N과 L이 주어진다. (0 ≤ N ≤ 10,000, 1 ≤ L ≤ 100)
+
+### 출력
+
+조건을 만족하는 수열을 공백으로 구분하여 출력한다. 수열이 없으면 -1을 출력한다.
+
+### 예제
+
+| 입력        | 출력    |
+| ----------- | ------- |
+| `15 2`      | `4 5 6` |
+| `10000 100` | `-1`    |
+
+## 풀이
+
+연속된 정수 수열의 합 공식을 이용하여 수열의 길이를 L부터 100까지 탐색한다.
+
+1. 길이 `split`인 연속 정수 수열의 합: `start + (start+1) + ... + (start+split-1) = split * start + split*(split-1)/2`
+2. `start = (N - split*(split-1)/2) / split = N/split - (split-1)/2`
+3. 길이가 짝수이면 `N/split`이 정수이고 소수점이 0.5, 홀수이면 `N/split`이 정수
+4. start가 음수이거나 `split > 100`이면 -1 출력
+5. 조건을 만족하는 최소 길이 수열을 출력
+
+**핵심 아이디어**: 연속 정수의 합을 등차수열 공식으로 표현하고, 길이를 증가시키며 정수 시작값이 존재하는 최소 길이 수열을 찾는다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day168BOJ1024수열의합 {
+	public static void main(String[] args) throws Exception {
+		StringTokenizer st = new StringTokenizer(new BufferedReader(new InputStreamReader(System.in)).readLine());
+		long num = Long.parseLong(st.nextToken());
+		int split = Integer.parseInt(st.nextToken());
+
+		long divide;
+		long start;
+		StringBuilder sb = new StringBuilder();
+		while (true) {
+			divide = num / split;
+			start = split % 2 == 0 ? divide - split / 2 + 1 : divide - split / 2;
+			if (split > 100 || start < 0) {
+				sb.append("-1\n");
+				break;
+			} else if ((split % 2 == 0 && (double) num / split - divide == 0.5)
+					|| (split % 2 == 1 && (double) num / split - divide == 0)) {
+				for (long i = 0; i < split; i++) {
+					sb.append(start + i).append(' ');
+				}
+				break;
+			}
+			split++;
+		}
+		System.out.print(sb);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

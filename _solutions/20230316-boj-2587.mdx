@@ -1,0 +1,74 @@
+---
+title: "BOJ 2587 - 대표값2"
+date: "2023-03-16"
+description: "수학, 구현, 정렬 문제"
+tags: ["수학", "구현", "정렬", "사칙연산"]
+platform: "boj"
+problem_number: "2587"
+problem_url: "https://www.acmicpc.net/problem/2587"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2587 - 대표값2](https://www.acmicpc.net/problem/2587)
+
+5개의 자연수가 주어졌을 때, 평균과 중앙값을 구하라.
+
+### 입력
+
+5줄에 걸쳐 자연수가 하나씩 주어진다.
+
+### 출력
+
+첫째 줄에 평균, 둘째 줄에 중앙값을 출력한다.
+
+### 예제
+
+| 입력                     | 출력      |
+| ------------------------ | --------- |
+| `10` `40` `30` `60` `50` | `38` `40` |
+
+## 풀이
+
+5개의 수를 정렬한 뒤 평균과 중앙값(3번째)을 출력한다.
+
+1. 5개의 수를 배열에 저장하면서 합을 구한다
+2. 배열을 정렬한다
+3. `합 / 5`가 평균, `arr[2]`가 중앙값이다
+
+**핵심 아이디어**: 고정 5개이므로 O(1) 시간에 처리된다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day403BOJ2587대표값2 {
+  static int sum = 0, mid = 0;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int[] arr = new int[5];
+    for (int i = 0; i < 5; i++) {
+      arr[i] = Integer.parseInt(br.readLine());
+      sum += arr[i];
+    }
+    Arrays.sort(arr);
+    int avg = sum / 5;
+    mid = arr[2];
+    System.out.print(avg + "\n" + mid);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) - 고정 5개
+- 공간: O(1)

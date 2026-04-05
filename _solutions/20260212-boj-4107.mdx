@@ -1,0 +1,78 @@
+---
+title: "BOJ 4107 - Knitting"
+date: "2026-02-12"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산", "시뮬레이션"]
+platform: "boj"
+problem_number: "4107"
+problem_url: "https://www.acmicpc.net/problem/4107"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4107 - Knitting](https://www.acmicpc.net/problem/4107)
+
+뜨개질을 M행 완성하는 데 필요한 총 코 수를 구하는 문제이다. 첫 번째 행은 N개의 코로 시작하고, 이후 각 행마다 K개의 패턴 값이 순환하며 코 수가 변한다. 각 행의 코 수를 누적하여 총합을 출력한다.
+
+### 입력
+
+- 여러 테스트 케이스가 주어지며, `0 0 0`이 입력되면 종료한다.
+- 각 케이스마다:
+  - N M K (초기 코 수, 총 행 수, 패턴 길이)
+  - K개의 패턴 값 `p[0..K-1]`
+
+### 출력
+
+각 케이스마다 M행의 총 코 수 합계를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `5 3 2` `2 3` `0 0 0` | `17` |
+
+## 풀이
+
+초기 코 수부터 시작하여 패턴 값을 순환 적용하면서 각 행의 코 수를 누적하는 시뮬레이션 문제이다.
+
+1. N, M, K를 읽는다. N이 0이면 종료한다.
+2. K개의 패턴 값 `p[]`를 읽는다.
+3. 현재 코 수 `n`을 N으로 초기화하고, 누적합 `ans`를 N으로 초기화한다 (첫 번째 행).
+4. `i = 0`부터 `M-2`까지 M-1번 반복한다:
+   - `n += p[i % k]`로 다음 행의 코 수를 계산한다.
+   - `ans += n`으로 누적한다.
+5. `ans`를 출력한다.
+
+**핵심 아이디어**: 패턴 인덱스를 `i % k`로 순환시켜 K개의 패턴이 반복 적용되게 한다. 첫 번째 행(N)을 `ans`에 미리 포함시키고, M-1번의 패턴 적용으로 M행 전체를 처리한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	while (1) {
+		int i, n, m, k, p[100], ans; cin >> n >> m >> k;
+		if (n == 0)break;
+		ans = n;
+		for (i = 0; i < k; i++) cin >> p[i];
+		for (i = 0; i < m-1; i++) {
+			n += p[i % k];
+			ans += n;
+		}
+		cout << ans << '\n';
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(M) — M행만큼 반복하여 누적합 계산
+- 공간: O(K) — K개의 패턴 값을 저장하는 배열

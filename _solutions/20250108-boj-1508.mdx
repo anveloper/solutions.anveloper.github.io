@@ -1,0 +1,88 @@
+---
+title: "BOJ 1508 - 레이스"
+date: "2025-01-08"
+description: "그리디 알고리즘, 이분 탐색, 매개 변수 탐색 문제"
+tags: ["그리디 알고리즘", "이분 탐색", "매개 변수 탐색", "역추적"]
+platform: "boj"
+problem_number: "1508"
+problem_url: "https://www.acmicpc.net/problem/1508"
+difficulty: "골드 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1508 - 레이스](https://www.acmicpc.net/problem/1508)
+
+길이 N인 트랙에 K개의 후보 지점 중 M개를 선택하여, 인접한 심판 간 최소 거리를 최대화하라.
+
+### 입력
+
+트랙 길이 N, 심판 수 M, 후보 지점 수 K와 각 후보 지점의 위치가 주어진다.
+
+### 출력
+
+K개 후보 중 선택 여부를 0/1 문자열로 출력한다 (사전순 최대).
+
+### 예제
+
+| 입력                 | 출력    |
+| -------------------- | ------- |
+| `10 3 5` `0 2 4 6 8` | `10101` |
+
+## 풀이
+
+그리디하게 최소 거리를 점진적으로 개선한다.
+
+1. 처음 M개를 순서대로 선택한다
+2. 인접 심판 간 최소 거리를 찾는다
+3. 최소 거리가 되는 지점부터 더 먼 후보로 재배치를 반복한다
+4. 더 이상 개선이 불가능하면 결과를 출력한다
+
+**핵심 아이디어**: 최소 거리가 되는 구간의 심판을 `bisect_left`로 더 먼 위치로 옮기는 과정을 반복하여 최소 거리를 최대화한다.
+
+## 코드
+
+```python
+import sys
+input = sys.stdin.readline
+from bisect import bisect_left
+
+def calmin():
+  MIN = N+1
+  for i in range(1,M):
+    if MIN > location[where[i]]-location[where[i-1]]:
+      MIN = location[where[i]]-location[where[i-1]]
+      idx = i
+  return idx,MIN
+
+def relocation():
+  global where
+  idx,MIN = calmin()
+  newwhere = where[:]
+  for i in range(idx,M):
+    new = bisect_left(location,location[newwhere[i-1]]+MIN+1)
+    if new >= K:
+      return False
+    newwhere[i] = new
+  where = newwhere
+  return True
+
+N,M,K = map(int,input().split())
+
+location = [*map(int,input().split())]
+where = [i for i in range(M)]
+while relocation():
+  continue
+
+check = [0]*K
+for i in where:
+  check[i] = 1
+print("".join(map(str,check)))
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

@@ -1,0 +1,101 @@
+---
+title: "BOJ 10800 - 컬러볼"
+date: "2024-01-18"
+description: "구현, 정렬, 누적 합 문제"
+tags: ["구현", "정렬", "누적 합"]
+platform: "boj"
+problem_number: "10800"
+problem_url: "https://www.acmicpc.net/problem/10800"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10800 - 컬러볼](https://www.acmicpc.net/problem/10800)
+
+N개의 공이 색과 크기를 가질 때, 각 공에 대해 자신보다 크기가 작고 색이 다른 모든 공의 크기 합을 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 공의 색과 크기가 주어진다.
+
+### 출력
+
+각 공에 대한 답을 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                          | 출력             |
+| ----------------------------- | ---------------- |
+| `4` `1 10` `3 15` `1 3` `4 8` | `8` `21` `0` `3` |
+
+## 풀이
+
+크기별 버킷으로 공을 분류하고, 크기 순으로 순회하며 전체 누적합에서 같은 색 누적합을 빼서 답을 구한다.
+
+1. 크기별(1~2000) 버킷에 공을 분류한다
+2. 크기 1부터 2000까지 순회하며 전체 크기 합(total)과 색별 크기 합(color[])을 누적한다
+3. 같은 크기의 공은 서로 잡을 수 없으므로, 현재 크기 공의 결과는 누적 전의 total에서 해당 색 누적을 뺀 값이다
+
+**핵심 아이디어**: "자신보다 작은" 조건을 만족시키기 위해 같은 크기 공의 결과를 먼저 계산하고, 이후 누적합을 갱신한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day716BOJ10800컬러볼 {
+
+  static class Ball {
+    int idx, color;
+
+    public Ball(int idx, int color) {
+      this.idx = idx;
+      this.color = color;
+    }
+  }
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    StringTokenizer st;
+    int N = Integer.parseInt(br.readLine());
+    int total = 0;
+    int[] color = new int[200_001];
+    int[] result = new int[N];
+    ArrayList<Ball>[] balls = new ArrayList[2001];
+
+    for (int i = 1; i <= 2000; i++)
+      balls[i] = new ArrayList<>();
+
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(br.readLine());
+      int c = Integer.parseInt(st.nextToken());
+      int s = Integer.parseInt(st.nextToken());
+      balls[s].add(new Ball(i, c));
+    }
+
+    for (int i = 1; i <= 2000; i++) {
+      for (Ball ball : balls[i])
+        result[ball.idx] = total - color[ball.color];
+      total += balls[i].size() * i;
+      for (Ball ball : balls[i])
+        color[ball.color] += i;
+    }
+
+    for (int i = 0; i < N; i++)
+      sb.append(result[i]).append("\n");
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N + S) - S는 크기 범위(2000)
+- 공간: O(N + S + C) - C는 색 범위

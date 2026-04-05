@@ -1,0 +1,80 @@
+---
+title: "BOJ 1362 - 펫"
+date: "2024-04-26"
+description: "반려동물의 운동/식사 기록으로 건강 상태를 판별"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "1362"
+problem_url: "https://www.acmicpc.net/problem/1362"
+difficulty: "브론즈 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1362 - 펫](https://www.acmicpc.net/problem/1362)
+
+반려동물의 초기 체중과 운동/식사 기록이 주어질 때, 최종 건강 상태를 판별하라.
+
+### 입력
+
+각 테스트 케이스마다 초기 체중, 이후 명령(E/F)과 값이 주어지며 #으로 종료한다. 0 0이면 입력 끝이다.
+
+### 출력
+
+각 동물에 대해 사망이면 "RIP", 건강하면 ":-)", 아니면 ":-("를 출력한다.
+
+### 예제
+
+| 입력                        | 출력    |
+| --------------------------- | ------- |
+| `1 3` `E 1` `F 2` `#` `0 0` | `1 :-)` |
+
+## 풀이
+
+운동(E)이면 체중을 줄이고 식사(F)이면 늘리며, 최종 상태를 판정한다.
+
+1. E 명령이면 체중에서 값을 빼고, F 명령이면 더한다
+2. 체중이 0 이하가 되면 사망(RIP)으로 처리한다
+3. 최종 체중이 초기 체중의 절반 초과 ~ 2배 미만이면 건강(:-)이다
+4. 그 외는 불건강(:-(이다
+
+**핵심 아이디어**: 체중이 한 번이라도 0 이하가 되면 이후 명령과 무관하게 사망 처리된다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  input = input.map((i) => i.split(" "));
+  const sb = [];
+  let SN = 0;
+  while (++SN) {
+    let [o, w] = input.shift().map(Number);
+    if (o == 0 && w == 0) break;
+    let isRip = false;
+    while (true) {
+      const [cmd, n] = input.shift();
+      if (cmd === "#") break;
+      else if (cmd === "E") {
+        w -= +n;
+        if (w <= 0) isRip = true;
+      } else {
+        w += +n;
+      }
+    }
+    if (isRip) sb.push(`${SN} RIP`);
+    else if (o / 2 < w && w < o * 2) sb.push(`${SN} :-)`);
+    else sb.push(`${SN} :-(`);
+  }
+  return sb.join("\n");
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

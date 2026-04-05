@@ -1,0 +1,79 @@
+---
+title: "BOJ 3035 - 스캐너"
+date: "2024-08-20"
+description: "R x C 크기의 문자 패턴을 배율에 맞게 확대하여 출력하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "3035"
+problem_url: "https://www.acmicpc.net/problem/3035"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3035 - 스캐너](https://www.acmicpc.net/problem/3035)
+
+R×C 크기의 문자 패턴을 행 방향 ZR배, 열 방향 ZC배로 확대하여 출력하라.
+
+### 입력
+
+R, C, ZR, ZC와 R×C 문자 패턴이 주어진다.
+
+### 출력
+
+확대된 패턴을 출력한다.
+
+### 예제
+
+| 입력                  | 출력                                            |
+| --------------------- | ----------------------------------------------- |
+| `2 3 2 3` `abc` `def` | `aaabbbccc` `aaabbbccc` `dddeeefff` `dddeeefff` |
+
+## 풀이
+
+각 행의 문자를 열 방향으로 ZC배 확대하고, 확대된 행을 ZR번 반복 출력한다.
+
+1. 각 행의 문자를 읽으며 각 문자를 ZC번 반복하여 확대 행을 만든다
+2. 확대된 행을 ZR번 출력한다
+3. 모든 행에 대해 반복한다
+
+**핵심 아이디어**: 행과 열을 독립적으로 확대하면 되므로, 열 확대 후 행 반복으로 간단히 구현된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+  int r, c, zr, zc;
+  cin >> r >> c >> zr >> zc;
+
+  for (int k = 0; k < r; k++)
+  {
+    string str;
+    for (int i = 0; i < c; i++)
+    {
+      char ch;
+      cin >> ch;
+      for (int j = 0; j < zc; j++)
+      {
+        str += ch;
+      }
+    }
+    for (int i = 0; i < zr; i++)
+    {
+      cout << str << endl;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(R _ C _ ZR \* ZC)
+- 공간: O(C \* ZC)

@@ -1,0 +1,60 @@
+---
+title: "BOJ 1350 - 진짜 공간"
+date: "2024-04-18"
+description: "파일 크기를 클러스터 단위로 올림하여 실제 차지하는 공간을 계산"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1350"
+problem_url: "https://www.acmicpc.net/problem/1350"
+difficulty: "브론즈 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1350 - 진짜 공간](https://www.acmicpc.net/problem/1350)
+
+파일들의 크기가 주어질 때, 클러스터 단위로 올림하여 실제 디스크에서 차지하는 공간의 합을 구하라.
+
+### 입력
+
+첫째 줄에 파일 수 N, 둘째 줄에 N개의 파일 크기, 셋째 줄에 클러스터 크기 C가 주어진다.
+
+### 출력
+
+실제 차지하는 디스크 공간의 합을 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `5` `1 2 3 4 5` `4` | `20` |
+
+## 풀이
+
+각 파일 크기를 클러스터 크기로 나눈 뒤 올림하여 합산한다.
+
+1. 각 파일에 대해 `ceil(파일크기 / C)`로 필요한 클러스터 수를 구한다
+2. 클러스터 수의 합에 C를 곱하면 실제 디스크 사용량이다
+
+**핵심 아이디어**: 파일이 0바이트이면 클러스터를 차지하지 않으며, `ceil` 연산으로 클러스터 단위 올림을 처리한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  const arr = input[1].split(" ").map(Number);
+  const C = +input[2];
+  return arr.reduce((p, c) => p + Math.ceil(c / C), 0) * C;
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

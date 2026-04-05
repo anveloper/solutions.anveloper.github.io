@@ -1,0 +1,94 @@
+---
+title: "BOJ 1388 - 바닥 장식"
+date: "2023-11-27"
+description: "구현, 그래프 이론, 그래프 탐색 문제"
+tags: ["구현", "그래프 이론", "그래프 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "1388"
+problem_url: "https://www.acmicpc.net/problem/1388"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1388 - 바닥 장식](https://www.acmicpc.net/problem/1388)
+
+N x M 바닥에 '-'(가로)와 '|'(세로) 장식이 있을 때, 나무 판자의 총 개수를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 N줄에 바닥 패턴이 주어진다.
+
+### 출력
+
+나무 판자의 수를 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- | ------- | --- |
+| `3 3` `---` ` | .    | ` `---` | `5` |
+
+## 풀이
+
+가로 연속('-')과 세로 연속('|')의 시작점을 각각 세어 판자 수를 구한다.
+
+1. 행 방향으로 순회하며 '-'가 연속되는 시작점(이전이 '-'가 아닌 '-')을 센다
+2. 열 방향으로 순회하며 '|'가 연속되는 시작점을 센다
+3. 두 카운트의 합이 총 판자 수이다
+
+**핵심 아이디어**: 같은 문자가 연속되는 구간의 시작점 수 = 판자 수이다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day660BOJ1388바닥장식 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int n = Integer.parseInt(st.nextToken());
+    int m = Integer.parseInt(st.nextToken());
+    char[][] arr = new char[n][m];
+    for (int i = 0; i < n; i++) {
+      String row = br.readLine();
+      for (int j = 0; j < m; j++) {
+        arr[i][j] = row.charAt(j);
+      }
+    }
+    int cnt = 0;
+    for (int i = 0; i < n; i++) {
+      int tmp = 0;
+      for (int j = 0; j < m; j++) {
+        if (arr[i][j] == '|') {
+          tmp = 0;
+        } else if (++tmp == 1) {
+          cnt++;
+        }
+      }
+    }
+    for (int j = 0; j < m; j++) {
+      int tmp = 0;
+      for (int i = 0; i < n; i++) {
+        if (arr[i][j] == '-') {
+          tmp = 0;
+        } else if (++tmp == 1) {
+          cnt++;
+        }
+      }
+    }
+    System.out.println(cnt);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(NM)
+- 공간: O(NM)

@@ -1,0 +1,76 @@
+---
+title: "BOJ 2562 - 최댓값"
+date: "2023-07-05"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2562"
+problem_url: "https://www.acmicpc.net/problem/2562"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2562 - 최댓값](https://www.acmicpc.net/problem/2562)
+
+9개의 서로 다른 자연수가 주어질 때, 최댓값과 그 값이 몇 번째 수인지 구한다.
+
+### 입력
+
+9개의 줄에 걸쳐 한 줄에 하나의 자연수가 주어진다 (100 미만).
+
+### 출력
+
+첫째 줄에 최댓값, 둘째 줄에 최댓값이 몇 번째 수인지 출력한다.
+
+### 예제
+
+| 입력                                        | 출력     |
+| ------------------------------------------- | -------- |
+| `3` `29` `38` `12` `57` `74` `40` `85` `61` | `85` `8` |
+
+## 풀이
+
+9개의 수를 순회하며 최댓값과 그 인덱스를 추적한다.
+
+1. max를 0, index를 0으로 초기화한다
+2. 9번 반복하며 값을 읽고, 현재 max보다 크면 max와 index를 갱신한다
+3. 최종 max와 index를 출력한다
+
+**핵심 아이디어**: 고정된 9개 입력에 대한 단순 최댓값 탐색으로, 한 번의 순회로 해결된다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day514BOJ2562최댓값 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int max = 0;
+    int index = 0;
+    for (int i = 0; i < 9; i++) {
+
+      int val = Integer.parseInt(br.readLine());
+
+      if (val > max) {
+        max = val;
+        index = i + 1;
+      }
+    }
+
+    System.out.println(max);
+    System.out.println(index);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 9회 반복
+- 공간: O(1)

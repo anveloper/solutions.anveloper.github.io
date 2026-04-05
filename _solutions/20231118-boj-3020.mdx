@@ -1,0 +1,96 @@
+---
+title: "BOJ 3020 - 개똥벌레"
+date: "2023-11-18"
+description: "이분 탐색, 누적 합, 차분 배열 트릭 문제"
+tags: ["이분 탐색", "누적 합", "차분 배열 트릭"]
+platform: "boj"
+problem_number: "3020"
+problem_url: "https://www.acmicpc.net/problem/3020"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3020 - 개똥벌레](https://www.acmicpc.net/problem/3020)
+
+동굴에 석순(아래)과 종유석(위)이 번갈아 N개 있고 높이가 H일 때, 개똥벌레가 수평으로 날아가면서 부딪히는 장애물의 최솟값과 그 높이의 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, H, 이후 N줄에 장애물 높이가 번갈아 주어진다.
+
+### 출력
+
+최소 장애물 수와 해당 높이의 수를 출력한다.
+
+### 예제
+
+| 입력                          | 출력  |
+| ----------------------------- | ----- |
+| `6 7` `1` `5` `3` `3` `5` `1` | `2 3` |
+
+## 풀이
+
+누적 합으로 각 높이에서 부딪히는 석순과 종유석 수를 O(N+H)에 계산한다.
+
+1. 석순은 높이별 개수를 세고 뒤에서부터 누적합을 구한다 (높이 i 이상인 석순 수)
+2. 종유석은 위에서부터의 높이로 변환하여 같은 방식으로 누적합을 구한다
+3. 각 높이에서 석순 + 종유석 수를 합산하여 최솟값과 개수를 구한다
+
+**핵심 아이디어**: 누적 합으로 각 높이의 장애물 수를 O(1)에 구하면 전체 O(N+H)에 해결된다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day651BOJ3020개똥벌레 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    int N = Integer.parseInt(st.nextToken());
+    int H = Integer.parseInt(st.nextToken());
+
+    int[] down = new int[H + 2];
+    int[] up = new int[H + 2];
+    for (int i = 1; i <= (N) / 2; i++) {
+      int a = Integer.parseInt(br.readLine());
+      int b = H - Integer.parseInt(br.readLine()) + 1;
+      down[a]++;
+      up[b]++;
+    }
+    for (int i = 1; i <= H; i++) {
+      down[i] += down[i - 1];
+    }
+
+    for (int i = H; i >= 1; i--) {
+      up[i] += up[i + 1];
+    }
+
+    int min = N;
+    int cnt = 0;
+    for (int i = 1; i < H + 1; i++) {
+      int dif = (down[H] - down[i - 1]) + (up[1] - up[i + 1]);
+
+      if (dif < min) {
+        min = dif;
+        cnt = 1;
+      } else if (dif == min)
+        cnt++;
+    }
+    System.out.println(min + " " + cnt);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N + H)
+- 공간: O(H)

@@ -1,0 +1,95 @@
+---
+title: "BOJ 4483 - Robot Roll Call"
+date: "2026-02-26"
+description: "구현, 문자열, 집합과 맵 문제"
+tags: ["구현", "문자열", "집합과 맵"]
+platform: "boj"
+problem_number: "4483"
+problem_url: "https://www.acmicpc.net/problem/4483"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4483 - Robot Roll Call](https://www.acmicpc.net/problem/4483)
+
+주어진 이름 목록에서, 여러 줄의 텍스트 속에 각 이름이 등장하는지 확인한다. 텍스트에 포함된 단어와 이름을 비교하여 `present` 또는 `absent`를 출력한다.
+
+### 입력
+
+- 첫 줄: 테스트 케이스 수
+- 각 테스트 케이스: 이름 수 n, n개의 이름, 텍스트 줄 수 d, d줄의 텍스트
+
+### 출력
+
+각 테스트 케이스마다 `Test set {번호}:`를 출력하고, 각 이름에 대해 `{이름} is present` 또는 `{이름} is absent`를 출력한다.
+
+## 풀이
+
+텍스트의 모든 단어를 `set`에 저장한 뒤, 각 이름이 set에 존재하는지 O(log N) 조회한다.
+
+1. n개의 이름을 벡터에 저장
+2. d줄의 텍스트를 공백 기준으로 분리하여 set에 삽입
+3. 각 이름의 존재 여부를 `count`로 확인
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <set>
+#include <sstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+void solve(int idx) {
+  int n;
+  cin >> n;
+  vector<string> names(n);
+  for (int i = 0; i < n; i++) cin >> names[i];
+
+  int d;
+  cin >> d;
+  cin.ignore();
+
+  set<string> found_words;
+  while (d--) {
+    string line;
+    getline(cin, line);
+    stringstream ss(line);
+    string word;
+    while (ss >> word) {
+      found_words.insert(word);
+    }
+  }
+
+  cout << "Test set " << idx << ":\n";
+  for (const string& name : names) {
+    cout << name << " is "
+         << (found_words.count(name) ? "present" : "absent")
+         << "\n";
+  }
+  cout << "\n";
+}
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int t;
+  if (!(cin >> t)) return 0;
+  for (int i = 1; i <= t; i++) {
+    solve(i);
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* (W log W + N log W)) — W: 텍스트 총 단어 수, N: 이름 수
+- 공간: O(W + N) — set과 벡터 크기

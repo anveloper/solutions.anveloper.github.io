@@ -1,0 +1,74 @@
+---
+title: "BOJ 1076 - 저항"
+date: "2024-02-09"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1076"
+problem_url: "https://www.acmicpc.net/problem/1076"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1076 - 저항](https://www.acmicpc.net/problem/1076)
+
+저항의 세 색 띠가 주어질 때 저항값을 구하라. 첫째, 둘째 색은 값(0~9), 셋째 색은 곱할 10의 거듭제곱을 나타낸다.
+
+### 입력
+
+세 줄에 걸쳐 색 이름이 주어진다.
+
+### 출력
+
+저항값을 출력한다.
+
+### 예제
+
+| 입력                    | 출력   |
+| ----------------------- | ------ |
+| `yellow` `violet` `red` | `4700` |
+
+## 풀이
+
+색 이름을 인덱스로 변환하여 (A \* 10 + B) \* 10^C를 계산한다.
+
+1. 색 이름 배열을 정의한다 (black=0, brown=1, ..., white=9)
+2. 세 색의 인덱스를 구한다
+3. (첫째 인덱스 \* 10 + 둘째 인덱스) \* 10^(셋째 인덱스)를 계산한다
+
+**핵심 아이디어**: 색 배열의 인덱스가 곧 저항 코드 값이므로 `indexOf`로 변환한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day738BOJ1076저항 {
+
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    String[] color = { "black", "brown", "red", "orange", "yellow", "green",
+        "blue", "violet", "grey", "white" };
+
+    String A = br.readLine();
+    String B = br.readLine();
+    String C = br.readLine();
+
+    long ans = (Arrays.asList(color).indexOf(A) * 10) + Arrays.asList(color).indexOf(B);
+    ans *= Math.pow(10, Arrays.asList(color).indexOf(C));
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 3개 입력, 색 배열 탐색 O(10)
+- 공간: O(1) — 크기 10 고정 배열

@@ -1,0 +1,60 @@
+---
+title: "BOJ 5101 - Sequences"
+date: "2025-05-11"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5101"
+problem_url: "https://www.acmicpc.net/problem/5101"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5101 - Sequences](https://www.acmicpc.net/problem/5101)
+
+첫 항 a, 공차 b인 등차수열에서 c가 몇 번째 항인지 구하라. 수열에 없으면 X를 출력한다.
+
+### 입력
+
+여러 줄에 a, b, c가 주어지며, 모두 0이면 종료한다.
+
+### 출력
+
+c가 수열의 몇 번째 항인지 출력하거나 X를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `1 2 3` `0 0 0` | `2`  |
+
+## 풀이
+
+등차수열의 일반항 공식으로 항 번호를 계산한다.
+
+1. `(c - a)`가 b로 나누어떨어지고, 몫이 0 이상이면 수열에 존재한다
+2. 항 번호는 `(c - a) / b + 1`이다
+3. 나누어떨어지지 않거나 음수이면 X를 출력한다
+
+**핵심 아이디어**: 등차수열 `a, a+b, a+2b, ...`에서 c의 위치는 `(c-a)/b`로 바로 구할 수 있다.
+
+## 코드
+
+```python
+while True:
+    a, b, c = map(int, input().split())
+    if a == b == c == 0:
+        break
+    if (c - a) % b == 0 and (c - a) // b >= 0:
+        print((c - a) // b + 1)
+    else:
+        print("X")
+```
+
+## 복잡도
+
+- 시간: O(1) (케이스당)
+- 공간: O(1)

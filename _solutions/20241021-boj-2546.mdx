@@ -1,0 +1,79 @@
+---
+title: "BOJ 2546 - 경제학과 정원영"
+date: "2024-10-21"
+description: "두 나라 평균 가격 비교를 통해 경제 상태를 분석하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "2546"
+problem_url: "https://www.acmicpc.net/problem/2546"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2546 - 경제학과 정원영](https://www.acmicpc.net/problem/2546)
+
+두 나라의 물건 가격이 주어질 때, A나라 평균보다 비싸면서 B나라 평균보다 싼 물건의 개수를 구하라.
+
+### 입력
+
+테스트 케이스 수, 각 케이스마다 n, m과 A나라 n개, B나라 m개의 가격이 주어진다.
+
+### 출력
+
+각 케이스마다 조건을 만족하는 물건의 개수를 출력한다.
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `1` `3 3` `1 2 3` `4 5 6` | `1`  |
+
+## 풀이
+
+정수 비교로 부동소수점 오차 없이 평균과 비교한다.
+
+1. A나라 물건의 합 s와 B나라 물건의 합 t를 구한다
+2. A나라 각 물건 가격 `A[i]`에 대해 `s > n * A[i]` (A평균보다 큰지)와 `t < m * A[i]` (B평균보다 작은지)를 확인한다
+3. 두 조건을 모두 만족하는 개수를 센다
+
+**핵심 아이디어**: `A[i] > s/n`을 `n * A[i] < s`로 변환하면 부동소수점 나눗셈 없이 정수만으로 비교할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+typedef long long int ll;
+ll A[200000], B[200000];
+int main(void)
+{
+  cin.tie(0);
+  ios::sync_with_stdio(0);
+
+  int testcase;
+  cin >> testcase;
+  while (testcase--)
+  {
+    int n, m, answer = 0;
+    cin >> n >> m;
+    ll s = 0, t = 0;
+    for (int i = 0; i < n; i++)
+      cin >> A[i], s += A[i];
+    for (int i = 0; i < m; i++)
+      cin >> B[i], t += B[i];
+    for (int i = 0; i < n; i++)
+      answer += (s > n * A[i] && t < m * A[i]);
+    cout << answer << '\n';
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* (N + M))
+- 공간: O(N + M)

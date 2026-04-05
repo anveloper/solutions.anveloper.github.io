@@ -1,0 +1,92 @@
+---
+title: "BOJ 1107 - 리모컨"
+date: "2023-07-24"
+description: "브루트포스 알고리즘 문제"
+tags: ["브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1107"
+problem_url: "https://www.acmicpc.net/problem/1107"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1107 - 리모컨](https://www.acmicpc.net/problem/1107)
+
+현재 채널 100에서 목표 채널 N으로 이동할 때, 일부 숫자 버튼이 고장난 리모컨으로 최소 몇 번 버튼을 눌러야 하는지 구한다.
+
+### 입력
+
+첫째 줄에 목표 채널 N (0 이상 500,000 이하), 둘째 줄에 고장난 버튼 수 M, 셋째 줄에 고장난 버튼 번호가 주어진다.
+
+### 출력
+
+최소 버튼 입력 횟수를 출력한다.
+
+### 예제
+
+| 입력               | 출력 |
+| ------------------ | ---- |
+| `5457` `3` `6 7 8` | `6`  |
+
+## 풀이
+
+0부터 999,999까지 모든 채널을 순회하며 고장난 버튼 없이 입력 가능한 채널에 대해 최소 버튼 횟수를 계산한다.
+
+1. 기본값으로 현재 채널(100)에서 +/- 버튼만으로 이동하는 횟수 |target - 100|을 설정한다
+2. 0~999,999 범위의 모든 채널에 대해 고장난 버튼이 포함되어 있는지 확인한다
+3. 고장난 버튼 없이 입력 가능하면 (숫자 자릿수 + |target - i|)를 계산한다
+4. 전체 최솟값을 출력한다
+
+**핵심 아이디어**: 목표 채널이 최대 500,000이므로 0~999,999 범위의 브루트포스가 충분히 가능하다. 각 채널의 숫자 버튼 입력 횟수(자릿수)와 +/- 이동 횟수의 합이 최소인 경우를 찾는다.
+
+## 코드
+
+```java
+package day549;
+
+import java.util.*;
+
+public class Day533BOJ1107리모컨 {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    int target = sc.nextInt();
+    int m = sc.nextInt();
+
+    boolean[] broken = new boolean[10];
+    for (int i = 0; i < m; i++) {
+      int n = sc.nextInt();
+      broken[n] = true;
+    }
+
+    int result = Math.abs(target - 100);
+    for (int i = 0; i <= 999999; i++) {
+      String str = String.valueOf(i);
+      int len = str.length();
+
+      boolean isBreak = false;
+      for (int j = 0; j < len; j++) {
+        if (broken[str.charAt(j) - '0']) {
+          isBreak = true;
+          break;
+        }
+      }
+      if (!isBreak) {
+        int min = Math.abs(target - i) + len;
+        result = Math.min(min, result);
+      }
+    }
+    System.out.println(result);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* D) — N=1,000,000, D는 자릿수(최대 6)
+- 공간: O(1)

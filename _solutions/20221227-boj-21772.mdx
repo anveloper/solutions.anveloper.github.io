@@ -1,0 +1,118 @@
+---
+title: "BOJ 21772 - 가희의 고구마 먹방"
+date: "2022-12-27"
+description: "구현, 브루트포스 알고리즘, 백트래킹 문제"
+tags: ["구현", "브루트포스 알고리즘", "백트래킹", "격자 그래프"]
+platform: "boj"
+problem_number: "21772"
+problem_url: "https://www.acmicpc.net/problem/21772"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 21772 - 가희의 고구마 먹방](https://www.acmicpc.net/problem/21772)
+
+R×C 크기의 격자에서 가희(G)가 T초 동안 상하좌우로 이동하며 고구마(S)를 최대한 많이 먹으려 한다. 벽(#)은 통과 불가하고, 먹은 고구마는 사라진다. 최대 고구마 수를 구하라.
+
+### 입력
+
+첫째 줄에 R, C, T가 주어진다 (1 이상 10 이하, T는 10 이하). 둘째 줄부터 R×C 격자가 주어진다.
+
+### 출력
+
+T초 동안 먹을 수 있는 최대 고구마 수를 출력한다.
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `3 3 2` `G.S` `...` `S.S` | `1`  |
+
+## 풀이
+
+DFS 백트래킹으로 T초 동안의 모든 이동 경로를 탐색한다.
+
+1. 격자에서 가희의 시작 위치(G)를 찾는다
+2. 매 초마다 4방향으로 이동을 시도한다 (범위 밖, 벽은 건너뜀)
+3. 고구마(S) 칸으로 이동하면 먹은 것으로 처리하고(`.`으로 변경) sum을 1 증가시킨다
+4. 빈 칸이면 sum 그대로 이동한다
+5. T초 도달 시 최댓값을 갱신한다
+6. 재귀 복귀 시 고구마 칸을 원래대로 복원한다 (백트래킹)
+
+**핵심 아이디어**: T가 최대 10이고 매 초 4방향 이동이므로 최대 4^10 ≈ 100만 경우를 탐색한다. 고구마를 먹으면 맵을 변경하고, 복귀 시 복원하여 다른 경로에 영향을 주지 않는다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day323BOJ21772가희고구마먹방 {
+    static int R, T, C, ans = 0;
+    static char[][] map;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        R = Integer.parseInt(st.nextToken());
+        C = Integer.parseInt(st.nextToken());
+        T = Integer.parseInt(st.nextToken());
+
+        map = new char[R][C];
+        int idx = 0, jdx = 0;
+        for (int i = 0; i < R; i++) {
+            String str = br.readLine();
+            for (int j = 0; j < C; j++) {
+                map[i][j] = str.charAt(j);
+                if (map[i][j] == 'G') {
+                    idx = i;
+                    jdx = j;
+                }
+            }
+        }
+        dfs(0, idx, jdx, 0);
+        System.out.println(ans);
+        br.close();
+    }
+
+    static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+
+    private static void dfs(int t, int idx, int jdx, int sum) {
+        if (t == T) {
+            ans = ans > sum ? ans : sum;
+            return;
+        }
+        for (int dir = 0; dir < 4; dir++) {
+            int nr = idx + dr[dir];
+            int nc = jdx + dc[dir];
+
+            if (index(nr, nc))
+                continue;
+            if (map[nr][nc] == '#')
+                continue;
+            if (map[nr][nc] == 'S') {
+                map[nr][nc] = '.';
+                dfs(t + 1, nr, nc, sum + 1);
+                map[nr][nc] = 'S';
+            } else {
+                dfs(t + 1, nr, nc, sum);
+            }
+        }
+    }
+
+    static boolean index(int r, int c) {
+        return r < 0 || r >= R || c < 0 || c >= C;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(4^T) - 매 초 4방향 탐색
+- 공간: O(R \* C + T) - 격자 + 재귀 스택

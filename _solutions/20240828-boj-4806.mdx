@@ -1,0 +1,63 @@
+---
+title: "BOJ 4806 - 줄 세기"
+date: "2024-08-28"
+description: "입력의 총 줄 수를 세어 출력하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4806"
+problem_url: "https://www.acmicpc.net/problem/4806"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4806 - 줄 세기](https://www.acmicpc.net/problem/4806)
+
+입력이 끝날 때까지 총 몇 줄이 입력되었는지 세어 출력하라.
+
+### 입력
+
+여러 줄의 텍스트가 주어진다 (EOF까지).
+
+### 출력
+
+총 줄 수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `hello` `world` | `2`  |
+
+## 풀이
+
+`getline`으로 한 줄씩 읽으며 카운트를 누적한다.
+
+1. `getline`이 성공하는 동안 카운트를 증가시킨다
+2. EOF에 도달하면 총 줄 수를 출력한다
+
+**핵심 아이디어**: `getline`의 반환값으로 EOF를 감지하여 줄 수를 O(N)에 센다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+int ans;
+
+int main()
+{
+  while (getline(cin, s))
+    ans++;
+  cout << ans;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 줄 수)
+- 공간: O(L) (L: 한 줄의 최대 길이)

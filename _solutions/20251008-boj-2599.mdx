@@ -1,0 +1,93 @@
+---
+title: "BOJ 2599 - 짝 정하기"
+date: "2025-10-08"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2599"
+problem_url: "https://www.acmicpc.net/problem/2599"
+difficulty: "실버 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2599 - 짝 정하기](https://www.acmicpc.net/problem/2599)
+
+세 분단 A, B, C가 있으며 각 분단의 남학생 수와 여학생 수가 주어진다. 모든 학생이 짝을 이루되, 같은 분단끼리는 짝이 될 수 없다. A 분단 남학생은 B 또는 C 분단 여학생과만 짝을 이룰 수 있고, 나머지 분단도 동일한 제약이 적용된다. 가능한 짝 배정이 존재하면 배정 결과를, 불가능하면 0을 출력한다.
+
+### 입력
+
+첫 줄에 정수 N이 주어진다. 이후 3줄에 걸쳐 각 분단의 남학생 수와 여학생 수가 주어진다.
+
+### 출력
+
+짝 배정이 가능하면 첫 줄에 1을 출력하고, 이후 3줄에 걸쳐 각 분단 남학생이 B분단 여학생, C분단 여학생과 각각 몇 명씩 짝을 이루는지 출력한다. 불가능하면 0을 출력한다.
+
+### 예제
+
+| 입력                  | 출력                  |
+| --------------------- | --------------------- |
+| `3` `2 3` `3 2` `3 3` | `1` `2 0` `1 2` `0 3` |
+
+## 풀이
+
+세 분단 간 짝 배정 수를 변수로 놓고, 브루트포스로 가능한 모든 경우를 탐색한다.
+
+1. A 분단 남학생 수를 `stud[0].first`, B 분단 여학생과 짝을 이루는 수를 `ab`, C 분단과 짝을 이루는 수를 `ac`로 설정한다.
+2. `ab`를 0부터 `stud[0].first` 미만까지, `ba`를 0부터 `stud[0].second` 미만까지 이중 반복문으로 탐색한다.
+3. `ab`, `ba`가 결정되면 나머지 변수(`bc`, `ca`, `cb`)는 각 분단의 남학생 수 조건으로부터 자동으로 결정된다.
+4. 세 분단의 여학생 수 조건을 동시에 만족하는 배정이 있으면 출력하고 종료한다.
+5. 이중 반복 후에도 조건을 만족하지 못하면 0을 출력한다.
+
+**핵심 아이디어**: A분단 남학생의 B분단 배정 수(`ab`)와 B분단 남학생의 A분단 배정 수(`ba`)를 완전 탐색하면, 나머지 값들은 분단별 남학생 수 합산 조건으로 유일하게 결정된다. 여학생 수 제약 조건을 별도로 검증하는 방식으로 유효한 배정을 찾는다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int N;
+pair<int, int> stud[3];
+int ab, ac, ba, bc, ca, cb;
+
+int main()
+{
+  cin >> N;
+  for (int i = 0; i < 3; i++)
+  {
+    cin >> stud[i].first >> stud[i].second;
+  }
+  if (stud[0].first > stud[1].second + stud[2].second || stud[1].first > stud[0].second + stud[2].second || stud[2].first > stud[0].second + stud[1].second)
+    cout << 0;
+  for (int i = 0; i < stud[0].first; i++)
+  {
+    ab = i;
+    ac = stud[0].first - i;
+    for (int j = 0; j < stud[0].second; j++)
+    {
+      ba = j;
+      bc = stud[1].first - ba;
+      ca = stud[0].second - ba;
+      cb = stud[1].second - ab;
+      if (ba + ca == stud[0].second && ab + cb == stud[1].second && ac + bc == stud[2].second)
+      {
+        cout << 1 << '\n';
+        cout << ab << ' ' << ac << '\n';
+        cout << ba << ' ' << bc << '\n';
+        cout << ca << ' ' << cb << '\n';
+        return 0;
+      }
+    }
+  }
+  cout << 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(M²) — M은 분단별 학생 수 (남학생 수 × 여학생 수 이중 탐색)
+- 공간: O(1) — 고정 크기 배열만 사용

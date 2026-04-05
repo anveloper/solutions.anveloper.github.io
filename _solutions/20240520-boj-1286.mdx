@@ -1,0 +1,63 @@
+---
+title: "BOJ 1286 - 부분 직사각형"
+date: "2024-05-20"
+description: "NxM 격자에서 각 문자가 포함된 부분 직사각형의 개수를 구하는 문제"
+tags: ["수학", "조합론"]
+platform: "boj"
+problem_number: "1286"
+problem_url: "https://www.acmicpc.net/problem/1286"
+difficulty: "골드 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1286 - 부분 직사각형](https://www.acmicpc.net/problem/1286)
+
+수평/수직으로 순환하는 N×M 격자에서, 각 알파벳 A~Z가 포함된 부분 직사각형의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 N줄에 M개의 알파벳 대문자가 주어진다.
+
+### 출력
+
+A부터 Z까지 각 알파벳이 포함된 부분 직사각형의 개수를 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력              | 출력        |
+| ----------------- | ----------- |
+| `2 3` `ABC` `DEF` | (26줄 출력) |
+
+## 풀이
+
+순환 격자에서 각 칸 (i,j)를 포함하는 부분 직사각형의 수를 행/열 기여도의 곱으로 계산한다.
+
+1. 각 칸 (i,j)에 대해 행 방향 기여도 row와 열 방향 기여도 col을 계산한다
+2. 순환 격자이므로 기여도 공식은 `(i+1)*(2N-i) + (i+N+1)*(N-i)` 형태이다
+3. 해당 칸의 알파벳에 row \* col을 누적한다
+4. A~Z 각각의 누적값을 출력한다
+
+**핵심 아이디어**: 순환 격자에서 각 칸의 기여도를 O(1) 수식으로 계산하면, 전체 O(NM)에 해결된다.
+
+## 코드
+
+```python
+N, M = map(int, input().split())
+result = [0] * 26
+for i in range(N):
+    row = (i + 1) * (2 * N - i) + (i + N + 1) * (N - i)
+    S = input()
+    for j in range(M):
+        col = (j + 1) * (2 * M - j) + (j + M + 1) * (M - j)
+        result[ord(S[j]) - ord("A")] += row * col
+for i in result:
+    print(i)
+```
+
+## 복잡도
+
+- 시간: O(NM)
+- 공간: O(1)

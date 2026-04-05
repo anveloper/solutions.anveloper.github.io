@@ -1,0 +1,67 @@
+---
+title: "BOJ 1681 - 줄 세우기"
+date: "2024-06-06"
+description: "특정 숫자를 포함하지 않는 N번째 자연수를 구하는 문제"
+tags: ["구현", "브루트포스"]
+platform: "boj"
+problem_number: "1681"
+problem_url: "https://www.acmicpc.net/problem/1681"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1681 - 줄 세우기](https://www.acmicpc.net/problem/1681)
+
+숫자 L을 포함하지 않는 자연수를 순서대로 나열했을 때, N번째 수를 구하라.
+
+### 입력
+
+N과 L이 공백으로 구분되어 주어진다.
+
+### 출력
+
+L을 포함하지 않는 N번째 자연수를 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `10 1` | `22` |
+
+## 풀이
+
+1부터 순서대로 자연수를 확인하면서, 문자열에 L이 포함되지 않는 수만 카운트하여 N번째를 찾는다.
+
+1. num을 1부터 시작, cnt를 0으로 초기화한다
+2. num의 문자열 표현에 L이 포함되지 않으면 cnt를 증가시킨다
+3. cnt가 N이 되면 해당 num을 출력하고 종료한다
+4. 아니면 num을 1 증가시키고 반복한다
+
+**핵심 아이디어**: 숫자를 문자열로 변환하여 금지 숫자 포함 여부를 O(D)에 확인한다 (D는 자릿수).
+
+## 코드
+
+```python
+N, L = list(map(int, input().split()))
+
+num = 1
+cnt = 0
+while True:
+    if str(L) not in str(num):
+        cnt += 1
+        if cnt == N:
+            print(num)
+            break
+        num += 1
+
+    else:
+        num += 1
+```
+
+## 복잡도
+
+- 시간: O(N \* D) (D는 자릿수, 문자열 비교 비용)
+- 공간: O(1)

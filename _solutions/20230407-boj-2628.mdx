@@ -1,0 +1,101 @@
+---
+title: "BOJ 2628 - 종이자르기"
+date: "2023-04-07"
+description: "구현, 정렬 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "2628"
+problem_url: "https://www.acmicpc.net/problem/2628"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2628 - 종이자르기](https://www.acmicpc.net/problem/2628)
+
+가로 N, 세로 M인 종이를 주어진 점선을 따라 자를 때, 잘린 조각 중 가장 큰 조각의 넓이를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 둘째 줄에 자르는 횟수, 이후 각 줄에 방향(0: 가로, 1: 세로)과 위치가 주어진다.
+
+### 출력
+
+가장 큰 조각의 넓이를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `4 4` `2` `0 2` `1 3` | `6`  |
+
+## 풀이
+
+가로/세로 절단선을 각각 정렬한 뒤, 인접 절단선 간 최대 간격의 곱이 최대 넓이이다.
+
+1. 가로(세로 방향 절단)와 세로(가로 방향 절단) 리스트에 0과 경계를 추가한다
+2. 입력된 절단선을 방향에 따라 분류하여 추가한다
+3. 각 리스트를 정렬한다
+4. 인접한 절단선 간 최대 간격을 가로/세로 각각 구해 곱한다
+
+**핵심 아이디어**: 최대 조각은 가로 최대 간격 × 세로 최대 간격이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day425BOJ2628종이자르기 {
+  static int N, M, ans = 0;
+  static ArrayList<Integer> x, y;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+
+    st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+    x = new ArrayList<>();
+    y = new ArrayList<>();
+
+    x.add(0);
+    x.add(N);
+    y.add(M);
+    y.add(0);
+    int n = Integer.parseInt(br.readLine());
+    while (n > 0) {
+      st = new StringTokenizer(br.readLine());
+      int a = Integer.parseInt(st.nextToken());
+      int b = Integer.parseInt(st.nextToken());
+      if (a != 0) {
+        x.add(b);
+      } else {
+        y.add(b);
+      }
+      n--;
+    }
+    x.sort(null);
+    y.sort(null);
+
+    for (int i = 1; i < x.size(); i++) {
+      for (int j = 1; j < y.size(); j++) {
+        int xx = x.get(i) - x.get(i - 1);
+        int yy = y.get(j) - y.get(j - 1);
+        ans = Math.max(ans, xx * yy);
+      }
+    }
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

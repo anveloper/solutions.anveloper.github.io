@@ -1,0 +1,103 @@
+---
+title: "BOJ 1285 - 동전 뒤집기"
+date: "2023-12-06"
+description: "그리디 알고리즘, 브루트포스 알고리즘, 비트마스킹 문제"
+tags: ["그리디 알고리즘", "브루트포스 알고리즘", "비트마스킹"]
+platform: "boj"
+problem_number: "1285"
+problem_url: "https://www.acmicpc.net/problem/1285"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1285 - 동전 뒤집기](https://www.acmicpc.net/problem/1285)
+
+N x N 동전 격자에서 행 또는 열 단위로 뒤집을 수 있을 때, 뒷면(T)의 최소 개수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 동전 상태(H: 앞면, T: 뒷면)가 주어진다.
+
+### 출력
+
+뒷면의 최소 개수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `HHT` `THH` `THT` | `1`  |
+
+## 풀이
+
+비트마스크로 행 뒤집기 조합을 전수 탐색하고, 각 열에 대해 뒤집을지 그리디하게 결정한다.
+
+1. 행 뒤집기 조합을 0 ~ 2^N-1로 비트마스크 열거한다
+2. 각 조합에서 열별로 뒷면 개수를 세고, N/2보다 많으면 열을 뒤집는다
+3. 각 열의 `min(뒷면, N-뒷면)`을 합산하여 전체 최솟값을 갱신한다
+
+**핵심 아이디어**: 행 뒤집기 2^N가지를 전수 탐색하면 열 뒤집기는 그리디로 결정되므로 O(2^N \* N²)에 해결된다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day669BOJ1285동전뒤집기 {
+  static int n;
+  static int[][] map;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    n = Integer.parseInt(br.readLine());
+    map = new int[n][n];
+
+    for (int i = 0; i < n; i++) {
+      String s = br.readLine();
+      for (int j = 0; j < n; j++) {
+        char c = s.charAt(j);
+        if (c == 'T') {
+          map[i][j] = 1;
+        }
+      }
+    }
+
+    int ans = 400;
+    for (int bit = 0; bit < (1 << n) - 1; bit++) {
+      int sum = 0;
+
+      for (int x = 0; x < n; x++) {
+        int tail = 0;
+
+        for (int y = 0; y < n; y++) {
+          int cur = map[y][x];
+          if ((bit & (1 << y)) != 0) {
+            cur = flip(y, x);
+          }
+          if (cur == 1)
+            tail++;
+        }
+        sum += Math.min(tail, n - tail);
+      }
+      if (ans > sum)
+        ans = sum;
+    }
+    System.out.println(ans);
+    br.close();
+  }
+
+  private static int flip(int y, int x) {
+    return map[y][x] ^ 1;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(2^N \* N²)
+- 공간: O(N²)

@@ -1,0 +1,78 @@
+---
+title: "BOJ 2605 - 줄 세우기"
+date: "2023-06-23"
+description: "구현, 자료 구조 문제"
+tags: ["구현", "자료 구조"]
+platform: "boj"
+problem_number: "2605"
+problem_url: "https://www.acmicpc.net/problem/2605"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2605 - 줄 세우기](https://www.acmicpc.net/problem/2605)
+
+학생들이 차례로 줄을 서면서 뽑은 번호만큼 앞으로 이동하여 자리를 잡을 때, 최종 줄 순서를 구한다.
+
+### 입력
+
+첫째 줄에 학생 수 N이 주어진다 (1 이상 100 이하). 둘째 줄에 각 학생이 뽑은 번호가 공백으로 구분되어 주어진다.
+
+### 출력
+
+최종 줄 순서를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력            | 출력        |
+| --------------- | ----------- |
+| `5` `0 1 1 3 2` | `4 2 5 3 1` |
+
+## 풀이
+
+ArrayList를 사용하여 각 학생이 뽑은 번호에 따라 해당 위치에 삽입한다.
+
+1. N명의 학생에 대해 순서대로 뽑은 번호 num을 읽는다
+2. num이 0이면 리스트 끝에 추가한다
+3. num이 0이 아니면 현재 리스트 크기에서 num을 뺀 위치에 삽입한다
+4. 모든 학생 처리 후 리스트를 순서대로 출력한다
+
+**핵심 아이디어**: ArrayList의 add(index, element)를 활용하여 뽑은 번호만큼 앞쪽 위치에 삽입하는 시뮬레이션이다.
+
+## 코드
+
+```java
+package day549;
+
+import java.util.*;
+
+public class Day502BOJ2605줄세우기 {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    ArrayList<Integer> list = new ArrayList<>();
+    int N = sc.nextInt();
+
+    for (int i = 0; i < N; i++) {
+      int num = sc.nextInt();
+
+      if (num == 0)
+        list.add(i + 1);
+      else
+        list.add(list.size() - num, i + 1);
+    }
+
+    for (int i : list)
+      System.out.print(i + " ");
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) — ArrayList 중간 삽입 시 요소 이동
+- 공간: O(N)

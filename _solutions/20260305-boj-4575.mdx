@@ -1,0 +1,55 @@
+---
+title: "BOJ 4575 - Refrigerator Magnets"
+date: "2026-03-05"
+description: "냉장고 자석 글자에서 중복 없는 문자열만 출력하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4575"
+problem_url: "https://www.acmicpc.net/problem/4575"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4575 - Refrigerator Magnets](https://www.acmicpc.net/problem/4575)
+
+> 주어진 문자열에서 같은 알파벳이 두 번 이상 사용되지 않은 경우에만 출력하는 문제
+
+## 풀이
+
+각 문자열의 알파벳 등장 횟수를 배열로 관리하며, 공백을 제외한 문자가 2번 이상 등장하면 해당 문자열을 무시한다. 중복이 없는 문자열만 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+  string s;
+  if (!getline(cin, s)) return 0;
+
+  while (s != "END") {
+    bool flag = true;
+    int arr[26] = {};
+    for (char c : s) {
+      if (c == ' ') continue;
+      if (++arr[c - 'A'] == 2) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag) cout << s << '\n';
+    if (!getline(cin, s)) break;
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (N: 문자열 수, L: 문자열 길이)
+- 공간: O(1)

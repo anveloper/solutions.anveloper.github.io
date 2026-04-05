@@ -1,0 +1,81 @@
+---
+title: "BOJ 1813 - 논리학 교수"
+date: "2023-06-12"
+description: "애드 혹 문제"
+tags: ["애드 혹"]
+platform: "boj"
+problem_number: "1813"
+problem_url: "https://www.acmicpc.net/problem/1813"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1813 - 논리학 교수](https://www.acmicpc.net/problem/1813)
+
+N명의 학생이 각각 "참인 문장이 x개이다"라고 말했을 때, 참인 문장의 최대 개수를 구하라. 모순이면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 100), 둘째 줄에 N개의 정수가 주어진다.
+
+### 출력
+
+가능한 참인 문장의 최대 개수를 출력한다. 불가능하면 -1.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `4` `3 3 3 5` | `3`  |
+
+## 풀이
+
+"참인 문장이 i개"라고 말한 사람이 정확히 i명인 가장 큰 i를 찾는다.
+
+1. 각 값의 등장 횟수를 배열에 기록한다 (num[x] = x를 말한 사람 수)
+2. N부터 0까지 역순으로 탐색하며, num[i] == i인 첫 번째 i를 반환한다
+3. "참인 문장이 i개"라고 말한 사람이 정확히 i명이면, 그 i명의 문장이 모두 참이 되어 모순이 없다
+4. 어떤 i도 만족하지 않으면 -1을 반환한다
+
+**핵심 아이디어**: 자기 참조적 논리 문제로, "i개가 참이다"라고 말한 사람이 정확히 i명이면 그 값 i가 유효하다. 가장 큰 i부터 탐색하면 최대값을 찾을 수 있다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day491BOJ1813논리학교수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int n = Integer.parseInt(br.readLine());
+
+    int[] num = new int[100001];
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < n; i++) {
+      num[Integer.parseInt(st.nextToken())]++;
+    }
+    System.out.print(solve(num, n));
+  }
+
+  public static int solve(int[] num, int n) {
+    for (int i = n; i >= 0; i--) {
+      if (num[i] == i) {
+        return i;
+      }
+    }
+    return -1;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,85 @@
+---
+title: "BOJ 1405 - 미친 로봇"
+date: "2024-04-29"
+description: "로봇이 N번 이동할 때 경로가 단순할 확률"
+tags: ["DFS", "백트래킹", "확률"]
+platform: "boj"
+problem_number: "1405"
+problem_url: "https://www.acmicpc.net/problem/1405"
+difficulty: "골드 IV"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1405 - 미친 로봇](https://www.acmicpc.net/problem/1405)
+
+로봇이 동서남북 각각의 확률로 N번 이동할 때, 경로가 단순(같은 칸을 재방문하지 않음)할 확률을 구하라.
+
+### 입력
+
+첫째 줄에 N과 동서남북 이동 확률(%)이 주어진다.
+
+### 출력
+
+단순 경로의 확률을 출력한다.
+
+### 예제
+
+| 입력            | 출력   |
+| --------------- | ------ |
+| `2 25 25 25 25` | `0.75` |
+
+## 풀이
+
+DFS 백트래킹으로 모든 이동 경로를 탐색하며, 재방문하지 않는 경로의 확률을 누적한다.
+
+1. 30x30 격자의 중앙에서 출발한다
+2. 4방향 각각에 대해 다음 칸이 미방문이면 확률을 곱하며 이동한다
+3. N번 이동을 완료하면 해당 경로의 확률을 결과에 더한다
+4. 백트래킹으로 방문 표시를 해제하며 모든 경로를 탐색한다
+
+**핵심 아이디어**: N이 최대 14이므로 최악 4^14이지만, 방문 가지치기로 실제 탐색량은 크게 줄어든다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [N, ...rest] = input[0].split(" ").map(Number);
+  const dirPercentage = rest.map((dir) => Number(dir) * 0.01);
+  const visited = [];
+  for (let i = 0; i < 30; i++) visited.push(new Array(30).fill(false));
+  const dx = [0, 0, 1, -1],
+    dy = [1, -1, 0, 0];
+  let res = 0,
+    num = N;
+  const dfs = (x, y, chance) => {
+    if (num === 0) {
+      res += chance;
+      return;
+    }
+    visited[x][y] = true;
+    for (let i = 0; i < 4; i++) {
+      const nx = dx[i] + x,
+        ny = dy[i] + y;
+      if (!visited[nx][ny]) {
+        num -= 1;
+        dfs(nx, ny, chance * dirPercentage[i]);
+        num += 1;
+        visited[nx][ny] = false;
+      }
+    }
+  };
+  dfs(15, 15, 1.0);
+  return res.toPrecision(10);
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(4^N)
+- 공간: O(N²)

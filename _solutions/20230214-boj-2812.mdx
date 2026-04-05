@@ -1,0 +1,94 @@
+---
+title: "BOJ 2812 - 크게 만들기"
+date: "2023-02-14"
+description: "자료 구조, 그리디 알고리즘, 스택 문제"
+tags: ["자료 구조", "그리디 알고리즘", "스택"]
+platform: "boj"
+problem_number: "2812"
+problem_url: "https://www.acmicpc.net/problem/2812"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2812 - 크게 만들기](https://www.acmicpc.net/problem/2812)
+
+N자리 숫자에서 숫자 K개를 지워 가장 큰 수를 만드는 문제이다. 결과적으로 N-K자리의 수를 출력한다.
+
+### 입력
+
+첫째 줄에 N과 K가 주어진다 `(1 ≤ K < N ≤ 500,000)`. 둘째 줄에 N자리 숫자가 주어진다. 숫자는 `0`으로 시작하지 않는다.
+
+### 출력
+
+첫째 줄에 입력으로 주어진 숫자에서 K개를 지웠을 때 만들 수 있는 가장 큰 수를 출력한다.
+
+### 예제
+
+**입력**
+
+```
+4 2
+1924
+```
+
+**출력**
+
+```
+94
+```
+
+## 풀이
+
+**핵심 아이디어**: N-K개의 숫자를 앞에서부터 선택할 때, i번째 숫자는 `[last, i+K]` 범위 내에서 가장 큰 숫자를 선택한다. 앞에서 선택한 숫자 이후의 위치(`last`)를 갱신하면서 그리디하게 최대값을 선택한다.
+
+1. 결과 숫자의 자릿수는 N-K개이다.
+2. i번째(0-indexed) 결과 숫자를 선택할 때 탐색 범위는 `[last, i+K]`이다.
+   - `last`: 이전에 선택한 숫자의 다음 위치
+   - `i+K`: i번째 자리에서 고를 수 있는 가장 오른쪽 위치 (뒤에 N-K-1-i개의 숫자가 남아야 하므로)
+3. 범위 내에서 최대값을 찾고, 해당 위치 다음을 `last`로 갱신한다.
+4. 최대값이 `9`이면 더 이상 탐색할 필요 없이 바로 break한다.
+
+이 방식은 `last`를 앞으로만 이동시키므로 전체 탐색은 O(N)에 수렴한다.
+
+## 코드
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class Day372BOJ2812크게만들기 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
+
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+        String number = br.readLine();
+        int last = 0;
+
+        for (int i = 0; i < N - K; i++) {
+            int max = -1;
+            for (int j = last; j < i + K + 1; j++) {
+                int now = number.charAt(j) - '0';
+                if (now > max) {
+                    max = now;
+                    last = j + 1;
+                }
+                if (max == 9)
+                    break;
+            }
+            sb.append(max);
+        }
+        System.out.println(sb);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — `last` 포인터가 앞으로만 이동하므로 전체 탐색은 O(N)에 수렴
+- 공간: O(N) — 결과 문자열 StringBuilder

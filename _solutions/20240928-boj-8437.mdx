@@ -1,0 +1,160 @@
+---
+title: "BOJ 8437 - Julka"
+date: "2024-09-28"
+description: "큰 수 덧셈, 뺄셈, 나눗셈으로 사과 분배 문제를 푸는 문제"
+tags: ["수학", "큰 수 연산"]
+platform: "boj"
+problem_number: "8437"
+problem_url: "https://www.acmicpc.net/problem/8437"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8437 - Julka](https://www.acmicpc.net/problem/8437)
+
+두 소녀가 가진 사과의 합과 차가 주어질 때, 각자가 가진 사과 수를 구하라. 수가 최대 100자리까지 가능하다.
+
+### 입력
+
+첫째 줄에 두 소녀의 사과 합, 둘째 줄에 차가 주어진다.
+
+### 출력
+
+첫째 줄에 더 많이 가진 소녀의 사과 수, 둘째 줄에 적게 가진 소녀의 사과 수를 출력한다.
+
+### 예제
+
+| 입력     | 출력    |
+| -------- | ------- |
+| `10` `2` | `6` `4` |
+
+## 풀이
+
+문자열 기반 큰 수 연산(덧셈, 뺄셈, 2로 나누기)을 구현하여 계산한다.
+
+1. 문자열 덧셈 `add`: 자릿수 패딩 후 뒤에서부터 올림 처리하며 덧셈한다
+2. 문자열 뺄셈 `sub`: 뒤에서부터 빌림 처리하며 뺄셈한다
+3. 문자열 2 나누기 `divby2`: 앞에서부터 나머지를 다음 자리로 이월하며 나눈다
+4. `(합+차)/2`와 `(합-차)/2`로 각각의 사과 수를 계산한다
+
+**핵심 아이디어**: 100자리 수는 `long long`으로도 불가능하므로 문자열 기반 빅넘버 연산이 필요하며, `a = (합+차)/2`, `b = (합-차)/2` 공식을 적용한다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void lpad0(string &a, string &b, int &len)
+{
+  len = max(a.size(), b.size());
+  while (a.size() < len)
+    a = '0' + a;
+  while (b.size() < len)
+    b = '0' + b;
+}
+string ltrim(vector<int> s)
+{
+  string t;
+  bool start = false;
+  for (auto x : s)
+  {
+    if (!start && x == 0)
+      continue;
+    t.push_back(x + '0');
+    if (!start)
+      start = true;
+  }
+  if (!start)
+    return "0";
+  else
+    return t;
+}
+
+string add(string a, string b)
+{
+  int len;
+  lpad0(a, b, len);
+
+  reverse(a.begin(), a.end());
+  reverse(b.begin(), b.end());
+
+  vector<int> s;
+  int carry = 0;
+  for (int i = 0; i < len; i++)
+  {
+    int k = a[i] + b[i] - '0' * 2 + carry;
+    carry = k / 10;
+    s.push_back(k % 10);
+  }
+  if (carry)
+    s.push_back(carry);
+  reverse(s.begin(), s.end());
+
+  return ltrim(s);
+}
+string sub(string a, string b)
+{
+  int len;
+  lpad0(a, b, len);
+
+  reverse(a.begin(), a.end());
+  reverse(b.begin(), b.end());
+
+  vector<int> s;
+  int carry = 0;
+  for (int i = 0; i < len; i++)
+  {
+    int k = a[i] - b[i] + carry;
+    if (k < 0)
+    {
+      k = k + 10;
+      carry = -1;
+    }
+    else
+    {
+      carry = 0;
+    }
+    s.push_back(k);
+  }
+  reverse(s.begin(), s.end());
+
+  return ltrim(s);
+}
+string divby2(string a)
+{
+  int len = a.size();
+
+  vector<int> s;
+  int carry = 0;
+  for (int i = 0; i < len; i++)
+  {
+    int k = a[i] - '0' + carry * 10;
+    carry = k % 2;
+    s.push_back(k / 2);
+  }
+
+  return ltrim(s);
+}
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  string a, b;
+  cin >> a >> b;
+  cout << divby2(add(a, b)) << '\n'
+       << divby2(sub(a, b)) << '\n';
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 숫자의 자릿수)
+- 공간: O(N)

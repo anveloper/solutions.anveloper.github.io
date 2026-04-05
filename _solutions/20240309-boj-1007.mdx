@@ -1,0 +1,109 @@
+---
+title: "BOJ 1007 - 벡터 매칭"
+date: "2024-03-09"
+description: "수학, 브루트포스 알고리즘 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1007"
+problem_url: "https://www.acmicpc.net/problem/1007"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1007 - 벡터 매칭](https://www.acmicpc.net/problem/1007)
+
+2N개의 점을 N쌍으로 매칭하여 각 쌍의 벡터 합의 크기를 최소화하라.
+
+### 입력
+
+첫째 줄에 T, 각 케이스의 첫 줄에 2N, 이후 2N줄에 점의 좌표가 주어진다.
+
+### 출력
+
+각 케이스마다 벡터 합의 최소 크기를 출력한다.
+
+### 예제
+
+| 입력                                | 출력  |
+| ----------------------------------- | ----- |
+| `1` `4` `5 5` `5 -5` `-5 5` `-5 -5` | `0.0` |
+
+## 풀이
+
+벡터 합은 "시작점 합 - 끝점 합"이므로, 2N개 점 중 N개를 시작점으로 선택하는 조합을 탐색한다.
+
+1. 벡터 합 = (전체 좌표 합) - 2\*(선택된 N개의 좌표 합)임을 이용한다
+2. C(2N, N) 조합을 재귀로 탐색하여 벡터 합의 크기를 최소화한다
+3. 전체 합에서 선택한 점의 좌표를 2배 빼는 방식으로 효율적으로 계산한다
+
+**핵심 아이디어**: 벡터 매칭의 합을 정리하면 점 절반 선택 문제로 변환되어, C(20, 10) = 184,756가지만 탐색하면 된다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day767BOJ1007벡터매칭 {
+  static int totalX, totalY, target, vx, vy;
+  static int coor[][];
+  static double min;
+
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int T = Integer.parseInt(br.readLine());
+    for (int i = 0; i < T; i++) {
+      int n = Integer.parseInt(br.readLine());
+      target = n / 2;
+      coor = new int[n][2];
+      totalX = 0;
+      totalY = 0;
+      min = Double.POSITIVE_INFINITY;
+
+      for (int j = 0; j < n; j++) {
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int x = Integer.parseInt(st.nextToken()), y = Integer.parseInt(st.nextToken());
+        coor[j] = new int[] { x + x, y + y };
+        totalX += x;
+        totalY += y;
+      }
+
+      for (int j = 0; coor.length - j >= target; j++) {
+
+        vx = totalX;
+        vy = totalY;
+        getMinVec(j, 1);
+      }
+      System.out.println(Math.sqrt(min));
+    }
+  }
+
+  private static void getMinVec(int idx, int depth) {
+    vx -= coor[idx][0];
+    vy -= coor[idx][1];
+
+    if (depth >= target) {
+      min = Math.min((long) vx * vx + (long) vy * vy, min);
+    } else {
+      ++depth;
+
+      for (int i = idx + 1; coor.length - i >= target - depth + 1; i++) {
+        getMinVec(i, depth);
+      }
+    }
+
+    vx += coor[idx][0];
+    vy += coor[idx][1];
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(C(2N, N))
+- 공간: O(N)

@@ -1,0 +1,119 @@
+---
+title: "BOJ 4913 - 페르마의 크리스마스 정리"
+date: "2022-12-24"
+description: "수학, 정수론, 누적 합 문제"
+tags: ["수학", "정수론", "누적 합", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "4913"
+problem_url: "https://www.acmicpc.net/problem/4913"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4913 - 페르마의 크리스마스 정리](https://www.acmicpc.net/problem/4913)
+
+구간 `[L, U]`가 주어졌을 때, 해당 구간의 소수 개수와 그 중 두 제곱수의 합으로 나타낼 수 있는 소수의 개수를 구하라. 페르마의 크리스마스 정리에 의해 2 또는 4k+1 형태의 소수가 이에 해당한다.
+
+### 입력
+
+여러 줄에 L과 U가 주어진다 (-1000000 이상 1000000 이하). L과 U가 모두 -1이면 종료.
+
+### 출력
+
+각 줄마다 L, U, 구간 내 소수 개수, 두 제곱수 합으로 표현 가능한 소수 개수를 출력한다.
+
+### 예제
+
+| 입력                   | 출력                     |
+| ---------------------- | ------------------------ |
+| `1 10` `1 100` `-1 -1` | `1 10 4 3` `1 100 25 13` |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 전처리한 뒤, 구간별로 조건을 만족하는 소수를 센다.
+
+1. 1,000,000까지 에라토스테네스의 체로 소수 판별 배열을 만든다
+2. 각 쿼리에서 `max(0, L)`부터 `max(0, U)`까지 순회한다 (음수 범위는 소수가 없으므로 무시)
+3. 소수이면 x(총 소수 수)를 증가시킨다
+4. 소수이면서 2이거나 `i % 4 == 1`이면 y(페르마 조건 소수)를 증가시킨다
+5. 결과를 `L U x y` 형태로 출력한다
+
+**핵심 아이디어**: 페르마의 크리스마스 정리에 의해, 소수 p가 두 제곱수의 합으로 표현 가능한 조건은 `p = 2`이거나 `p ≡ 1 (mod 4)`이다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Day320BOJ4913페르마의크리스마스정리 {
+    static final int MAX = 1000001;
+    static int L, U, x, y;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st = null;
+
+        boolean[] primes = eratos();
+
+        while (true) {
+            st = new StringTokenizer(br.readLine());
+            L = Integer.parseInt(st.nextToken());
+            U = Integer.parseInt(st.nextToken());
+            if (L == -1 && U == -1)
+                break;
+            x = 0;
+            y = 0;
+
+            // from 종현
+            int tempL = L < 0 ? 0 : L;
+            int tempU = U < 0 ? 0 : U;
+
+            // 25%, 시간초과 더러운 문제..
+            // for (int i = Math.max(0, L); i <= Math.max(0, U); i++) {
+            for (int i = tempL; i <= tempU; i++) {
+                if (primes[i]) {
+                    x++;
+                    if (i % 4 == 1 || i == 2)
+                        y++;
+                }
+            }
+            bw.write(L + " " + U + " " + x + " " + y + "\n");
+        }
+        bw.flush();
+        bw.close();
+        br.close();
+    }
+
+    // 에라토스테네스의 체
+    private static boolean[] eratos() {
+        boolean[] res = new boolean[MAX];
+
+        Arrays.fill(res, true);
+        res[0] = res[1] = false;
+
+        for (int i = 2; i * i < MAX; i++) {
+            for (int j = i * i; j < MAX; j += i) {
+                res[j] = false;
+            }
+        }
+
+        return res;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N + T \* N) - 체 구성 + 쿼리당 구간 순회
+- 공간: O(N) - 소수 판별 배열

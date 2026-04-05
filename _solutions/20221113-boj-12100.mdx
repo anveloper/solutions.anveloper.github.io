@@ -1,0 +1,206 @@
+---
+title: "BOJ 12100 - 2048 (Easy)"
+date: "2022-11-13"
+description: "구현, 브루트포스 알고리즘, 시뮬레이션 문제"
+tags: ["구현", "브루트포스 알고리즘", "시뮬레이션", "백트래킹"]
+platform: "boj"
+problem_number: "12100"
+problem_url: "https://www.acmicpc.net/problem/12100"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 12100 - 2048 (Easy)](https://www.acmicpc.net/problem/12100)
+
+N×N 크기의 2048 게임 보드에서 상하좌우 4방향으로 최대 5번 이동했을 때, 얻을 수 있는 가장 큰 블록의 값을 구하라. 같은 값을 가진 블록이 충돌하면 합쳐진다.
+
+### 입력
+
+첫째 줄에 보드 크기 N (1 이상 20 이하), 둘째 줄부터 N개의 줄에 보드 상태가 주어진다. 0은 빈 칸이다.
+
+### 출력
+
+최대 5번 이동해서 만들 수 있는 가장 큰 블록의 값을 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `3` `2 2 2` `4 4 4` `8 8 8` | `16` |
+
+## 풀이
+
+백트래킹으로 4방향 × 5회 이동의 모든 조합을 시뮬레이션한다.
+
+1. `game(cnt)` 함수가 재귀적으로 5회까지 이동을 수행한다
+2. 각 단계에서 보드를 복사한 뒤, 4방향 각각에 대해 이동 후 다음 단계로 재귀한다
+3. `move(dir)` 함수가 방향별로 블록을 밀고 합치는 로직을 수행한다 (0=위, 1=아래, 2=왼쪽, 3=오른쪽)
+4. 이동 시 같은 값의 블록이 만나면 합치고, 이미 합쳐진 블록은 다시 합치지 않는다
+5. 5회 이동 완료 시 `nummax()`로 보드 전체의 최댓값을 갱신한다
+6. 재귀 복귀 시 복사해둔 보드로 복원한다
+
+**핵심 아이디어**: 총 경우의 수가 4^5 = 1,024가지로 충분히 작으므로 모든 경우를 완전 탐색할 수 있다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day279BOJ12100구현2048 {
+	static int N, answer, map[][];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		N = Integer.parseInt(br.readLine());
+		map = new int[N][N];
+		answer = 0;
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		game(0);
+		System.out.println(answer);
+
+	}
+
+	private static void game(int cnt) {
+		if (cnt == 5) {
+			nummax();
+			return;
+		}
+
+		int copy[][] = new int[N][N];
+
+		for (int i = 0; i < N; i++) {
+			copy[i] = map[i].clone();
+		}
+
+		for (int i = 0; i < 4; i++) {
+			move(i);
+			game(cnt + 1);
+			for (int j = 0; j < N; j++) {
+				map[j] = copy[j].clone();
+			}
+		}
+
+	}
+
+	private static void move(int dir) {
+		switch (dir) {
+		case 0:
+			for (int i = 0; i < N; i++) {
+				int index = 0;
+				int block = 0;
+				for (int j = 0; j < N; j++) {
+					if (map[j][i] != 0) {
+						if (block == map[j][i]) {
+							map[index - 1][i] = block * 2;
+							block = 0;
+							map[j][i] = 0;
+						} else {
+							block = map[j][i];
+							map[j][i] = 0;
+							map[index][i] = block;
+							index++;
+						}
+
+					}
+				}
+			}
+			break;
+		case 1:
+			for (int i = 0; i < N; i++) {
+				int index = N - 1;
+				int block = 0;
+				for (int j = N - 1; j >= 0; j--) {
+					if (map[j][i] != 0) {
+						if (block == map[j][i]) {
+							map[index + 1][i] = block * 2;
+							block = 0;
+							map[j][i] = 0;
+						} else {
+							block = map[j][i];
+							map[j][i] = 0;
+							map[index][i] = block;
+							index--;
+						}
+
+					}
+				}
+			}
+			break;
+		case 2:
+			for (int i = 0; i < N; i++) {
+				int index = 0;
+				int block = 0;
+				for (int j = 0; j < N; j++) {
+					if (map[i][j] != 0) {
+						if (block == map[i][j]) {
+							map[i][index - 1] = block * 2;
+							block = 0;
+							map[i][j] = 0;
+						} else {
+							block = map[i][j];
+							map[i][j] = 0;
+							map[i][index] = block;
+							index++;
+						}
+
+					}
+				}
+			}
+			break;
+		// right
+		case 3:
+			for (int i = 0; i < N; i++) {
+				int index = N - 1;
+				int block = 0;
+				for (int j = N - 1; j >= 0; j--) {
+					if (map[i][j] != 0) {
+						if (block == map[i][j]) {
+							map[i][index + 1] = block * 2;
+							block = 0;
+							map[i][j] = 0;
+						} else {
+							block = map[i][j];
+							map[i][j] = 0;
+							map[i][index] = block;
+							index--;
+						}
+
+					}
+				}
+			}
+			break;
+		}
+
+	}
+
+	private static void nummax() {
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				answer = Math.max(answer, map[i][j]);
+			}
+		}
+
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(4^5 \* N^2) - 1,024가지 경우 × 보드 이동/탐색
+- 공간: O(N^2) - 보드 복사 배열

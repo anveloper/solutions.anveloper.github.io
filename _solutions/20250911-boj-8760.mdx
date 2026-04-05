@@ -1,0 +1,65 @@
+---
+title: "BOJ 8760 - Schronisko"
+date: "2025-09-11"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "8760"
+problem_url: "https://www.acmicpc.net/problem/8760"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8760 - Schronisko](https://www.acmicpc.net/problem/8760)
+
+N x M 크기의 방에 최대 몇 명이 잘 수 있는지 구하라. 한 사람당 2칸이 필요하다.
+
+### 입력
+
+테스트 케이스 수 K와 각 케이스마다 N, M이 주어진다.
+
+### 출력
+
+각 케이스마다 최대 수용 인원을 출력한다.
+
+### 예제
+
+| 입력            | 출력     |
+| --------------- | -------- |
+| `2` `2 3` `4 5` | `3` `10` |
+
+## 풀이
+
+N x M 넓이를 2로 나누어 최대 인원을 계산한다.
+
+1. 방의 총 넓이는 `N * M`이다
+2. 한 사람당 2칸이므로 최대 인원은 `N * M / 2`이다
+3. 각 테스트 케이스에 대해 결과를 출력한다
+
+**핵심 아이디어**: 단순 나눗셈 문제로, 정수 나눗셈의 내림이 자동 적용된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+int main()
+{
+  int n, m, k;
+  std::cin >> k;
+  for (int i = 0; i < k; i++)
+  {
+    std::cin >> n >> m;
+    std::cout << n * m / 2 << std::endl;
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(K)
+- 공간: O(1)

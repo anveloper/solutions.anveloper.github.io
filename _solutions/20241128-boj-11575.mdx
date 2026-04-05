@@ -1,0 +1,75 @@
+---
+title: "BOJ 11575 - Affine Cipher"
+date: "2024-11-28"
+description: "아핀 암호화 공식으로 문자열을 암호화하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "11575"
+problem_url: "https://www.acmicpc.net/problem/11575"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11575 - Affine Cipher](https://www.acmicpc.net/problem/11575)
+
+아핀 암호 `E(x) = (a*x + b) mod 26`을 적용하여 대문자 문자열을 암호화하라.
+
+### 입력
+
+테스트 케이스 수 N, 각 케이스마다 정수 a, b와 대문자 문자열이 주어진다.
+
+### 출력
+
+각 케이스마다 암호화된 문자열을 출력한다.
+
+### 예제
+
+| 입력            | 출력    |
+| --------------- | ------- |
+| `1` `3 1 HELLO` | `QLCCX` |
+
+## 풀이
+
+각 문자에 아핀 변환 공식을 적용하여 암호화한다.
+
+1. 각 문자를 숫자로 변환한다 (`x = 문자 - 'A'`)
+2. `(a * x + b) % 26`으로 암호화된 숫자를 구한다
+3. 다시 문자로 변환하여 `+ 'A'` 출력한다
+
+**핵심 아이디어**: 아핀 암호는 선형 변환 `ax + b`를 26으로 나눈 나머지를 사용하는 고전 암호 방식이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  int n, a, b;
+  string word;
+  cin >> n;
+
+  for (int i = 0; i < n; i++)
+  {
+    cin >> a >> b >> word;
+    for (int j = 0; j < word.length(); j++)
+    {
+      word[j] = char(((a * word[j] - 'A' + b) % 26) + 'A');
+    }
+    cout << word << endl;
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (N: 테스트 케이스, L: 문자열 길이)
+- 공간: O(L)

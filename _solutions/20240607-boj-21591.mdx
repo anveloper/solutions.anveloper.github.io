@@ -1,0 +1,57 @@
+---
+title: "BOJ 21591 - Laptop Sticker"
+date: "2024-06-07"
+description: "노트북 뚜껑에 스티커를 붙일 수 있는지 판별하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "21591"
+problem_url: "https://www.acmicpc.net/problem/21591"
+difficulty: "브론즈 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 21591 - Laptop Sticker](https://www.acmicpc.net/problem/21591)
+
+노트북 뚜껑의 가로 wc, 세로 hc와 스티커의 가로 ws, 세로 hs가 주어질 때, 양쪽 1cm 여백을 두고 스티커를 붙일 수 있으면 1, 없으면 0을 출력하라.
+
+### 입력
+
+wc, hc, ws, hs가 공백으로 구분되어 주어진다.
+
+### 출력
+
+스티커를 붙일 수 있으면 1, 아니면 0을 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `10 10 8 8` | `1`  |
+
+## 풀이
+
+뚜껑의 가로/세로에서 양쪽 여백 2cm를 빼 사용 가능 영역과 스티커 크기를 비교한다.
+
+1. `wc >= ws + 2`이고 `hc >= hs + 2`이면 1을 출력한다
+2. 아니면 0을 출력한다
+
+**핵심 아이디어**: 양쪽에 1cm씩 여백이 필요하므로, 실제 사용 가능 영역은 각 방향에서 2cm를 뺀 크기이다.
+
+## 코드
+
+```python
+wc, hc, ws, hs = map(int, input().split())
+
+if wc >= ws + 2 and hc >= hs + 2:
+    print(1)
+else:
+    print(0)
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

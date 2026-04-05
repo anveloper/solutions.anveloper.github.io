@@ -1,0 +1,82 @@
+---
+title: "BOJ 4500 - Bubble Gum"
+date: "2026-02-28"
+description: "수학, 구현, 문자열 파싱 문제"
+tags: ["수학", "구현", "문자열", "사칙연산", "파싱"]
+platform: "boj"
+problem_number: "4500"
+problem_url: "https://www.acmicpc.net/problem/4500"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4500 - Bubble Gum](https://www.acmicpc.net/problem/4500)
+
+원형으로 앉은 사람들 사이에서, 시작 사람부터 p번째 사람을 찾는 문제이다. 사람 이름 목록과 시작 이름, 그리고 숫자 p가 주어진다.
+
+### 입력
+
+- 첫 줄: 테스트 케이스 수
+- 각 테스트 케이스: 이름 목록(한 줄), 시작 이름(한 줄), 숫자 p
+
+### 출력
+
+시작 사람부터 p번째에 해당하는 사람의 이름을 출력한다.
+
+## 풀이
+
+1. 이름 목록을 벡터에 저장하면서 시작 이름의 인덱스를 기록한다
+2. 원형 배열에서 `(시작 인덱스 + p - 1) % 전체 수`로 목표 인덱스를 계산한다
+
+**핵심 아이디어**: 시작점 포함이므로 `p - 1`을 더한 뒤 모듈러 연산한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int tt;
+  if (!(cin >> tt)) return 0;
+  cin.ignore();
+
+  while (tt--) {
+    string s, starter;
+    int p;
+
+    getline(cin, s);
+    getline(cin, starter);
+    cin >> p;
+    cin.ignore();
+
+    vector<string> v;
+    stringstream ss(s);
+    string temp;
+    int idx = 0;
+
+    while (ss >> temp) {
+      if (temp == starter) idx = v.size();
+      v.push_back(temp);
+    }
+
+    cout << v[(idx + p - 1) % v.size()] << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N) — 테스트 케이스당 이름 수만큼 파싱
+- 공간: O(N) — 이름 벡터 크기

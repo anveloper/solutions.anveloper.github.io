@@ -1,0 +1,77 @@
+---
+title: "BOJ 4366 - Average Speed"
+date: "2026-02-22"
+description: "수학, 구현, 문자열 파싱 문제"
+tags: ["수학", "구현", "문자열", "사칙연산", "파싱"]
+platform: "boj"
+problem_number: "4366"
+problem_url: "https://www.acmicpc.net/problem/4366"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4366 - Average Speed](https://www.acmicpc.net/problem/4366)
+
+여행 중 속도가 변하는 상황에서 평균 속도를 추적한다. 입력은 `hh:mm:ss` 형식의 시각과 선택적 속도로 구성된다. 속도가 주어지면 해당 시각부터 새 속도로 이동하고, 속도가 없으면 해당 시각까지의 총 이동 거리를 출력한다.
+
+### 입력
+
+- 각 줄에 `hh:mm:ss` 형식의 시각이 주어진다
+- 시각 뒤에 속도(km/h)가 있으면 속도 변경, 없으면 거리 조회
+- 입력은 EOF까지 계속된다
+
+### 출력
+
+거리 조회 시 `hh:mm:ss {거리} km` 형식으로 소수점 2자리까지 출력한다.
+
+## 풀이
+
+시각을 초 단위로 변환하여 구간별 이동 거리를 누적한다.
+
+1. 이전 시각과 현재 시각의 차이(초)를 구한다
+2. 이전 속도로 해당 구간을 이동한 거리를 누적한다: `v * dt / 3600`
+3. 속도가 주어지면 속도를 갱신하고, 없으면 현재까지의 총 거리를 출력한다
+
+**핵심 아이디어**: 등속 구간별로 거리를 분리 계산하여 누적합으로 관리한다. 속도 단위가 km/h이므로 시간(초)을 시간(h)으로 변환해야 한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+  ios::sync_with_stdio(0); cin.tie(0);
+
+  string line;
+  int prev_t = 0, v = 0;
+  double dist = 0;
+
+  while (getline(cin, line)) {
+    int curr_t = stoi(line.substr(0, 2)) * 3600 +
+        stoi(line.substr(3, 2)) * 60 +
+        stoi(line.substr(6, 2));
+
+    dist += (double)v * (curr_t - prev_t) / 3600.0;
+    prev_t = curr_t;
+
+    if (line.size() > 8) {
+      v = stoi(line.substr(9));
+    } else {
+      cout << line << " " << fixed << setprecision(2) << dist << " km\n";
+    }
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 입력 줄 수만큼 순회
+- 공간: O(1) — 상수 변수만 사용

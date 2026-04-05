@@ -1,0 +1,56 @@
+---
+title: "BOJ 9654 - 나부 함대 데이터"
+date: "2024-02-10"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "9654"
+problem_url: "https://www.acmicpc.net/problem/9654"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9654 - 나부 함대 데이터](https://www.acmicpc.net/problem/9654)
+
+주어진 나부 함대 정보 테이블을 그대로 출력하라.
+
+### 입력
+
+없음.
+
+### 출력
+
+6줄의 함대 데이터 테이블을 출력한다.
+
+## 풀이
+
+고정된 테이블 문자열을 `println`으로 줄마다 출력한다.
+
+1. 헤더 행과 5개 데이터 행을 순서대로 출력한다
+
+**핵심 아이디어**: 고정 출력 문제이다.
+
+## 코드
+
+```java
+package day749;
+
+public class Day739BOJ9654나부함대데이터 {
+  public static void main(String[] args) {
+    System.out.println("SHIP NAME      CLASS          DEPLOYMENT IN SERVICE");
+    System.out.println("N2 Bomber      Heavy Fighter  Limited    21        ");
+    System.out.println("J-Type 327     Light Combat   Unlimited  1         ");
+    System.out.println("NX Cruiser     Medium Fighter Limited    18        ");
+    System.out.println("N1 Starfighter Medium Fighter Unlimited  25        ");
+    System.out.println("Royal Cruiser  Light Combat   Limited    4         ");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 출력
+- 공간: O(1) — 고정 문자열

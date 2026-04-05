@@ -1,0 +1,74 @@
+---
+title: "BOJ 5911 - 선물"
+date: "2025-07-04"
+description: "그리디 알고리즘, 브루트포스 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "브루트포스 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "5911"
+problem_url: "https://www.acmicpc.net/problem/5911"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5911 - 선물](https://www.acmicpc.net/problem/5911)
+
+N개의 선물에 각각 가격과 배송비가 있다. 쿠폰 하나로 한 선물의 가격을 반값으로 할 수 있을 때, 예산 B 내에서 최대 몇 개를 살 수 있는지 구하라.
+
+### 입력
+
+선물 수 N, 예산 B, 각 선물의 가격과 배송비가 주어진다.
+
+### 출력
+
+최대 구매 가능 선물 수를 출력한다.
+
+### 예제
+
+| 입력                     | 출력 |
+| ------------------------ | ---- |
+| `3 16` `4 2` `8 1` `6 3` | `2`  |
+
+## 풀이
+
+각 선물에 쿠폰을 적용하는 경우를 모두 시도하여 최대 구매 수를 구한다.
+
+1. 각 선물 i에 쿠폰을 적용한 비용(가격/2 + 배송비)을 계산한다
+2. 나머지 선물의 정가(가격 + 배송비)를 오름차순 정렬한다
+3. 쿠폰 선물 + 싼 선물부터 예산 내에서 최대한 많이 구매한다
+4. 모든 쿠폰 적용 경우 중 최대 구매 수를 선택한다
+
+**핵심 아이디어**: 쿠폰은 하나뿐이므로 N가지 경우만 시도하면 되고, 나머지는 그리디하게 저렴한 순서로 구매한다.
+
+## 코드
+
+```python
+N, B = map(int, input().split())
+arr = [list(map(int, input().split())) for _ in range(N)]
+
+arr.sort(key=lambda x: (sum(x), x[0]))
+
+max_count = 0
+for i in range(N):
+    coupon_cost = arr[i][0] // 2 + arr[i][1]
+    others = sorted(arr[j][0] + arr[j][1] for j in range(N) if j != i)
+
+    total, count = coupon_cost, 1
+    for cost in others:
+        if total + cost > B:
+            break
+        total += cost
+        count += 1
+
+    if total <= B:
+        max_count = max(max_count, count)
+
+print(max_count)
+```
+
+## 복잡도
+
+- 시간: O(N² log N)
+- 공간: O(N)

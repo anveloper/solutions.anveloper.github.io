@@ -1,0 +1,65 @@
+---
+title: "BOJ 2865 - 나는 위대한 슈퍼스타K"
+date: "2025-03-01"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "2865"
+problem_url: "https://www.acmicpc.net/problem/2865"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2865 - 나는 위대한 슈퍼스타K](https://www.acmicpc.net/problem/2865)
+
+N명의 참가자 중 각자 가장 높은 점수를 기준으로 상위 K명의 점수 합을 구하라.
+
+### 입력
+
+참가자 수 N, 심사 기준 M, 선발 인원 K와 각 점수가 주어진다.
+
+### 출력
+
+상위 K명의 최고 점수 합을 소수점 첫째 자리까지 출력한다.
+
+### 예제
+
+| 입력                                | 출력   |
+| ----------------------------------- | ------ |
+| `3 2 2` `1 9.5 2 8.0` `2 9.0 3 7.5` | `18.5` |
+
+## 풀이
+
+각 참가자의 최고 점수를 구해 상위 K명을 선발한다.
+
+1. 각 참가자별로 모든 심사 점수 중 최고 점수를 기록한다
+2. 최고 점수 기준 내림차순 정렬한다
+3. 상위 K명의 점수를 합산하여 출력한다
+
+**핵심 아이디어**: 참가자마다 최고 점수만 취한 뒤 정렬하면 그리디하게 최적 선발이 가능하다.
+
+## 코드
+
+```python
+n, m, k = map(int, input().split())
+singer = [0 for _ in range(n)]
+
+for _ in range(m):
+    score = list(input().split())
+    for i in range(0, len(score), 2):
+        if singer[int(score[i]) - 1] < float(score[i + 1]):
+            singer[int(score[i]) - 1] = float(score[i + 1])
+
+singer.sort(reverse=True)
+singer = singer[:k]
+
+print(round(sum(singer), 1))
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

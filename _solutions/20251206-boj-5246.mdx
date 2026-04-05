@@ -1,0 +1,90 @@
+---
+title: "BOJ 5246 - Checkerboard Rows"
+date: "2025-12-06"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5246"
+problem_url: "https://www.acmicpc.net/problem/5246"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5246 - Checkerboard Rows](https://www.acmicpc.net/problem/5246)
+
+8x8 체스판에 여러 개의 체스 말(piece)이 놓여 있을 때, 가장 많은 말이 있는 행(row)의 말 개수를 구하는 문제이다.
+
+각 말의 위치는 열(x)과 행(y) 좌표로 주어진다. 행 번호는 1부터 8까지이다.
+
+### 입력
+
+- 첫째 줄에 보드 수 cntBoard가 주어진다.
+- 각 보드마다:
+  - 말의 개수 cntPieces
+  - 이후 cntPieces개의 줄에 각 말의 `x y` 좌표
+
+### 출력
+
+각 보드에 대해 가장 많은 말이 있는 행의 말 개수를 출력한다.
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `1` `3` `1 1` `2 1` `3 2` | `2`  |
+
+## 풀이
+
+각 행에 놓인 말의 수를 카운팅 배열로 집계한 뒤, 최댓값을 출력한다.
+
+1. 보드 수만큼 반복한다.
+2. 크기 8의 정수 배열 `rows`를 0으로 초기화한다.
+3. 각 말의 좌표 `(x, y)`를 입력받고, `rows[y - 1]`을 1 증가시킨다. (x 좌표는 무시)
+4. `max_element()`로 `rows` 배열에서 최댓값을 찾아 출력한다.
+
+**핵심 아이디어**: y 좌표만 카운팅하면 된다. x 좌표는 어느 열에 있는지 알려줄 뿐, 행별 집계에는 불필요하다. 크기 고정(8) 배열로 O(1) 공간에 처리한다.
+
+## 코드
+
+```cpp
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int cntBoard;
+  cin >> cntBoard;
+
+  for (int i = 0; i < cntBoard; i++)
+  {
+    int cntPieces;
+    cin >> cntPieces;
+    vector<int> rows(8, 0);
+    for (int j = 0; j < cntPieces; j++)
+    {
+      int x, y;
+      cin >> x >> y;
+
+      rows[y - 1]++;
+    }
+
+    int maxPieces = *max_element(rows.begin(), rows.end());
+    cout << maxPieces << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(B \* P) — B개의 보드, 각 보드의 말 개수 P만큼 처리
+- 공간: O(1) — 고정 크기(8) 배열 사용

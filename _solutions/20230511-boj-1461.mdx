@@ -1,0 +1,106 @@
+---
+title: "BOJ 1461 - 도서관"
+date: "2023-05-11"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "1461"
+problem_url: "https://www.acmicpc.net/problem/1461"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1461 - 도서관](https://www.acmicpc.net/problem/1461)
+
+세준이가 0 위치에서 N권의 책을 원래 위치로 돌려놓을 때, 한 번에 M권까지 들 수 있다. 최소 이동 거리를 구하라. 모든 책을 제자리에 놓은 후 0으로 돌아올 필요는 없다.
+
+### 입력
+
+첫째 줄에 N, M, 둘째 줄에 각 책의 위치가 주어진다.
+
+### 출력
+
+최소 이동 거리를 출력한다.
+
+### 예제
+
+| 입력                            | 출력  |
+| ------------------------------- | ----- |
+| `7 2` `-37 2 -6 -39 -29 11 -28` | `131` |
+
+## 풀이
+
+양수/음수 위치를 분리하여 가장 먼 것부터 M개씩 묶고, 가장 먼 그룹은 편도(복귀 불필요)로 처리한다.
+
+1. 양수/음수 위치를 분리하여 각각 내림차순 정렬한다
+2. M개씩 묶어 각 그룹의 가장 먼 거리 × 2를 누적한다
+3. 전체에서 가장 먼 거리는 편도(×1)이므로 해당 거리를 한 번 빼준다
+
+**핵심 아이디어**: 마지막에 돌아올 필요가 없으므로 가장 먼 그룹을 마지막에 가면 왕복이 아닌 편도가 된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day459BOJ1461도서관 {
+  static int N, M, answer, max;
+  static List<Integer> minus, plus;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken()); // 책의 개수
+    M = Integer.parseInt(st.nextToken()); // 한번에 들 수 있는 책의 개수
+
+    plus = new ArrayList<Integer>();
+    minus = new ArrayList<Integer>();
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++) {
+      int num = Integer.parseInt(st.nextToken());
+
+      if (max < Math.abs(num))
+        max = Math.abs(num);
+
+      if (num > 0)
+        plus.add(num);
+      else
+        minus.add(Math.abs(num));
+
+    }
+
+    Collections.sort(plus, Collections.reverseOrder());
+    Collections.sort(minus, Collections.reverseOrder());
+
+    for (int i = 0; i < plus.size(); i++) {
+      if (i % M == 0 && plus.get(i) == max) {
+        answer += plus.get(i);
+      } else if (i % M == 0) {
+        answer += (plus.get(i) * 2);
+      }
+    }
+
+    for (int i = 0; i < minus.size(); i++) {
+      if (i % M == 0 && minus.get(i) == max) {
+        answer += minus.get(i);
+      } else if (i % M == 0) {
+        answer += (minus.get(i) * 2);
+      }
+    }
+
+    System.out.println(answer);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

@@ -1,0 +1,137 @@
+---
+title: "BOJ 4803 - 트리"
+date: "2022-04-01"
+description: "그래프 이론, 자료 구조, 그래프 탐색 문제"
+tags: ["그래프 이론", "자료 구조", "그래프 탐색", "트리", "깊이 우선 탐색", "분리 집합"]
+platform: "boj"
+problem_number: "4803"
+problem_url: "https://www.acmicpc.net/problem/4803"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4803 - 트리](https://www.acmicpc.net/problem/4803)
+
+n개의 노드와 m개의 간선으로 이루어진 그래프에서 트리의 개수를 구하는 문제이다. 트리는 사이클이 없는 연결 그래프이므로, 각 연결 컴포넌트가 트리인지 여부를 DFS로 판별한다. 입력은 여러 테스트 케이스이며 n=0, m=0이면 종료한다.
+
+### 입력
+
+- 각 테스트 케이스: 노드 수 n, 간선 수 m
+- 이후 m줄: 연결된 두 노드 번호
+- `0 0` 입력 시 종료
+
+### 출력
+
+각 케이스마다 트리 개수에 따라 아래 형식으로 출력한다.
+
+- 트리 없음: `Case k: No trees.`
+- 트리 1개: `Case k: There is one tree.`
+- 트리 여러 개: `Case k: A forest of t trees.`
+
+### 예제
+
+| 입력                                      | 출력                                                        |
+| ----------------------------------------- | ----------------------------------------------------------- |
+| `6 3` `1 2` `2 3` `4 5` `3 5` `1 2` `0 0` | `Case 1: A forest of 3 trees.` `Case 2: There is one tree.` |
+
+## 풀이
+
+각 연결 컴포넌트를 DFS로 탐색하면서 사이클이 존재하는지 확인한다. 사이클이 없는 컴포넌트만 트리로 카운트한다.
+
+1. 인접 리스트를 양방향으로 구성한다.
+2. 방문하지 않은 노드마다 `dfs(root=-1, num=i)`를 호출하여 해당 컴포넌트를 탐색한다.
+3. `dfs(root, num)`: 자식 노드를 순회하며, 부모(`root`)로의 역방향 간선은 무시한다.
+4. 이미 방문한 노드를 다시 만나면 사이클이므로 `false`를 반환한다.
+5. 모든 자식에서 `false`가 반환되지 않으면 해당 컴포넌트는 트리이므로 `isTree`를 증가시킨다.
+
+**핵심 아이디어**: 무방향 그래프에서 DFS 시 부모로의 역방향 간선은 사이클이 아니다. `root` 파라미터로 직전 노드를 추적하여 역방향 간선을 구분하고, 이미 방문한 다른 노드와의 연결이 발견되면 사이클로 판정한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day53BOJ4803트리 {
+	static int N, M;
+	static int isTree = 0, cnt = 0;
+	static List<Integer>[] tree;
+	static boolean[] visited;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		StringBuilder sb = new StringBuilder();
+		int tc = 1;
+		while (true) {
+			st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			M = Integer.parseInt(st.nextToken());
+			isTree = 0;
+			cnt = 0;
+
+			if (N == 0)
+				break;
+
+			tree = new ArrayList[N + 1];
+			visited = new boolean[N + 1];
+
+			for (int i = 1; i < N + 1; i++) {
+				tree[i] = new ArrayList<>();
+			}
+
+			for (int i = 0; i < M; i++) {
+				st = new StringTokenizer(br.readLine());
+				int n1 = Integer.parseInt(st.nextToken());
+				int n2 = Integer.parseInt(st.nextToken());
+
+				tree[n1].add(n2);
+				tree[n2].add(n1);
+			}
+
+			for (int i = 1; i < N + 1; i++) {
+				if (!visited[i]) {
+					visited[i] = true;
+					if (dfs(0, i))
+						isTree++;
+				}
+			}
+
+			sb.append("Case ").append(tc++).append(": ");
+			if(isTree == 0)
+				sb.append("No trees.\n");
+			else if(isTree == 1)
+				sb.append("There is one tree.\n");
+			else
+				sb.append("A forest of ").append(isTree).append(" trees.\n");
+		}
+
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static boolean dfs(int root, int num) {
+		for (int i = 0; i < tree[num].size(); i++) { // 자식의 갯수를 모름.
+			int t = tree[num].get(i);
+			if(t == root) continue; // 받은 값이 현재위치면 넘어가도록
+			if(visited[t]) return false; // 현재 값이 이미 방문했던 값이면 아래는 이번에 볼 필요 없음.
+			visited[t] = true; //현재값을 방문처리
+			if(!dfs(num, t)) return false; // 현재 num이 루트인 서브트리 탐색
+		}
+		return true; // 서브트리 포함 하나라도 false가 아니면 tree
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(V + E) — 각 노드와 간선을 한 번씩 방문
+- 공간: O(V + E) — 인접 리스트 및 DFS 재귀 스택

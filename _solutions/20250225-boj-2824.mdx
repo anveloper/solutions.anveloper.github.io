@@ -1,0 +1,80 @@
+---
+title: "BOJ 2824 - 최대공약수"
+date: "2025-02-25"
+description: "수학, 구현, 정수론 문제"
+tags: ["수학", "구현", "정수론", "소수 판정"]
+platform: "boj"
+problem_number: "2824"
+problem_url: "https://www.acmicpc.net/problem/2824"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2824 - 최대공약수](https://www.acmicpc.net/problem/2824)
+
+두 수 A, B가 각각 여러 정수의 곱으로 주어질 때, `gcd(A, B)`를 구하라. 결과가 9자리를 넘으면 마지막 9자리만 출력한다.
+
+### 입력
+
+첫 줄에 N, 둘째 줄에 A를 구성하는 N개의 정수, 셋째 줄에 M, 넷째 줄에 B를 구성하는 M개의 정수가 주어진다.
+
+### 출력
+
+`gcd(A, B)`를 출력한다. 9자리를 초과하면 하위 9자리만 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `2 3 5` `2` `2 5` | `10` |
+
+## 풀이
+
+각 리스트의 원소를 모두 곱하여 A, B를 구한 뒤 유클리드 호제법으로 GCD를 계산한다.
+
+1. N개의 정수를 모두 곱하여 A를 구한다
+2. M개의 정수를 모두 곱하여 B를 구한다
+3. 유클리드 호제법으로 `gcd(A, B)`를 계산한다
+4. 결과 문자열의 마지막 9자리를 출력한다 (9자리 이하이면 전체 출력)
+
+**핵심 아이디어**: Python은 큰 정수 연산을 기본 지원하므로 곱셈 결과가 아무리 커도 정확하게 계산된다. 출력 시 문자열 슬라이싱 `[-9:]`로 하위 9자리만 추출한다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+
+def gcd(a, b):
+    while b > 0:
+        tmp = a % b
+        a = b
+        b = tmp
+    return a
+
+
+def multiply(lst):
+    return eval("*".join([str(n) for n in lst]))
+
+
+N = int(input())
+N_lst = list(map(int, input().split()))
+
+M = int(input())
+M_lst = list(map(int, input().split()))
+
+a = multiply(N_lst)
+b = multiply(M_lst)
+
+print("%s" % str(gcd(a, b))[-9:])
+```
+
+## 복잡도
+
+- 시간: O(N + M + log(min(A, B))) — 곱셈 후 유클리드 호제법
+- 공간: O(N + M) — 입력 리스트 저장

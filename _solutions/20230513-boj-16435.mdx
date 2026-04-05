@@ -1,0 +1,79 @@
+---
+title: "BOJ 16435 - 스네이크버드"
+date: "2023-05-13"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "16435"
+problem_url: "https://www.acmicpc.net/problem/16435"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16435 - 스네이크버드](https://www.acmicpc.net/problem/16435)
+
+초기 길이 L인 스네이크버드가 과일을 먹으면 길이가 1 증가한다. 자기 길이 이하 높이의 과일만 먹을 수 있을 때, 최대 길이를 구하라.
+
+### 입력
+
+첫째 줄에 과일 수 N과 초기 길이 L, 둘째 줄에 N개의 과일 높이가 주어진다.
+
+### 출력
+
+스네이크버드의 최대 길이를 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `5 3` `5 4 1 2 3` | `8`  |
+
+## 풀이
+
+과일을 높이순으로 정렬한 뒤, 낮은 것부터 먹을 수 있으면 먹는다.
+
+1. 과일 높이를 오름차순 정렬한다
+2. 순서대로 현재 길이 L 이상인지 확인한다
+3. 먹을 수 있으면 L을 1 증가시킨다
+
+**핵심 아이디어**: 낮은 과일부터 먹으면 길이가 점점 커져 더 높은 과일도 먹을 수 있게 된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.util.*;
+import java.io.*;
+
+public class Day461BOJ16435스네이크버드 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int N = Integer.parseInt(st.nextToken());
+    int L = Integer.parseInt(st.nextToken());
+
+    int[] arr = new int[N];
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < arr.length; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    Arrays.sort(arr);
+    for (int i = 0; i < arr.length; i++) {
+      if (L >= arr[i])
+        ++L;
+    }
+    System.out.println(L);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

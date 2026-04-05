@@ -1,0 +1,93 @@
+---
+title: "BOJ 17951 - 흩날리는 시험지 속에서 내 평점이 느껴진거야"
+date: "2023-02-24"
+description: "이분 탐색, 매개 변수 탐색 문제"
+tags: ["이분 탐색", "매개 변수 탐색"]
+platform: "boj"
+problem_number: "17951"
+problem_url: "https://www.acmicpc.net/problem/17951"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17951 - 흩날리는 시험지 속에서 내 평점이 느껴진거야](https://www.acmicpc.net/problem/17951)
+
+N장의 시험지를 K개의 그룹으로 나눈다. 각 그룹의 점수 합 중 최솟값을 최대화하라.
+
+### 입력
+
+첫째 줄에 N, K, 둘째 줄에 N개의 시험지 점수가 주어진다.
+
+### 출력
+
+그룹 최소 합의 최댓값을 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `5 3` `1 5 7 8 9` | `8`  |
+
+## 풀이
+
+매개 변수 탐색으로 "최솟값이 mid 이상이 되도록 K개 이상 그룹을 만들 수 있는가?"를 판별한다.
+
+1. 탐색 범위: 0부터 전체 합까지 이분 탐색한다
+2. 중간값 mid를 그룹 최소 합으로 가정한다
+3. 앞에서부터 점수를 누적하다 mid 이상이 되면 하나의 그룹으로 자른다
+4. 만들 수 있는 그룹 수가 K 이상이면 mid를 늘리고, 아니면 줄인다
+
+**핵심 아이디어**: "최솟값의 최댓값" 유형의 전형적인 매개 변수 탐색. 결정 함수가 O(N)이므로 총 O(N log S)에 해결된다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day382BOJ17951흩날리 {
+  static int N, K, l = 0, r = 0;
+  static int[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    K = Integer.parseInt(st.nextToken());
+    arr = new int[N];
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++)
+      r += arr[i] = Integer.parseInt(st.nextToken());
+
+    while (l <= r) {
+      int mid = (l + r) / 2;
+      int cnt = 0, sum = 0;
+      for (int i = 0; i < N; i++) {
+        sum += arr[i];
+        if (sum >= mid) {
+          cnt++;
+          sum = 0;
+        }
+      }
+      if (cnt >= K)
+        l = mid + 1;
+      else
+        r = mid - 1;
+    }
+    System.out.println(r);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log S) - S는 점수 총합, 각 판별에 O(N)
+- 공간: O(N)

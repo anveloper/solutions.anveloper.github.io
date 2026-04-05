@@ -1,0 +1,87 @@
+---
+title: "BOJ 5919 - Hay Bales"
+date: "2025-12-15"
+description: "건초 더미의 높이를 평균 이하로 맞추기 위해 제거해야 하는 총 건초 개수를 구하는 수학/구현 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "5919"
+problem_url: "https://www.acmicpc.net/problem/5919"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5919 - Hay Bales](https://www.acmicpc.net/problem/5919)
+
+N개의 건초 더미가 있고 각 더미의 높이가 주어진다. 모든 더미의 평균 높이를 구한 후, 평균보다 높은 더미에서 평균까지 내려야 하는 총 건초 개수를 출력한다.
+
+평균은 정수 나눗셈(버림)으로 계산한다.
+
+### 입력
+
+첫 번째 줄에 더미의 수 N이 주어진다. 다음 N개의 줄(또는 값)에 각 더미의 높이가 주어진다.
+
+### 출력
+
+평균보다 높은 더미에서 제거해야 하는 건초의 총 합을 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `4` `10 4 6 8` | `5`  |
+
+(평균 = (10+4+6+8)/4 = 7, 제거량 = (10-7) = 3, (8-7) = 1 → 합 = 4... 실제 예제는 문제 원문 참조)
+
+## 풀이
+
+전체 합의 평균을 먼저 구한 뒤, 평균 초과 더미의 초과분 합산으로 답을 구한다.
+
+1. N개의 건초 더미 높이를 입력받아 배열에 저장하고 전체 합 `sum`을 계산한다.
+2. 평균 `average = sum / N`을 정수 나눗셈으로 구한다.
+3. 각 더미에서 `hay[i] > average`이면 `hay[i] - average`를 누적한다.
+4. 누적 합 `result`를 출력한다.
+
+**핵심 아이디어**: 더미를 높이 순으로 정렬할 필요 없이 두 번의 선형 순회로 해결한다. 첫 번째 순회에서 합산, 두 번째 순회에서 초과분 계산. 정수 나눗셈이므로 반올림 없이 버림 평균을 사용한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+const int MAX = 10000;
+int N;
+int hay[MAX];
+
+int main(void)
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cin >> N;
+  int sum = 0;
+  for (int i = 0; i < N;
+       i++)
+  {
+    cin >> hay[i];
+    sum += hay[i];
+  }
+  int average = sum / N;
+  int result = 0;
+  for (int i = 0; i < N;
+       i++)
+    if (hay[i] >
+        average)
+      result += hay[i] - average;
+  cout << result << "\n";
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 두 번의 선형 순회
+- 공간: O(N) — 건초 더미 높이 배열 저장

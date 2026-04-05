@@ -1,0 +1,85 @@
+---
+title: "BOJ 2579 - 계단 오르기"
+date: "2022-04-18"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "2579"
+problem_url: "https://www.acmicpc.net/problem/2579"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2579 - 계단 오르기](https://www.acmicpc.net/problem/2579)
+
+N개의 계단 각각에 점수가 있다. 계단을 오르는 규칙은 다음과 같다: 한 번에 한 계단 또는 두 계단씩 오를 수 있고, 연속으로 세 계단을 밟는 것은 금지된다. 마지막 계단은 반드시 밟아야 한다. 이 조건을 만족하면서 얻을 수 있는 점수의 최댓값을 구하는 문제다.
+
+### 입력
+
+- 첫째 줄: 계단 수 N (1 ≤ N ≤ 300)
+- 다음 N개의 줄: 각 계단의 점수 (1 이상 10000 이하)
+
+### 출력
+
+얻을 수 있는 점수의 최댓값을 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `6` `10` `20` `15` `25` `10` `20` | `75` |
+
+## 풀이
+
+i번째 계단을 밟을 때 얻을 수 있는 최대 점수를 DP로 구한다. 연속 세 계단 금지 조건으로 인해 i번째 계단에 도달하는 방법은 두 가지다: i-2번째에서 한 칸 건너 오거나, i-3번째에서 i-1번째를 밟고 오는 경우다.
+
+1. `dp[1] = arr[1]`, `dp[2] = arr[1] + arr[2]`로 초기 값을 설정한다.
+2. i가 3 이상일 때 점화식: `dp[i] = max(dp[i-2], dp[i-3] + arr[i-1]) + arr[i]`
+   - `dp[i-2] + arr[i]`: i-2번째에서 한 계단 건너 i번째로 오는 경우 (i-1 미밟음)
+   - `dp[i-3] + arr[i-1] + arr[i]`: i-3번째에서 i-1, i번째를 연속으로 밟는 경우
+3. 두 경우 중 큰 값을 `dp[i]`에 저장한다.
+4. `dp[N]`이 최종 답이다.
+
+**핵심 아이디어**: 세 계단 연속 금지 조건을 점화식으로 표현하면 두 가지 경우로 나뉜다. i번째 계단 직전에 i-1번째를 밟는 경우와 밟지 않는 경우를 분리하여 각각의 최댓값을 비교한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day70BOJ2579계단오르기DP { // 2579 계단 오르기 동적계획법
+	static int N;
+	static int[] arr, dp;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N + 1];
+		dp = new int[N + 1];
+		for (int i = 1; i < N + 1; i++) {
+			arr[i] = Integer.parseInt(br.readLine());
+		}
+		dp[1] = arr[1];
+		if (N > 1)
+			dp[2] = arr[1] + arr[2];
+		// 3칸 연속 밟을 수 없으므로, 1, 3 또는 2, 3번칸을 밟아야 한다.
+		for (int i = 3; i < N + 1; i++)
+			dp[i] = Math.max(dp[i - 2], dp[i - 3] + arr[i - 1]) + arr[i];
+
+		System.out.println(dp[N]);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 계단을 한 번씩 계산
+- 공간: O(N) — dp 배열과 점수 배열 각각 N 크기

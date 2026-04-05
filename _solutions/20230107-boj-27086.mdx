@@ -1,0 +1,118 @@
+---
+title: "BOJ 27086 - 점수 내기"
+date: "2023-01-07"
+description: "다이나믹 프로그래밍, 누적 합 문제"
+tags: ["다이나믹 프로그래밍", "누적 합"]
+platform: "boj"
+problem_number: "27086"
+problem_url: "https://www.acmicpc.net/problem/27086"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 27086 - 점수 내기](https://www.acmicpc.net/problem/27086)
+
+N명의 참가자 점수와 벌금 간격 x, 벌금 단가 y가 주어졌을 때, 점수 기반 벌금 규칙에 따라 전체 벌금 합과 1번 참가자의 벌금을 구하라.
+
+### 입력
+
+첫째 줄에 N, x, y가 주어진다. 둘째 줄에 N명의 점수가 주어진다.
+
+### 출력
+
+전체 벌금 합과 1번 참가자의 벌금을 공백으로 구분하여 출력한다 (mod 998244353).
+
+### 예제
+
+| 입력            | 출력  |
+| --------------- | ----- |
+| `3 1 1` `1 2 3` | `3 0` |
+
+## 풀이
+
+점수 분포의 누적 합과 역방향 DP로 각 점수별 벌금을 효율적으로 계산한다.
+
+1. 점수 빈도 배열 `cnt[]`와 누적 합 배열 `sum[]`을 구성한다
+2. `dp[i]`를 점수 i인 참가자의 벌금으로 정의하고 큰 점수부터 역순으로 계산한다
+3. `dp[i] = dp[i+x] + cnt[i+x] + (N - sum[i])`: x점 차이 구간의 누적 벌금 + 자신보다 높은 점수의 인원 수
+4. 모든 참가자에 대해 `dp[arr[i]]`를 합산하고 y를 곱하여 전체 벌금과 1번 참가자 벌금을 출력한다
+
+**핵심 아이디어**: 점수별로 그룹화하고 DP로 누적 벌금을 전파하면, 참가자마다 개별 계산 없이 O(N + max) 시간에 해결된다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day334BOJ27086점수내기 { // g
+    static final int MOD = 998_244_353;
+    static int N, x, y;
+    static long ans;
+    static int[] arr, cnt, sum;
+    static long[] dp;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        x = Integer.parseInt(st.nextToken());
+        y = Integer.parseInt(st.nextToken());
+
+        arr = new int[N]; // 2 * 10^5
+        sum = new int[N + 1];
+        int max = 0;
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+            max = max > arr[i] ? max : arr[i];
+        }
+
+        cnt = new int[max + 1];
+        for (int i = 0; i < N; i++) {
+            ++cnt[arr[i]];
+        } // 점수 분포
+
+        sum = new int[max + 1];
+        for (int i = 1; i < max + 1; i++) {
+            sum[i] = sum[i - 1] + cnt[i];
+        } // 점수 i를 기준으로 벌금을 내야하는 사람들의 누적합
+
+        dp = new long[max + 1];
+        for (int i = max; i > 0; i--) {
+            dp[i] = i + x < max + 1 ? dp[i + x] + cnt[i + x] : 0;
+            dp[i] = (dp[i] + N - sum[i]) % MOD;
+            // print(dp);
+        }
+        // i + x 인덱스 체크 후 누적된 벌금 배수 k (x마다 증가),
+        // 총원 - 점수 i보다 같거나 낮은 누적합 = 점수 i보다 높은 사람 수
+
+        ans = 0;
+        for (int i = 0; i < N; i++) {
+            ans += dp[arr[i]];
+        }
+
+        System.out.println(ans % MOD * y % MOD + " " + dp[arr[0]] * y % MOD);
+        br.close();
+    }
+
+    private static void print(long[] a) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < a.length; i++) {
+            sb.append(a[i] + " ");
+        }
+        System.out.println(sb);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N + max) - 빈도 계산 + DP 순회 (max는 점수 최댓값)
+- 공간: O(N + max) - 빈도, 누적 합, DP 배열

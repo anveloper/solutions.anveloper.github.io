@@ -1,0 +1,91 @@
+---
+title: "BOJ 4593 - Rock, Paper, Scissors"
+date: "2025-10-15"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4593"
+problem_url: "https://www.acmicpc.net/problem/4593"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4593 - Rock, Paper, Scissors](https://www.acmicpc.net/problem/4593)
+
+두 플레이어가 가위바위보를 여러 라운드 진행하며, 각 라운드의 선택이 문자열로 주어진다. 문자열의 각 문자는 `R`(바위), `P`(보), `S`(가위) 중 하나이며, 같은 인덱스의 문자끼리 라운드별로 대결한다. 각 플레이어가 몇 라운드를 이겼는지 출력한다. 입력이 `E`이면 종료한다.
+
+### 입력
+
+두 플레이어의 선택 문자열이 한 줄씩 쌍으로 입력된다. 첫 번째 줄이 `E`이면 종료한다.
+
+### 출력
+
+각 케이스에 대해 `P1: X`와 `P2: Y`를 출력한다. X, Y는 각 플레이어가 이긴 라운드 수이다.
+
+### 예제
+
+| 입력                | 출력            |
+| ------------------- | --------------- |
+| `RSPRS` `PRRPS` `E` | `P1: 2` `P2: 2` |
+
+## 풀이
+
+두 문자열을 같은 인덱스끼리 비교하여 가위바위보 승패를 판정한다.
+
+1. 두 문자열 `s1`, `s2`를 입력받는다. `s1`이 `"E"`이면 종료한다.
+2. 문자열 길이만큼 반복하며 `s1[i]`와 `s2[i]`를 비교한다.
+3. 같으면 비긴 것으로 처리(건너뜀)한다.
+4. P1이 이기는 경우는 `(R,S)`, `(S,P)`, `(P,R)` 세 가지이며, 이를 명시적으로 검사한다. 나머지 경우는 P2 승리이다.
+5. 카운터 `ans1`, `ans2`를 출력한다.
+
+**핵심 아이디어**: 가위바위보의 승리 조건은 세 가지 쌍으로 고정되므로, `if-else if` 체인으로 직접 열거한다. P1 승리 조건 3가지를 명시하고 나머지를 P2 승리로 처리하면, 비기는 경우를 먼저 `continue`로 제외한 뒤 깔끔하게 판정할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int slen;
+string s1, s2;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  cin >> s1 >> s2;
+  while (s1 != "E")
+  {
+    slen = s1.length();
+    int ans1 = 0, ans2 = 0;
+    for (int i = 0; i < slen; i++)
+    {
+      if (s1[i] == s2[i])
+        continue;
+      if (s1[i] == 'R' && s2[i] == 'S')
+        ans1++;
+      else if (s1[i] == 'S' && s2[i] == 'P')
+        ans1++;
+      else if (s1[i] == 'P' && s2[i] == 'R')
+        ans1++;
+      else
+        ans2++;
+    }
+
+    cout << "P1: " << ans1 << '\n'
+         << "P2: " << ans2 << '\n';
+
+    cin >> s1 >> s2;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N은 전체 라운드 수 (모든 케이스 문자열 길이 합)
+- 공간: O(L) — L은 문자열 최대 길이

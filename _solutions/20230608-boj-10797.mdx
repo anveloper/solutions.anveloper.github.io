@@ -1,0 +1,69 @@
+---
+title: "BOJ 10797 - 10부제"
+date: "2023-06-08"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10797"
+problem_url: "https://www.acmicpc.net/problem/10797"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10797 - 10부제](https://www.acmicpc.net/problem/10797)
+
+오늘의 날짜(일의 자리)와 5대의 자동차 번호 끝자리가 주어졌을 때, 10부제에 해당하는 자동차 수를 구하라.
+
+### 입력
+
+첫째 줄에 오늘 날짜의 일의 자리 수, 둘째 줄에 5대 자동차 번호의 끝자리가 주어진다.
+
+### 출력
+
+10부제에 해당하는 자동차 수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `3` `1 3 4 5 3` | `2`  |
+
+## 풀이
+
+5대의 자동차 번호 끝자리를 순회하며 날짜와 일치하는 수를 센다.
+
+1. 오늘 날짜의 일의 자리를 입력받는다
+2. 5개의 자동차 번호 끝자리를 순회하며 날짜와 같은 것을 카운트한다
+
+**핵심 아이디어**: 단순 비교 카운트 문제로, 5개 값만 확인하면 된다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day732BOJ1079710부제 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int cnt = 0;
+    while (st.hasMoreTokens()) {
+      if (n == Integer.parseInt(st.nextToken()))
+        cnt++;
+    }
+    System.out.print(cnt);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) (5대 고정)
+- 공간: O(1)

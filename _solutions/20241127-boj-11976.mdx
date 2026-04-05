@@ -1,0 +1,72 @@
+---
+title: "BOJ 11976 - Promotion Counting"
+date: "2024-11-27"
+description: "4구간의 차이값을 누적하여 승급 인원을 계산하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "11976"
+problem_url: "https://www.acmicpc.net/problem/11976"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11976 - Promotion Counting](https://www.acmicpc.net/problem/11976)
+
+4개의 등급별 승급 기준 구간이 주어질 때, Bronze에서 Silver, Gold, Platinum으로 승급한 인원 수를 각각 구하라.
+
+### 입력
+
+4줄에 걸쳐 각 등급의 시작 인원과 끝 인원이 주어진다.
+
+### 출력
+
+3줄에 걸쳐 각 등급으로 승급한 인원 수를 출력한다.
+
+### 예제
+
+| 입력                    | 출력        |
+| ----------------------- | ----------- |
+| `1 2` `1 2` `1 2` `1 2` | `3` `2` `1` |
+
+## 풀이
+
+4개 구간의 차이를 구하고, 역순으로 누적 합산하여 출력한다.
+
+1. 4개의 (시작, 끝) 쌍을 입력받아 각각의 차이 `b - a`를 배열에 저장한다
+2. `diff[3] + diff[2] + diff[1]` (Bronze→Silver 승급자)을 출력한다
+3. `diff[3] + diff[2]` (Silver→Gold 승급자)를 출력한다
+4. `diff[3]` (Gold→Platinum 승급자)을 출력한다
+
+**핵심 아이디어**: 상위 등급의 변화가 하위 등급에 영향을 미치므로, 역순으로 누적하여 각 등급의 순 승급자를 구한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int diff[4];
+int main(void)
+{
+  for (int i = 0; i < 4; ++i)
+  {
+    int a, b;
+    cin >> a >> b;
+    diff[i] = b - a;
+  }
+  cout << diff[3] + diff[2] + diff[1] << "\n";
+  cout << diff[3] + diff[2] << "\n";
+  cout << diff[3] << "\n";
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1) (고정 4회 입력)
+- 공간: O(1)

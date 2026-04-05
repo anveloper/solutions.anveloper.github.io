@@ -1,0 +1,71 @@
+---
+title: "BOJ 1330 - 두 수 비교하기"
+date: "2023-07-09"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1330"
+problem_url: "https://www.acmicpc.net/problem/1330"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1330 - 두 수 비교하기](https://www.acmicpc.net/problem/1330)
+
+두 정수 A와 B가 주어졌을 때, A와 B를 비교하여 부등호 또는 등호를 출력한다.
+
+### 입력
+
+첫째 줄에 A와 B가 주어진다 (-10,000 이상 10,000 이하).
+
+### 출력
+
+A가 B보다 크면 `>`, 작으면 `<`, 같으면 `==`을 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `1 2`  | `<`  |
+| `10 2` | `>`  |
+| `5 5`  | `==` |
+
+## 풀이
+
+두 수를 읽어 삼항 연산자로 비교 결과를 출력한다.
+
+1. 두 정수 A, B를 입력받는다
+2. A가 B보다 크면 `>`, 작으면 `<`, 같으면 `==`을 출력한다
+
+**핵심 아이디어**: 중첩 삼항 연산자로 세 가지 경우를 한 줄에 처리한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day518BOJ1330두수비교하기 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    String str = br.readLine();
+    StringTokenizer st = new StringTokenizer(str, " ");
+    int A = Integer.parseInt(st.nextToken());
+    int B = Integer.parseInt(st.nextToken());
+
+    System.out.println((A > B) ? ">" : ((A < B) ? "<" : "=="));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

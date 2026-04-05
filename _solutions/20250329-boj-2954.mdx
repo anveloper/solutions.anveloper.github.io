@@ -1,0 +1,61 @@
+---
+title: "BOJ 2954 - 창영이의 일기장"
+date: "2025-03-29"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2954"
+problem_url: "https://www.acmicpc.net/problem/2954"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2954 - 창영이의 일기장](https://www.acmicpc.net/problem/2954)
+
+창영이는 모음(a, e, i, o, u) 뒤에 `p`와 같은 모음을 추가하는 암호화 규칙으로 일기를 작성한다. 예를 들어 `a`는 `apa`가 된다. 암호화된 문장을 원래 문장으로 복호화하라.
+
+### 입력
+
+암호화된 문장이 한 줄로 주어진다. 소문자와 공백으로 구성된다.
+
+### 출력
+
+복호화된 원래 문장을 출력한다.
+
+### 예제
+
+| 입력                      | 출력            |
+| ------------------------- | --------------- |
+| `zepelepenapa papapikapa` | `zelena papika` |
+
+## 풀이
+
+문자열을 순회하며, 모음을 만나면 뒤의 `p + 동일 모음` 2글자를 건너뛴다.
+
+1. 문자열을 인덱스 기반으로 순회한다
+2. 현재 문자가 모음이면 해당 문자를 출력하고, 뒤의 2글자(`p` + 같은 모음)를 건너뛰기 위해 인덱스를 2 추가한다
+3. 모음이 아니면 그대로 출력한다
+4. 인덱스를 1 증가시키며 반복한다
+
+**핵심 아이디어**: 모음을 만나면 항상 뒤에 `p + 동일 모음`이 있으므로, 인덱스를 2칸 추가로 건너뛰면 된다.
+
+## 코드
+
+```python
+sentence = input()
+i = 0
+vowels = ["a", "e", "i", "o", "u"]
+while i < len(sentence):
+    print(sentence[i], end="")
+    if sentence[i] in vowels:
+        i += 2
+    i += 1
+```
+
+## 복잡도
+
+- 시간: O(N) — 문자열 길이만큼 순회
+- 공간: O(1) — 추가 공간 없이 출력

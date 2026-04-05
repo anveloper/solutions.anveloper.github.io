@@ -1,0 +1,73 @@
+---
+title: "BOJ 2635 - 수 이어가기"
+date: "2025-01-26"
+description: "수학, 브루트포스 알고리즘 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2635"
+problem_url: "https://www.acmicpc.net/problem/2635"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2635 - 수 이어가기](https://www.acmicpc.net/problem/2635)
+
+첫 번째 수와 두 번째 수가 정해지면, 이후 수는 `앞의 수 - 뒤의 수`로 이어간다. 음수가 나오기 직전까지 수열의 길이가 가장 긴 두 번째 수를 찾아라.
+
+### 입력
+
+첫 번째 수 N이 주어진다.
+
+### 출력
+
+최대 길이와 해당 수열을 출력한다.
+
+### 예제
+
+| 입력 | 출력             |
+| ---- | ---------------- |
+| `7`  | `5` `7 5 2 3 -1` |
+
+## 풀이
+
+두 번째 수를 1부터 N까지 모두 시도하여 가장 긴 수열을 찾는다.
+
+1. 두 번째 수 i를 1부터 N까지 반복한다
+2. 각 i에 대해 `앞 - 뒤` 규칙으로 수열을 생성하여 음수 직전까지의 길이를 구한다
+3. 가장 긴 수열을 기록하고, 최종 결과를 출력한다
+
+**핵심 아이디어**: 두 번째 수의 모든 후보를 브루트포스로 시도하여 최장 수열을 찾는다.
+
+## 코드
+
+```python
+n = int(input())
+
+max_list = []
+for i in range(1, n + 1):
+    my_list = [n]
+    my_list.append(i)
+
+    idx = 1
+    while True:
+        next_num = my_list[idx - 1] - my_list[idx]
+        if next_num < 0:
+            break
+        my_list.append(next_num)
+        idx += 1
+
+    if len(max_list) < len(my_list):
+        max_list = my_list
+
+print(len(max_list))
+for i in max_list:
+    print(i, end=' ')
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

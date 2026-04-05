@@ -1,0 +1,63 @@
+---
+title: "BOJ 2765 - 자전거 속도"
+date: "2025-02-05"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "2765"
+problem_url: "https://www.acmicpc.net/problem/2765"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2765 - 자전거 속도](https://www.acmicpc.net/problem/2765)
+
+바퀴 지름, 회전 수, 시간이 주어질 때 이동 거리(마일)와 속도(mph)를 구하라.
+
+### 입력
+
+바퀴 지름 d(인치), 회전 수 r, 시간 t(초)가 여러 줄에 주어진다. r이 0이면 종료.
+
+### 출력
+
+각 트립에 대해 이동 거리와 속도를 소수점 둘째 자리까지 출력한다.
+
+### 예제
+
+| 입력              | 출력                   |
+| ----------------- | ---------------------- |
+| `26 1000 5 0 0 0` | `Trip #1: 1.29 925.74` |
+
+## 풀이
+
+바퀴 둘레와 회전 수로 거리를 계산하고 시간으로 속도를 구한다.
+
+1. 거리 = `d / 63360 * pi * r` (인치 → 마일 변환)
+2. 속도 = `거리 / 시간(초) * 3600` (mph)
+3. 소수점 둘째 자리까지 출력한다
+
+**핵심 아이디어**: 1마일 = 63,360인치이므로 둘레(인치) x 회전 수를 63,360으로 나누면 마일이 된다.
+
+## 코드
+
+```python
+from math import pi
+
+i = 1
+while 1:
+    d, r, t = map(float, input().split())
+    if r == 0:
+        break
+    dis = d / 63360 * pi * r
+    mph = dis / t * 3600
+    print("Trip #%d: %.2f %.2f" % (i, dis, mph))
+    i += 1
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

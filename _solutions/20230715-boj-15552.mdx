@@ -1,0 +1,73 @@
+---
+title: "BOJ 15552 - 빠른 A+B"
+date: "2023-07-15"
+description: "구현, 사칙연산, 수학 문제"
+tags: ["구현", "사칙연산", "수학"]
+platform: "boj"
+problem_number: "15552"
+problem_url: "https://www.acmicpc.net/problem/15552"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15552 - 빠른 A+B](https://www.acmicpc.net/problem/15552)
+
+T개의 테스트 케이스에 대해 A+B를 출력하되, 빠른 입출력을 사용해야 하는 문제이다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T가 주어진다 (최대 1,000,000). 다음 T줄에 A와 B가 주어진다 (1 이상 1,000 이하).
+
+### 출력
+
+각 테스트 케이스마다 A+B를 한 줄에 출력한다.
+
+### 예제
+
+| 입력                                          | 출력                        |
+| --------------------------------------------- | --------------------------- |
+| `5` `1 1` `12 34` `5 500` `40 60` `1000 1000` | `2` `46` `505` `100` `2000` |
+
+## 풀이
+
+BufferedReader와 StringBuilder를 사용하여 대량 입출력을 빠르게 처리한다.
+
+1. BufferedReader로 테스트 케이스 수 N을 읽는다
+2. N번 반복하며 StringTokenizer로 두 수를 파싱하여 합을 StringBuilder에 추가한다
+3. 결과를 한 번에 출력한다
+
+**핵심 아이디어**: Scanner 대신 BufferedReader/StringTokenizer, System.out.println 대신 StringBuilder를 사용하여 입출력 병목을 해결한다. Java에서 대량 I/O 처리의 기본 패턴이다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day700BOJ15552빠른AB {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    int N = Integer.parseInt(br.readLine());
+
+    StringTokenizer st;
+
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(br.readLine(), " ");
+      sb.append((Integer.parseInt(st.nextToken()) + Integer.parseInt(st.nextToken())) + "\n");
+    }
+    System.out.println(sb);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

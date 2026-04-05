@@ -1,0 +1,134 @@
+---
+title: "BOJ 1005 - ACM Craft"
+date: "2023-03-08"
+description: "다이나믹 프로그래밍, 그래프 이론, dag 문제"
+tags: ["다이나믹 프로그래밍", "그래프 이론", "dag", "위상 정렬"]
+platform: "boj"
+problem_number: "1005"
+problem_url: "https://www.acmicpc.net/problem/1005"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1005 - ACM Craft](https://www.acmicpc.net/problem/1005)
+
+N개의 건물과 K개의 건설 순서 규칙이 있다. 각 건물은 건설 시간이 있고, 선행 건물이 모두 완료되어야 건설을 시작할 수 있다. 목표 건물을 짓는 최소 시간을 구하라.
+
+### 입력
+
+여러 테스트 케이스. 각각 N, K, 건설 시간, K개의 순서 규칙, 목표 건물 번호가 주어진다.
+
+### 출력
+
+각 테스트 케이스에 대해 목표 건물 건설 최소 시간을 출력한다.
+
+### 예제
+
+| 입력                                                                                                                               | 출력       |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `2` `4 4` `10 1 100 10` `1 2` `1 3` `2 4` `3 4` `4` `8 8` `10 20 1 5 8 7 1 43` `1 2` `1 3` `2 4` `2 5` `3 6` `5 7` `6 7` `7 8` `7` | `120` `39` |
+
+## 풀이
+
+위상 정렬과 DP를 결합하여, 선행 건물의 최대 완료 시간을 누적하며 목표까지의 최소 시간을 구한다.
+
+1. 진입 차수가 0인 건물을 큐에 넣고 시작한다
+2. 각 건물을 처리할 때, 후속 건물의 `minTimes`를 `max(현재, 기존)` 중 큰 값으로 갱신한다
+3. 진입 차수가 0이 되면 해당 건물의 건설 시간을 더하고 큐에 추가한다
+4. 목표 건물에 도달하면 즉시 종료한다
+
+**핵심 아이디어**: DAG 위상 정렬 순서로 처리하면서 각 건물의 시작 가능 시간(= 모든 선행 건물의 최대 완료 시간)을 DP로 관리한다. 병렬 건설이 가능하므로 max를 사용한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day395BOJ1005ACMCraft { // g
+  static final int MAX = 1001;
+  static int N, K;
+  static int[] buildTimes, indegs, minTimes;
+  static ArrayList<ArrayList<Integer>> posteriors = new ArrayList<>();
+
+  public static void main(String[] args) throws IOException {
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    for (int tc = readInt(); tc > 0; --tc) {
+      N = readInt();
+      K = readInt();
+      indegs = new int[N + 1];
+      minTimes = new int[N + 1];
+      buildTimes = new int[N + 1];
+      posteriors.clear();
+      posteriors.add(null);
+      for (int i = 1; i <= N; ++i) {
+        posteriors.add(new ArrayList<>());
+        buildTimes[i] = readInt();
+      }
+
+      for (; K > 0; --K) {
+        int anterior = readInt();
+        int posterior = readInt();
+        indegs[posterior]++;
+        posteriors.get(anterior).add(posterior);
+      }
+
+      int id = readInt();
+      int minT = getMinTime(id);
+      bw.write(minT + "\n");
+    }
+    bw.flush();
+    bw.close();
+  }
+
+  static int getMinTime(int id) {
+    Queue<Integer> q = new ArrayDeque<>();
+
+    for (int i = 1; i <= N; ++i) {
+      if (indegs[i] != 0)
+        continue;
+      if (i == id)
+        return buildTimes[i];
+      minTimes[i] = buildTimes[i];
+      q.add(i);
+    }
+
+    LOOP: while (!q.isEmpty()) {
+      int i = q.poll();
+      for (int posterior : posteriors.get(i)) {
+        minTimes[posterior] = Math.max(minTimes[i], minTimes[posterior]);
+        if (--indegs[posterior] > 0)
+          continue;
+        minTimes[posterior] += buildTimes[posterior];
+        if (posterior == id)
+          break LOOP;
+        q.add(posterior);
+      }
+    }
+    return minTimes[id];
+  }
+
+  static int readInt() throws IOException {
+    int val = 0;
+    do {
+      int c = System.in.read();
+      if (c == ' ' || c == '\n')
+        break;
+      val = 10 * val + c - 48;
+    } while (true);
+    return val;
+  }
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N + K) - 위상 정렬
+- 공간: O(N + K) - 인접 리스트 및 큐

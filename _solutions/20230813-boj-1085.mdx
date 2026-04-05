@@ -1,0 +1,72 @@
+---
+title: "BOJ 1085 - 직사각형에서 탈출"
+date: "2023-08-13"
+description: "수학, 기하학 문제"
+tags: ["수학", "기하학"]
+platform: "boj"
+problem_number: "1085"
+problem_url: "https://www.acmicpc.net/problem/1085"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1085 - 직사각형에서 탈출](https://www.acmicpc.net/problem/1085)
+
+(0,0)과 (w,h)를 꼭짓점으로 하는 직사각형 내부의 점 (x,y)에서 직사각형 변까지의 최단 거리를 구하라.
+
+### 입력
+
+x, y, w, h가 주어진다.
+
+### 출력
+
+직사각형 경계까지의 최단 거리를 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `6 2 10 3` | `1`  |
+
+## 풀이
+
+네 변까지의 거리 중 최솟값을 구한다.
+
+1. 왼쪽(x), 오른쪽(w-x), 아래(y), 위(h-y) 네 거리를 구한다
+2. 네 값 중 최솟값이 답이다
+
+**핵심 아이디어**: 직사각형의 각 변까지 수직 거리만 비교하면 된다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day553BOJ1085직사각형 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+    int x = Integer.parseInt(st.nextToken());
+    int y = Integer.parseInt(st.nextToken());
+    int w = Integer.parseInt(st.nextToken());
+    int h = Integer.parseInt(st.nextToken());
+
+    int x_min = Math.min(x, w - x);
+    int y_min = Math.min(y, h - y);
+    System.out.println(Math.min(x_min, y_min));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

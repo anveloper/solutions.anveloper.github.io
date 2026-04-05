@@ -1,0 +1,91 @@
+---
+title: "BOJ 9094 - 수학적 호기심"
+date: "2025-12-30"
+description: "수학, 브루트포스 알고리즘 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "9094"
+problem_url: "https://www.acmicpc.net/problem/9094"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9094 - 수학적 호기심](https://www.acmicpc.net/problem/9094)
+
+`0 < a < b < N`인 쌍 (a, b)에서 `(a² + b² + m) / (a * b)`가 정수인 쌍의 개수를 구하라.
+
+### 입력
+
+테스트 케이스 수와 각 케이스마다 N, M이 주어진다.
+
+### 출력
+
+각 케이스마다 조건을 만족하는 쌍의 수를 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `1` `10 1` | `2`  |
+
+## 풀이
+
+모든 쌍 `(i, j)`에 대해 조건을 직접 검사한다.
+
+1. `0 < i < j < N`인 모든 쌍을 이중 반복문으로 열거한다
+2. `(i² + j² + m) / (i * j)`가 정수인지 확인한다
+3. 정수이면 카운트를 증가시킨다
+
+**핵심 아이디어**: N이 충분히 작으므로 O(N²) 브루트포스로 모든 쌍을 검사할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cmath>
+#include <cctype>
+
+using namespace std;
+
+int main()
+{
+
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+
+  int test;
+  cin >> test;
+
+  for (int i = 0; i < test; i++)
+  {
+    double n, m, a;
+    cin >> n >> m;
+    int cnt = 0;
+    for (int i = 0; i < n; i++)
+    {
+      for (int j = 0; j < n; j++)
+      {
+        if (i < j)
+        {
+          a = ((i * i + j * j + m) / (i * j));
+          if (abs(a - (int)a < 1e-12))
+          {
+            cnt++;
+          }
+        }
+      }
+    }
+    cout << cnt << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(1)

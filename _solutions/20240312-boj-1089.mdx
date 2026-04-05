@@ -1,0 +1,132 @@
+---
+title: "BOJ 1089 - 스타트링크 타워"
+date: "2024-03-12"
+description: "수학, 구현, 확률론 문제"
+tags: ["수학", "구현", "확률론"]
+platform: "boj"
+problem_number: "1089"
+problem_url: "https://www.acmicpc.net/problem/1089"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1089 - 스타트링크 타워](https://www.acmicpc.net/problem/1089)
+
+N자리 7세그먼트 디스플레이가 일부 세그먼트가 고장나 꺼진 상태로 표시된다. 현재 표시된 패턴으로 가능한 모든 숫자의 기댓값을 구하라. 가능한 숫자가 없으면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 자릿수 N, 이후 5줄에 디스플레이 상태가 주어진다 (`#`과 `.`로 구성).
+
+### 출력
+
+가능한 모든 숫자의 평균(기댓값)을 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                                             | 출력   |
+| ------------------------------------------------ | ------ |
+| `2` `###.##` `#.#..#` `###.##` `..#.#.` `###.##` | `35.0` |
+
+## 풀이
+
+각 자릿수별로 가능한 숫자(0~9)를 판별한 뒤, 기댓값을 자릿수별 독립 계산으로 구한다.
+
+1. 0~9 각 숫자의 3×5 세그먼트 패턴을 문자열로 정의한다
+2. 디스플레이의 각 자릿수 위치에서, 5행 각각에 대해 `#`이 켜진 곳이 해당 숫자 패턴과 일치하는지 확인한다 (`.`은 고장으로 꺼진 것일 수 있으므로 무시)
+3. 5행 모두 통과한 숫자만 후보로 남긴다
+4. 어떤 자릿수에서 후보가 없으면 -1을 출력한다
+5. 각 자릿수별 후보의 합 × 다른 자릿수 후보 수를 곱하여 전체 기댓값을 계산한다
+
+**핵심 아이디어**: 각 자릿수의 가능한 숫자가 독립적이므로, 기댓값을 자릿수별로 분리하여 효율적으로 계산한다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day770BOJ1089스타트링크타워 {
+  static final String[] NUMS = {
+      "####.##.##.####",
+      "..#..#..#..#..#",
+      "###..#####..###",
+      "###..####..####",
+      "#.##.####..#..#",
+      "####..###..####",
+      "####..####.####",
+      "###..#..#..#..#",
+      "####.#####.####",
+      "####.####..####"
+  };
+  static String[] map = { "", "", "", "", "" };
+
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    for (int i = 0; i < 5; i++) {
+      map[i] = br.readLine();
+    }
+
+    @SuppressWarnings("unchecked")
+    HashSet<Double>[] set = new HashSet[N];
+    for (int i = 0; i < N; i++)
+      set[i] = new HashSet<>();
+    int strLen = 4 * N - 1;
+    int totalSize = 1;
+    int[] digitCount = new int[N];
+    Arrays.fill(digitCount, 1);
+    for (int i = 0; i < 5; i++) {
+      for (int j = 0; j < strLen; j += 4) {
+        int index = j / 4;
+        for (int k = 0; k < 10; k++) {
+          double value = Math.pow(10, N - 1 - index) * k;
+          if (canNum(i, j, k)) {
+            if (i == 0) {
+              set[index].add(value);
+            }
+          } else {
+            set[index].remove(value);
+          }
+        }
+        if (set[index].size() == 0) {
+          System.out.println("-1");
+          return;
+        }
+        if (i == 4) {
+          totalSize = totalSize * set[index].size();
+          for (int k = 0; k < N; k++) {
+            if (k != index)
+              digitCount[k] = digitCount[k] * set[index].size();
+          }
+        }
+      }
+    }
+    double sum = 0;
+    for (int i = 0; i < N; i++) {
+      double multi = (double) digitCount[i] / totalSize;
+      sum += set[i].stream().mapToDouble(x -> x).map(x -> x * multi).sum();
+    }
+    System.out.println(sum);
+    br.close();
+  }
+
+  static boolean canNum(int row, int index, int compareTo) {
+    for (int i = 0; i < 3; i++) {
+      if (map[row].charAt(index + i) != '.' && map[row].charAt(index + i) != NUMS[compareTo].charAt(row * 3 + i))
+        return false;
+    }
+    return true;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* 10 \* 5) — 각 자릿수에서 10개 숫자, 5행 비교
+- 공간: O(N) — 자릿수별 후보 집합

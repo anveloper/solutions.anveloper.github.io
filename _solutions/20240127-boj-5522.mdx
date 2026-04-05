@@ -1,0 +1,65 @@
+---
+title: "BOJ 5522 - 카드 게임"
+date: "2024-01-27"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5522"
+problem_url: "https://www.acmicpc.net/problem/5522"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5522 - 카드 게임](https://www.acmicpc.net/problem/5522)
+
+5라운드 카드 게임에서 각 라운드의 점수가 주어질 때, 총 점수를 구하라.
+
+### 입력
+
+5줄에 걸쳐 각 라운드의 점수가 주어진다.
+
+### 출력
+
+총 점수를 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `1` `2` `3` `4` `5` | `15` |
+
+## 풀이
+
+5개의 정수를 입력받아 합산한다.
+
+1. 5번 반복하며 각 줄의 정수를 읽어 합에 더한다
+2. 합을 출력한다
+
+**핵심 아이디어**: 단순 합산 문제로, 5개의 수를 읽어 더하면 된다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+
+public class Day727BOJ5522카드게임 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int ans = 0;
+    for (int i = 1; i <= 5; i++) {
+      ans += Integer.parseInt(br.readLine());
+    }
+    System.out.print(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

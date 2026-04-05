@@ -1,0 +1,77 @@
+---
+title: "BOJ 1895 - 필터"
+date: "2025-05-31"
+description: "구현, 브루트포스 알고리즘, 정렬 문제"
+tags: ["구현", "브루트포스 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "1895"
+problem_url: "https://www.acmicpc.net/problem/1895"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1895 - 필터](https://www.acmicpc.net/problem/1895)
+
+R x C 격자에 3x3 중앙값 필터를 적용했을 때, 결과값이 T 이상인 칸의 수를 구하라.
+
+### 입력
+
+격자 크기 R, C와 격자 값, 임계값 T가 주어진다.
+
+### 출력
+
+3x3 중앙값 필터 결과가 T 이상인 칸의 수를 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `3 3` `1 2 3` `4 5 6` `7 8 9` `5` | `1`  |
+
+## 풀이
+
+모든 가능한 3x3 영역에서 중앙값을 구하고 T와 비교한다.
+
+1. (R-2) x (C-2)개의 3x3 영역을 순회한다
+2. 각 영역의 9개 값을 정렬하여 중앙값(5번째 값)을 구한다
+3. 중앙값이 T 이상인 영역의 수를 센다
+
+**핵심 아이디어**: 3x3 영역의 중앙값은 9개 원소를 정렬한 후 인덱스 4의 값이다.
+
+## 코드
+
+```python
+R, C = map(int, input().split())
+
+Filter = []
+for r in range(R):
+    Filter.append(list(map(int, input().split())))
+
+T = int(input())
+J = []
+
+for r in range(R - 3 + 1):
+    for c in range(C - 3 + 1):
+        median = []
+        for i in range(r, r + 3):
+            for j in range(c, c + 3):
+                median.append(Filter[i][j])
+
+        median.sort()
+        J.append(median[4])
+
+cnt = 0
+for k in J:
+    if k > T or k == T:
+        cnt += 1
+
+print(cnt)
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

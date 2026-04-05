@@ -1,0 +1,69 @@
+---
+title: "BOJ 2303 - 숫자 게임"
+date: "2025-01-14"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2303"
+problem_url: "https://www.acmicpc.net/problem/2303"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2303 - 숫자 게임](https://www.acmicpc.net/problem/2303)
+
+N명이 각각 5장의 카드를 가지고 있다. 3장을 골라 합의 일의 자리가 가장 큰 사람이 이긴다. 동점이면 번호가 큰 사람이 이긴다.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 5개의 카드 숫자가 주어진다.
+
+### 출력
+
+이기는 사람의 번호를 출력한다 (1-indexed).
+
+### 예제
+
+| 입력                                                            | 출력 |
+| --------------------------------------------------------------- | ---- |
+| `5` `7 5 7 4 9` `1 2 3 6 9` `8 1 6 3 2` `3 7 2 6 5` `1 2 3 4 5` | `3`  |
+
+## 풀이
+
+각 사람의 5장 중 3장을 고르는 모든 조합에서 합의 일의 자리 최댓값을 구한다.
+
+1. 각 사람에 대해 C(5,3) = 10가지 조합의 합을 계산한다
+2. 각 합의 일의 자리(% 10)를 구하고 최댓값을 기록한다
+3. 일의 자리 최댓값이 가장 큰 사람을 찾되, 동점이면 번호가 큰 사람을 선택한다
+
+**핵심 아이디어**: 조합 수가 C(5,3) = 10으로 매우 적으므로, 삼중 반복문으로 모든 경우를 탐색해도 충분하다.
+
+## 코드
+
+```python
+n = int(input())
+score = []
+for _ in range(n):
+  card = list(map(int, input().split()))
+  max_digit = 0
+  for i in range(5):
+    for j in range(i + 1, 5):
+      for k in range(j + 1, 5):
+        digit = (card[i] + card[j] + card[k]) % 10
+        if digit >= max_digit:
+          max_digit = digit
+  score.append(max_digit)
+
+for i in range(n - 1, -1, -1):
+  if score[i] == max(score):
+    print(i + 1)
+    break
+```
+
+## 복잡도
+
+- 시간: O(N \* C(5,3)) = O(10N) — 사람당 10가지 조합
+- 공간: O(N) — 각 사람의 최대 점수 배열

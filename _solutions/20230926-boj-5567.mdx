@@ -1,0 +1,99 @@
+---
+title: "BOJ 5567 - 결혼식"
+date: "2023-09-26"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색"]
+platform: "boj"
+problem_number: "5567"
+problem_url: "https://www.acmicpc.net/problem/5567"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5567 - 결혼식](https://www.acmicpc.net/problem/5567)
+
+상근이(1번)의 친구와 친구의 친구까지 결혼식에 초대한다. 초대할 수 있는 동기의 수를 구하라.
+
+### 입력
+
+첫째 줄에 동기 수 N, 둘째 줄에 친구 관계 수 M, 이후 M줄에 친구 쌍이 주어진다.
+
+### 출력
+
+초대할 동기의 수를 출력한다 (상근이 제외).
+
+### 예제
+
+| 입력                                  | 출력 |
+| ------------------------------------- | ---- |
+| `6` `5` `1 2` `1 3` `3 4` `2 3` `4 5` | `3`  |
+
+## 풀이
+
+DFS로 1번 노드에서 깊이 2까지만 탐색하여 방문한 노드를 센다.
+
+1. 인접 리스트로 그래프를 구성한다
+2. 1번 노드에서 DFS를 시작하며 깊이 2에서 중단한다
+3. 방문된 노드 수(1번 제외)가 초대 인원이다
+
+**핵심 아이디어**: 친구(깊이 1)와 친구의 친구(깊이 2)만 초대하므로 깊이 제한 DFS로 해결한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day599BOJ5567결혼식 {
+  static int N, M;
+  static ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+  static boolean[] visited;
+
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    M = Integer.parseInt(br.readLine());
+    for (int i = 0; i <= N; i++)
+      graph.add(new ArrayList<>());
+    visited = new boolean[N + 1];
+    visited[1] = true;
+
+    StringTokenizer st;
+    for (int i = 0; i < M; i++) {
+      st = new StringTokenizer(br.readLine());
+      int from = Integer.parseInt(st.nextToken());
+      int to = Integer.parseInt(st.nextToken());
+      graph.get(from).add(to);
+      graph.get(to).add(from);
+    }
+    dfs(1, 0);
+
+    int answer = 0;
+    for (int i = 2; i < visited.length; i++) {
+      if (visited[i])
+        answer++;
+    }
+    System.out.println(answer);
+  }
+
+  private static void dfs(int point, int cnt) {
+    if (cnt == 2) {
+      return;
+    }
+    for (int i : graph.get(point)) {
+      visited[i] = true;
+      dfs(i, cnt + 1);
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(V + E)
+- 공간: O(V + E)

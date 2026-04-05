@@ -1,0 +1,76 @@
+---
+title: "BOJ 4134 - 다음 소수"
+date: "2025-03-17"
+description: "수학, 브루트포스 알고리즘, 정수론 문제"
+tags: ["수학", "브루트포스 알고리즘", "정수론", "소수 판정"]
+platform: "boj"
+problem_number: "4134"
+problem_url: "https://www.acmicpc.net/problem/4134"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4134 - 다음 소수](https://www.acmicpc.net/problem/4134)
+
+정수 n이 주어질 때, n 이상인 가장 작은 소수를 구하라.
+
+### 입력
+
+테스트 케이스 수 T와 각 정수 n이 주어진다 (0 이상 40억 이하).
+
+### 출력
+
+각 n에 대해 n 이상인 최소 소수를 출력한다.
+
+### 예제
+
+| 입력               | 출력           |
+| ------------------ | -------------- |
+| `3` `6` `20` `100` | `7` `23` `101` |
+
+## 풀이
+
+n부터 순차적으로 소수 판정하여 첫 번째 소수를 찾는다.
+
+1. n이 0 또는 1이면 2를 출력한다
+2. n부터 1씩 증가시키며 소수 판정을 수행한다
+3. `sqrt(n)`까지 나눠보는 시행 나눗셈으로 소수 여부를 확인한다
+
+**핵심 아이디어**: 베르트랑 공준에 의해 n과 2n 사이에 반드시 소수가 존재하므로, 최대 n번 이내에 소수를 찾는다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+N = int(input())
+
+
+def check(x):
+    for i in range(2, int(x**0.5) + 1):
+        if x % i == 0:
+            return False
+    return True
+
+
+for i in range(N):
+    n = int(input())
+    while True:
+        if n == 0 or n == 1:
+            print(2)
+            break
+        if check(n):
+            print(n)
+            break
+        else:
+            n += 1
+```
+
+## 복잡도
+
+- 시간: O(N \* sqrt(N)) (쿼리당)
+- 공간: O(1)

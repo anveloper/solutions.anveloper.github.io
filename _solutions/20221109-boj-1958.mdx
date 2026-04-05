@@ -1,0 +1,99 @@
+---
+title: "BOJ 1958 - LCS 3"
+date: "2022-11-09"
+description: "다이나믹 프로그래밍, 문자열, 최장 공통 부분 수열 문제"
+tags: ["다이나믹 프로그래밍", "문자열", "최장 공통 부분 수열"]
+platform: "boj"
+problem_number: "1958"
+problem_url: "https://www.acmicpc.net/problem/1958"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1958 - LCS 3](https://www.acmicpc.net/problem/1958)
+
+세 개의 문자열이 주어졌을 때, 세 문자열의 최장 공통 부분 수열(LCS)의 길이를 구하라.
+
+### 입력
+
+첫째 줄, 둘째 줄, 셋째 줄에 각각 알파벳 소문자로 이루어진 문자열이 주어진다 (길이 1 이상 100 이하).
+
+### 출력
+
+세 문자열의 LCS 길이를 출력한다.
+
+### 예제
+
+| 입력                           | 출력 |
+| ------------------------------ | ---- |
+| `abcdefghijklmn` `bdefg` `efg` | `3`  |
+
+## 풀이
+
+3차원 DP 테이블로 세 문자열의 LCS를 구한다.
+
+1. `dp[i][j][k]`를 문자열 a의 i번째, b의 j번째, c의 k번째까지의 LCS 길이로 정의한다
+2. 세 문자가 모두 같으면 `dp[i][j][k] = dp[i-1][j-1][k-1] + 1`
+3. 하나라도 다르면 `dp[i-1][j][k]`, `dp[i][j-1][k]`, `dp[i][j][k-1]` 중 최댓값을 취한다
+4. `dp[a.length][b.length][c.length]`가 정답이다
+
+**핵심 아이디어**: 2차원 LCS를 3차원으로 확장한 것으로, 세 문자가 동시에 일치할 때만 길이가 증가한다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+public class Day275BOJ1958LCS3 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+		String a = br.readLine();
+		String b = br.readLine();
+		String c = br.readLine();
+
+		bw.write(getLCS(a, b, c) + "\n");
+		bw.flush();
+	}
+
+	public static int getLCS(String a, String b, String c) {
+
+		int[][][] dp = new int[a.length() + 1][b.length() + 1][c.length() + 1];
+
+		for (int i = 1; i <= a.length(); i++) {
+			char ch1 = a.charAt(i - 1);
+
+			for (int j = 1; j <= b.length(); j++) {
+				char ch2 = b.charAt(j - 1);
+
+				for (int k = 1; k <= c.length(); k++) {
+					char ch3 = c.charAt(k - 1);
+
+					if (ch1 == ch2 && ch2 == ch3)
+						dp[i][j][k] = dp[i - 1][j - 1][k - 1] + 1;
+
+					else
+						dp[i][j][k] = Math.max(dp[i - 1][j][k], Math.max(dp[i][j - 1][k], dp[i][j][k - 1]));
+
+				}
+			}
+		}
+
+		return dp[a.length()][b.length()][c.length()];
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(A _ B _ C) - 세 문자열 길이의 곱
+- 공간: O(A _ B _ C) - 3차원 DP 배열

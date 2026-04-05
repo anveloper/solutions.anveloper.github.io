@@ -1,0 +1,84 @@
+---
+title: "BOJ 1272 - 특별 노드"
+date: "2024-04-10"
+description: "트리에서 특정 노드를 특별 노드로 지정하여 가중치 합을 최소화하는 문제"
+tags: ["DP", "트리"]
+platform: "boj"
+problem_number: "1272"
+problem_url: "https://www.acmicpc.net/problem/1272"
+difficulty: "골드 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1272 - 특별 노드](https://www.acmicpc.net/problem/1272)
+
+N개의 노드로 이루어진 트리에서 일부 노드를 특별 노드로 지정할 때, 모든 노드에서 가장 가까운 특별 노드까지의 거리 합을 최소화하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N-1줄에 간선 정보(u, v, w)가 주어진다.
+
+### 출력
+
+최소 거리 합을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `1`  | `0`  |
+
+## 풀이
+
+트리 DP로 각 노드의 선택/비선택 상태를 관리하며 DFS로 최적값을 계산한다.
+
+1. `dp[node][0]`: 현재 노드가 특별 노드가 아닐 때의 최소 비용
+2. `dp[node][1]`: 현재 노드가 특별 노드일 때의 최소 비용
+3. 각 자식에 대해 자식이 특별이면 간선 비용을 더하고, 아니면 0을 더한다
+4. DFS로 리프에서 루트까지 올라가며 최적값을 합산한다
+
+**핵심 아이디어**: 트리 DP의 선택/비선택 패턴으로 O(N)에 해결하며, 각 간선의 기여를 자식 상태에 따라 결정한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  if (N <= 1) return 0;
+
+  const adj = Array.from({ length: N + 1 }, () => []);
+  for (let i = 1; i < N; i++) {
+    const [u, v, w] = input[i].trim().split(" ").map(Number);
+    adj[u].push([v, w]);
+    adj[v].push([u, w]);
+  }
+
+  const dp = Array.from({ length: N + 1 }, () => [0, 0]);
+  const visited = Array(N + 1).fill(false);
+
+  const dfs = (cur) => {
+    visited[cur] = true;
+    for (const [next, weight] of adj[cur]) {
+      if (visited[next]) continue;
+      dfs(next);
+      dp[cur][0] += Math.min(dp[next][0], dp[next][1] + weight);
+      dp[cur][1] += Math.min(dp[next][1] + weight, dp[next][0]);
+    }
+  };
+
+  dfs(1);
+  return Math.min(dp[1][0], dp[1][1]);
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

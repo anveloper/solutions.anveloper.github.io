@@ -1,0 +1,67 @@
+---
+title: "BOJ 5032 - 탄산 음료"
+date: "2024-09-02"
+description: "빈 병을 교환하여 마실 수 있는 총 음료 수를 구하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "5032"
+problem_url: "https://www.acmicpc.net/problem/5032"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5032 - 탄산 음료](https://www.acmicpc.net/problem/5032)
+
+발견한 빈 병 E개, 친구에게 받은 빈 병 F개가 있고, 빈 병 C개로 새 음료 1개를 교환할 수 있다. 총 마실 수 있는 음료 수를 구하라.
+
+### 입력
+
+E, F, C가 주어진다.
+
+### 출력
+
+총 마실 수 있는 음료 수를 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `9 0 3` | `4`  |
+
+## 풀이
+
+빈 병이 C개 이상인 동안 교환을 반복한다.
+
+1. 초기 빈 병 수 = E + F
+2. `빈 병 / C`만큼 새 음료를 마시고 카운트에 추가한다
+3. 남은 빈 병 = `빈 병 / C + 빈 병 % C` (교환한 음료의 빈 병 + 나머지)
+4. 빈 병이 C 미만이 될 때까지 반복한다
+
+**핵심 아이디어**: 교환한 음료에서도 빈 병이 나오므로 재귀적으로 교환 가능하며, 매번 빈 병이 1/C로 줄어들어 O(log_C(E+F))에 종료한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+  int e, f, c, total = 0;
+  cin >> e >> f >> c;
+  int empty_cola = e + f;
+  while (empty_cola >= c)
+  {
+    total += empty_cola / c;
+    empty_cola = empty_cola / c + empty_cola % c;
+  }
+  cout << total << '\n';
+}
+```
+
+## 복잡도
+
+- 시간: O(log_C(E + F))
+- 공간: O(1)

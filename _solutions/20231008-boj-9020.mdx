@@ -1,0 +1,96 @@
+---
+title: "BOJ 9020 - 골드바흐의 추측"
+date: "2023-10-08"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "9020"
+problem_url: "https://www.acmicpc.net/problem/9020"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9020 - 골드바흐의 추측](https://www.acmicpc.net/problem/9020)
+
+짝수 n이 주어질 때, 두 소수의 합으로 나타내는 골드바흐 파티션 중 두 소수의 차이가 가장 작은 것을 구하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T, 이후 T줄에 짝수 n이 주어진다 (4 이상 10000 이하).
+
+### 출력
+
+각 n에 대해 골드바흐 파티션 두 소수를 공백으로 출력한다 (작은 수 먼저).
+
+### 예제
+
+| 입력              | 출력               |
+| ----------------- | ------------------ |
+| `3` `8` `10` `16` | `3 5` `5 5` `5 11` |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 전처리한 뒤, n/2에서 양쪽으로 벌려가며 두 소수를 찾는다.
+
+1. 10000까지 에라토스테네스의 체로 소수를 구한다
+2. a = n/2, b = n/2에서 시작하여 a를 감소, b를 증가시킨다
+3. a와 b가 모두 소수이면 출력한다
+
+**핵심 아이디어**: n/2에서 시작하면 차이가 가장 작은 파티션을 먼저 찾을 수 있다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day611BOJ9020골드바흐의추측 {
+  public static boolean[] prime = new boolean[10001];
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+
+    getPrime();
+
+    int T = Integer.parseInt(br.readLine());
+
+    while (T-- > 0) {
+      int n = Integer.parseInt(br.readLine());
+      int a = n / 2;
+      int b = n / 2;
+
+      while (true) {
+        if (!prime[a] && !prime[b]) {
+          sb.append(a).append(' ').append(b).append('\n');
+          break;
+        }
+        a--;
+        b++;
+      }
+    }
+    System.out.print(sb);
+  }
+
+  public static void getPrime() {
+    prime[0] = prime[1] = true;
+
+    for (int i = 2; i <= Math.sqrt(prime.length); i++) {
+      if (prime[i])
+        continue;
+      for (int j = i * i; j < prime.length; j += i) {
+        prime[j] = true;
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N)
+- 공간: O(N)

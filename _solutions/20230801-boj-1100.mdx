@@ -1,0 +1,70 @@
+---
+title: "BOJ 1100 - 하얀 칸"
+date: "2023-08-01"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1100"
+problem_url: "https://www.acmicpc.net/problem/1100"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1100 - 하얀 칸](https://www.acmicpc.net/problem/1100)
+
+8x8 체스판이 주어질 때, 하얀 칸 위에 놓인 말의 개수를 구한다. 체스판의 좌상단은 하얀 칸이다.
+
+### 입력
+
+8줄에 걸쳐 체스판의 상태가 주어진다. 'F'는 말이 있는 칸, '.'은 빈 칸이다.
+
+### 출력
+
+하얀 칸 위에 놓인 말의 개수를 출력한다.
+
+### 예제
+
+| 입력                                                                                    | 출력 |
+| --------------------------------------------------------------------------------------- | ---- |
+| `.F.F...F` `F...F.F.` `...F.F..` `F.F...F.` `.F...F..` `F...F.F.` `.F.F.F.F` `..FF..F.` | `1`  |
+
+## 풀이
+
+8x8 격자를 순회하며 하얀 칸(행+열이 짝수)에 'F'가 있는지 확인한다.
+
+1. 8줄의 문자열을 읽는다
+2. 각 칸에 대해 (i + j) % 2 == 0이면 하얀 칸이다
+3. 하얀 칸이면서 문자가 'F'인 칸의 개수를 센다
+
+**핵심 아이디어**: 체스판에서 하얀 칸은 행 인덱스와 열 인덱스의 합이 짝수인 위치이다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day541BOJ1100하얀칸 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int count = 0;
+    for (int i = 0; i < 8; i++) {
+      String s = br.readLine();
+      for (int j = 0; j < 8; j++) {
+        if (s.charAt(j) == 'F' && (i + j) % 2 == 0)
+          count++;
+      }
+    }
+    System.out.print(count);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 8x8 격자
+- 공간: O(1)

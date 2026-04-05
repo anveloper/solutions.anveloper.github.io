@@ -1,0 +1,69 @@
+---
+title: "BOJ 3372 - 보드 점프"
+date: "2025-03-10"
+description: "다이나믹 프로그래밍, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["다이나믹 프로그래밍", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "3372"
+problem_url: "https://www.acmicpc.net/problem/3372"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3372 - 보드 점프](https://www.acmicpc.net/problem/3372)
+
+N x N 보드의 각 칸에 숫자가 있고, 해당 숫자만큼 오른쪽 또는 아래로 점프할 수 있다. 좌상단에서 우하단까지 가는 경로의 수를 구하라.
+
+### 입력
+
+보드 크기 N과 N x N 보드의 각 칸 값이 주어진다.
+
+### 출력
+
+좌상단에서 우하단까지의 경로 수를 출력한다.
+
+### 예제
+
+| 입력                                        | 출력 |
+| ------------------------------------------- | ---- |
+| `4` `2 1 1 2` `3 1 2 3` `1 1 1 1` `2 1 2 0` | `3`  |
+
+## 풀이
+
+DP로 각 칸에 도달하는 경로 수를 누적한다.
+
+1. `dp[0][0] = 1`로 시작점을 초기화한다
+2. 각 칸 `(i, j)`에서 `board[i][j]`만큼 오른쪽과 아래의 칸에 현재 경로 수를 더한다
+3. 값이 0인 칸은 이동 불가이므로 건너뛴다
+4. `dp[N-1][N-1]`이 답이다
+
+**핵심 아이디어**: 각 칸에서의 점프 거리가 고정이므로, 순방향 DP로 도달 가능한 칸에 경로 수를 전파하면 된다.
+
+## 코드
+
+```python
+n = int(input())
+board = [list(map(int, input().split())) for _ in range(n)]
+
+dp = [[0] * n for _ in range(n)]
+dp[0][0] = 1
+for i in range(n):
+    for j in range(n):
+        if board[i][j] == 0:
+            continue
+        # 오른쪽
+        if j + board[i][j] < n:
+            dp[i][j + board[i][j]] += dp[i][j]
+        # 아래
+        if i + board[i][j] < n:
+            dp[i + board[i][j]][j] += dp[i][j]
+print(dp[n - 1][n - 1])
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N²)

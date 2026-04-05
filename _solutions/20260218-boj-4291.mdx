@@ -1,0 +1,91 @@
+---
+title: "BOJ 4291 - Brownie Points I"
+date: "2026-02-18"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "4291"
+problem_url: "https://www.acmicpc.net/problem/4291"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4291 - Brownie Points I](https://www.acmicpc.net/problem/4291)
+
+n개의 점이 x 좌표 기준으로 정렬되어 입력된다. 중간 위치(`n/2 + 1`번째) 점의 좌표 `(cx, cy)`를 기준점으로 삼아 나머지 점들을 사분면으로 분류한다. Stan은 1·3사분면 점의 수를, Ollie는 2·4사분면 점의 수를 얻는다. 두 값을 출력한다. 기준점에서 같은 x 또는 y 좌표를 가진 점은 어느 사분면에도 해당하지 않는다.
+
+n = 0 이면 입력이 종료된다.
+
+### 입력
+
+- 각 테스트 케이스 첫 줄: n (점의 개수, 0이면 종료)
+- 다음 n줄: 각 점의 x, y 좌표 (x 좌표 기준 정렬)
+
+### 출력
+
+각 테스트 케이스마다 Stan의 점수와 Ollie의 점수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                                  | 출력  |
+| ------------------------------------- | ----- |
+| `5` `1 1` `2 2` `3 3` `4 4` `5 5` `0` | `2 0` |
+
+## 풀이
+
+x 좌표로 정렬된 n개의 점 중 중앙(`n/2 + 1`번째) 점을 기준으로 삼고, 나머지 점들이 기준점의 어느 사분면에 속하는지 판별하여 Stan과 Ollie의 점수를 집계한다.
+
+1. n을 읽는다. 0이면 종료한다.
+2. n개의 점 `(x[i], y[i])`를 읽는다.
+3. 기준점을 `cx = x[n/2+1]`, `cy = y[n/2+1]`로 설정한다 (1-indexed).
+4. 모든 점을 순회하며 기준점 대비 사분면을 분류한다.
+   - `x[i] > cx && y[i] > cy` (1사분면) 또는 `x[i] < cx && y[i] < cy` (3사분면): `cntx++`
+   - `x[i] < cx && y[i] > cy` (2사분면) 또는 `x[i] > cx && y[i] < cy` (4사분면): `cnty++`
+5. `cntx cnty`를 출력한다.
+
+**핵심 아이디어**: x 좌표 정렬 입력에서 `n/2 + 1`번째 점이 x 기준 중앙값이다. 기준점과 x, y 좌표가 동일한 점은 비교 조건(`<`, `>`)에서 자연스럽게 제외되므로 별도 처리가 불필요하다. Stan은 1·3사분면(같은 방향), Ollie는 2·4사분면(엇갈린 방향)의 점수를 얻는다.
+
+## 코드
+
+```cpp
+#include<iostream>
+
+using namespace std;
+
+int x[300000], y[300000];
+
+int main() {
+  while (1) {
+    int n, i, cx, cy, cntx = 0, cnty = 0;
+
+    scanf("%d", &n);
+
+    if (n == 0) break;
+
+    for (i = 1; i <= n; i++) {
+      scanf("%d %d", &x[i], &y[i]);
+    }
+
+    cx = x[n / 2 + 1];
+    cy = y[n / 2 + 1];
+
+    for (i = 1; i <= n; i++) {
+      if (x[i] > cx && y[i] > cy) cntx++;
+      if (x[i] < cx && y[i] < cy) cntx++;
+      if (x[i] < cx && y[i] > cy) cnty++;
+      if (x[i] > cx && y[i] < cy) cnty++;
+    }
+
+    printf("%d %d\n", cntx, cnty);
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 점 입력 O(N) + 사분면 분류 순회 O(N)
+- 공간: O(N) — 전체 점 좌표 저장 (전역 배열 300000)

@@ -1,0 +1,101 @@
+---
+title: "BOJ 14921 - 용액 합성하기"
+date: "2023-01-20"
+description: "두 포인터 문제"
+tags: ["두 포인터"]
+platform: "boj"
+problem_number: "14921"
+problem_url: "https://www.acmicpc.net/problem/14921"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14921 - 용액 합성하기](https://www.acmicpc.net/problem/14921)
+
+N개의 용액이 오름차순으로 정렬되어 있다. 두 용액을 혼합했을 때 특성값의 합이 0에 가장 가까운 값을 구한다. (두 용액은 서로 달라야 한다.)
+
+### 입력
+
+첫째 줄에 N (2 ≤ N ≤ 100,000), 둘째 줄에 N개의 정수 (각 정수는 -1,000,000,000 이상 1,000,000,000 이하)가 주어진다. 입력은 오름차순으로 정렬되어 있다.
+
+### 출력
+
+0에 가장 가까운 두 용액의 합을 출력한다.
+
+### 예제
+
+**입력**
+
+```
+5
+-2 4 -99 -1 98
+```
+
+**출력**
+
+```
+-3
+```
+
+## 풀이
+
+**핵심 아이디어**: 정렬된 배열에서 양 끝에 포인터를 두고 합산 결과에 따라 이동하는 투 포인터 기법으로 O(N)에 최적해를 구한다.
+
+1. **초기화**: `s = 0`, `e = N-1`, `ans = MAX_VALUE`.
+2. **반복**: `s < e`인 동안 `tmp = arr[s] + arr[e]`를 계산한다.
+3. **갱신**: `|tmp| < |ans|`이면 `ans = tmp`로 갱신한다.
+4. **포인터 이동**:
+   - `tmp == 0`: 이미 최적이므로 즉시 종료.
+   - `tmp < 0`: 합을 크게 하려면 왼쪽 포인터를 오른쪽으로 이동(`s++`).
+   - `tmp > 0`: 합을 작게 하려면 오른쪽 포인터를 왼쪽으로 이동(`e--`).
+5. **출력**: 최종 `ans` 출력.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day347BOJ14921용액합성하기 {
+    static int N, s, e, ans = Integer.MAX_VALUE;
+    static int[] arr;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+        arr = new int[N];
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++)
+            arr[i] = Integer.parseInt(st.nextToken());
+
+        s = 0;
+        e = N - 1;
+        while (s < e) {
+            int tmp = arr[s] + arr[e];
+            ans = Math.abs(tmp) < Math.abs(ans) ? tmp : ans;
+
+            if (tmp == 0)
+                break;
+            else if (tmp < 0)
+                s++;
+            else if (tmp > 0)
+                e--;
+        }
+
+        System.out.println(ans);
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 두 포인터가 각각 최대 N번 이동
+- 공간: O(N) — 입력 배열 저장

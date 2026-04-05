@@ -1,0 +1,68 @@
+---
+title: "BOJ 1522 - 문자열 교환"
+date: "2024-06-16"
+description: "슬라이딩 윈도우로 'a'를 모두 연속시키기 위한 최소 교환 횟수를 구하는 문제"
+tags: ["브루트포스", "슬라이딩 윈도우"]
+platform: "boj"
+problem_number: "1522"
+problem_url: "https://www.acmicpc.net/problem/1522"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1522 - 문자열 교환](https://www.acmicpc.net/problem/1522)
+
+a와 b로만 이루어진 원형 문자열에서 인접한 문자끼리 교환하여 모든 a를 연속으로 모으기 위한 최소 교환 횟수를 구하라.
+
+### 입력
+
+a와 b로 이루어진 문자열이 주어진다.
+
+### 출력
+
+최소 교환 횟수를 출력한다.
+
+### 예제
+
+| 입력     | 출력 |
+| -------- | ---- |
+| `aabbba` | `1`  |
+
+## 풀이
+
+a의 총 개수를 윈도우 크기로 설정하고, 원형 문자열에서 슬라이딩 윈도우로 윈도우 내 a의 최대 개수를 구한다.
+
+1. a의 총 개수 tot를 구하고, 윈도우 크기를 tot로 설정한다
+2. 문자열을 두 번 이어붙여 원형을 처리한다
+3. 윈도우를 한 칸씩 슬라이딩하며 윈도우 내 a의 개수를 추적한다
+4. tot - (윈도우 내 최대 a 개수) = 최소 교환 횟수
+
+**핵심 아이디어**: a를 tot 크기의 연속 구간에 모아야 하므로, 이미 a가 가장 많이 포함된 윈도우를 찾으면 나머지만 교환하면 된다.
+
+## 코드
+
+```python
+def min_a(word):
+    tot = word.count("a")
+    ac = word + word
+    cur = ac[:tot].count("a")
+    max_a = cur
+    for i in range(1, len(word)):
+        if ac[i - 1] == "a":
+            cur -= 1
+        if ac[tot + i - 1] == "a":
+            cur += 1
+        max_a = max(max_a, cur)
+    return tot - max_a
+
+
+print(min_a(input()))
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

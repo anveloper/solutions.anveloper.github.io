@@ -1,0 +1,86 @@
+---
+title: "BOJ 5357 - Dedupe"
+date: "2024-12-27"
+description: "문자열에서 연속 중복 문자를 제거하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "5357"
+problem_url: "https://www.acmicpc.net/problem/5357"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5357 - Dedupe](https://www.acmicpc.net/problem/5357)
+
+문자열에서 연속으로 같은 문자가 반복되면 하나만 남기고 제거한 결과를 출력하라.
+
+### 입력
+
+테스트 케이스 수 N, 각 케이스마다 문자열이 주어진다.
+
+### 출력
+
+연속 중복을 제거한 결과를 출력한다.
+
+### 예제
+
+| 입력         | 출력  |
+| ------------ | ----- |
+| `1` `AABBCC` | `ABC` |
+
+## 풀이
+
+이전 문자와 비교하여 연속 중복을 제거한다.
+
+1. 이전 문자를 기록하며 문자열을 순회한다
+2. 현재 문자가 이전과 다를 때만 출력한다
+3. 이전 문자를 현재 문자로 갱신한다
+
+**핵심 아이디어**: 연속 중복 제거는 직전 문자만 비교하면 O(N)에 처리할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+#define fast                        \
+  ios_base::sync_with_stdio(false); \
+  cin.tie(0), cout.tie(0)
+#define ll long long
+
+int main()
+{
+  fast;
+  int n;
+  string s;
+  cin >> n;
+  while (n--)
+  {
+    char prev = ' ';
+    cin >> s;
+    for (int i = 0; i < s.length(); i++)
+    {
+      if (prev != s[i])
+      {
+        cout << s[i];
+        prev = s[i];
+      }
+    }
+    cout << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N × L) (L: 문자열 길이)
+- 공간: O(L)

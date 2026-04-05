@@ -1,0 +1,65 @@
+---
+title: "BOJ 25206 - 너의 평점은"
+date: "2024-06-05"
+description: "20개 과목의 학점과 성적으로 전공 평점을 계산하는 문제"
+tags: ["수학", "구현", "문자열"]
+platform: "boj"
+problem_number: "25206"
+problem_url: "https://www.acmicpc.net/problem/25206"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 25206 - 너의 평점은](https://www.acmicpc.net/problem/25206)
+
+20개 과목의 과목명, 학점, 등급이 주어질 때, P(Pass) 과목을 제외한 전공 평점(가중 평균)을 계산하라.
+
+### 입력
+
+20줄에 걸쳐 과목명, 학점(실수), 등급이 주어진다.
+
+### 출력
+
+전공 평점을 소수점 6자리까지 출력한다.
+
+### 예제
+
+| 입력   | 출력       |
+| ------ | ---------- |
+| (20줄) | `3.284483` |
+
+## 풀이
+
+각 등급을 숫자로 변환하고, (학점 × 등급값)의 합을 총 학점으로 나누어 가중 평균을 구한다. P 과목은 제외한다.
+
+1. 등급-숫자 매핑 배열을 정의한다 (A+=4.5, A0=4.0, ..., F=0)
+2. 각 과목의 등급이 P가 아니면 학점을 total에 누적하고, 학점 × 등급값을 result에 누적한다
+3. result / total을 소수점 6자리로 출력한다
+
+**핵심 아이디어**: 가중 평균 공식에서 P 과목은 분모/분자 모두 제외하면 된다.
+
+## 코드
+
+```python
+rating = ["A+", "A0", "B+", "B0", "C+", "C0", "D+", "D0", "F"]
+grade = [4.5, 4.0, 3.5, 3.0, 2.5, 2.0, 1.5, 1.0, 0]
+
+total = 0
+result = 0
+for _ in range(20):
+    s, p, g = input().split()
+    p = float(p)
+    if g != "P":
+        total += p
+        result += p * grade[rating.index(g)]
+
+print("%.6f" % (result / total))
+```
+
+## 복잡도
+
+- 시간: O(1) (고정 20개 과목)
+- 공간: O(1)

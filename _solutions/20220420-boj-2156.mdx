@@ -1,0 +1,86 @@
+---
+title: "BOJ 2156 - 포도주 시식"
+date: "2022-04-20"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "2156"
+problem_url: "https://www.acmicpc.net/problem/2156"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2156 - 포도주 시식](https://www.acmicpc.net/problem/2156)
+
+N잔의 포도주가 일렬로 놓여 있다. 다음 규칙에 따라 포도주를 마실 때 최대로 마실 수 있는 양을 구하는 문제다: 연속으로 놓인 3잔을 모두 마실 수 없고, 잔을 선택하지 않을 수도 있다. BOJ 2579 계단 오르기와 유사한 구조이지만, 마지막 잔을 반드시 선택할 필요가 없다는 점이 다르다.
+
+### 입력
+
+- 첫째 줄: 포도주 잔의 수 N (1 ≤ N ≤ 10,000)
+- 다음 N개의 줄: 각 잔의 포도주 양 (0 이상 1000 이하)
+
+### 출력
+
+마실 수 있는 포도주의 최대 양을 출력한다.
+
+### 예제
+
+| 입력                          | 출력 |
+| ----------------------------- | ---- |
+| `6` `6` `10` `13` `9` `8` `1` | `33` |
+
+## 풀이
+
+`dp[i]`를 i번째 잔까지 고려했을 때 마실 수 있는 최대 포도주 양으로 정의하고 Bottom-Up DP로 계산한다. i번째 잔을 선택하지 않거나, 선택할 때 직전 1잔 또는 직전 2잔과 연속으로 마시는 경우를 모두 비교한다.
+
+1. `dp[0] = arr[0]`으로 첫 잔을 초기화한다.
+2. `dp[1] = arr[0] + arr[1]`으로 두 번째 잔까지 초기화한다.
+3. `dp[2] = max(dp[1], dp[0] + arr[2], arr[1] + arr[2])`으로 세 번째 잔 초기화한다.
+4. i가 3 이상일 때 세 가지 경우 중 최댓값: `dp[i] = max(dp[i-1], dp[i-2] + arr[i], dp[i-3] + arr[i-1] + arr[i])`
+   - `dp[i-1]`: i번째 잔을 선택하지 않는 경우
+   - `dp[i-2] + arr[i]`: i-1번째를 건너뛰고 i번째만 마시는 경우
+   - `dp[i-3] + arr[i-1] + arr[i]`: i-1, i번째를 연속으로 마시는 경우
+5. `dp[N-1]`이 최종 답이다.
+
+**핵심 아이디어**: 계단 오르기(BOJ 2579)와 달리 마지막 잔을 반드시 선택하지 않아도 되므로, `dp[i-1]`(현재 잔 미선택 시 이전 최대값 유지)을 비교 대상에 포함해야 한다. 세 경우의 점화식이 연속 3잔 금지 조건을 완전히 커버한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day72BOJ2156포도주시식DP반복문 {
+	static int N;
+	static int[] arr, dp;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N];
+		dp = new int[N];
+
+		for (int i = 0; i < N; i++)
+			arr[i] = Integer.parseInt(br.readLine());
+		dp[0] = arr[0];
+		if (N > 1)
+			dp[1] = arr[0] + arr[1];
+		if (N > 2)
+			dp[2] = Math.max(dp[1], Math.max(dp[0] + arr[2], arr[1] + arr[2]));
+		for (int i = 3; i < N; i++)
+			dp[i] = Math.max(dp[i - 1], Math.max(dp[i - 2] + arr[i], dp[i - 3] + arr[i - 1] + arr[i]));
+		System.out.println(dp[N - 1]);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 잔을 한 번씩 계산
+- 공간: O(N) — dp 배열과 입력 배열 각각 N 크기

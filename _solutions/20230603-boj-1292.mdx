@@ -1,0 +1,81 @@
+---
+title: "BOJ 1292 - 쉽게 푸는 문제"
+date: "2023-06-03"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1292"
+problem_url: "https://www.acmicpc.net/problem/1292"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1292 - 쉽게 푸는 문제](https://www.acmicpc.net/problem/1292)
+
+1을 1개, 2를 2개, 3을 3개, ... 순서로 나열한 수열에서 A번째부터 B번째까지의 합을 구하라.
+
+### 입력
+
+첫째 줄에 A, B (1 ≤ A ≤ B ≤ 1000)가 주어진다.
+
+### 출력
+
+A번째부터 B번째까지 수의 합을 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `3 7` | `15` |
+
+## 풀이
+
+수열을 직접 생성하며 A~B 범위의 합을 계산한다.
+
+1. 수 i를 i번 반복하며 수열의 위치(cnt)를 증가시킨다
+2. cnt가 A~B 범위에 들어오면 i를 결과에 더한다
+3. cnt가 B를 초과하면 종료한다
+
+**핵심 아이디어**: 수열을 배열에 저장하지 않고 생성하면서 바로 범위 합을 계산하여 공간을 절약한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day666BOJ1292쉽게 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    int A = Integer.parseInt(st.nextToken());
+    int B = Integer.parseInt(st.nextToken());
+
+    int cnt = 0;
+    int res = 0;
+
+    for (int i = 1; i <= B; i++) {
+      for (int j = 1; j <= i; j++) {
+        cnt++;
+
+        if (A <= cnt && cnt <= B) {
+          res += i;
+        }
+      }
+    }
+
+    System.out.println(res);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(B) (B번째까지 순회)
+- 공간: O(1)

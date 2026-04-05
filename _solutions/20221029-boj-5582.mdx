@@ -1,0 +1,83 @@
+---
+title: "BOJ 5582 - 공통 부분 문자열"
+date: "2022-10-29"
+description: "다이나믹 프로그래밍, 문자열, 최장 공통 부분 수열 문제"
+tags: ["다이나믹 프로그래밍", "문자열", "최장 공통 부분 수열"]
+platform: "boj"
+problem_number: "5582"
+problem_url: "https://www.acmicpc.net/problem/5582"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5582 - 공통 부분 문자열](https://www.acmicpc.net/problem/5582)
+
+두 문자열이 주어졌을 때, 두 문자열에 모두 연속으로 포함된 가장 긴 공통 부분 문자열의 길이를 구하라.
+
+### 입력
+
+첫째 줄과 둘째 줄에 대문자로만 이루어진 문자열이 주어진다 (길이 1 이상 4,000 이하).
+
+### 출력
+
+가장 긴 공통 부분 문자열의 길이를 출력한다.
+
+### 예제
+
+| 입력                             | 출력 |
+| -------------------------------- | ---- |
+| `ABRACADABRA` `ECADADABRBCRDARA` | `5`  |
+
+## 풀이
+
+2차원 DP 테이블로 공통 부분 문자열의 최대 길이를 구한다.
+
+1. `memo[i+1][j+1]`을 S2의 i번째 문자와 S1의 j번째 문자까지의 공통 부분 문자열 길이로 정의한다
+2. S2[i] == S1[j]이면 `memo[i+1][j+1] = memo[i][j] + 1` (연속 일치 확장)
+3. 다르면 0으로 초기화된 상태를 유지한다 (연속이 끊김)
+4. 갱신할 때마다 answer를 최댓값으로 갱신한다
+
+**핵심 아이디어**: 일반 LCS(최장 공통 부분 수열)와 달리 연속 부분 문자열이므로, 문자가 다르면 0으로 리셋하는 것이 핵심이다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day264BOJ5582공통부분문자열 {
+	public static int answer;
+	public static String S1, S2;
+	public static int[][] memo;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		S1 = br.readLine();
+		S2 = br.readLine();
+
+		memo = new int[S2.length() + 1][S1.length() + 1];
+
+		for (int i = 0; i < S2.length(); ++i) {
+			for (int j = 0; j < S1.length(); ++j) {
+				if (S2.charAt(i) == S1.charAt(j)) {
+					memo[i + 1][j + 1] = memo[i][j] + 1;
+					answer = (answer < memo[i + 1][j + 1]) ? memo[i + 1][j + 1] : answer;
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* M) - N, M은 두 문자열의 길이
+- 공간: O(N \* M) - memo 2차원 배열

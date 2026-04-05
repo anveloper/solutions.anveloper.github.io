@@ -1,0 +1,85 @@
+---
+title: "BOJ 7568 - 덩치"
+date: "2022-03-13"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "7568"
+problem_url: "https://www.acmicpc.net/problem/7568"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7568 - 덩치](https://www.acmicpc.net/problem/7568)
+
+N명의 사람이 있고, 키와 몸무게가 모두 더 큰 사람이 있으면 그 사람의 덩치가 더 크다고 한다. 각 사람의 덩치 등수를 구하라. (자신보다 덩치가 큰 사람의 수 + 1)
+
+### 입력
+
+첫째 줄에 사람 수 N (50 이하)이 주어진다. 이후 N줄에 각 사람의 몸무게와 키가 주어진다.
+
+### 출력
+
+각 사람의 덩치 등수를 공백 구분하여 출력한다.
+
+### 예제
+
+| 입력                                             | 출력        |
+| ------------------------------------------------ | ----------- |
+| `5` `55 185` `58 183` `88 186` `60 175` `46 155` | `2 2 1 2 5` |
+
+## 풀이
+
+모든 쌍을 비교하여, 자신보다 키와 몸무게 모두 큰 사람의 수를 세어 등수를 매긴다.
+
+1. N명의 몸무게와 키를 2차원 배열에 저장한다
+2. 각 사람 i에 대해, 다른 모든 사람 j와 비교한다
+3. j의 몸무게와 키가 모두 i보다 크면 등수를 1 증가시킨다
+4. 최종 등수(=자신보다 큰 사람 수 + 1)를 출력한다
+
+**핵심 아이디어**: 덩치 비교는 부분 순서(partial order)이므로 정렬이 불가능하다. 키와 몸무게 중 하나라도 작으면 비교할 수 없으므로, 모든 쌍을 O(N^2)으로 비교해야 한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day29BOJ7568덩치랭크순번매기기 { // 7568 덩치
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = null;
+		int N = Integer.parseInt(br.readLine());
+		int[][] arr = new int[N][2];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			arr[i][0] = Integer.parseInt(st.nextToken());
+			arr[i][1] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 0; i < N; i++) {
+			int rank = 1;
+			for (int j = 0; j < N; j++) {
+				if (i != j && arr[i][0] < arr[j][0] && arr[i][1] < arr[j][1]) {
+					rank++;
+				}
+			}
+			sb.append(rank).append(" ");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

@@ -1,0 +1,55 @@
+---
+title: "BOJ 8558 - Silnia"
+date: "2025-05-26"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "8558"
+problem_url: "https://www.acmicpc.net/problem/8558"
+difficulty: "브론즈 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8558 - Silnia](https://www.acmicpc.net/problem/8558)
+
+자연수 N의 팩토리얼(N!)의 일의 자리를 구하라.
+
+### 입력
+
+자연수 N이 주어진다 (1 이상 1000 이하).
+
+### 출력
+
+N!의 일의 자리를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `4`  | `4`  |
+
+## 풀이
+
+N!을 계산하여 일의 자리를 구한다.
+
+1. `math.factorial(n)`으로 팩토리얼을 계산한다
+2. 결과의 mod 10을 출력한다
+
+**핵심 아이디어**: N이 5 이상이면 팩토리얼에 2와 5가 모두 포함되어 일의 자리가 항상 0이다. N이 4 이하일 때만 0이 아닌 값이 나온다.
+
+## 코드
+
+```python
+import math
+
+n = int(input())
+print(math.factorial(n) % 10)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

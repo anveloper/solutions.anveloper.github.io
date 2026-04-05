@@ -1,0 +1,78 @@
+---
+title: "BOJ 3226 - 전화 요금"
+date: "2025-03-15"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "3226"
+problem_url: "https://www.acmicpc.net/problem/3226"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3226 - 전화 요금](https://www.acmicpc.net/problem/3226)
+
+전화 통화의 시작 시각과 통화 시간(분)이 주어질 때, 총 요금을 계산하는 문제이다.
+07:00~19:00 사이(420분~1140분)는 분당 10원, 그 외 시간대는 분당 5원이 적용된다.
+자정(24:00)을 넘어가는 경우도 처리해야 한다.
+
+### 입력
+
+첫 줄에 통화 건수 N이 주어진다.
+이후 N줄에 걸쳐 `HH:MM` 형식의 시작 시각과 통화 시간(분)이 공백으로 구분되어 주어진다.
+
+### 출력
+
+모든 통화의 총 요금을 출력한다.
+
+### 예제
+
+| 입력                     | 출력  |
+| ------------------------ | ----- |
+| `2` `07:00 10` `20:00 5` | `125` |
+
+## 풀이
+
+각 통화에 대해 1분씩 시뮬레이션하며 시간대별 요금을 누적한다.
+자정 초과 시 `current_time`을 0으로 리셋하여 순환 처리한다.
+
+1. 통화 건수 N을 입력받고 결과 변수 `result`를 0으로 초기화한다.
+2. 각 통화에 대해 시작 시각(`HH:MM`)을 분 단위로 변환: `current_time = h * 60 + m`.
+3. 통화 시간만큼 1분씩 반복하며 현재 시각이 420 이상 1140 미만이면 10원, 아니면 5원을 누적한다.
+4. `current_time`이 1440(자정)에 도달하면 0으로 초기화한다.
+5. 모든 통화 처리 후 총 요금을 출력한다.
+
+**핵심 아이디어**: 분 단위 시뮬레이션으로 자정 경계를 모듈러 없이 직접 처리한다.
+
+## 코드
+
+```python
+N = int(input())
+result = 0
+
+for _ in range(N):
+    now, time = input().split()
+    h, m = map(int, now.split(":"))
+    current_time = h * 60 + m
+
+    for i in range(int(time)):
+        if current_time >= 420 and current_time < 1140:
+            result += 10
+            current_time += 1
+        else:
+            result += 5
+            current_time += 1
+
+        if current_time == 1440:
+            current_time = 0
+
+print(result)
+```
+
+## 복잡도
+
+- 시간: O(N \* T) — N개의 통화, 각 T분 시뮬레이션
+- 공간: O(1) — 추가 자료구조 불필요

@@ -1,0 +1,80 @@
+---
+title: "BOJ 5543 - 상근날드"
+date: "2023-10-12"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "5543"
+problem_url: "https://www.acmicpc.net/problem/5543"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5543 - 상근날드](https://www.acmicpc.net/problem/5543)
+
+버거 3종과 음료 2종의 가격이 주어질 때, 세트(버거 1개 + 음료 1개)의 최소 가격을 구하라. 세트는 50원 할인된다.
+
+### 입력
+
+5줄에 버거 3개, 음료 2개의 가격이 순서대로 주어진다.
+
+### 출력
+
+가장 싼 세트 가격을 출력한다.
+
+### 예제
+
+| 입력                          | 출력  |
+| ----------------------------- | ----- |
+| `800` `700` `900` `198` `330` | `848` |
+
+## 풀이
+
+가장 싼 버거와 가장 싼 음료를 골라 50원을 뺀다.
+
+1. 버거 3개 중 최솟값을 구한다
+2. 음료 2개 중 최솟값을 구한다
+3. 두 최솟값의 합에서 50을 뺀다
+
+**핵심 아이디어**: 세트 할인은 고정 50원이므로 각각의 최솟값을 선택하면 최소 세트 가격이 된다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day615BOJ5543상근날드 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int burger = 2001;
+    int drink = 2001;
+
+    for (int i = 0; i < 3; i++) {
+      int value = Integer.parseInt(br.readLine());
+      if (value < burger) {
+        burger = value;
+      }
+    }
+
+    for (int i = 0; i < 2; i++) {
+      int value = Integer.parseInt(br.readLine());
+      if (value < drink) {
+        drink = value;
+      }
+    }
+
+    System.out.println(burger + drink - 50);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

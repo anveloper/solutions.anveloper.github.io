@@ -1,0 +1,111 @@
+---
+title: "BOJ 5430 - AC"
+date: "2022-03-13"
+description: "덱, 파싱, 구현 문제"
+tags: ["덱", "파싱", "구현", "문자열", "자료 구조"]
+platform: "boj"
+problem_number: "5430"
+problem_url: "https://www.acmicpc.net/problem/5430"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5430 - AC](https://www.acmicpc.net/problem/5430)
+
+정수 배열에 대해 R(뒤집기)과 D(첫 원소 삭제) 두 가지 함수를 조합한 명령어를 수행하라. 빈 배열에 D를 수행하면 에러이다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T가 주어진다. 각 테스트 케이스는 명령어 문자열, 배열 크기 N, 배열 내용 순으로 주어진다.
+
+### 출력
+
+각 테스트 케이스에 대해 결과 배열을 출력하거나, 에러 시 "error"를 출력한다.
+
+### 예제
+
+| 입력                                                                             | 출력                                  |
+| -------------------------------------------------------------------------------- | ------------------------------------- |
+| `4` `RDD` `4` `[1,2,3,4]` `DD` `1` `[42]` `RRD` `6` `[1,1,2,3,5,8]` `D` `0` `[]` | `[2,1]` `error` `[1,2,3,5,8]` `error` |
+
+## 풀이
+
+덱(Deque)과 방향 플래그를 사용하여 R 명령을 O(1)에 처리한다.
+
+1. 배열을 덱에 저장하고, reverse 플래그를 false로 초기화한다
+2. R 명령: 실제로 뒤집지 않고 reverse 플래그만 토글한다
+3. D 명령: 빈 덱이면 에러, 아니면 reverse에 따라 앞(pollFirst) 또는 뒤(pollLast)에서 제거한다
+4. 출력 시 reverse 상태에 따라 정방향 또는 역방향으로 출력한다
+
+**핵심 아이디어**: 배열을 실제로 뒤집으면 O(N)이 드므로, 덱의 양쪽 끝에서 제거하는 방식으로 뒤집기를 O(1)에 처리한다. R은 방향만 바꾸고, D는 현재 방향의 앞쪽에서 제거한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+public class Day34BOJ5430AC언어데큐 { // 5430 AC 덱큐
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		StringBuilder sb = new StringBuilder();
+		Deque<Integer> dq = null;
+		int T = Integer.parseInt(br.readLine());
+		for (int tc = 1; tc <= T; tc++) {
+			char[] cmd = br.readLine().toCharArray();
+			int N = Integer.parseInt(br.readLine());
+			dq = new LinkedList<>();
+			st = new StringTokenizer(br.readLine(), "[],");
+			for (int n = 0; n < N; n++) {
+				dq.add(Integer.parseInt(st.nextToken()));
+			}
+
+			boolean reverse = false;
+			boolean error = false;
+			for (int idx = 0; idx < cmd.length; idx++) {
+				char c = cmd[idx];
+				if (c == 'R') {
+					reverse = !reverse ? true : false;
+					continue;
+				}
+				if (dq.isEmpty()) {
+					error = true;
+					break;
+				}
+
+				if (reverse)
+					dq.pollLast();
+				else
+					dq.pollFirst();
+			}
+			if (!error) {
+				if (reverse && dq.size() > 0) {
+					sb.append("[");
+					while (dq.size() > 1) {
+						sb.append(dq.pollLast()).append(",");
+					}
+					sb.append(dq.pollLast()).append("]\n");
+				} else
+					sb.append(dq.toString().replaceAll(" ", "")).append("\n");
+			} else
+				sb.append("error\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* (P + N)) — T개 테스트 케이스, 명령 길이 P + 배열 크기 N
+- 공간: O(N) — 덱

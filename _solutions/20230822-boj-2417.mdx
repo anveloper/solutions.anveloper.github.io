@@ -1,0 +1,81 @@
+---
+title: "BOJ 2417 - 정수 제곱근"
+date: "2023-08-22"
+description: "수학, 이분 탐색 문제"
+tags: ["수학", "이분 탐색"]
+platform: "boj"
+problem_number: "2417"
+problem_url: "https://www.acmicpc.net/problem/2417"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2417 - 정수 제곱근](https://www.acmicpc.net/problem/2417)
+
+정수 N이 주어질 때, `q² >= N`인 최소 정수 q를 구하라.
+
+### 입력
+
+N이 주어진다 (0 이상 2^63 미만).
+
+### 출력
+
+q를 출력한다.
+
+### 예제
+
+| 입력              | 출력       |
+| ----------------- | ---------- |
+| `122333444455555` | `11060440` |
+
+## 풀이
+
+이분 탐색으로 `mid² >= N`인 최소 mid를 찾는다.
+
+1. 0부터 N까지의 범위에서 이분 탐색을 수행한다
+2. `mid²`이 N 이상이면 result를 갱신하고 왼쪽을 탐색한다
+3. `mid²`이 N 미만이면 오른쪽을 탐색한다
+
+**핵심 아이디어**: 이분 탐색으로 O(log N)에 정수 제곱근을 구할 수 있다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day562BOJ2417정수제곱근 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    long n = Long.parseLong(br.readLine());
+    System.out.println(bSearch(n));
+  }
+
+  static long bSearch(long n) {
+    long start = 0;
+    long end = n;
+    long result = 0;
+
+    while (start <= end) {
+      long mid = (start + end) / 2;
+      if (n <= (long) Math.pow(mid, 2)) {
+        result = mid;
+        end = mid - 1;
+      } else {
+        start = mid + 1;
+      }
+    }
+    return result;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

@@ -1,0 +1,75 @@
+---
+title: "BOJ 5046 - 전국 대학생 프로그래밍 대회 동아리 연합"
+date: "2025-05-07"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5046"
+problem_url: "https://www.acmicpc.net/problem/5046"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5046 - 전국 대학생 프로그래밍 대회 동아리 연합](https://www.acmicpc.net/problem/5046)
+
+N명의 참가자, 예산 B, H개의 호텔 선택지가 주어질 때 예산 내에서 참가자 전원을 수용할 수 있는 최저 비용을 구하는 문제다. 각 호텔은 1박 비용과 수용 가능 인원 목록을 가지며, 참가자 수보다 많이 수용할 수 있는 호텔만 이용 가능하다.
+
+### 입력
+
+- 첫 줄: N(참가자 수), B(예산), H(호텔 수), W(숙박 일수)
+- 이후 H줄: 각 줄 첫 번째는 1박 비용, 이후 수용 가능 인원 목록
+
+### 출력
+
+- 예산 내에서 가능한 최소 비용 출력
+- 불가능하면 `stay home` 출력
+
+### 예제
+
+| 입력                          | 출력 |
+| ----------------------------- | ---- |
+| `3 100 2 2` `20 5 1` `30 4 2` | `60` |
+
+## 풀이
+
+각 호텔의 수용 인원 중 참가자 수 N보다 큰 값이 있으면 비용을 계산하고, 예산 이하의 최솟값을 구하는 구현 문제다.
+
+1. N(참가자), B(예산), H(호텔 수), W(숙박 일수)를 입력받는다.
+2. 각 호텔의 1박 비용(`cost`)과 수용 인원 목록(`hotel`)을 파싱한다.
+3. 수용 인원 중 N을 초과하는 항목이 있는 호텔에 대해 `N * cost[i]`를 `total` 리스트에 추가한다.
+4. `total`이 비어 있거나 `min(total) > B`이면 `stay home`을 출력한다.
+5. 그렇지 않으면 `min(total)`을 출력한다.
+
+**핵심 아이디어**: 수용 가능 여부는 호텔 인원 목록 중 N 초과 값이 하나라도 있으면 성립한다. 전체 비용은 `1박 비용 × N`으로, 숙박 일수 W는 코드에서 직접 사용되지 않고 입력만 받는 점에 주의한다.
+
+## 코드
+
+```python
+N, B, H, W = map(int, input().split())
+cost = []
+hotel = []
+total = []
+for i in range(H):
+    cost.append(int(input()))
+    hotel.append(list(map(int, input().split())))
+
+for i in range(H):
+    for j in hotel[i]:
+        if j > N:
+            total.append(N * cost[i])
+
+if len(total) == 0:
+    print("stay home")
+elif min(total) > B:
+    print("stay home")
+else:
+    print(min(total))
+```
+
+## 복잡도
+
+- 시간: O(H \* K) — H개의 호텔, 각 호텔의 수용 인원 목록 크기 K
+- 공간: O(H) — 비용 후보 리스트

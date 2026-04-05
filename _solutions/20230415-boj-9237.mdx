@@ -1,0 +1,75 @@
+---
+title: "BOJ 9237 - 이장님 초대"
+date: "2023-04-15"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "9237"
+problem_url: "https://www.acmicpc.net/problem/9237"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9237 - 이장님 초대](https://www.acmicpc.net/problem/9237)
+
+N그루의 나무를 하루에 하나씩 심으며, 각 나무는 심은 후 일정 일수가 지나야 자란다. 모든 나무가 자라는 최소 일수를 구하라 (이장님 방문은 다 자란 다음 날).
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 각 나무의 성장 기간이 주어진다.
+
+### 출력
+
+이장님이 방문할 수 있는 가장 빠른 날을 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `4` `2 3 4 3` | `7`  |
+
+## 풀이
+
+성장 기간이 긴 나무부터 먼저 심어 전체 완료 시점을 최소화한다.
+
+1. 나무의 성장 기간을 오름차순 정렬한다
+2. i번째(0-indexed) 나무는 (N-i)일째에 심으므로 완료 시점은 `arr[i] + (N-i)`이다
+3. 모든 나무의 완료 시점 중 최댓값 + 1(방문일)이 답이다
+
+**핵심 아이디어**: 오래 걸리는 나무를 먼저 심어야 병목이 줄어든다 (스케줄링의 SPT 규칙 변형).
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day485BOJ9237이장님초대 {
+  static int N, ans = 0;
+  static int[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    arr = new int[N];
+    for (int i = 0; i < N; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+    Arrays.sort(arr);
+    for (int i = 0; i < N; i++)
+      ans = Math.max(ans, arr[i] + N - i);
+    System.out.println(ans + 1);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

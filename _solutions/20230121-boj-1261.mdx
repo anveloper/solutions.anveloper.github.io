@@ -1,0 +1,133 @@
+---
+title: "BOJ 1261 - 알고스팟"
+date: "2023-01-21"
+description: "그래프 이론, 그래프 탐색, 최단 경로 문제"
+tags: ["그래프 이론", "그래프 탐색", "최단 경로", "데이크스트라", "격자 그래프", "0-1 너비 우선 탐색"]
+platform: "boj"
+problem_number: "1261"
+problem_url: "https://www.acmicpc.net/problem/1261"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1261 - 알고스팟](https://www.acmicpc.net/problem/1261)
+
+N×M 미로에서 빈 방(0)은 자유 이동, 벽(1)은 부수고 이동할 수 있다. (1,1)에서 (N,M)까지 이동할 때 부수어야 하는 최소 벽 수를 구하라.
+
+### 입력
+
+첫째 줄에 M, N (1 이상 100 이하), 둘째 줄부터 미로가 주어진다.
+
+### 출력
+
+부수어야 하는 최소 벽 수를 출력한다.
+
+### 예제
+
+| 입력                    | 출력 |
+| ----------------------- | ---- |
+| `3 3` `011` `111` `110` | `3`  |
+
+## 풀이
+
+우선순위 큐 기반 다익스트라(또는 0-1 BFS)로 최소 벽 부수기 횟수를 구한다.
+
+1. 우선순위 큐에 (1,1, 비용 0)을 넣고 탐색을 시작한다
+2. 큐에서 비용이 가장 작은 칸을 꺼낸다
+3. 4방향 인접 칸이 빈 방(0)이면 같은 비용, 벽(1)이면 비용+1로 큐에 넣는다
+4. (N,M)에 도달하면 현재 비용을 출력한다
+5. 방문 배열로 중복 방문을 방지한다
+
+**핵심 아이디어**: 빈 방 이동은 가중치 0, 벽 부수기는 가중치 1인 그래프의 최단 경로 문제이다. 우선순위 큐로 항상 최소 비용 경로를 먼저 탐색한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+public class Day348BOJ1261알고스팟 {
+    static int[] dr = { -1, 0, 1, 0 };
+    static int[] dc = { 0, 1, 0, -1 };
+    static int N, M;
+    static int[][] map;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+
+        map = new int[N + 1][M + 1];
+
+        for (int i = 1; i <= N; i++) {
+            String input = br.readLine();
+            for (int j = 1; j <= M; j++) {
+                map[i][j] = Character.getNumericValue(input.charAt(j - 1));
+            }
+        }
+
+        bw.write(bfs(1, 1) + "\n");
+        bw.flush();
+        bw.close();
+        br.close();
+    }
+
+    public static int bfs(int idx, int jdx) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[2] - o2[2]);
+        boolean[][] visit = new boolean[N + 1][M + 1];
+
+        pq.offer(new int[] { idx, jdx, 0 });
+        visit[idx][jdx] = true;
+
+        int nr, nc;
+        while (!pq.isEmpty()) {
+            int[] cur = pq.poll();
+
+            if (cur[0] == N && cur[1] == M) {
+                return cur[2];
+            }
+
+            for (int i = 0; i < 4; i++) {
+                nr = cur[0] + dr[i];
+                nc = cur[1] + dc[i];
+
+                if (index(nr, nc))
+                    continue;
+
+                if (!visit[nr][nc] && map[nr][nc] == 0) {
+                    pq.offer(new int[] { nr, nc, cur[2] });
+                    visit[nr][nc] = true;
+                }
+
+                if (!visit[nr][nc] && map[nr][nc] == 1) {
+                    pq.offer(new int[] { nr, nc, cur[2] + 1 });
+                    visit[nr][nc] = true;
+                }
+            }
+        }
+        return 0;
+    }
+
+    private static boolean index(int nr, int nc) {
+        return nr < 1 || nc < 1 || nr > N || nc > M;
+    }
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N _ M _ log(N \* M)) - 다익스트라 탐색
+- 공간: O(N \* M) - 방문 배열 및 큐

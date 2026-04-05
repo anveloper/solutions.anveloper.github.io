@@ -1,0 +1,87 @@
+---
+title: "BOJ 6500 - 랜덤 숫자 만들기"
+date: "2026-01-28"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "6500"
+problem_url: "https://www.acmicpc.net/problem/6500"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6500 - 랜덤 숫자 만들기](https://www.acmicpc.net/problem/6500)
+
+Middle-Square Method(중간 제곱법)를 이용한 의사 난수 생성기를 시뮬레이션한다. 초기값 `n`에서 시작하여, 매 단계마다 현재 수를 제곱하고 8자리로 패딩한 뒤 중간 4자리를 추출해 새 수를 만든다. 이미 등장했던 수가 나올 때까지 반복하며, 총 생성된 수의 개수를 출력한다. `n == 0`이면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 초기값 `n`이 주어진다. `n == 0`이면 입력이 종료된다.
+
+### 출력
+
+각 초기값에 대해 사이클이 발생하기 전까지 생성된 수의 개수를 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `1234` `0` | `3`  |
+
+## 풀이
+
+방문 여부를 배열로 관리하며 Middle-Square Method를 시뮬레이션한다.
+
+1. `n == 0`이면 반복을 종료한다.
+2. 크기 10000의 `check` 배열로 각 수의 방문 여부를 추적한다.
+3. 현재 수 `n`이 방문되지 않은 동안 반복한다.
+   - `check[n] = 1`로 표시하고 카운터를 증가시킨다.
+   - `n * n`을 계산하여 문자열로 변환, 8자리로 왼쪽에 `0`을 패딩한다.
+   - 인덱스 2부터 4자리(`substr(2, 4)`)를 추출하여 새로운 `n`으로 설정한다.
+4. 카운터를 출력한다.
+
+**핵심 아이디어:** Middle-Square Method는 1940년대 폰 노이만이 제안한 의사 난수 생성법이다. 4자리 수의 제곱은 최대 8자리이며, `substr(2, 4)`로 2번째~5번째 자리를 추출한다. 값이 0~9999 사이이므로 배열로 방문 체크가 가능하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <string>
+#include <map>
+
+using namespace std;
+
+int main()
+{
+  while (1)
+  {
+    int n, ans = 0;
+    cin >> n;
+    if (!n)
+      break;
+    vector<int> check(10000);
+    while (!check[n])
+    {
+      check[n] = 1;
+      ans++;
+      string s = to_string(n * n);
+      while (s.length() < 8)
+      {
+        s = "0" + s;
+      }
+      n = stoi(s.substr(2, 4));
+    }
+    cout << ans << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(K) — 사이클이 발생하기 전까지의 단계 수 K (최대 9999)
+- 공간: O(1) — 최대 10000 크기의 고정 배열

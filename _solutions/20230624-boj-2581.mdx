@@ -1,0 +1,98 @@
+---
+title: "BOJ 2581 - 소수"
+date: "2023-06-24"
+description: "소수 판정, 정수론, 수학 문제"
+tags: ["소수 판정", "정수론", "수학"]
+platform: "boj"
+problem_number: "2581"
+problem_url: "https://www.acmicpc.net/problem/2581"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2581 - 소수](https://www.acmicpc.net/problem/2581)
+
+M 이상 N 이하의 소수의 합과 최솟값을 구하라.
+
+### 입력
+
+첫째 줄에 M, 둘째 줄에 N이 주어진다.
+
+### 출력
+
+소수의 합과 최솟값을 각 줄에 출력한다. 소수가 없으면 -1을 출력한다.
+
+### 예제
+
+| 입력       | 출력       |
+| ---------- | ---------- |
+| `60` `100` | `620` `61` |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 판별하고, 범위 내 소수의 합과 최솟값을 구한다.
+
+1. N까지의 에라토스테네스의 체를 구성한다
+2. M부터 N까지 순회하며 소수인 수의 합을 구한다
+3. 처음 만나는 소수가 최솟값이다
+
+**핵심 아이디어**: 에라토스테네스의 체로 sqrt(N)까지의 배수를 제거하면 O(N log log N)에 소수를 판별할 수 있다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day503BOJ2581소수 {
+  public static boolean prime[];
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int M = Integer.parseInt(br.readLine());
+    int N = Integer.parseInt(br.readLine());
+
+    prime = new boolean[N + 1];
+    getPrime();
+    int sum = 0;
+    int min = Integer.MAX_VALUE;
+    for (int i = M; i <= N; i++) {
+      if (prime[i] == false) {
+        sum += i;
+        if (min == Integer.MAX_VALUE) {
+          min = i;
+        }
+      }
+    }
+    if (sum == 0) {
+      System.out.println(-1);
+    } else {
+      System.out.println(sum);
+      System.out.println(min);
+    }
+  }
+
+  public static void getPrime() {
+    prime[0] = true;
+    prime[1] = true;
+
+    for (int i = 2; i <= Math.sqrt(prime.length); i++) {
+      if (prime[i])
+        continue;
+      for (int j = i * i; j < prime.length; j += i) {
+        prime[j] = true;
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N)
+- 공간: O(N)

@@ -1,0 +1,118 @@
+---
+title: "BOJ 16724 - 피리 부는 사나이"
+date: "2023-04-28"
+description: "그래프 이론, 자료 구조, 그래프 탐색 문제"
+tags: ["그래프 이론", "자료 구조", "그래프 탐색", "깊이 우선 탐색", "분리 집합", "격자 그래프"]
+platform: "boj"
+problem_number: "16724"
+problem_url: "https://www.acmicpc.net/problem/16724"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16724 - 피리 부는 사나이](https://www.acmicpc.net/problem/16724)
+
+N×M 격자에 각 칸마다 이동 방향(U/D/L/R)이 주어질 때, 어디에서 출발하든 안전 지대(SAFE ZONE)에 도달할 수 있도록 하는 최소 SAFE ZONE 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 N줄에 방향 문자열이 주어진다.
+
+### 출력
+
+필요한 최소 SAFE ZONE 수를 출력한다.
+
+### 예제
+
+| 입력                       | 출력 |
+| -------------------------- | ---- |
+| `3 4` `DLLL` `DRLU` `RRRU` | `2`  |
+
+## 풀이
+
+DFS로 사이클을 탐지하여 사이클의 수를 세면 그것이 필요한 SAFE ZONE 수이다.
+
+1. 각 미방문 칸에서 DFS를 시작한다
+2. 방향을 따라 이동하며 방문 표시를 한다
+3. 이미 방문했지만 아직 finish 처리되지 않은 칸을 만나면 새 사이클 발견 → ans 증가
+4. DFS 종료 시 finish 표시를 한다
+
+**핵심 아이디어**: 모든 칸이 정확히 하나의 방향으로 나가므로 함수형 그래프가 되며, 사이클의 개수가 필요한 SAFE ZONE 수와 같다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day446BOJ16724피리부는사나이 {
+
+  static int N, M, ans;
+  static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+  static int[][] map;
+  static boolean[][] visit, finish;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+
+    map = new int[N][M];
+
+    for (int i = 0; i < N; i++) {
+      String line = br.readLine();
+      for (int j = 0; j < M; j++) {
+        int c = line.charAt(j);
+        if (c == 'U')
+          map[i][j] = 0;
+        else if (c == 'D')
+          map[i][j] = 1;
+        else if (c == 'L')
+          map[i][j] = 2;
+        else if (c == 'R')
+          map[i][j] = 3;
+      }
+    }
+
+    visit = new boolean[N][M];
+    finish = new boolean[N][M];
+    ans = 0;
+
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        if (!visit[i][j])
+          dfs(i, j);
+      }
+    }
+
+    System.out.println(ans);
+
+  }
+
+  public static void dfs(int r, int c) {
+    visit[r][c] = true;
+    int nr = r + dr[map[r][c]];
+    int nc = c + dc[map[r][c]];
+
+    if (!visit[nr][nc]) {
+      dfs(nr, nc);
+    } else {
+      if (!finish[nr][nc])
+        ans++;
+    }
+    finish[r][c] = true;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(NM)
+- 공간: O(NM)

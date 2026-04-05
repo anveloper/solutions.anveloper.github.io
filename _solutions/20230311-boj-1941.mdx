@@ -1,0 +1,128 @@
+---
+title: "BOJ 1941 - 소문난 칠공주"
+date: "2023-03-11"
+description: "수학, 그래프 이론, 브루트포스 알고리즘 문제"
+tags: ["수학", "그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "조합론", "너비 우선 탐색", "백트래킹"]
+platform: "boj"
+problem_number: "1941"
+problem_url: "https://www.acmicpc.net/problem/1941"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1941 - 소문난 칠공주](https://www.acmicpc.net/problem/1941)
+
+5×5 격자에서 'S'(이다솜파)와 'Y'(임도연파) 학생이 있다. 7명을 선택할 때, 서로 인접하고 이다솜파가 4명 이상인 그룹의 수를 구하라.
+
+### 입력
+
+5줄에 5글자씩 격자가 주어진다.
+
+### 출력
+
+조건을 만족하는 그룹의 수를 출력한다.
+
+### 예제
+
+| 입력                                    | 출력 |
+| --------------------------------------- | ---- |
+| `YYYYY` `SYSYS` `YYYYY` `YSYSY` `YYYYY` | `2`  |
+
+## 풀이
+
+25개 칸에서 7개를 선택하는 조합을 생성한 뒤, BFS로 인접성과 이다솜파 조건을 검증한다.
+
+1. DFS로 C(25, 7) = 480,700개의 조합을 생성한다
+2. 각 조합에서 'Y'가 4명 이상이면 즉시 스킵한다 (이다솜파 4명 미만)
+3. BFS로 선택된 7명이 서로 4방향으로 연결되어 있는지 확인한다
+4. 시작 노드에서 BFS 후 미방문 노드가 없으면 유효한 그룹이다
+
+**핵심 아이디어**: 25개 중 7개 조합(C(25,7) ≈ 48만)을 전수 검사한다. 각 조합에 대해 연결성 판정을 BFS로 O(7)에 수행한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day398BOJ1941소문난칠공주 {
+  static int N = 5, cnt = 0, ans = 0;
+  static int[] sel = new int[7];
+  static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+  static char[][] map = new char[N][];
+  static boolean[] visited = new boolean[N * N];
+  static Queue<Integer> q;
+  static ArrayList<Integer> tmp;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    for (int i = 0; i < N; i++)
+      map[i] = br.readLine().toCharArray();
+
+    dfs(0, 0);
+    System.out.println(ans);
+    br.close();
+  }
+
+  private static void dfs(int d, int st) {
+    if (d == 7) {
+      if (bfs())
+        ans++;
+      return;
+    }
+    for (int i = st; i < N * N; i++) {
+      if (!visited[i]) {
+        visited[i] = true;
+        sel[d] = i;
+        dfs(d + 1, i + 1);
+        visited[i] = false;
+      }
+    }
+  }
+
+  private static boolean bfs() {
+    cnt = 0;
+    tmp = new ArrayList<>();
+    q = new LinkedList<>();
+    for (int i : sel) {
+      tmp.add(i);
+      if (map[i / 5][i % 5] == 'Y')
+        cnt++;
+    }
+    if (cnt > 3)
+      return false;
+
+    q.offer(sel[0]);
+    while (!q.isEmpty()) {
+      int cur = q.poll();
+      for (int dir = 0; dir < 4; dir++) {
+        int nr = cur / 5 + dr[dir];
+        int nc = cur % 5 + dc[dir];
+        if (index(nr, nc))
+          continue;
+        int nxt = nr * 5 + nc;
+        if (tmp.contains(nxt)) {
+          tmp.remove(tmp.indexOf(nxt));
+          q.offer(nxt);
+        }
+      }
+    }
+
+    return tmp.isEmpty();
+  }
+
+  private static boolean index(int nr, int nc) {
+    return nr < 0 || nr >= N || nc < 0 || nc >= N;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(C(25, 7) \* 7) - 약 48만 조합 × BFS
+- 공간: O(25) - 방문 배열

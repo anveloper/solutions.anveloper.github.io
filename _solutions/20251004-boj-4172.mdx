@@ -1,0 +1,85 @@
+---
+title: "BOJ 4172 - sqrt log sin"
+date: "2025-10-04"
+description: "수학, 다이나믹 프로그래밍 문제"
+tags: ["수학", "다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "4172"
+problem_url: "https://www.acmicpc.net/problem/4172"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4172 - sqrt log sin](https://www.acmicpc.net/problem/4172)
+
+점화식 `f(0) = 1`, `f(i) = (f(floor(i - sqrt(i))) + f(floor(log(i))) + f(floor(i * sin²(i)))) mod 1000000`으로 정의된 함수의 값을 구하라.
+
+### 입력
+
+여러 정수 num이 주어지며, -1이면 종료한다.
+
+### 출력
+
+각 num에 대해 `f(num)`을 출력한다.
+
+### 예제
+
+| 입력         | 출력    |
+| ------------ | ------- |
+| `0` `1` `-1` | `1` `2` |
+
+## 풀이
+
+Bottom-up DP로 0부터 1000000까지의 함수값을 미리 계산한다.
+
+1. `arr[0] = 1`로 초기화한다
+2. i = 1부터 1000000까지 세 인덱스를 계산한다: `floor(i - sqrt(i))`, `floor(log(i))`, `floor(i * sin²(i))`
+3. 세 위치의 값을 합하여 1000000으로 나눈 나머지를 저장한다
+4. 쿼리마다 미리 계산된 배열에서 바로 응답한다
+
+**핵심 아이디어**: 세 인덱스 모두 i보다 작으므로 bottom-up으로 순차 계산이 가능하며, 전처리 후 O(1)에 응답한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cmath>
+
+#define MAX_SIZE 1000001
+using namespace std;
+
+int arr[MAX_SIZE];
+
+int main()
+{
+  arr[0] = 1;
+
+  for (int i = 1; i < MAX_SIZE; i++)
+  {
+    int sqrtNum = (int)floor(i - sqrt(i));
+    int logNum = (int)log(i);
+    int sinNum = (int)(i * sin(i) * sin(i));
+
+    arr[i] = (arr[sqrtNum] + arr[logNum] + arr[sinNum]) % (MAX_SIZE - 1);
+  }
+
+  while (true)
+  {
+    int num;
+    cin >> num;
+
+    if (num == -1)
+      break;
+
+    printf("%d\n", arr[num]);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (전처리) + O(1) (쿼리)
+- 공간: O(N)

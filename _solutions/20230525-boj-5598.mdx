@@ -1,0 +1,68 @@
+---
+title: "BOJ 5598 - 카이사르 암호"
+date: "2023-05-25"
+description: "구현, 문자열, 집합과 맵 문제"
+tags: ["구현", "문자열", "집합과 맵"]
+platform: "boj"
+problem_number: "5598"
+problem_url: "https://www.acmicpc.net/problem/5598"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5598 - 카이사르 암호](https://www.acmicpc.net/problem/5598)
+
+각 문자를 알파벳 순서에서 3칸 뒤로 밀어 암호화한 문자열이 주어졌을 때, 원래 문자열을 복호화하라.
+
+### 입력
+
+첫째 줄에 암호화된 문자열이 주어진다 (대문자, 길이 1 이상 50 이하).
+
+### 출력
+
+복호화된 원래 문자열을 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `GRR` | `DOO` |
+
+## 풀이
+
+각 문자에서 3을 빼고 알파벳 범위 내로 순환시킨다.
+
+1. 입력 문자열을 char 배열로 변환한다
+2. 각 문자에 대해 `(ch - 42) % 26 + 'A'` 수식으로 3칸 앞 문자를 계산한다
+3. `ch - 42`는 `ch - 'A' - 3 + 26 - 3`과 동일한 효과로, 음수 방지를 위해 26을 미리 더한 것이다
+
+**핵심 아이디어**: 카이사르 암호 복호화는 암호화의 역연산으로, 각 문자를 3칸 앞으로 되돌리되 'A' 이전으로 넘어가면 'Z'부터 순환한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day667BOJ5598카이사르암호 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+
+    char[] in = br.readLine().trim().toCharArray();
+    for (int i = 0; i < in.length; i++) {
+      sb.append((char) ((in[i] - 42) % 26 + 'A'));
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 문자열 길이)
+- 공간: O(L)

@@ -1,0 +1,74 @@
+---
+title: "BOJ 11944 - NN"
+date: "2024-11-21"
+description: "N을 N번 반복한 문자열을 최대 M자리까지 출력하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "11944"
+problem_url: "https://www.acmicpc.net/problem/11944"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11944 - NN](https://www.acmicpc.net/problem/11944)
+
+정수 N을 N번 이어 붙인 문자열을 만들되, 길이가 M을 초과하면 앞에서 M자리까지만 출력하라.
+
+### 입력
+
+정수 N과 M이 주어진다 (1 이상 100 이하).
+
+### 출력
+
+N을 N번 반복한 문자열을 M자리까지 출력한다.
+
+### 예제
+
+| 입력   | 출력    |
+| ------ | ------- |
+| `12 5` | `12121` |
+
+## 풀이
+
+N을 문자열로 변환하여 N번 이어 붙인 뒤, 길이를 M으로 제한한다.
+
+1. N을 `to_string`으로 문자열로 변환한다
+2. N번 반복하여 이어 붙인다
+3. 결과 길이가 M보다 크면 `substr(0, M)`으로 잘라서 출력한다
+
+**핵심 아이디어**: 문자열 반복 후 길이 제한만 하면 되는 간단한 문자열 처리 문제이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+int main()
+{
+  int n, m;
+  scanf("%d %d", &n, &m);
+  string str = "";
+
+  for (int i = 0; i < n; i++)
+  {
+    str = str + to_string(n);
+  }
+  if (str.length() > m)
+  {
+    cout << str.substr(0, m);
+  }
+  else
+  {
+    cout << str;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* D) (D: N의 자릿수)
+- 공간: O(N \* D)

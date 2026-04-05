@@ -1,0 +1,75 @@
+---
+title: "BOJ 10950 - A+B - 3"
+date: "2023-07-15"
+description: "구현, 사칙연산, 수학 문제"
+tags: ["구현", "사칙연산", "수학"]
+platform: "boj"
+problem_number: "10950"
+problem_url: "https://www.acmicpc.net/problem/10950"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10950 - A+B - 3](https://www.acmicpc.net/problem/10950)
+
+테스트 케이스 수 T가 주어지고, 각 테스트 케이스마다 두 정수 A, B가 주어질 때 A+B를 출력한다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T가 주어진다. 다음 T줄에 A와 B가 주어진다 (0 이상 10 이하).
+
+### 출력
+
+각 테스트 케이스마다 A+B를 한 줄에 출력한다.
+
+### 예제
+
+| 입력                              | 출력                 |
+| --------------------------------- | -------------------- |
+| `5` `1 1` `2 3` `3 4` `9 8` `5 2` | `2` `5` `7` `17` `7` |
+
+## 풀이
+
+T개의 테스트 케이스에 대해 A+B를 계산하여 StringBuilder로 모아 출력한다.
+
+1. 테스트 케이스 수 N을 읽는다
+2. N번 반복하며 각 줄에서 두 수를 파싱하여 합을 StringBuilder에 추가한다
+3. 결과를 한 번에 출력한다
+
+**핵심 아이디어**: BufferedReader와 StringBuilder를 사용하여 대량 입출력 시 성능을 확보한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day702BOJ10950AB3 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+
+    StringTokenizer st;
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(br.readLine(), " ");
+      sb.append(Integer.parseInt(st.nextToken()) + Integer.parseInt(st.nextToken()));
+      sb.append('\n');
+    }
+
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

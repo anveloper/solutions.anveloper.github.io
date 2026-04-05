@@ -1,0 +1,71 @@
+---
+title: "BOJ 1748 - 수 이어 쓰기 1"
+date: "2023-04-30"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1748"
+problem_url: "https://www.acmicpc.net/problem/1748"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1748 - 수 이어 쓰기 1](https://www.acmicpc.net/problem/1748)
+
+1부터 N까지의 수를 이어 붙여 하나의 수를 만들 때, 그 수의 자릿수를 구하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 100,000,000)이 주어진다.
+
+### 출력
+
+1부터 N까지 이어 쓴 수의 자릿수를 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `120` | `252` |
+
+## 풀이
+
+자릿수 d별로 숫자 범위를 나누어 각 범위의 자릿수 합을 수식으로 계산한다.
+
+1. N의 자릿수 d를 `log10(N) + 1`로 구한다
+2. 1자리(1~9): 9개 _ 1자리, 2자리(10~99): 90개 _ 2자리, ... 순으로 누적한다
+3. 마지막 자릿수 범위: `d * (N - 10^(d-1) + 1)`로 나머지를 더한다
+4. 전체를 합산하면 총 자릿수가 된다
+
+**핵심 아이디어**: 1부터 N까지 모두 순회하지 않고, 자릿수별 숫자 개수를 수식으로 계산하여 O(log N)에 해결한다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+
+public class Day448BOJ1748수이어쓰기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    int ans = 0;
+    int d = (int) (Math.log10(N) + 1);
+    for (int i = d - 1; i > 0; i--) {
+      ans += i * (int) ((Math.pow(10, i) - Math.pow(10, i - 1)));
+    }
+    ans += d * (N - (int) Math.pow(10, d - 1) + 1);
+    System.out.println(ans);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

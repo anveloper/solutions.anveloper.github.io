@@ -1,0 +1,100 @@
+---
+title: "BOJ 2240 - 자두나무"
+date: "2023-03-03"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "2240"
+problem_url: "https://www.acmicpc.net/problem/2240"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2240 - 자두나무](https://www.acmicpc.net/problem/2240)
+
+T초 동안 1번 또는 2번 나무에서 자두가 떨어진다. 최대 W번 나무를 옮길 수 있을 때 (처음 1번 나무 아래), 받을 수 있는 최대 자두 수를 구하라.
+
+### 입력
+
+첫째 줄에 T, W, 이후 T줄에 자두가 떨어지는 나무 번호가 주어진다.
+
+### 출력
+
+받을 수 있는 최대 자두 수를 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `7 2` `2` `1` `1` `2` `2` `1` `1` | `6`  |
+
+## 풀이
+
+1차원 DP로 이동 횟수별 최대 자두 수를 관리한다.
+
+1. `jadu[j]`를 j번 이동했을 때의 최대 자두 수로 정의한다
+2. 이동 횟수의 홀짝으로 현재 위치를 판단한다 (짝수면 1번, 홀수면 2번 나무)
+3. 자두가 1번 나무에서 떨어지면: 짝수 이동(1번 위치)이면 +1, 홀수(2번 위치)이면 이동하여 받을지 비교
+4. 2번 나무도 동일한 대칭 로직을 적용한다
+5. `max(jadu[0..W])`가 답이다
+
+**핵심 아이디어**: 이동 횟수의 홀짝으로 현재 위치를 암묵적으로 결정하여, 2D DP를 1D로 압축한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day389BOJ2240자두나무 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int T = Integer.parseInt(st.nextToken());
+    int W = Integer.parseInt(st.nextToken());
+
+    int[] jadu = new int[W + 1];
+    for (int i = 1; i <= T; i++) {
+      int input = Integer.parseInt(br.readLine());
+      if (input == 1) {
+        for (int j = W; j >= 0; j--) {
+          if (j % 2 == 0) {
+            jadu[j]++;
+            if (j > 0)
+              jadu[j] = Math.max(jadu[j - 1] + 1, jadu[j]);
+          } else {
+            jadu[j] = Math.max(jadu[j], jadu[j - 1]);
+          }
+        }
+      } else {
+        for (int j = W; j >= 0; j--) {
+          if (j % 2 == 0) {
+            if (j > 0)
+              jadu[j] = Math.max(jadu[j], jadu[j - 1]);
+          } else {
+            jadu[j]++;
+            jadu[j] = Math.max(jadu[j - 1] + 1, jadu[j]);
+          }
+        }
+      }
+    }
+    int max = 0;
+    for (int i = 0; i <= W; i++) {
+      if (max < jadu[i])
+        max = jadu[i];
+    }
+    System.out.println(max);
+
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* W)
+- 공간: O(W)

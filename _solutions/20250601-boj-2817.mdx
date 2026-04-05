@@ -1,0 +1,81 @@
+---
+title: "BOJ 2817 - ALPS식 투표"
+date: "2025-06-01"
+description: "구현, 정렬 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "2817"
+problem_url: "https://www.acmicpc.net/problem/2817"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2817 - ALPS식 투표](https://www.acmicpc.net/problem/2817)
+
+총 투표수의 5% 이상 득표한 후보에게 동트 방식으로 14석을 배분하라.
+
+### 입력
+
+총 투표수, 후보 수, 각 후보의 이름과 득표수가 주어진다.
+
+### 출력
+
+각 후보의 이름과 배정된 의석 수를 알파벳순으로 출력한다.
+
+### 예제
+
+| 입력                           | 출력              |
+| ------------------------------ | ----------------- |
+| `100` `3` `A 50` `B 30` `C 20` | `A 7` `B 4` `C 3` |
+
+## 풀이
+
+동트 방식(d'Hondt method)으로 의석을 배분한다.
+
+1. 총 투표의 5% 미만인 후보를 제외한다
+2. 각 후보의 득표를 1~14로 나눈 값들을 모아 정렬한다
+3. 상위 14개 값에 해당하는 후보에게 의석을 배분한다
+
+**핵심 아이디어**: 동트 방식은 각 후보의 득표를 1, 2, ..., N으로 나눈 몫 중 상위 K개를 선택하는 방식이다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+x = int(input())
+n = int(input())
+staff = dict()
+chip = dict()
+if n != 0:
+    for _ in range(n):
+        a, b = input().split()
+        staff[a] = int(b)
+
+    staff = dict(filter(lambda e: e[1] >= x * 0.05, staff.items()))
+    tmp = dict()
+    for i in range(1, 15):
+        for k, v in staff.items():
+            tmp[v / i] = k
+    tmp = sorted(tmp.items(), reverse=True)
+    for i in range(14):
+        best = tmp[i][1]
+        chip[best] = chip.get(best, 0) + 1
+    for i in staff:
+        if i[0] not in chip.keys():
+            chip[i[0]] = 0
+
+    chip = dict(sorted(chip.items()))
+    for k, v in chip.items():
+        print(k, v)
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

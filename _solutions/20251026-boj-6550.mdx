@@ -1,0 +1,93 @@
+---
+title: "BOJ 6550 - 부분 문자열"
+date: "2025-10-26"
+description: "그리디 알고리즘, 문자열 문제"
+tags: ["그리디 알고리즘", "문자열"]
+platform: "boj"
+problem_number: "6550"
+problem_url: "https://www.acmicpc.net/problem/6550"
+difficulty: "실버 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6550 - 부분 문자열](https://www.acmicpc.net/problem/6550)
+
+문자열 s가 문자열 t의 부분 수열인지 판별하라. 부분 수열은 순서를 유지하면서 일부 문자를 선택한 것이다.
+
+### 입력
+
+여러 테스트 케이스에 문자열 s와 t가 주어진다.
+
+### 출력
+
+s가 t의 부분 수열이면 `Yes`, 아니면 `No`를 출력한다.
+
+### 예제
+
+| 입력         | 출력  |
+| ------------ | ----- |
+| `abc ahbgdc` | `Yes` |
+
+## 풀이
+
+그리디하게 t를 순회하며 s의 문자를 순서대로 매칭한다.
+
+1. s의 인덱스 aIdx를 0으로 초기화한다
+2. t를 처음부터 순회하며 현재 문자가 `s[aIdx]`와 같으면 aIdx를 증가시킨다
+3. aIdx가 s의 길이에 도달하면 부분 수열이므로 `Yes`를 출력한다
+4. t 순회가 끝나도 aIdx가 s 길이에 도달하지 못하면 `No`를 출력한다
+
+**핵심 아이디어**: 가능한 빨리(왼쪽부터) 매칭하는 그리디 전략이 최적이며, O(|t|) 시간에 판별할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(0);
+  cout.tie(0);
+
+  string a, b;
+  while (cin >> a >> b)
+  {
+    int aIdx = 0;
+    bool isTrue = false;
+    for (int i = 0; i < b.length(); i++)
+    {
+      if (a[aIdx] == b[i])
+      {
+        aIdx++;
+      }
+      if (aIdx == a.length())
+      {
+        isTrue = true;
+        break;
+      }
+    }
+    if (isTrue)
+    {
+      cout << "Yes\n";
+    }
+    else
+    {
+      cout << "No\n";
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(|s| + |t|)
+- 공간: O(|s| + |t|)

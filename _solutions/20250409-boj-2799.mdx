@@ -1,0 +1,85 @@
+---
+title: "BOJ 2799 - 블라인드"
+date: "2025-04-09"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2799"
+problem_url: "https://www.acmicpc.net/problem/2799"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2799 - 블라인드](https://www.acmicpc.net/problem/2799)
+
+M층 N칸의 아파트 건물이 ASCII 아트로 주어진다. 각 창문은 5x5 칸이며, 블라인드가 내려진 정도(0~4단계)에 따라 `*`의 개수가 달라진다. 각 단계별 창문 수를 구하라.
+
+### 입력
+
+첫 줄에 M, N이 주어진다. 이후 `(5*M+1)`줄에 걸쳐 건물 ASCII 아트가 주어진다.
+
+### 출력
+
+블라인드 단계 0부터 4까지의 창문 수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                    | 출력        |
+| ----------------------- | ----------- |
+| `2 3` (건물 ASCII 아트) | `1 1 1 2 1` |
+
+## 풀이
+
+각 창문 영역에서 `*` 문자의 개수를 세어 블라인드 단계를 판별한다.
+
+1. 건물의 층 구분선(`#`으로만 이루어진 줄)을 기준으로 각 층을 분리한다
+2. 각 층 내에서 `#`을 구분자로 나누어 각 창문의 `*` 개수를 센다
+3. 하나의 창문은 4줄에 4칸이므로, `*` 개수가 0이면 0단계, 4이면 1단계, ..., 16이면 4단계이다 (4로 나눈 값)
+4. 각 단계의 카운트를 출력한다
+
+**핵심 아이디어**: 창문 하나의 `*` 총 개수를 4로 나누면 블라인드가 내려간 줄 수(단계)가 된다. 한 줄에 `*`가 4개씩 채워지기 때문이다.
+
+## 코드
+
+```python
+import sys
+
+M, N = map(int, sys.stdin.readline().split())
+
+is_first = True
+floor_list = [0] * N
+
+blind_list = [0] * 5
+
+for _ in range((5 * M) + 1):
+    line = sys.stdin.readline().rstrip()
+
+    if line == "#" * ((5 * N) + 1):
+        if is_first:
+            is_first = False
+            continue
+
+        for floor in floor_list:
+            blind_list[int(floor / 4)] += 1
+
+        floor_list = [0] * N
+        continue
+
+    index = 0
+
+    for element in line.split("#"):
+        if element != "":
+            floor_list[index] += element.count("*")
+
+            index += 1
+
+print(*blind_list)
+```
+
+## 복잡도
+
+- 시간: O(M \* N) — 전체 건물을 한 번 순회
+- 공간: O(N) — 한 층의 창문 정보 저장

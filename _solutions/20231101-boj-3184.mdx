@@ -1,0 +1,133 @@
+---
+title: "BOJ 3184 - 양"
+date: "2023-11-01"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "3184"
+problem_url: "https://www.acmicpc.net/problem/3184"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3184 - 양](https://www.acmicpc.net/problem/3184)
+
+R x C 마당에서 울타리(#)로 구분된 각 영역 내 양(o)과 늑대(v)의 수를 비교하여, 양이 더 많으면 늑대를 쫓고 아니면 양이 잡힌다. 최종 양과 늑대의 수를 구하라.
+
+### 입력
+
+첫째 줄에 R, C, 이후 R줄에 마당 정보가 주어진다.
+
+### 출력
+
+살아남은 양의 수와 늑대의 수를 출력한다.
+
+### 예제
+
+| 입력                                                        | 출력  |
+| ----------------------------------------------------------- | ----- |
+| `6 6` `...#..` `.##v#.` `#v.#.#` `#.o#.#` `.###.#` `...###` | `0 2` |
+
+## 풀이
+
+DFS로 각 영역을 탐색하여 양과 늑대 수를 세고, 양이 더 많은 영역만 양이 살아남는다.
+
+1. 미방문 칸에서 DFS를 시작하여 울타리로 둘러싸인 영역을 탐색한다
+2. 영역 내 양과 늑대 수를 각각 센다
+3. 양이 더 많으면 늑대는 0, 아니면 양은 0으로 처리한다
+4. 모든 영역의 결과를 합산한다
+
+**핵심 아이디어**: 울타리로 구분된 영역 = 연결 컴포넌트이며, 각 컴포넌트의 양/늑대 수를 비교하여 결과를 결정한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day635BOJ3184양 {
+  static int R, C, W, S, wolf, sheep;
+  static int[] dr = { -1, 0, 1, 0 }, dc = { 0, -1, 0, 1 };
+  static char[][] arr;
+  static boolean[][] visited;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringBuffer sb = new StringBuffer();
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+    R = Integer.parseInt(st.nextToken());
+    C = Integer.parseInt(st.nextToken());
+    S = 0;
+    W = 0;
+
+    arr = new char[R][C];
+    visited = new boolean[R][C];
+
+    for (int i = 0; i < R; i++) {
+      String input = br.readLine();
+      for (int j = 0; j < C; j++) {
+        arr[i][j] = input.charAt(j);
+      }
+    }
+
+    for (int i = 0; i < R; i++) {
+      for (int j = 0; j < C; j++) {
+        wolf = 0;
+        sheep = 0;
+        if (!visited[i][j]) {
+          if (arr[i][j] == 'v' || arr[i][j] == '.' || arr[i][j] == 'o') {
+            solve(i, j);
+          }
+        }
+        if (sheep > wolf) {
+          wolf = 0;
+        } else {
+          sheep = 0;
+        }
+        W += wolf;
+        S += sheep;
+      }
+    }
+    sb.append(S).append(" ").append(W);
+    bw.write(sb.toString());
+    bw.flush();
+
+    bw.close();
+    br.close();
+  }
+
+  private static void solve(int r, int c) {
+    visited[r][c] = true;
+
+    if (arr[r][c] == 'o') {
+      sheep += 1;
+    } else if (arr[r][c] == 'v') {
+      wolf += 1;
+    }
+
+    for (int i = 0; i < 4; i++) {
+      int nr = r + dr[i];
+      int nc = c + dc[i];
+
+      if (nr >= 0 && nc >= 0 && nr < R && nc < C) {
+        if (!visited[nr][nc]) {
+          if (arr[nr][nc] == '.' || arr[nr][nc] == 'v' || arr[nr][nc] == 'o') {
+            solve(nr, nc);
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(R \* C)
+- 공간: O(R \* C)

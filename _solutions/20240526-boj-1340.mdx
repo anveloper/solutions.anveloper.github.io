@@ -1,0 +1,79 @@
+---
+title: "BOJ 1340 - 연도 진행바"
+date: "2024-05-26"
+description: "주어진 날짜와 시각이 해당 연도에서 몇 퍼센트 진행되었는지 계산하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1340"
+problem_url: "https://www.acmicpc.net/problem/1340"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1340 - 연도 진행바](https://www.acmicpc.net/problem/1340)
+
+날짜와 시각이 "Month DD, YYYY HH:MM" 형식으로 주어질 때, 해당 연도에서 몇 퍼센트 진행되었는지 출력하라.
+
+### 입력
+
+영어 월 이름, 날짜, 연도, 시각이 공백으로 구분되어 주어진다.
+
+### 출력
+
+연도의 진행률을 소수점 포함하여 출력한다.
+
+### 예제
+
+| 입력                     | 출력  |
+| ------------------------ | ----- |
+| `January 01, 2000 00:00` | `0.0` |
+
+## 풀이
+
+현재까지 경과한 시간(분)을 연도 전체 시간(분)으로 나누어 백분율을 계산한다. 윤년이면 2월을 29일로 조정한다.
+
+1. 입력을 파싱하여 월, 일, 연도, 시, 분을 추출한다
+2. 윤년 여부를 판단하여 2월 일수를 조정한다
+3. 연도 전체 분 = 총 일수 × 24 × 60
+4. 현재까지 경과 분 = 이전 월 누적 일수 × 24 × 60 + (일-1) × 24 × 60 + 시 × 60 + 분
+5. (경과 분 / 전체 분) × 100을 출력한다
+
+**핵심 아이디어**: 모든 시간을 분 단위로 환산하면 정수 연산으로 정확한 비율을 계산할 수 있다.
+
+## 코드
+
+```python
+Month, D, Y, T = input().split()
+D = int(D[:2])
+Y = int(Y)
+H, M = int(T[0:2]), int(T[3:5])  # map(int,T.splice(':'))
+month_name_li = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+]
+month_day_li = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+if Y % 400 == 0 or (Y % 4 == 0 and Y % 100 != 0):
+    month_day_li[1] = 29
+total_time = sum(month_day_li) * 24 * 60
+last_month_idx = sum(month_day_li[0 : (month_name_li.index(Month))]) * 24 * 60
+current_time = 24 * 60 * (D - 1) + H * 60 + M + last_month_idx
+print(current_time / total_time * 100)
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

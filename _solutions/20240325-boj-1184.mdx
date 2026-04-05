@@ -1,0 +1,125 @@
+---
+title: "BOJ 1184 - 귀농"
+date: "2024-03-25"
+description: "N×N 격자에서 합이 같은 두 직사각형 쌍의 개수를 구하는 문제"
+tags: ["브루트포스", "누적 합", "해시"]
+platform: "boj"
+problem_number: "1184"
+problem_url: "https://www.acmicpc.net/problem/1184"
+difficulty: "골드 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1184 - 귀농](https://www.acmicpc.net/problem/1184)
+
+N x N 격자에서 꼭짓점을 공유하는 두 직사각형의 수익 합이 같은 쌍의 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 칸의 수익이 주어진다.
+
+### 출력
+
+조건을 만족하는 직사각형 쌍의 수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `2` `1 2` `3 4` | `1`  |
+
+## 풀이
+
+2차원 누적 합과 해시맵을 활용하여, 모든 꼭짓점에서 대각 방향의 직사각형 쌍을 탐색한다.
+
+1. 2차원 누적 합 배열을 구성한다
+2. 모든 내부 꼭짓점 (x, y)에 대해 두 방향을 검사한다
+3. 좌상-우하 방향: 좌상 모든 직사각형의 합을 Map에 저장하고, 우하에서 같은 합을 찾아 카운트한다
+4. 좌하-우상 방향: 좌하 모든 직사각형의 합을 Map에 저장하고, 우상에서 같은 합을 찾아 카운트한다
+
+**핵심 아이디어**: 두 직사각형이 꼭짓점 하나를 공유하므로, 해당 꼭짓점 기준 대각 방향의 직사각형만 비교하면 되며, 누적 합으로 O(1)에 부분합을 구한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+  const data = [];
+  for (let i = 1; i <= N; i++) {
+    data.push(
+      input[i]
+        .trim()
+        .split(" ")
+        .map((el) => +el)
+    );
+  }
+
+  let sum = new Array(N + 1);
+  for (let i = 0; i <= N; i++) {
+    sum[i] = new Array(N + 1).fill(0);
+  }
+
+  let cnt = new Map();
+  let result = 0;
+
+  const firstFunc = (x, y) => {
+    for (let i = 0; i < x; i++) {
+      for (let j = 0; j < y; j++) {
+        let tmp = sum[x][y] - sum[x][j] - sum[i][y] + sum[i][j];
+        if (cnt.has(tmp)) cnt.set(tmp, cnt.get(tmp) + 1);
+        else cnt.set(tmp, 1);
+      }
+    }
+    for (let i = x + 1; i <= N; i++) {
+      for (let j = y + 1; j <= N; j++) {
+        let tmp = sum[i][j] - sum[i][y] - sum[x][j] + sum[x][y];
+        if (cnt.has(tmp)) result += cnt.get(tmp);
+      }
+    }
+    cnt.clear();
+  };
+
+  const secondFunc = (x, y) => {
+    for (let i = x + 1; i <= N; i++) {
+      for (let j = 0; j < y; j++) {
+        let tmp = sum[i][y] - sum[i][j] - sum[x][y] + sum[x][j];
+        if (cnt.has(tmp)) cnt.set(tmp, cnt.get(tmp) + 1);
+        else cnt.set(tmp, 1);
+      }
+    }
+    for (let i = 0; i < x; i++) {
+      for (let j = y + 1; j <= N; j++) {
+        let tmp = sum[x][j] - sum[x][y] - sum[i][j] + sum[i][y];
+        if (cnt.has(tmp)) result += cnt.get(tmp);
+      }
+    }
+    cnt.clear();
+  };
+
+  for (let i = 1; i <= N; i++) {
+    for (let j = 1; j <= N; j++) {
+      sum[i][j] = data[i - 1][j - 1] + sum[i - 1][j] + sum[i][j - 1] - sum[i - 1][j - 1];
+    }
+  }
+
+  for (let i = 1; i < N; i++) {
+    for (let j = 1; j < N; j++) {
+      firstFunc(i, j);
+      secondFunc(i, j);
+    }
+  }
+  return result;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("./dev/stdin").toString().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N⁴)
+- 공간: O(N²)

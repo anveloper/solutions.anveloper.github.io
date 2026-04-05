@@ -1,0 +1,83 @@
+---
+title: "BOJ 1476 - 날짜 계산"
+date: "2023-05-19"
+description: "수학, 브루트포스 알고리즘, 정수론 문제"
+tags: ["수학", "브루트포스 알고리즘", "정수론"]
+platform: "boj"
+problem_number: "1476"
+problem_url: "https://www.acmicpc.net/problem/1476"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1476 - 날짜 계산](https://www.acmicpc.net/problem/1476)
+
+지구(E, 주기 15), 태양(S, 주기 28), 달(M, 주기 19)의 세 수가 주어질 때 해당 연도를 구하라.
+
+### 입력
+
+E, S, M이 주어진다.
+
+### 출력
+
+해당 연도를 출력한다.
+
+### 예제
+
+| 입력      | 출력 |
+| --------- | ---- |
+| `1 16 16` | `16` |
+
+## 풀이
+
+연도를 1부터 증가시키며 세 주기가 모두 일치하는 해를 찾는다.
+
+1. e=1, s=1, m=1부터 시작한다
+2. 매년 e, s, m을 1씩 증가시키고 주기를 초과하면 1로 되돌린다
+3. E, S, M과 모두 일치하면 해당 연도를 출력한다
+
+**핵심 아이디어**: 최대 lcm(15,28,19) = 7980까지만 탐색하면 반드시 답이 존재한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.util.*;
+
+public class Day467BOJ1476날짜계산 {
+
+  public static void main(String args[]) {
+    Scanner sc = new Scanner(System.in);
+    int e = 1, s = 1, m = 1;
+    int E = sc.nextInt();
+    int S = sc.nextInt();
+    int M = sc.nextInt();
+
+    for (int year = 1;; year++) {
+      if (e == E && s == S && m == M) {
+        System.out.println(year);
+        break;
+      }
+      e += 1;
+      s += 1;
+      m += 1;
+      if (e == 16)
+        e = 1;
+      if (s == 29)
+        s = 1;
+      if (m == 20)
+        m = 1;
+    }
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(lcm(15,28,19)) = O(7980) = O(1)
+- 공간: O(1)

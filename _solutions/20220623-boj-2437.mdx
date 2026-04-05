@@ -1,0 +1,89 @@
+---
+title: "BOJ 2437 - 저울"
+date: "2022-06-23"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "2437"
+problem_url: "https://www.acmicpc.net/problem/2437"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2437 - 저울](https://www.acmicpc.net/problem/2437)
+
+하나 이상의 추들로 이루어진 집합이 주어진다. 이 추들로 측정할 수 없는 양의 정수 무게 중 최솟값을 구하는 문제이다.
+
+추는 여러 개 사용할 수 있으며 한 쪽 방향으로만 놓을 수 있다(한쪽 접시에 물건, 다른 쪽 접시에 추).
+
+### 입력
+
+첫째 줄에 추의 개수 N(1 ≤ N ≤ 1,000)이 주어진다.
+둘째 줄에 각 추의 무게가 공백으로 구분되어 주어진다. 추의 무게는 1 이상 1,000,000 이하이다.
+
+### 출력
+
+측정할 수 없는 양의 정수 무게 중 최솟값을 출력한다.
+
+### 예제
+
+| 입력                 | 출력 |
+| -------------------- | ---- |
+| `7` `3 1 6 2 7 30 1` | `21` |
+
+## 풀이
+
+정렬 후 그리디 접근으로 "현재까지 만들 수 있는 최대 무게 + 1" 변수를 유지하며 측정 불가 최솟값을 구한다.
+
+1. 추들을 오름차순 정렬한다.
+2. `cnt` 변수를 0으로 초기화한다. `cnt`는 1부터 `cnt`까지의 모든 무게를 측정할 수 있음을 의미한다.
+3. 정렬된 추를 순서대로 확인한다. 현재 추의 무게 `arr[i]`가 `cnt + 1`보다 크면 탐색을 멈춘다. `cnt + 1`이 측정 불가 최솟값이다.
+4. `arr[i] <= cnt + 1`이면 이 추를 추가할 때 측정 가능 범위가 `cnt + arr[i]`까지 확장된다.
+
+**핵심 아이디어**: 현재 추들로 [1, cnt]까지 연속 측정이 가능할 때, 다음 추의 무게 w가 `w <= cnt + 1`이면 범위가 [1, cnt + w]로 확장된다. `w > cnt + 1`이면 `cnt + 1`은 영원히 만들 수 없다. 연속 범위를 유지하는 그리디 패턴이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Day146BOJ2437저울정렬 { // 2437 저울
+	static int N, cnt;
+	static int[] arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		cnt = 0;
+		arr = new int[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++)
+			arr[i] = Integer.parseInt(st.nextToken());
+		Arrays.sort(arr);
+
+		for (int i = 0; i < N; i++) {
+			if (cnt + 1 < arr[i]) {
+				break;
+			}
+
+			cnt += arr[i];
+		}
+
+		System.out.println(cnt + 1);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

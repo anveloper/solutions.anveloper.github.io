@@ -1,0 +1,80 @@
+---
+title: "BOJ 1758 - 알바생 강호"
+date: "2023-08-31"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "1758"
+problem_url: "https://www.acmicpc.net/problem/1758"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1758 - 알바생 강호](https://www.acmicpc.net/problem/1758)
+
+N명의 손님이 각각 원래 팁을 줄 금액이 있고, 대기 순서가 i번째이면 (원래 팁 - (i-1))만큼 준다 (음수면 0). 팁의 합을 최대화하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 손님의 팁이 주어진다.
+
+### 출력
+
+최대 팁 합계를 출력한다.
+
+### 예제
+
+| 입력             | 출력 |
+| ---------------- | ---- |
+| `3` `12` `3` `5` | `13` |
+
+## 풀이
+
+팁이 큰 순서대로 정렬하여 앞에 배치하면 감소량을 최소화한다.
+
+1. 팁을 내림차순 정렬한다
+2. i번째 손님의 실제 팁 = `arr[i] - i` (0이하면 중단)
+3. 양수인 팁만 합산한다
+
+**핵심 아이디어**: 팁이 큰 손님을 먼저 처리하면 대기로 인한 팁 감소를 최소화할 수 있다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day573BOJ1758알바생강호 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    int N = Integer.parseInt(br.readLine());
+    Integer[] arr = new Integer[N];
+    for (int i = 0; i < N; i++) {
+      arr[i] = Integer.parseInt(br.readLine());
+    }
+    Arrays.sort(arr, Comparator.reverseOrder());
+    long ans = 0;
+    for (int i = 0; i < N; i++) {
+      if (arr[i] - i <= 0) {
+        break;
+      }
+      ans += arr[i] - i;
+    }
+    bw.write(ans + "\n");
+    bw.flush();
+    bw.close();
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

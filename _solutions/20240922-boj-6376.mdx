@@ -1,0 +1,81 @@
+---
+title: "BOJ 6376 - e 계산"
+date: "2024-09-22"
+description: "팩토리얼의 역수 합으로 자연상수 e를 근사하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "6376"
+problem_url: "https://www.acmicpc.net/problem/6376"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6376 - e 계산](https://www.acmicpc.net/problem/6376)
+
+n = 0부터 9까지 `1/0! + 1/1! + ... + 1/n!`의 누적합을 출력하여 자연상수 e의 근삿값을 계산하라.
+
+### 입력
+
+입력 없음.
+
+### 출력
+
+n = 0~9에 대해 각 누적합을 정해진 형식으로 출력한다.
+
+### 예제
+
+| 입력   | 출력                                    |
+| ------ | --------------------------------------- |
+| (없음) | `n e` `- -----------` `0 1` `1 2` `...` |
+
+## 풀이
+
+팩토리얼과 누적합을 순차적으로 계산하여 출력한다.
+
+1. 팩토리얼 함수로 `n!`을 반복 곱셈으로 계산한다
+2. 0~2까지는 미리 계산된 값(`1, 2, 2.5`)을 출력한다
+3. 3~9까지는 이전 누적합에 `1/n!`을 더하여 배열에 저장한다
+4. 소수점 이하 9자리까지 출력한다
+
+**핵심 아이디어**: 메모이제이션 배열로 이전 누적합을 저장하면 각 단계에서 팩토리얼만 새로 계산하여 O(N^2)에 해결된다.
+
+## 코드
+
+```cpp
+#include <cstdio>
+
+int factorial(int n)
+{
+  int ret = 1;
+  for (int i = 1; i <= n; ++i)
+  {
+    ret *= i;
+  }
+  return ret;
+}
+
+double memo[10] = {1, 2, 2.5};
+int main(void)
+{
+  printf("n e\n");
+  printf("- -----------\n");
+  printf("0 1\n");
+  printf("1 2\n");
+  printf("2 2.5\n");
+  for (int i = 3; i < 10; ++i)
+  {
+    int f = factorial(i);
+    memo[i] = memo[i - 1] + (double)1 / f;
+    printf("%d %.9lf\n", i, memo[i]);
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) (각 팩토리얼 계산에 O(N))
+- 공간: O(N)

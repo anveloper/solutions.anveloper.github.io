@@ -1,0 +1,80 @@
+---
+title: "BOJ 1120 - 문자열"
+date: "2022-10-31"
+description: "문자열, 브루트포스 알고리즘 문제"
+tags: ["문자열", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1120"
+problem_url: "https://www.acmicpc.net/problem/1120"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1120 - 문자열](https://www.acmicpc.net/problem/1120)
+
+길이가 다른 두 문자열 A, B(|A| ≤ |B|)가 주어질 때, A의 앞뒤에 아무 문자를 추가하여 B와 같은 길이로 만든 후, A와 B의 차이(다른 문자 수)의 최솟값을 구하라.
+
+### 입력
+
+두 문자열 A, B가 공백으로 구분되어 주어진다 (1 ≤ |A| ≤ |B| ≤ 50).
+
+### 출력
+
+A와 B의 차이의 최솟값을 출력한다.
+
+### 예제
+
+| 입력             | 출력 |
+| ---------------- | ---- |
+| `adaabc aababbc` | `2`  |
+
+## 풀이
+
+A를 B 위에 슬라이딩하며, 겹치는 부분의 불일치 수가 최소인 위치를 찾는다.
+
+1. A를 B의 모든 가능한 위치(0부터 |B|-|A|)에 정렬시킨다
+2. 각 위치에서 A와 B의 대응하는 문자를 비교하여 다른 문자 수를 센다
+3. 모든 위치 중 최소 불일치 수가 답이다
+
+**핵심 아이디어**: A의 앞뒤에 추가하는 문자는 B와 같게 만들 수 있으므로 차이에 영향을 주지 않는다. 따라서 겹치는 부분의 불일치만 최소화하면 된다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day266BOJ1120문자열 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		char[] str1 = st.nextToken().toCharArray();
+		char[] str2 = st.nextToken().toCharArray();
+		int result = str1.length;
+		for (int i = 0; i < str2.length - str1.length + 1; i++) {
+			int tmp = 0;
+			for (int j = 0; j < str1.length; j++) {
+				if (str1[j] != str2[j + i]) {
+					tmp++;
+				}
+			}
+			if (result > tmp) {
+				result = tmp;
+			}
+		}
+		System.out.println(result);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(|A| \* (|B| - |A|))
+- 공간: O(|B|)

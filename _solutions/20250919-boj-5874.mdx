@@ -1,0 +1,89 @@
+---
+title: "BOJ 5874 - 소를 찾아라"
+date: "2025-09-19"
+description: "누적 합 문제"
+tags: ["누적 합"]
+platform: "boj"
+problem_number: "5874"
+problem_url: "https://www.acmicpc.net/problem/5874"
+difficulty: "실버 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5874 - 소를 찾아라](https://www.acmicpc.net/problem/5874)
+
+괄호 문자열에서 `((`와 `))`의 쌍 개수를 구하라. `((`가 `))`보다 앞에 있는 쌍만 센다.
+
+### 입력
+
+괄호로만 이루어진 문자열이 주어진다.
+
+### 출력
+
+조건을 만족하는 쌍의 개수를 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `(()))(()` | `1`  |
+
+## 풀이
+
+`((`와 `))`의 위치를 각각 수집한 뒤, 가능한 쌍을 센다.
+
+1. 문자열을 순회하며 `((` 패턴의 시작 위치를 front 배열에 저장한다
+2. `))` 패턴의 시작 위치를 back 배열에 저장한다
+3. front의 각 위치에 대해 back에서 더 뒤에 있는 위치의 개수를 합산한다
+
+**핵심 아이디어**: `((`가 `))`보다 앞에 있는 모든 쌍을 이중 반복문으로 세는 브루트포스 방식이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+string N;
+vector<int> front;
+vector<int> back;
+int sum = 0;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  cin >> N;
+
+  for (int i = 0; i < N.size() - 1; i++)
+  {
+    if (N[i] == '(' && N[i + 1] == '(')
+      front.push_back(i);
+    if (N[i] == ')' && N[i + 1] == ')')
+      back.push_back(i);
+  }
+
+  for (int i = 0; i < front.size(); i++)
+  {
+    for (int j = 0; j < back.size(); j++)
+    {
+      if (front[i] < back[j])
+        sum++;
+    }
+  }
+
+  cout << sum;
+}
+```
+
+## 복잡도
+
+- 시간: O(F \* B) (F: `((` 개수, B: `))` 개수, 최악 O(N²))
+- 공간: O(N)

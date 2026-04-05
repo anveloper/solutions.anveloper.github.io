@@ -1,0 +1,71 @@
+---
+title: "BOJ 3041 - N-퍼즐"
+date: "2025-04-22"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "3041"
+problem_url: "https://www.acmicpc.net/problem/3041"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3041 - N-퍼즐](https://www.acmicpc.net/problem/3041)
+
+4 x 4 퍼즐판에 A~O 문자와 빈 칸이 있다. 목표 상태(A~O가 순서대로 배치)까지의 최소 이동 횟수의 하한을 맨해튼 거리의 합으로 구하라.
+
+### 입력
+
+4줄에 걸쳐 4개의 문자가 주어진다. 빈 칸은 `.`이다.
+
+### 출력
+
+각 문자의 현재 위치에서 목표 위치까지의 맨해튼 거리의 합을 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `ABCD` `EFGH` `IJKL` `MNO.` | `0`  |
+| `ABCD` `EFGH` `IJLK` `MN.O` | `2`  |
+
+## 풀이
+
+각 문자의 현재 좌표와 목표 좌표 간의 맨해튼 거리를 계산하여 합산한다.
+
+1. 4줄의 입력을 하나의 문자열로 합친다
+2. 목표 상태 `ABCDEFGHIJKLMNO`에서 각 문자의 목표 위치(행, 열)를 계산한다
+3. 입력 문자열에서 각 문자의 현재 위치(행, 열)를 찾는다
+4. 각 문자마다 현재열과 목표열의 차이의 절댓값 + 현재행과 목표행의 차이의 절댓값을 계산한다
+5. 15개 문자의 맨해튼 거리를 모두 합산하여 출력한다
+
+**핵심 아이디어**: 4 x 4 격자에서 1차원 인덱스를 `% 4`(열)와 `// 4`(행)로 2차원 좌표로 변환하여 맨해튼 거리를 계산한다.
+
+## 코드
+
+```python
+line = ""
+for _ in range(4):
+    line += input()
+
+distance = 0
+
+ANSWER = "ABCDEFGHIJKLMNO"
+for i in range(15):
+    for j in range(16):
+        if line[j] == ANSWER[i]:
+            dx = abs((i % 4) - (j % 4))
+            dy = abs((i // 4) - (j // 4))
+            distance += dx + dy
+            break
+
+print(distance)
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 크기(15 x 16) 탐색
+- 공간: O(1) — 고정 크기 문자열만 사용

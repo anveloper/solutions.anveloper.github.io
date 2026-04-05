@@ -1,0 +1,60 @@
+---
+title: "BOJ 6131 - 완전 제곱수"
+date: "2025-05-29"
+description: "수학, 브루트포스 알고리즘, 사칙연산 문제"
+tags: ["수학", "브루트포스 알고리즘", "사칙연산"]
+platform: "boj"
+problem_number: "6131"
+problem_url: "https://www.acmicpc.net/problem/6131"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6131 - 완전 제곱수](https://www.acmicpc.net/problem/6131)
+
+`A² - B² = N`을 만족하는 양의 정수 쌍 (A, B)의 개수를 구하라.
+
+### 입력
+
+양의 정수 N이 주어진다.
+
+### 출력
+
+조건을 만족하는 쌍의 개수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `15` | `2`  |
+
+## 풀이
+
+A와 B의 범위를 제한하여 브루트포스로 탐색한다.
+
+1. A를 2부터 순회하며 `A² - (A-1)²`가 N보다 커지면 종료한다
+2. 각 A에 대해 B를 1부터 A-1까지 순회하며 `A² - B² = N`인지 확인한다
+
+**핵심 아이디어**: `A² - B² = (A+B)(A-B) = N`이므로, A가 커질수록 인접 제곱수 차이가 N을 초과하면 더 이상 해가 없다.
+
+## 코드
+
+```python
+N = int(input())
+cnt = 0
+for i in range(1, N):
+    if i**2 - (i - 1) ** 2 > N:
+        break
+    for j in range(1, i + 1):
+        if i**2 - j**2 == N:
+            cnt += 1
+print(cnt)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

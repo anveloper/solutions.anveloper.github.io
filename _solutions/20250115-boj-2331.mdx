@@ -1,0 +1,75 @@
+---
+title: "BOJ 2331 - 반복수열"
+date: "2025-01-15"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "2331"
+problem_url: "https://www.acmicpc.net/problem/2331"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2331 - 반복수열](https://www.acmicpc.net/problem/2331)
+
+A와 P가 주어진다. D(1) = A이고, D(n) = D(n-1)의 각 자릿수를 P제곱하여 합한 값으로 수열을 만든다. 이 수열에서 반복되지 않는 부분의 길이를 구하라.
+
+### 입력
+
+A와 P가 공백으로 주어진다.
+
+### 출력
+
+반복 순환에 포함되지 않는 항의 개수를 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `57 2` | `2`  |
+
+## 풀이
+
+수열을 생성하면서 각 값의 첫 등장 순서를 기록하고, 이미 등장한 값이 나오면 그 이전까지의 길이를 반환한다.
+
+1. 배열 check에 각 값이 처음 등장한 순번을 기록한다
+2. D(n)을 계산하여 다음 항을 구한다 (각 자릿수의 P제곱 합)
+3. 이미 등장한 값이 나오면, 그 값의 첫 등장 순번 - 1이 반복되지 않는 부분의 길이이다
+
+**핵심 아이디어**: 유한한 값 범위에서 반드시 순환이 발생하므로, 첫 번째 중복 발견 시점에서 순환 시작점을 역추적한다.
+
+## 코드
+
+```python
+n, m = map(int, input().split())
+check = [0] * 236197
+iteration = 1
+
+
+def cal(a, b):
+    result = 0
+    for i in str(a):
+        result += pow(int(i), b)
+    return result
+
+
+def dfs(n, m, iteration, check):
+    if check[n] != 0:
+        return check[n] - 1
+
+    check[n] = iteration
+    iteration += 1
+    result = cal(n, m)
+    return dfs(result, m, iteration, check)
+
+
+print(dfs(n, m, iteration, check))
+```
+
+## 복잡도
+
+- 시간: O(순환 도달까지의 항 수) — 값 범위에 의해 제한됨
+- 공간: O(최대 값) — 방문 배열

@@ -1,0 +1,127 @@
+---
+title: "BOJ 1743 - 음식물 피하기"
+date: "2023-08-25"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색", "격자 그래프", "플러드 필"]
+platform: "boj"
+problem_number: "1743"
+problem_url: "https://www.acmicpc.net/problem/1743"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1743 - 음식물 피하기](https://www.acmicpc.net/problem/1743)
+
+N x M 통로에 음식물 쓰레기가 K개 놓여있을 때, 인접한 쓰레기끼리 뭉쳐 가장 큰 음식물의 크기를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, K, 이후 K줄에 쓰레기 좌표가 주어진다.
+
+### 출력
+
+가장 큰 음식물의 크기를 출력한다.
+
+### 예제
+
+| 입력                                  | 출력 |
+| ------------------------------------- | ---- |
+| `3 4 5` `3 2` `2 2` `3 1` `2 3` `1 1` | `4`  |
+
+## 풀이
+
+BFS로 인접한 음식물의 연결 컴포넌트를 찾아 최대 크기를 구한다.
+
+1. 음식물 위치를 boolean 격자에 표시한다
+2. 미방문 음식물 칸에서 BFS를 시작하여 연결된 크기를 센다
+3. 최대 크기를 갱신한다
+
+**핵심 아이디어**: 플러드 필로 각 연결 컴포넌트의 크기를 구한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day567BOJ1743음식물피하기 {
+  static int N, M, K, ans, cnt;
+  static int dx[] = { -1, 1, 0, 0 };
+  static int dy[] = { 0, 0, -1, 1 };
+  static boolean[][] map;
+  static boolean[][] visited;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+    K = Integer.parseInt(st.nextToken());
+
+    map = new boolean[N][M];
+    visited = new boolean[N][M];
+
+    for (int i = 0; i < K; i++) {
+      st = new StringTokenizer(br.readLine());
+      int r = Integer.parseInt(st.nextToken());
+      int c = Integer.parseInt(st.nextToken());
+      map[r - 1][c - 1] = true;
+    }
+
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        if (!visited[i][j] && map[i][j]) {
+          cnt = 0;
+          bfs(i, j);
+          ans = Math.max(ans, cnt);
+        }
+      }
+    }
+    System.out.println(ans);
+
+  }
+
+  private static void bfs(int x, int y) {
+    Queue<point> q = new LinkedList<>();
+    q.add(new point(x, y));
+    visited[x][y] = true;
+    cnt++;
+    while (!q.isEmpty()) {
+      point temp = q.poll();
+
+      for (int k = 0; k < 4; k++) {
+        int xx = temp.x + dx[k];
+        int yy = temp.y + dy[k];
+        if (xx < 0 || yy < 0 || xx >= N || yy >= M)
+          continue;
+        if (!visited[xx][yy] && map[xx][yy]) {
+          q.add(new point(xx, yy));
+          visited[xx][yy] = true;
+          cnt++;
+        }
+      }
+    }
+  }
+
+  static class point {
+    int x;
+    int y;
+
+    public point(int x, int y) {
+      super();
+      this.x = x;
+      this.y = y;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(NM)
+- 공간: O(NM)

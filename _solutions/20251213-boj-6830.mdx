@@ -1,0 +1,77 @@
+---
+title: "BOJ 6830 - It's Cold Here!"
+date: "2025-12-13"
+description: "여러 도시의 온도 중 가장 낮은 온도를 기록한 도시 이름을 출력하는 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "6830"
+problem_url: "https://www.acmicpc.net/problem/6830"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6830 - It's Cold Here!](https://www.acmicpc.net/problem/6830)
+
+여러 도시의 이름과 온도가 순서대로 입력된다. 입력이 끝날 때까지 읽으면서 가장 낮은 온도를 기록한 도시의 이름을 출력한다. 같은 온도인 경우 가장 마지막에 입력된 도시를 선택한다.
+
+### 입력
+
+각 줄에 도시 이름(문자열)과 온도(정수)가 공백으로 구분되어 주어진다. 입력의 줄 수는 주어지지 않으며 EOF까지 읽는다.
+
+### 출력
+
+가장 낮은 온도를 가진 도시의 이름을 한 줄에 출력한다.
+
+### 예제
+
+| 입력                                     | 출력        |
+| ---------------------------------------- | ----------- |
+| `Reykjavik -10` `Oslo 5` `Anchorage -20` | `Anchorage` |
+
+## 풀이
+
+EOF까지 입력을 읽으면서 최솟값을 갱신하는 방식으로 구현한다.
+
+1. 최솟값 변수 `min`을 충분히 큰 값(300)으로 초기화한다.
+2. `while (cin >> s >> tmp)` 루프로 EOF까지 도시명과 온도를 읽는다.
+3. 현재 온도 `tmp`가 `min` 이하이면 `min`과 `coldest`를 갱신한다.
+4. 루프 종료 후 `coldest`를 출력한다.
+
+**핵심 아이디어**: `<=` 조건을 사용해 동일 온도가 들어올 때도 갱신하므로 마지막으로 등장한 최솟값 도시를 자동으로 선택한다. EOF 처리는 `cin >>` 연산의 반환값을 조건으로 활용한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int tmp, min = 300;
+  string s, coldest;
+
+  while (cin >> s >> tmp)
+  {
+    if (tmp <= min)
+    {
+      min = tmp;
+      coldest = s;
+    }
+  }
+
+  cout << coldest;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N은 입력 도시 수, 한 번 순회
+- 공간: O(1) — 현재 최솟값과 도시명만 저장

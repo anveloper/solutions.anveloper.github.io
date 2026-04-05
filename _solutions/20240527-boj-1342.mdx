@@ -1,0 +1,77 @@
+---
+title: "BOJ 1342 - 행운의 문자열"
+date: "2024-05-27"
+description: "인접한 문자가 같지 않은 순열의 개수를 구하는 백트래킹 문제"
+tags: ["브루트포스", "백트래킹"]
+platform: "boj"
+problem_number: "1342"
+problem_url: "https://www.acmicpc.net/problem/1342"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1342 - 행운의 문자열](https://www.acmicpc.net/problem/1342)
+
+문자열이 주어질 때, 글자를 재배열하여 인접한 두 문자가 같지 않은 순열의 개수를 구하라.
+
+### 입력
+
+소문자로 이루어진 문자열이 주어진다 (길이 1 이상 10 이하).
+
+### 출력
+
+인접한 문자가 같지 않은 순열의 수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `aab` | `2`  |
+
+## 풀이
+
+모든 순열을 생성하여 중복을 제거한 뒤, 인접 문자가 같은 순열을 제외하여 카운트한다. 특수 케이스는 하드코딩으로 시간을 절약한다.
+
+1. 길이 1, 2인 경우와 길이 10 + 문자 종류 10 또는 9인 경우를 하드코딩 처리한다
+2. 나머지는 `itertools.permutations`로 모든 순열을 생성한다
+3. 중복 순열을 제거하기 위해 tuple 변환 후 set을 적용한다
+4. 각 순열에서 인접한 문자가 같은 경우를 세고, 전체에서 빼서 행운의 문자열 수를 구한다
+
+**핵심 아이디어**: 길이가 최대 10이므로 10! = 3,628,800개의 순열을 모두 확인해도 시간 내에 해결 가능하다.
+
+## 코드
+
+```python
+import itertools
+
+a = list(input())
+count = 0
+if len(a) == 1:
+    print(1)
+elif len(a) == 2:
+    if a[0] == a[1]:
+        print(0)
+    else:
+        print(2)
+elif len(a) == 10 and len(set(a)) == 10:
+    print(3628800)
+elif len(a) == 10 and len(set(a)) == 9:
+    print(1451520)
+else:
+    b = itertools.permutations(a)
+    b = list(map(list, set(map(tuple, b))))
+    for array in b:
+        for x in range(1, len(a) - 1):
+            if array[x - 1] == array[x] or array[x] == array[x + 1]:
+                count += 1
+                break
+    print(len(b) - count)
+```
+
+## 복잡도
+
+- 시간: O(N! \* N) (N은 문자열 길이, 최대 10)
+- 공간: O(N!)

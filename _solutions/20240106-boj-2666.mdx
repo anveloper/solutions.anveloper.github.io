@@ -1,0 +1,96 @@
+---
+title: "BOJ 2666 - 벽장문의 이동"
+date: "2024-01-06"
+description: "다이나믹 프로그래밍, 브루트포스 알고리즘 문제"
+tags: ["다이나믹 프로그래밍", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2666"
+problem_url: "https://www.acmicpc.net/problem/2666"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2666 - 벽장문의 이동](https://www.acmicpc.net/problem/2666)
+
+N개의 벽장 중 2개가 열려 있을 때, 순서대로 사용할 벽장 목록이 주어진다. 열린 문을 옆으로 밀어 이동시키며 사용할 벽장을 열 때 총 이동 횟수의 최솟값을 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 열린 벽장 번호 2개, 셋째 줄에 사용할 벽장 수, 이후 사용할 벽장 번호가 주어진다.
+
+### 출력
+
+문 이동 횟수의 최솟값을 출력한다.
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `5` `2 3` `3` `1` `5` `3` | `4`  |
+
+## 풀이
+
+재귀로 매 단계 두 열린 문 중 어느 것을 목표로 이동시킬지 모두 탐색하여 최솟값을 구한다.
+
+1. 현재 열린 문 위치 a, b와 목표 벽장 번호를 비교한다
+2. a를 목표로 이동시키는 비용과, b를 목표로 이동시키는 비용을 각각 재귀 호출한다
+3. 두 선택지 중 최솟값을 반환한다
+4. 모든 목표를 처리하면 0을 반환한다
+
+**핵심 아이디어**: 목표 수가 최대 20개이므로 최악 O(2^20)이지만, 실제로는 상태 중복이 많아 빠르게 수렴한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day704BOJ2666벽장문의이동 {
+  static List<Integer> opens;
+  static int[] target;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    Integer.parseInt(br.readLine());
+
+    String[] line = br.readLine().split(" ");
+    opens = new ArrayList<>();
+    for (int i = 0; i < line.length; i++) {
+      opens.add(Integer.parseInt(line[i]));
+    }
+
+    int test = Integer.parseInt(br.readLine());
+
+    target = new int[test];
+    for (int i = 0; i < test; i++) {
+      target[i] = Integer.parseInt(br.readLine());
+    }
+    System.out.println(solve(0, opens.get(0), opens.get(1)));
+
+  }
+
+  static int solve(int cnt, int a, int b) {
+
+    if (cnt == target.length)
+      return 0;
+
+    int tmp1 = Math.abs(a - target[cnt]);
+    int tmp2 = Math.abs(b - target[cnt]);
+
+    return Math.min(tmp1 + solve(cnt + 1, b, target[cnt]),
+        tmp2 + solve(cnt + 1, a, target[cnt]));
+
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(2^T) - T는 사용할 벽장 수
+- 공간: O(T)

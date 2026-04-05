@@ -1,0 +1,88 @@
+---
+title: "BOJ 1198 - 삼각형으로 자르기"
+date: "2024-02-27"
+description: "수학, 브루트포스 알고리즘, 기하학 문제"
+tags: ["수학", "브루트포스 알고리즘", "기하학"]
+platform: "boj"
+problem_number: "1198"
+problem_url: "https://www.acmicpc.net/problem/1198"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1198 - 삼각형으로 자르기](https://www.acmicpc.net/problem/1198)
+
+볼록 다각형의 꼭짓점 중 3개를 골라 만들 수 있는 삼각형의 최대 넓이를 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 꼭짓점 좌표가 주어진다.
+
+### 출력
+
+최대 삼각형 넓이를 출력한다.
+
+### 예제
+
+| 입력                        | 출력   |
+| --------------------------- | ------ |
+| `4` `0 0` `5 0` `5 5` `0 5` | `12.5` |
+
+## 풀이
+
+모든 꼭짓점 3개 조합에 대해 외적(신발끈 공식)으로 넓이를 구하고 최대를 찾는다.
+
+1. 3중 루프로 모든 C(N, 3) 조합을 열거한다
+2. 각 삼각형의 넓이를 외적 공식 `|x1(y2-y3) + x2(y3-y1) + x3(y1-y2)| / 2`로 계산한다
+3. 최대 넓이를 갱신한다
+
+**핵심 아이디어**: N이 최대 100이므로 C(100, 3) = 161,700가지를 전수 탐색해도 충분하다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+
+public class Day756BOJ1198삼각형으로자르기 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    int n = Integer.parseInt(br.readLine());
+    int[][] points = new int[n][2];
+    for (int i = 0; i < n; i++) {
+      String[] coordinate = br.readLine().split(" ");
+      points[i][0] = Integer.parseInt(coordinate[0]);
+      points[i][1] = Integer.parseInt(coordinate[1]);
+    }
+
+    double max = 0;
+    for (int a = 0; a < n - 2; a++) {
+      for (int b = a + 1; b < n - 1; b++) {
+        for (int c = b + 1; c < n; c++) {
+          max = Math.max(max, area(points[a], points[b], points[c]));
+        }
+      }
+    }
+
+    bw.write(Double.toString(max));
+    br.close();
+    bw.close();
+  }
+
+  private static double area(int[] a, int[] b, int[] c) {
+    return (double) Math.abs(a[0] * b[1] + b[0] * c[1] + c[0] * a[1] - a[1] * b[0] - b[1] * c[0] - c[1] * a[0]) / 2;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N³)
+- 공간: O(N)

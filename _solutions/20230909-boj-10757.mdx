@@ -1,0 +1,73 @@
+---
+title: "BOJ 10757 - 큰 수 A+B"
+date: "2023-09-09"
+description: "구현, 임의 정밀도 / 큰 수 연산, 사칙연산 문제"
+tags: ["구현", "임의 정밀도 / 큰 수 연산", "사칙연산", "수학"]
+platform: "boj"
+problem_number: "10757"
+problem_url: "https://www.acmicpc.net/problem/10757"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10757 - 큰 수 A+B](https://www.acmicpc.net/problem/10757)
+
+두 큰 정수 A와 B가 주어질 때 A+B를 출력한다. 수의 범위가 long을 초과할 수 있다.
+
+### 입력
+
+첫째 줄에 A와 B가 주어진다 (0 이상 10^10000 이하).
+
+### 출력
+
+A+B를 출력한다.
+
+### 예제
+
+| 입력                                      | 출력                   |
+| ----------------------------------------- | ---------------------- |
+| `9223372036854775807 9223372036854775808` | `18446744073709551615` |
+
+## 풀이
+
+Java의 BigInteger 클래스를 사용하여 임의 정밀도 덧셈을 수행한다.
+
+1. 두 수를 문자열로 읽어 BigInteger 객체로 변환한다
+2. add() 메서드로 덧셈을 수행한다
+3. 결과를 출력한다
+
+**핵심 아이디어**: long 범위를 초과하는 큰 수 연산은 BigInteger를 활용하면 간단히 해결된다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+import java.math.*;
+
+public class Day582BOJ10757큰수 {
+  public static void main(String[] args) throws Exception {
+
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+    BigInteger A = new BigInteger(st.nextToken());
+    BigInteger B = new BigInteger(st.nextToken());
+
+    A = A.add(B);
+
+    System.out.println(A.toString());
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D) — D는 큰 수의 자릿수
+- 공간: O(D)

@@ -1,0 +1,108 @@
+---
+title: "BOJ 5636 - 소수 부분 문자열"
+date: "2025-08-04"
+description: "수학, 문자열, 브루트포스 알고리즘 문제"
+tags: ["수학", "문자열", "브루트포스 알고리즘", "정수론", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "5636"
+problem_url: "https://www.acmicpc.net/problem/5636"
+difficulty: "실버 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5636 - 소수 부분 문자열](https://www.acmicpc.net/problem/5636)
+
+숫자로 이루어진 문자열에서 부분 문자열이 나타내는 수 중 가장 큰 소수를 구하라.
+
+### 입력
+
+여러 문자열이 주어지며, `0`이면 종료한다.
+
+### 출력
+
+각 문자열에 대해 부분 문자열 중 가장 큰 소수를 출력한다.
+
+### 예제
+
+| 입력         | 출력 |
+| ------------ | ---- |
+| `235711` `0` | `57` |
+
+## 풀이
+
+에라토스테네스의 체로 소수를 미리 구하고, 모든 부분 문자열을 확인한다.
+
+1. 100,000까지의 소수를 에라토스테네스의 체로 구한다
+2. 문자열의 각 위치에서 최대 6자리까지의 부분 문자열을 추출한다
+3. 해당 수가 소수이면 최댓값을 갱신한다
+
+**핵심 아이디어**: 소수를 미리 체로 걸러두면 각 부분 문자열의 소수 여부를 O(1)에 판별할 수 있어, 전체 시간이 O(N \* 6)으로 효율적이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <algorithm>
+using namespace std;
+
+const int MAX = 100000;
+bool isNotPrime[MAX + 1];
+int maxPrimeInString(const string &input)
+{
+  int result = 0;
+  int length = input.size();
+
+  for (int i = 0; i < length; i++)
+  {
+    string numberStr = "";
+    for (int j = 0; j < 6 && i + j < length; j++)
+    {
+      numberStr += input[i + j];
+      int num = stoi(numberStr);
+
+      if (num <= MAX && !isNotPrime[num])
+      {
+        result = max(result, num);
+      }
+    }
+  }
+  return result;
+}
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+
+  isNotPrime[1] = true;
+  for (int i = 2; i <= sqrt(MAX); i++)
+  {
+    if (!isNotPrime[i])
+    {
+      for (int j = i * 2; j <= MAX; j += i)
+      {
+        isNotPrime[j] = true;
+      }
+    }
+  }
+
+  string input;
+  while (cin >> input && input != "0")
+  {
+    cout << maxPrimeInString(input) << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(M log log M + N \* 6) (M: 체 범위, N: 문자열 길이)
+- 공간: O(M)

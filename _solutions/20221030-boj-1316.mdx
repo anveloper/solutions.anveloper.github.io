@@ -1,0 +1,91 @@
+---
+title: "BOJ 1316 - 그룹 단어 체커"
+date: "2022-10-30"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1316"
+problem_url: "https://www.acmicpc.net/problem/1316"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1316 - 그룹 단어 체커](https://www.acmicpc.net/problem/1316)
+
+각 문자가 연속해서만 나타나는 단어를 그룹 단어라 할 때, N개의 단어 중 그룹 단어의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 100), 이후 N줄에 알파벳 소문자 단어가 주어진다 (길이 100 이하).
+
+### 출력
+
+그룹 단어의 개수를 출력한다.
+
+### 예제
+
+| 입력                     | 출력 |
+| ------------------------ | ---- |
+| `3` `happy` `new` `year` | `3`  |
+
+## 풀이
+
+각 단어를 순회하며, 이전과 다른 문자가 나왔을 때 이미 등장한 적 있는지 확인한다.
+
+1. 알파벳 26자에 대한 등장 여부 배열을 사용한다
+2. 이전 문자와 현재 문자가 다르면, 현재 문자가 이전에 등장한 적 있는지 확인한다
+3. 이미 등장했다면 그룹 단어가 아니므로 false를 반환한다
+4. 등장하지 않았다면 등장 표시를 하고 계속 진행한다
+
+**핵심 아이디어**: 같은 문자가 연속 구간 외에 다시 나타나면 그룹 단어가 아니다. boolean 배열로 O(N) 시간에 판별 가능하다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day265BOJ1316그룹단어체크 {
+	static int N, cnt;
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+	public static void main(String[] args) throws Exception {
+		N = Integer.parseInt(br.readLine());
+		cnt = 0;
+
+		for (int i = 0; i < N; i++)
+			if (check())
+				cnt++;
+
+		System.out.println(cnt);
+		br.close();
+	}
+
+	private static boolean check() throws Exception {
+		String str = br.readLine();
+		boolean[] check = new boolean[26];
+		int prev = 0;
+		for (int i = 0; i < str.length(); i++) {
+			int current = str.charAt(i);
+			if (prev != current)
+				if (!check[current - 'a']) {
+					check[current - 'a'] = true;
+					prev = current;
+				} else
+					return false;
+		}
+
+		return true;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (L: 단어 길이)
+- 공간: O(1) (26자 고정)

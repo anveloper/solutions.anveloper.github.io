@@ -1,0 +1,88 @@
+---
+title: "BOJ 1544 - 사이클 단어"
+date: "2024-02-07"
+description: "구현, 자료 구조, 문자열 문제"
+tags: ["구현", "자료 구조", "문자열", "브루트포스 알고리즘", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "1544"
+problem_url: "https://www.acmicpc.net/problem/1544"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1544 - 사이클 단어](https://www.acmicpc.net/problem/1544)
+
+N개의 단어가 주어질 때, 순환 이동(rotation)으로 같아질 수 있는 단어를 같은 그룹으로 묶어 그룹 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 단어가 주어진다.
+
+### 출력
+
+서로 다른 사이클 단어의 수를 출력한다.
+
+### 예제
+
+| 입력                  | 출력 |
+| --------------------- | ---- |
+| `3` `abc` `bca` `xyz` | `2`  |
+
+## 풀이
+
+각 단어의 모든 순환 변형을 생성하고, 이전 단어들의 순환 변형과 비교하여 중복을 제거한다.
+
+1. 각 단어에 대해 길이만큼의 모든 순환 변형을 `ArrayList`에 저장한다
+2. 새 단어를 이전에 처리된 단어들의 순환 변형 목록과 비교한다
+3. 어떤 이전 단어의 순환 변형과도 일치하지 않으면 새로운 그룹으로 카운트한다
+
+**핵심 아이디어**: 문자열을 순환 이동한 모든 변형을 미리 생성하여 동치 관계를 판별한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day736BOJ1544사이클단어 {
+  static int N;
+  static ArrayList<String>[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    arr = new ArrayList[N];
+    int ans = 0;
+
+    for (int i = 0; i < N; i++) {
+      arr[i] = new ArrayList<>();
+      String str = br.readLine();
+      for (int j = 0; j < str.length(); j++) {
+        arr[i].add(str.substring(j) + str.substring(0, j));
+      }
+
+      boolean chk = true;
+      for (int j = 0; chk && j <= i - 1; j++) {
+        for (int k = 0; chk && k < arr[j].size(); k++) {
+          if (str.equals(arr[j].get(k)))
+            chk = false;
+        }
+      }
+      if (chk)
+        ans++;
+    }
+
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2 \* L) — N개 단어 간 비교, 각 비교에서 L개 순환 변형 확인
+- 공간: O(N \* L) — 각 단어의 순환 변형 저장

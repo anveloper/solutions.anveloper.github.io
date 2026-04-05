@@ -1,0 +1,112 @@
+---
+title: "BOJ 14002 - 가장 긴 증가하는 부분 수열 4"
+date: "2023-01-20"
+description: "다이나믹 프로그래밍, 역추적 문제"
+tags: ["다이나믹 프로그래밍", "역추적"]
+platform: "boj"
+problem_number: "14002"
+problem_url: "https://www.acmicpc.net/problem/14002"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14002 - 가장 긴 증가하는 부분 수열 4](https://www.acmicpc.net/problem/14002)
+
+수열 A가 주어졌을 때, 가장 긴 증가하는 부분 수열(LIS)의 길이와 그 수열 자체를 출력한다.
+
+### 입력
+
+첫째 줄에 수열의 크기 N (1 ≤ N ≤ 1,000), 둘째 줄에 수열 A의 원소가 주어진다. 각 원소는 1 이상 1,000 이하의 정수이다.
+
+### 출력
+
+첫째 줄에 LIS의 길이를, 둘째 줄에 LIS를 이루는 수열을 공백으로 구분하여 출력한다.
+
+### 예제
+
+**입력**
+
+```
+6
+10 20 10 30 20 50
+```
+
+**출력**
+
+```
+4
+10 20 30 50
+```
+
+## 풀이
+
+**핵심 아이디어**: O(N²) DP로 각 위치까지의 LIS 길이를 구한 뒤, 역추적(traceback)으로 실제 수열을 복원한다.
+
+1. **DP 계산**: `dp[i]` = 인덱스 `i`에서 끝나는 LIS의 최대 길이. 초기값은 1(자기 자신만). `j < i`이고 `arr[j] < arr[i]`이면 `dp[i] = max(dp[i], dp[j] + 1)`.
+2. **최댓값 기록**: DP 갱신 과정에서 전체 최댓값 `result`를 추적한다.
+3. **역추적**: 수열을 뒤에서 앞으로 순회한다. `dp[i] == value`인 원소를 찾아 스택에 담고 `value--`를 반복한다. value가 1에서 result까지 역방향으로 줄어드는 원소를 선택하면 가장 오른쪽에 위치한 LIS 원소들이 선택된다.
+4. **출력**: 스택에서 꺼내면 앞에서 뒤 순서로 LIS가 복원된다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.*;
+
+public class Day347BOJ14002가장긴증가부분수열4 {
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static StringBuilder sb;
+
+    public static void main(String[] args) throws Exception {
+        sb = new StringBuilder();
+        int n = Integer.parseInt(br.readLine());
+        int arr[] = new int[n + 1];
+        int dp[] = new int[n + 1];
+        int result = 0;
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        for (int i = 1; i <= n; i++) {
+            int num = Integer.parseInt(st.nextToken());
+            arr[i] = num;
+            for (int j = 0; j < i; j++) {
+                if (arr[i] > arr[j]) {
+                    dp[i] = Math.max(dp[j] + 1, dp[i]);
+                    result = Math.max(dp[i], result);
+                }
+            }
+        }
+        sb.append(result + "\n");
+
+        int value = result;
+        Stack<Integer> stack = new Stack<>();
+
+        for (int i = n; i >= 1; i--) {
+            if (value == dp[i]) {
+                stack.push(arr[i]);
+                value--;
+            }
+        }
+
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop() + " ");
+        }
+
+        bw.write(sb.toString());
+
+        bw.close();
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — 이중 반복문으로 모든 (i, j) 쌍 비교
+- 공간: O(N) — dp 배열 및 스택

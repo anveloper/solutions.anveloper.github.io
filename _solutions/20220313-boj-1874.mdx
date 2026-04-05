@@ -1,0 +1,96 @@
+---
+title: "BOJ 1874 - 스택 수열"
+date: "2022-03-13"
+description: "자료 구조, 스택 문제"
+tags: ["자료 구조", "스택"]
+platform: "boj"
+problem_number: "1874"
+problem_url: "https://www.acmicpc.net/problem/1874"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1874 - 스택 수열](https://www.acmicpc.net/problem/1874)
+
+1부터 n까지의 수를 스택에 push하고 pop하는 연산만으로 주어진 수열을 만들 수 있는지 판단하고, 가능하다면 `+`(push), `-`(pop) 연산 순서를 출력하는 문제다.
+
+### 입력
+
+- 첫째 줄: 수열의 크기 n (1 이상 100,000 이하)
+- 둘째 줄부터 n개 줄: 목표 수열의 원소 (1 이상 n 이하의 정수)
+
+### 출력
+
+- 수열을 만들 수 있으면 push는 `+`, pop은 `-`를 순서대로 한 줄에 하나씩 출력
+- 불가능하면 `NO` 출력
+
+### 예제
+
+| 입력                  | 출력                                                            |
+| --------------------- | --------------------------------------------------------------- |
+| `8` `4 3 6 8 7 5 2 1` | `+` `+` `+` `+` `-` `-` `+` `+` `-` `-` `-` `-` `-` `-` `-` `-` |
+
+## 풀이
+
+스택과 포인터를 이용해 목표 수열의 각 원소를 순서대로 만들 수 있는지 시뮬레이션한다.
+
+1. 현재까지 push한 최댓값을 추적하는 포인터 `s`를 0으로 초기화한다.
+2. 목표 수열의 원소 `num`을 하나씩 읽는다.
+3. `num > s`이면, `s+1`부터 `num`까지 순서대로 스택에 push하고 `+`를 기록한다.
+4. 스택 최상단이 `num`과 같으면 pop하고 `-`를 기록한다.
+5. 스택 최상단이 `num`과 다르면 불가능하므로 `flag = false`로 표시한다.
+6. 모든 수열 처리 후 `flag`가 참이면 연산 기록을 출력하고, 거짓이면 `NO`를 출력한다.
+
+**핵심 아이디어**: 1부터 n까지 순서대로만 push할 수 있으므로 스택 최상단보다 작은 수를 목표로 할 때 최상단이 다르면 절대 만들 수 없다. 이를 통해 불가능 여부를 즉시 판단한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Day15BOJ1874스택수열 { // 1874
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		StringBuilder sb = new StringBuilder();
+		Stack<Integer> stack = new Stack<>();
+
+		int N = sc.nextInt();
+
+		int s = 0;
+		boolean flag = true;
+
+		while (N-- > 0) {
+			int num = sc.nextInt();
+
+			if (num > s) {
+				for (int i = s + 1; i <= num; i++) {
+					stack.push(i);
+					sb.append('+').append("\n");
+				}
+				s = num;
+			} else if (stack.peek() != num) {
+				flag = false;
+			}
+			stack.pop();
+			sb.append('-').append("\n");
+		}
+
+		if (flag)
+			System.out.println(sb);
+		else
+			System.out.println("NO");
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 1부터 N까지 각 숫자는 최대 한 번 push, 한 번 pop
+- 공간: O(N) — 스택과 출력 버퍼

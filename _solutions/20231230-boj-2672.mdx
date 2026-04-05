@@ -1,0 +1,125 @@
+---
+title: "BOJ 2672 - 여러 직사각형의 전체 면적 구하기"
+date: "2023-12-30"
+description: "스위핑 문제"
+tags: ["스위핑"]
+platform: "boj"
+problem_number: "2672"
+problem_url: "https://www.acmicpc.net/problem/2672"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2672 - 여러 직사각형의 전체 면적 구하기](https://www.acmicpc.net/problem/2672)
+
+N개의 직사각형이 주어질 때, 겹치는 부분을 한 번만 세어 전체 면적의 합을 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 직사각형의 왼쪽 아래 좌표 x, y와 너비 w, 높이 h가 주어진다.
+
+### 출력
+
+전체 면적을 출력한다 (정수면 정수, 소수면 소수점 둘째 자리까지).
+
+### 예제
+
+| 입력                                    | 출력 |
+| --------------------------------------- | ---- |
+| `2` `1.0 1.0 4.0 4.0` `2.0 2.0 4.0 4.0` | `31` |
+
+## 풀이
+
+좌표 압축 후 각 셀이 최소 하나의 직사각형에 포함되는지 확인하여 면적을 합산한다.
+
+1. 모든 직사각형의 x, y 좌표를 수집하여 정렬한다 (좌표 압축)
+2. 압축된 격자의 각 셀에 대해 N개 직사각형 중 하나라도 포함하는지 검사한다
+3. 포함되면 해당 셀의 면적(가로 \* 세로)을 합산한다
+4. 결과가 정수면 정수로, 아니면 소수점 둘째 자리까지 출력한다
+
+**핵심 아이디어**: 좌표 압축으로 연속 좌표를 이산화한 뒤, 각 압축 셀 단위로 포함 여부를 검사한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day697BOJ2672여러직사각형의전체면적 {
+  private static ArrayList<Double> xList = new ArrayList<>();
+  private static ArrayList<Double> yList = new ArrayList<>();
+
+  private static class Rectangle {
+    double x, y, w, h;
+
+    public Rectangle(double x, double y, double w, double h) {
+      this.x = x;
+      this.y = y;
+      this.w = w;
+      this.h = h;
+    }
+
+  }
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+
+    Rectangle[] rec = new Rectangle[N];
+    for (int i = 0; i < N; i++) {
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      double x = Double.parseDouble(st.nextToken());
+      double y = Double.parseDouble(st.nextToken());
+      double w = Double.parseDouble(st.nextToken());
+      double h = Double.parseDouble(st.nextToken());
+
+      rec[i] = new Rectangle(x, y, w, h);
+      xList.add(x);
+      xList.add(x + w);
+      yList.add(y);
+      yList.add(y + h);
+    }
+
+    double size = bruteForce(N, rec);
+    System.out.println(size == (int) size ? (int) size : String.format("%.2f", size));
+  }
+
+  private static double bruteForce(int n, Rectangle[] rec) {
+    Collections.sort(xList);
+    Collections.sort(yList);
+
+    double square = 0;
+    int[] size = { xList.size(), yList.size() };
+
+    for (int i = 1; i < size[0]; i++) {
+      for (int j = 1; j < size[1]; j++) {
+        double[] xs = { xList.get(i - 1), xList.get(i) };
+        double[] ys = { yList.get(j - 1), yList.get(j) };
+
+        for (int k = 0; k < n; k++) {
+          if (check(xs[0], xs[1], ys[0], ys[1], rec[k]))
+            continue;
+          square += (xs[1] - xs[0]) * (ys[1] - ys[0]);
+          break;
+        }
+      }
+    }
+
+    return square;
+  }
+
+  private static boolean check(double x1, double x2, double y1, double y2, Rectangle r) {
+    return r.x > x1 || (r.x + r.w) < x2 || r.y > y1 || (r.y + r.h) < y2;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^3) — 압축 격자 셀 수 O(N^2) \* 직사각형 포함 검사 O(N)
+- 공간: O(N) — 좌표 리스트 및 직사각형 배열

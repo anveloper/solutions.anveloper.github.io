@@ -1,0 +1,90 @@
+---
+title: "BOJ 2822 - 점수 계산"
+date: "2023-03-21"
+description: "정렬 문제"
+tags: ["정렬"]
+platform: "boj"
+problem_number: "2822"
+problem_url: "https://www.acmicpc.net/problem/2822"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2822 - 점수 계산](https://www.acmicpc.net/problem/2822)
+
+8개의 문제 점수 중 상위 5개의 합과 해당 문제 번호를 오름차순으로 출력하라.
+
+### 입력
+
+8줄에 각 문제의 점수가 주어진다.
+
+### 출력
+
+첫째 줄에 상위 5개 점수의 합, 둘째 줄에 해당 문제 번호를 오름차순으로 출력한다.
+
+### 예제
+
+| 입력                                   | 출력              |
+| -------------------------------------- | ----------------- |
+| `20` `30` `50` `48` `33` `66` `0` `64` | `261` `2 3 4 6 8` |
+
+## 풀이
+
+점수를 정렬한 뒤 상위 5개를 선택하고, 원래 인덱스를 HashMap으로 추적한다.
+
+1. 8개 점수를 배열에 저장하면서 HashMap에 점수→문제번호를 기록한다
+2. 배열을 정렬한 뒤 상위 5개(인덱스 3~7)의 합과 문제 번호를 추출한다
+3. 문제 번호를 오름차순 정렬하여 출력한다
+
+**핵심 아이디어**: 고정 8개이므로 O(1) 시간에 처리된다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day408BOJ2822점수계산 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+
+    int n = 8;
+    int[] arr = new int[n];
+    Map<Integer, Integer> map = new HashMap<>();
+
+    for (int i = 0; i < n; i++) {
+      arr[i] = Integer.parseInt(br.readLine());
+      map.put(arr[i], i + 1);
+    }
+
+    Arrays.sort(arr);
+
+    int sum = 0;
+
+    int[] topFive = new int[5];
+    for (int i = arr.length - 1; i >= 3; i--) {
+      sum += arr[i];
+      topFive[i - 3] = map.get(arr[i]);
+    }
+
+    sb.append(sum).append("\n");
+    Arrays.sort(topFive);
+    for (int val : topFive) {
+      sb.append(val + " ");
+    }
+
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) - 고정 8개
+- 공간: O(1)

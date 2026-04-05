@@ -1,0 +1,224 @@
+---
+title: "BOJ 17472 - 다리 만들기 2"
+date: "2022-04-12"
+description: "구현, 그래프 이론, 브루트포스 알고리즘 문제"
+tags:
+  ["구현", "그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색", "최소 스패닝 트리"]
+platform: "boj"
+problem_number: "17472"
+problem_url: "https://www.acmicpc.net/problem/17472"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17472 - 다리 만들기 2](https://www.acmicpc.net/problem/17472)
+
+N × M 크기의 지도에 여러 섬(1)과 바다(0)가 있다. 서로 다른 두 섬을 연결하는 다리를 직선으로 놓을 수 있으며, 다리의 길이는 최소 2이상이어야 하고 바다 위에만 놓을 수 있다. 모든 섬을 연결하는 다리의 최소 길이 합을 구하는 문제이다. 모든 섬을 연결하는 것이 불가능하면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. (1 ≤ N, M ≤ 10)
+이후 N개의 줄에 M개의 수(0 또는 1)가 공백으로 구분되어 주어진다.
+
+### 출력
+
+모든 섬을 연결하는 다리 길이의 최솟값을 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                                                                                                                                | 출력 |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| `7 8` `0 0 0 0 0 0 0 1` `1 1 0 0 0 0 1 1` `1 1 0 0 0 0 1 1` `1 1 0 0 0 1 1 1` `0 0 0 0 0 0 0 0` `0 0 0 0 0 0 0 0` `0 0 0 1 1 0 0 0` | `9`  |
+
+## 풀이
+
+3단계로 나누어 풀이한다: (1) DFS로 각 섬에 번호 부여, (2) 브루트포스로 가능한 모든 다리 탐색 후 우선순위 큐에 저장, (3) 크루스칼 알고리즘으로 MST를 구성하여 최소 비용 계산.
+
+1. **섬 번호 부여**: 지도를 순회하며 값이 0(육지, 입력 -1 처리)인 칸에서 DFS `number(i, j, iCnt)`를 호출하여 연결된 모든 육지 칸에 섬 번호를 부여한다.
+2. **다리 탐색**: 각 육지 칸에서 4방향으로 직선 연장하여 바다를 건너 다른 섬에 도달하면, 그 길이가 2 이상일 때 `Node(from, to, len)`을 최소 힙 PriorityQueue에 추가한다.
+3. **MST 구성(크루스칼)**: 섬 수만큼 Union-Find 배열을 초기화한다. PQ에서 비용이 가장 작은 다리를 꺼내 두 섬이 서로 다른 집합이면 합치고 비용을 누적한다.
+4. 모든 섬이 하나의 집합으로 연결됐는지 확인한다. 연결되지 않은 섬이 있으면 -1을 출력한다.
+
+**핵심 아이디어**: "모든 섬을 최소 비용으로 연결"은 MST 문제이다. 격자에서 다리(간선)를 생성하는 것이 구현의 핵심이며, 크루스칼 알고리즘의 그리디한 성질 덕분에 PQ에서 비용이 낮은 간선부터 선택하면 최적 해가 보장된다. Union-Find로 사이클을 방지하고 연결 여부를 확인한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day64BOJ17472다리만들기2크루스칼 {
+	static class Node {
+		int from, to, len;
+
+		public Node(int from, int to, int len) {
+			this.from = from;
+			this.to = to;
+			this.len = len;
+		}
+	}
+
+	static int N, M, iCnt = 0, bCnt = 0;
+	static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+	static int[][] map;
+	static Queue<int[]> q;
+	static PriorityQueue<Node> pq;
+	static boolean[][] visited;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		map = new int[N][M];
+		visited = new boolean[N][M];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken()) - 1;
+			}
+		}
+		// 섬을 구분해야 한다.
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (map[i][j] == 0) {
+					number(i, j, ++iCnt); // 섬번호 메기기
+				}
+			}
+		}
+//		print(map); // 출력용
+
+		// 섬 좌표 별로 모든 가능한 다리 만들어 놓기
+		pq = new PriorityQueue<>((o1, o2) -> (o1.len - o2.len));
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (map[i][j] != -1) {
+					makeBri(i, j, map[i][j]); // 섬번호 메기기
+				}
+			}
+		}
+
+		// pq에 가능한 모든 다리 넣어 뒀으니, 가장 짧은 값 구하기 MST Kruskal
+
+		kruskal();
+
+		System.out.println(bCnt == 0 ? -1 : bCnt);
+		br.close();
+	}
+
+	// 섬 별로 번호 메기기 --------------------------------
+	private static void number(int idx, int jdx, int num) {
+		if (index(idx, jdx))
+			return;
+		if (map[idx][jdx] == -1 || visited[idx][jdx])
+			return;
+		map[idx][jdx] = num;
+		visited[idx][jdx] = true;
+		for (int i = 0; i < 4; i++) {
+			int nr = idx + dr[i];
+			int nc = jdx + dc[i];
+			number(nr, nc, num);
+		}
+	}
+
+	// 가능한 모든 다리 만들어서 되는 것만 pq에 넣어두기 ----------------
+	private static void makeBri(int r, int c, int num) {// num : 섬번호
+		q = new LinkedList<>();
+		visited = new boolean[N][M];
+		for (int i = 0; i < 4; i++) {
+			q.add(new int[] { r, c, 0 });
+			visited[r][c] = true;
+			while (!q.isEmpty()) {
+				int[] p = q.poll();
+
+				int nr = p[0] + dr[i];
+				int nc = p[1] + dc[i];
+				int step = p[2];
+
+				if (index(nr, nc) || visited[nr][nc])
+					continue;
+				if (map[nr][nc] != num) {
+					if (map[nr][nc] != -1) { // 바다 아닌 다른 섬
+						int from = num - 1;
+						int to = map[nr][nc] - 1;
+						int len = step;
+						if (len > 1) {
+							pq.add(new Node(from, to, len));
+							break; // 이 정점 끝
+						}
+					} else { // 바다
+						visited[nr][nc] = true;
+						q.add(new int[] { nr, nc, step + 1 });
+					}
+				}
+			}
+			q.clear(); // 4방향 해야됨.
+		}
+	}
+
+	// kruskal ------------------------------------------
+	static int[] p;
+
+	private static void kruskal() {
+		p = new int[iCnt];
+		for (int i = 0; i < p.length; i++)
+			p[i] = i;
+
+		while (!pq.isEmpty()) {
+			Node node = pq.poll();
+			if (unionSet(node.from, node.to))
+				bCnt += node.len;
+		}
+
+		for (int i = 1; i < iCnt; i++) {
+			if(findSet(0)!=findSet(i))
+				bCnt = 0;
+		} // union안된 섬이 있는 지 찾기 대표 비교
+
+	}
+
+	private static int findSet(int a) {
+		return p[a] = (a == p[a]) ? a : findSet(p[a]);
+	}
+
+	private static boolean unionSet(int a, int b) {
+		a = findSet(a);
+		b = findSet(b);
+		if (a == b)
+			return false;
+		p[b] = a;
+		return true;
+	}
+
+	// util ---------------------------------------------
+
+	private static boolean index(int idx, int jdx) {
+		return idx < 0 || idx >= N || jdx < 0 || jdx >= M;
+	}
+
+	private static void print(int[][] a) {
+		StringBuilder tt = new StringBuilder();
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[i].length; j++) {
+				tt.append(a[i][j]).append(" ");
+			}
+			tt.append("\n");
+		}
+		System.out.println(tt);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(E log E) — 다리 탐색 O(N _ M _ max(N,M)), MST 크루스칼 O(E log E)
+- 공간: O(N \* M + E) — 지도 배열, 방문 배열, 간선 목록

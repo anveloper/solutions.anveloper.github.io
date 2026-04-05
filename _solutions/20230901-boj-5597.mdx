@@ -1,0 +1,74 @@
+---
+title: "BOJ 5597 - 과제 안 내신 분..?"
+date: "2023-09-01"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5597"
+problem_url: "https://www.acmicpc.net/problem/5597"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5597 - 과제 안 내신 분..?](https://www.acmicpc.net/problem/5597)
+
+30명의 학생 중 과제를 제출한 28명의 번호가 주어질 때, 과제를 제출하지 않은 2명의 번호를 오름차순으로 출력한다.
+
+### 입력
+
+28줄에 걸쳐 과제를 제출한 학생의 번호가 주어진다 (1 이상 30 이하).
+
+### 출력
+
+과제를 제출하지 않은 2명의 번호를 한 줄에 하나씩 오름차순으로 출력한다.
+
+### 예제
+
+| 입력                   | 출력     |
+| ---------------------- | -------- |
+| `3` `1` `4` `...` `28` | `7` `21` |
+
+## 풀이
+
+크기 31의 배열을 사용하여 제출한 학생을 표시한 후, 미제출 학생을 찾는다.
+
+1. 크기 31의 정수 배열을 생성한다
+2. 28명의 번호를 읽어 해당 인덱스를 1로 표시한다
+3. 1부터 30까지 순회하며 표시되지 않은 번호를 출력한다
+
+**핵심 아이디어**: 카운팅 배열(출석부)을 사용하여 O(1) 시간에 제출 여부를 기록하고 미제출자를 찾는다.
+
+## 코드
+
+```java
+package day599;
+
+import java.util.*;
+
+public class Day574BOJ5597과제 {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int[] student = new int[31];
+
+    for (int i = 1; i < 29; i++) {
+      int success = sc.nextInt();
+      student[success] = 1;
+    }
+    for (int i = 1; i < student.length; i++) {
+      if (student[i] != 1)
+        System.out.println(i);
+    }
+
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 28+30 반복
+- 공간: O(1) — 고정 크기 배열 31개

@@ -1,0 +1,81 @@
+---
+title: "BOJ 2884 - 알람 시계"
+date: "2023-06-25"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "2884"
+problem_url: "https://www.acmicpc.net/problem/2884"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2884 - 알람 시계](https://www.acmicpc.net/problem/2884)
+
+알람 시각이 주어질 때, 45분 앞당긴 시각을 구하라.
+
+### 입력
+
+첫째 줄에 시(H)와 분(M)이 주어진다.
+
+### 출력
+
+45분 앞당긴 시각을 출력한다.
+
+### 예제
+
+| 입력    | 출력   |
+| ------- | ------ |
+| `10 10` | `9 25` |
+
+## 풀이
+
+현재 분에서 45를 빼고, 음수가 되면 시를 1 감소시키며 분을 보정한다.
+
+1. M이 45 이상이면 단순히 M-45를 출력한다
+2. M이 45 미만이면 H를 1 감소시키고, 분을 `60-(45-M)`으로 계산한다
+3. H가 0이면 23시로 변환한다 (24시간제)
+
+**핵심 아이디어**: 분의 빌림(borrow) 처리와 24시간 순환을 고려한 간단한 시간 연산이다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day504BOJ2884알람시계 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+    int H = Integer.parseInt(st.nextToken());
+    int M = Integer.parseInt(st.nextToken());
+
+    StringBuilder sb = new StringBuilder();
+
+    if (M < 45) {
+      if (H == 0) {
+        H = 23;
+        sb.append(H).append(' ');
+      } else {
+        H--;
+        sb.append(H).append(' ');
+      }
+      sb.append(M = 60 - (45 - M));
+    } else {
+      sb.append(H).append(' ').append(M - 45);
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

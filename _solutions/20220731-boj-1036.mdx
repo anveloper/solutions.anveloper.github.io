@@ -1,0 +1,111 @@
+---
+title: "BOJ 1036 - 36진수"
+date: "2022-07-31"
+description: "수학, 구현, 그리디 알고리즘 문제"
+tags: ["수학", "구현", "그리디 알고리즘", "문자열", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "1036"
+problem_url: "https://www.acmicpc.net/problem/1036"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1036 - 36진수](https://www.acmicpc.net/problem/1036)
+
+N개의 36진수 수가 주어질 때, 그 중 K개의 서로 다른 숫자(digit)를 Z(36진수의 최대값)로 바꾸어 모든 수의 합을 최대화하는 문제이다. 36진수는 0~9와 A~Z를 사용한다.
+
+### 입력
+
+첫째 줄에 수의 개수 N이 주어진다. (1 ≤ N ≤ 50)
+
+다음 N줄에 각 수가 36진수로 주어진다. 수의 길이는 최대 15이다.
+
+마지막 줄에 K가 주어진다. (0 ≤ K ≤ 36)
+
+### 출력
+
+K개의 숫자를 Z로 바꾸었을 때의 합을 36진수로 출력한다.
+
+### 예제
+
+**입력:**
+
+```
+2
+10
+Z0
+1
+```
+
+**출력:**
+
+```
+ZZ
+```
+
+## 풀이
+
+**핵심 아이디어:** 각 digit(0~35)을 Z(=35)로 바꿀 때 얻는 이득(diff)을 BigInteger로 계산하고, 이득이 큰 digit K개를 그리디하게 선택한다.
+
+단계별 풀이:
+
+1. 모든 수를 10진 BigInteger로 변환하여 합산한다.
+2. 각 digit `d`(0~35)에 대해: 해당 digit이 각 수에서 등장하는 자릿수 가중치 합 × (35 - d)를 `diff[d]`에 누적한다.
+   - 자릿수 가중치: 36^0, 36^1, ... 순서로 오른쪽부터 곱한다.
+3. `diff` 배열을 정렬하여 상위 K개의 이득을 합산한다.
+4. 최종 합을 36진수로 변환하여 출력한다.
+
+왜 그리디가 최적인가: 각 digit를 Z로 바꾸는 것은 서로 독립적이므로, 이득이 가장 큰 K개를 선택하는 것이 최적이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.math.BigInteger;
+import java.util.Arrays;
+
+public class Day174BOJ103636진수 { // 1036 36진수 구선생님 도움
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		BigInteger ret = BigInteger.ZERO;
+		BigInteger[] diff = new BigInteger[36];
+		Arrays.fill(diff, BigInteger.ZERO);
+		int N = Integer.parseInt(br.readLine());
+		for (int i = 0; i < N; i++) {
+			String raw = br.readLine();
+			BigInteger now = new BigInteger(raw, 36);
+			BigInteger pow = BigInteger.ONE;
+			ret = ret.add(now);
+			for (int j = 0; j < raw.length(); j++) {
+				int idx = Dec(raw.charAt(raw.length() - 1 - j));
+				diff[idx] = diff[idx].add(pow.multiply(BigInteger.valueOf(35 - idx)));
+				pow = pow.multiply(BigInteger.valueOf(36));
+			}
+		}
+		Arrays.sort(diff);
+		int K = Integer.parseInt(br.readLine());
+		for (int i = 35; K-- > 0; i--)
+			ret = ret.add(diff[i]);
+		bw.write(ret.toString(36).toUpperCase());
+		bw.close();
+	}
+
+	static int Dec(char x) {
+		return ('0' <= x && x <= '9') ? x - 48 : x - 55;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N × L + 36 log 36) — N개의 수를 길이 L로 처리 후 36개 diff 정렬
+- 공간: O(36) — diff 배열 (BigInteger 36개)

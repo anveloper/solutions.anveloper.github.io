@@ -1,0 +1,83 @@
+---
+title: "BOJ 2751 - 수 정렬하기 2"
+date: "2022-03-13"
+description: "정렬 문제"
+tags: ["정렬"]
+platform: "boj"
+problem_number: "2751"
+problem_url: "https://www.acmicpc.net/problem/2751"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2751 - 수 정렬하기 2](https://www.acmicpc.net/problem/2751)
+
+N개의 수가 주어졌을 때 오름차순으로 정렬하여 출력하는 문제이다. N이 최대 1,000,000이므로 O(N²) 정렬은 시간 초과가 발생한다. O(N log N) 정렬 알고리즘이 필요하다.
+
+### 입력
+
+첫째 줄에 수의 개수 N (1 이상 1,000,000 이하)이 주어진다. 둘째 줄부터 N개의 줄에 정수가 한 줄에 하나씩 주어진다. 절댓값이 1,000,000 이하이며 중복이 없다.
+
+### 출력
+
+첫째 줄부터 N개의 줄에 오름차순으로 정렬한 결과를 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                    | 출력                |
+| ----------------------- | ------------------- |
+| `5` `5` `4` `3` `2` `1` | `1` `2` `3` `4` `5` |
+
+## 풀이
+
+Java의 `Collections.sort()`를 사용해 O(N log N)으로 정렬한다. 출력은 `StringBuilder`를 이용해 한 번에 처리하여 I/O 병목을 줄인다.
+
+1. `BufferedReader`로 빠르게 N개의 정수를 읽어 `ArrayList`에 저장한다.
+2. `Collections.sort()`로 오름차순 정렬한다 (내부적으로 TimSort 사용).
+3. `StringBuilder`에 정렬 결과를 개행 문자와 함께 누적한 뒤 한 번에 출력한다.
+
+**핵심 아이디어:** 수 정렬하기 1과 달리 N이 최대 100만이므로 O(N²) 버블 정렬로는 시간 초과가 난다. `Scanner` 대신 `BufferedReader`, `println` 대신 `StringBuilder`를 사용하는 I/O 최적화가 AC의 핵심이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Day03BOJ2751수정렬하기2 { // 2751번 수 정렬하기2 기초
+	public static void main(String[] args) throws Exception {
+
+	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+
+		int N = Integer.parseInt(br.readLine());
+
+		ArrayList<Integer> list = new ArrayList<>();
+
+		for(int i = 0; i < N; i++) {
+			list.add(Integer.parseInt(br.readLine()));
+		}
+
+		Collections.sort(list);
+
+		for(int value : list) {
+
+			sb.append(value).append('\n');
+		}
+		System.out.println(sb);
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) — `Collections.sort()`의 TimSort
+- 공간: O(N) — `ArrayList` 저장

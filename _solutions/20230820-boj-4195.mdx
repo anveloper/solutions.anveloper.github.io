@@ -1,0 +1,127 @@
+---
+title: "BOJ 4195 - 친구 네트워크"
+date: "2023-08-20"
+description: "자료 구조, 집합과 맵, 해시를 사용한 집합과 맵 문제"
+tags: ["자료 구조", "집합과 맵", "해시를 사용한 집합과 맵", "분리 집합"]
+platform: "boj"
+problem_number: "4195"
+problem_url: "https://www.acmicpc.net/problem/4195"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4195 - 친구 네트워크](https://www.acmicpc.net/problem/4195)
+
+친구 관계가 주어질 때, 각 관계를 입력받을 때마다 해당 두 사람이 속한 친구 네트워크의 크기를 출력하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 친구 관계 수 N과 N쌍의 이름이 주어진다.
+
+### 출력
+
+각 관계마다 네트워크 크기를 출력한다.
+
+### 예제
+
+| 입력                                               | 출력        |
+| -------------------------------------------------- | ----------- |
+| `1` `3` `Fred Barney` `Barney Betty` `Betty Wilma` | `2` `3` `4` |
+
+## 풀이
+
+HashMap으로 이름을 인덱스에 매핑하고, Union-Find로 네트워크 크기를 관리한다.
+
+1. HashMap으로 이름을 정수 인덱스에 매핑한다
+2. Union-Find에서 루트의 값을 음수로 하여 집합 크기를 저장한다
+3. 두 사람을 union하면 크기를 합산하고, 루트의 절댓값이 네트워크 크기이다
+
+**핵심 아이디어**: Union-Find의 루트에 음수로 집합 크기를 저장하면, union 시 크기 합산과 조회를 O(α(N))에 수행할 수 있다.
+
+## 코드
+
+```java
+package day599;
+
+import java.util.*;
+import java.io.*;
+
+public class Day560BOJ4195친구네트워크 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    StringBuilder sb = new StringBuilder();
+    int T = Integer.parseInt(st.nextToken());
+
+    for (int tc = 0; tc < T; tc++) {
+      int N = Integer.parseInt(br.readLine());
+
+      HashMap<String, Integer> map = new HashMap<>();
+      ArrayList<Integer> union = new ArrayList<>();
+
+      String p1, p2;
+      int cnt, root1, root2;
+      for (int i = 0; i < N; i++) {
+
+        st = new StringTokenizer(br.readLine());
+
+        p1 = st.nextToken();
+        p2 = st.nextToken();
+
+        addMember(map, union, p1);
+        addMember(map, union, p2);
+
+        root1 = findUnion(union, map.get(p1));
+        root2 = findUnion(union, map.get(p2));
+
+        if (root1 != root2)
+          unionAssemble(union, root1, root2);
+
+        sb.append(Math.abs(union.get(findUnion(union, root1)))).append("\n");
+      }
+    }
+    System.out.print(sb.toString());
+  }
+
+  private static void unionAssemble(ArrayList<Integer> union, int root1, int root2) {
+    if (union.get(root1) > union.get(root2)) {
+      int temp = root1;
+      root1 = root2;
+      root2 = temp;
+    }
+
+    union.set(root1, union.get(root1) + union.get(root2));
+    union.set(root2, root1);
+  }
+
+  public static int findUnion(ArrayList<Integer> union, int value) {
+    ArrayDeque<Integer> q = new ArrayDeque<>();
+
+    while (union.get(value) >= 0) {
+      q.add(value);
+      value = union.get(value);
+    }
+    while (!(q.isEmpty())) {
+      union.set(q.poll(), value);
+    }
+    return value;
+  }
+
+  public static void addMember(HashMap<String, Integer> map, ArrayList<Integer> union, String p) {
+    if (map.containsKey(p))
+      return;
+
+    map.put(p, map.size());
+    union.add(-1);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N α(N))
+- 공간: O(N)

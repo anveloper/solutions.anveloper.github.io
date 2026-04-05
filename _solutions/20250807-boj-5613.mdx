@@ -1,0 +1,100 @@
+---
+title: "BOJ 5613 - 계산기 프로그램"
+date: "2025-08-07"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "5613"
+problem_url: "https://www.acmicpc.net/problem/5613"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5613 - 계산기 프로그램](https://www.acmicpc.net/problem/5613)
+
+초기 정수 A에서 시작하여 `연산자 B` 쌍이 반복적으로 주어지며, `=`이 입력되면 연산을 종료하고 최종 결과를 출력하는 누적 계산기 문제다. 지원 연산자는 `+`, `-`, `*`, `/`이다.
+
+### 입력
+
+- 첫 줄에 초기 정수 A가 주어진다.
+- 이후 `연산자 B` 쌍이 줄마다 주어지며, 연산자가 `=`이면 종료한다.
+
+### 출력
+
+- 최종 계산 결과를 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `5` `+ 3` `* 2` `=` | `16` |
+
+## 풀이
+
+초기값을 누산기로 사용하며, 연산자와 피연산자를 반복 입력받아 누적 계산한다.
+
+1. 초기값 `a`를 입력받는다.
+2. 연산자 `op`를 읽고, `=`이면 루프 종료
+3. `op`가 `=`이 아니면 정수 `b`를 추가 입력
+4. `op`에 따라 `a = a op b` 연산 수행
+5. 루프 종료 후 `a` 출력
+
+**핵심 아이디어**: 결과를 `a` 변수에 계속 덮어쓰는 누산기(accumulator) 패턴으로 구현한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int a;
+  cin >> a;
+
+  while (true)
+  {
+    char op;
+    cin >> op;
+
+    if (op == '=')
+    {
+      break;
+    }
+
+    int b;
+    cin >> b;
+
+    if (op == '+')
+    {
+      a = a + b;
+    }
+    else if (op == '-')
+    {
+      a = a - b;
+    }
+    else if (op == '*')
+    {
+      a = a * b;
+    }
+    else if (op == '/')
+    {
+      a = a / b;
+    }
+  }
+
+  cout << a;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 연산 횟수 N에 비례
+- 공간: O(1) — 상수 개의 변수만 사용

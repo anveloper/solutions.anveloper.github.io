@@ -1,0 +1,79 @@
+---
+title: "BOJ 1267 - 핸드폰 요금"
+date: "2024-03-07"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "1267"
+problem_url: "https://www.acmicpc.net/problem/1267"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1267 - 핸드폰 요금](https://www.acmicpc.net/problem/1267)
+
+N건의 통화 시간이 주어질 때, 영식 요금제(30초당 10원)와 민식 요금제(60초당 15원) 중 더 저렴한 것을 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N개의 통화 시간(초)이 주어진다.
+
+### 출력
+
+저렴한 요금제와 금액을 출력한다. 같으면 둘 다 출력한다.
+
+### 예제
+
+| 입력             | 출력   |
+| ---------------- | ------ |
+| `3` `40 160 200` | `M 45` |
+
+## 풀이
+
+각 통화에 대해 두 요금제의 요금을 계산하여 총액을 비교한다.
+
+1. 각 통화 시간 K에 대해 영식 요금 `(K/30 + 1) * 10`, 민식 요금 `(K/60 + 1) * 15`를 합산한다
+2. 총 영식 요금과 민식 요금을 비교하여 저렴한 쪽을 출력한다
+3. 같으면 "Y M 금액"을 출력한다
+
+**핵심 아이디어**: 구간 요금제이므로 `(시간/구간길이 + 1) * 단가`로 각 통화의 요금을 계산한다.
+
+## 코드
+
+```java
+package day799;
+
+import java.util.*;
+
+public class Day765BOJ1267핸드폰요금 {
+
+  public static void main(String args[]) throws Exception {
+    Scanner sc = new Scanner(System.in);
+    int N = sc.nextInt();
+    int K;
+    int YoungSik = 0, MinSik = 0;
+    for (int i = 0; i < N; i++) {
+      K = sc.nextInt();
+      YoungSik += ((K / 30) + 1) * 10;
+      MinSik += ((K / 60) + 1) * 15;
+
+    }
+    if (YoungSik == MinSik) {
+      System.out.println("Y M " + YoungSik);
+    } else if (YoungSik < MinSik) {
+      System.out.println("Y " + YoungSik);
+    } else if (YoungSik > MinSik) {
+      System.out.println("M " + MinSik);
+    }
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

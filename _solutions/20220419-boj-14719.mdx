@@ -1,0 +1,89 @@
+---
+title: "BOJ 14719 - 빗물"
+date: "2022-04-19"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "14719"
+problem_url: "https://www.acmicpc.net/problem/14719"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14719 - 빗물](https://www.acmicpc.net/problem/14719)
+
+2차원 세계에 블록이 쌓여 있을 때, 비가 오면 블록 사이에 고이는 빗물의 총량을 구하라.
+
+### 입력
+
+첫째 줄에 세로 H, 가로 W (1 ≤ H, W ≤ 500)가 주어진다. 둘째 줄에 각 열의 블록 높이가 W개 주어진다 (0 이상 H 이하).
+
+### 출력
+
+고이는 빗물의 총량을 출력한다. 빗물이 없으면 0을 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `4 4` `3 0 1 2` | `5`  |
+
+## 풀이
+
+각 열에 고일 수 있는 물의 양을 독립적으로 계산한다. 양쪽 끝을 제외한 각 열에서, 왼쪽 최대 높이와 오른쪽 최대 높이 중 작은 값이 물의 수위가 된다.
+
+1. 인덱스 1부터 W-2까지 각 열을 순회한다
+2. 현재 열 왼쪽의 최대 블록 높이(l)를 구한다
+3. 현재 열 오른쪽의 최대 블록 높이(r)를 구한다
+4. 현재 블록이 min(l, r)보다 낮으면 그 차이만큼 물이 고인다
+
+**핵심 아이디어**: 각 열의 물 높이는 양쪽 벽 중 낮은 쪽에 의해 결정된다. 양쪽 최대 높이를 구해 현재 블록과의 차이를 더하면 된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day71BOJ14719빗물인덱스관리 {
+	static int H, W, r, l, ans;
+	static int[] arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		H = Integer.parseInt(st.nextToken());
+		W = Integer.parseInt(st.nextToken());
+		ans = 0;
+
+		arr = new int[W];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < W; i++)
+			arr[i] = Integer.parseInt(st.nextToken());
+
+		for (int i = 1; i < W - 1; i++) {
+			r = l = 0;
+			for (int j = 0; j < i; j++)
+				l = Math.max(arr[j], l);
+			for (int j = i + 1; j < W; j++)
+				r = Math.max(arr[j], r);
+			if (arr[i] < l && arr[i] < r)
+				ans += Math.min(l, r) - arr[i];
+		}
+
+		System.out.println(ans);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(W²)
+- 공간: O(W)

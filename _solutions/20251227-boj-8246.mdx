@@ -1,0 +1,62 @@
+---
+title: "BOJ 8246 - Stół"
+date: "2025-12-27"
+description: "수학 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "8246"
+problem_url: "https://www.acmicpc.net/problem/8246"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8246 - Stół](https://www.acmicpc.net/problem/8246)
+
+a x b 크기의 테이블을 k x k 타일로 깔 때, 테두리에 놓이는 타일의 수를 구하라.
+
+### 입력
+
+세 양의 정수 a, b, k가 주어진다.
+
+### 출력
+
+테두리에 놓이는 타일의 수를 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `6 6 2` | `8`  |
+
+## 풀이
+
+전체 타일 수에서 내부 타일 수를 빼서 테두리 타일 수를 구한다.
+
+1. 전체 타일 수는 `(a/k) * (b/k)`이다
+2. 내부 타일 수는 `max(0, a/k - 2) * max(0, b/k - 2)`이다
+3. 전체에서 내부를 빼면 테두리 타일 수이다
+
+**핵심 아이디어**: 테두리 타일 = 전체 타일 - 내부 타일. 내부는 가로/세로 각각 양쪽 1줄씩 제외한 영역이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+int a, b, k;
+int main()
+{
+  cin >> a >> b >> k;
+  cout << (a / k) * (b / k) - max(0, a / k - 2) * max(0, b / k - 2);
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

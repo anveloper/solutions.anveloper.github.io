@@ -1,0 +1,68 @@
+---
+title: "BOJ 1669 - 멍멍이 쓰다듬기"
+date: "2024-06-30"
+description: "키 차이를 최소 일수로 줄이기 위한 수학적 규칙을 찾는 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "1669"
+problem_url: "https://www.acmicpc.net/problem/1669"
+difficulty: "골드 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1669 - 멍멍이 쓰다듬기](https://www.acmicpc.net/problem/1669)
+
+원숭이와 강아지의 키가 주어질 때, 하루에 키 변화량을 이전 날 대비 ±1씩만 조절할 수 있고 첫날과 마지막 날은 1이어야 할 때, 같은 키로 만드는 최소 일수를 구하라.
+
+### 입력
+
+원숭이의 키와 강아지의 키가 주어진다.
+
+### 출력
+
+최소 일수를 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `10 14` | `3`  |
+
+## 풀이
+
+키 차이를 D라 하면, 변화량이 1,2,...,k,...,2,1 패턴이므로 `k*(k+1)`까지 처리 가능하다. D가 속하는 구간으로 일수를 결정한다.
+
+1. D = 0이면 0, D = 1이면 1, D = 2이면 2
+2. `i*(i+1) < D <= i*(i+1)+(i+1)`이면 `2*i+1`일
+3. `i*(i+1)+(i+1) < D <= (i+1)*(i+2)`이면 `2*i+2`일
+
+**핵심 아이디어**: 변화량이 대칭 삼각형 패턴이므로 최대 변화량 k에 대해 총 변화 = k\*(k+1)이며, 이 구간에서 일수를 O(sqrt(D))에 결정한다.
+
+## 코드
+
+```python
+mok, dog = map(int, input().split())
+rest = dog - mok
+if rest == 0:
+    print(0)
+elif rest == 1:
+    print(1)
+elif rest == 2:
+    print(2)
+else:
+    for i in range(1, 100000000):
+        if i * (i + 1) < rest <= i * (i + 1) + (i + 1):
+            print(i * 2 + 1)
+            break
+        if i * (i + 1) + (i + 1) < rest <= (i + 1) * (i + 2):
+            print(i * 2 + 2)
+            break
+```
+
+## 복잡도
+
+- 시간: O(sqrt(D)) (D: 키 차이)
+- 공간: O(1)

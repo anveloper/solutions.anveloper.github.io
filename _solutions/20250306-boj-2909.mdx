@@ -1,0 +1,56 @@
+---
+title: "BOJ 2909 - 캔디 구매"
+date: "2025-03-06"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "2909"
+problem_url: "https://www.acmicpc.net/problem/2909"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2909 - 캔디 구매](https://www.acmicpc.net/problem/2909)
+
+캔디 가격 C를 10^K 단위로 반올림한 값을 구하라.
+
+### 입력
+
+캔디 가격 C와 정수 K가 주어진다.
+
+### 출력
+
+C를 10^K 단위로 반올림한 값을 출력한다.
+
+### 예제
+
+| 입력       | 출력     |
+| ---------- | -------- |
+| `5 1`      | `10`     |
+| `314159 3` | `314000` |
+
+## 풀이
+
+Python의 `round()` 함수에 음수 자릿수를 지정하여 10^K 단위로 반올림한다.
+
+1. 가격 C와 자릿수 K를 입력받는다
+2. `round(c, -k)`를 사용하면 10^K 단위로 반올림된다
+3. Python의 banker's rounding(짝수 반올림)을 회피하기 위해 `c + 0.1`로 보정한다
+4. 결과를 정수로 변환하여 출력한다
+
+**핵심 아이디어**: `round()` 함수의 두 번째 인자에 음수를 넣으면 10의 거듭제곱 단위로 반올림할 수 있다.
+
+## 코드
+
+```python
+c, k = map(int, input().split())
+print(int(round(c + 0.1, -k)))
+```
+
+## 복잡도
+
+- 시간: O(1) — 단일 반올림 연산
+- 공간: O(1) — 상수 공간

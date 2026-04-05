@@ -1,0 +1,71 @@
+---
+title: "BOJ 1308 - D-Day"
+date: "2024-04-13"
+description: "두 날짜 사이의 일수를 계산하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1308"
+problem_url: "https://www.acmicpc.net/problem/1308"
+difficulty: "실버 V"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1308 - D-Day](https://www.acmicpc.net/problem/1308)
+
+두 날짜가 주어질 때, 두 날짜 사이의 일수를 D-day 형식으로 출력하라. 1000년 이상 차이나면 "gg"를 출력한다.
+
+### 입력
+
+두 줄에 각각 연, 월, 일이 주어진다.
+
+### 출력
+
+"D-일수" 형식으로 출력한다. 1000년 이상이면 "gg"를 출력한다.
+
+### 예제
+
+| 입력                   | 출력    |
+| ---------------------- | ------- |
+| `2008 11 6` `2009 4 4` | `D-149` |
+
+## 풀이
+
+Date 객체로 날짜를 파싱하고 밀리초 차이를 일수로 변환한다.
+
+1. 두 날짜의 연도 차이가 1000 이상이면 "gg"를 반환한다
+2. Date 객체로 두 날짜를 생성한다
+3. 밀리초 차이를 86400000(하루)으로 나누어 일수를 계산한다
+4. "D-일수" 형식으로 출력한다
+
+**핵심 아이디어**: JavaScript Date 객체가 윤년 등을 자동 처리하므로, 밀리초 차이를 일수로 변환하면 간단히 해결된다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [y1, m1, d1] = input[0].trim().split(" ").map(Number);
+  const [y2, m2, d2] = input[1].trim().split(" ").map(Number);
+
+  if (y2 - y1 > 1000 || (y2 - y1 === 1000 && (m2 > m1 || (m2 === m1 && d2 >= d1)))) {
+    return "gg";
+  }
+
+  const date1 = new Date(y1, m1 - 1, d1);
+  const date2 = new Date(y2, m2 - 1, d2);
+  const diff = Math.round((date2 - date1) / (1000 * 60 * 60 * 24));
+
+  return `D-${diff}`;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

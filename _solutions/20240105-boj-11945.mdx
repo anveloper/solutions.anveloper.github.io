@@ -1,0 +1,73 @@
+---
+title: "BOJ 11945 - 뜨거운 붕어빵"
+date: "2024-01-05"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "11945"
+problem_url: "https://www.acmicpc.net/problem/11945"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11945 - 뜨거운 붕어빵](https://www.acmicpc.net/problem/11945)
+
+N x M 크기의 격자가 주어질 때, 각 행을 좌우 반전하여 출력하라.
+
+### 입력
+
+첫째 줄에 N과 M, 이후 N줄에 M자리 문자열이 주어진다.
+
+### 출력
+
+각 행을 좌우 반전한 결과를 출력한다.
+
+### 예제
+
+| 입력                | 출력          |
+| ------------------- | ------------- |
+| `2 4` `1001` `1010` | `1001` `0101` |
+
+## 풀이
+
+각 행의 문자열을 뒤에서부터 역순으로 읽어 출력한다.
+
+1. N과 M을 입력받는다
+2. 각 행에 대해 M-1번 인덱스부터 0번까지 역순으로 문자를 출력한다
+3. `BufferedWriter`로 한 번에 플러시한다
+
+**핵심 아이디어**: 각 행을 역순으로 순회하여 좌우 반전을 구현한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+
+public class Day703BOJ11945뜨거운붕어빵 {
+  public static void main(String args[]) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    String str1[] = br.readLine().split(" ");
+    int N = Integer.parseInt(str1[0]);
+    int M = Integer.parseInt(str1[1]);
+    for (int i = 0; i < N; i++) {
+      String str = br.readLine();
+      for (int j = 0; j < M; j++) {
+        bw.write(str.charAt(M - j - 1));
+      }
+      bw.write("\n");
+    }
+    bw.flush();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* M) — 모든 문자 순회
+- 공간: O(M) — 각 행 문자열 저장

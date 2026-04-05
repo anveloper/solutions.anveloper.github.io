@@ -1,0 +1,59 @@
+---
+title: "BOJ 7510 - 고급 수학"
+date: "2025-05-18"
+description: "수학, 기하학, 피타고라스 정리 문제"
+tags: ["수학", "기하학", "피타고라스 정리"]
+platform: "boj"
+problem_number: "7510"
+problem_url: "https://www.acmicpc.net/problem/7510"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7510 - 고급 수학](https://www.acmicpc.net/problem/7510)
+
+세 변의 길이가 주어질 때, 직각 삼각형인지 판별하라.
+
+### 입력
+
+테스트 케이스 수 T와 각 케이스에 세 변의 길이가 주어진다.
+
+### 출력
+
+각 케이스마다 `Scenario #k:` 후 직각 삼각형이면 `yes`, 아니면 `no`를 출력한다.
+
+### 예제
+
+| 입력                | 출력                                     |
+| ------------------- | ---------------------------------------- |
+| `2` `3 4 5` `1 2 3` | `Scenario #1:` `yes` `Scenario #2:` `no` |
+
+## 풀이
+
+피타고라스 정리로 직각 삼각형 여부를 판별한다.
+
+1. 세 변을 오름차순 정렬한다
+2. 가장 긴 변의 제곱이 나머지 두 변의 제곱합과 같은지 확인한다
+
+**핵심 아이디어**: 어느 변이 빗변인지 모르므로 정렬 후 가장 긴 변을 빗변으로 확인하면 된다.
+
+## 코드
+
+```python
+for i in range(int(input())):
+    li = sorted(map(int, input().split()))
+    if li[0] ** 2 + li[1] ** 2 == li[2] ** 2:
+        print(f"Scenario #{i+1}:")
+        print("yes\n")
+    else:
+        print(f"Scenario #{i+1}:")
+        print("no\n")
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

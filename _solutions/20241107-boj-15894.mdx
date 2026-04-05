@@ -1,0 +1,60 @@
+---
+title: "BOJ 15894 - 수학은 체육과목 입니다"
+date: "2024-11-07"
+description: "정사각형 n개로 이루어진 계단의 둘레를 구하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "15894"
+problem_url: "https://www.acmicpc.net/problem/15894"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15894 - 수학은 체육과목 입니다](https://www.acmicpc.net/problem/15894)
+
+한 변의 길이가 1인 정사각형 n개를 계단 모양으로 쌓았을 때 둘레를 구하라.
+
+### 입력
+
+정수 n이 주어진다.
+
+### 출력
+
+계단 도형의 둘레를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `3`  | `12` |
+
+## 풀이
+
+계단 도형의 둘레 공식 `4n`을 적용한다.
+
+1. n을 입력받는다
+2. `n * 4`를 출력한다
+
+**핵심 아이디어**: 계단 모양의 둘레는 가로와 세로 각각 n+n=2n이 되고, 위/아래도 동일하므로 총 4n이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+int main()
+{
+  long n;
+  std::cin >> n;
+  std::cout << n * 4 << std::endl;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

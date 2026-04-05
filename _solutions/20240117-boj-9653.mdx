@@ -1,0 +1,61 @@
+---
+title: "BOJ 9653 - 스타워즈 로고"
+date: "2024-01-17"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "9653"
+problem_url: "https://www.acmicpc.net/problem/9653"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9653 - 스타워즈 로고](https://www.acmicpc.net/problem/9653)
+
+주어진 스타워즈 ASCII 아트를 그대로 출력하라.
+
+### 입력
+
+없음.
+
+### 출력
+
+11줄의 ASCII 아트를 출력한다.
+
+## 풀이
+
+고정된 스타워즈 로고 문자열을 하드코딩하여 출력한다.
+
+1. 각 줄을 문자열 리터럴로 이어 붙여 한 번에 출력한다
+
+**핵심 아이디어**: 고정 출력 문제이다.
+
+## 코드
+
+```java
+package day749;
+
+public class Day715BOJ9653스타워즈 {
+  public static void main(String[] args) throws Exception {
+    System.out.print("    8888888888  888    88888\n"
+        + "   88     88   88 88   88  88\n"
+        + "    8888  88  88   88  88888\n"
+        + "       88 88 888888888 88   88\n"
+        + "88888888  88 88     88 88    888888\n"
+        + "\n"
+        + "88  88  88   888    88888    888888\n"
+        + "88  88  88  88 88   88  88  88\n"
+        + "88 8888 88 88   88  88888    8888\n"
+        + " 888  888 888888888 88  88      88\n"
+        + "  88  88  88     88 88   88888888");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 출력
+- 공간: O(1) — 고정 문자열

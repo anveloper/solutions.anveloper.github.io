@@ -1,0 +1,89 @@
+---
+title: "BOJ 17298 - 오큰수"
+date: "2022-03-13"
+description: "자료 구조, 스택 문제"
+tags: ["자료 구조", "스택"]
+platform: "boj"
+problem_number: "17298"
+problem_url: "https://www.acmicpc.net/problem/17298"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17298 - 오큰수](https://www.acmicpc.net/problem/17298)
+
+크기 N인 수열 A에서 각 원소 A[i]에 대해, A[i]보다 크면서 A[i]의 오른쪽에 있는 가장 가까운 수(오큰수)를 구하는 문제다. 오큰수가 없으면 -1을 출력한다.
+
+### 입력
+
+- 첫째 줄: 수열의 크기 N (1 이상 1,000,000 이하)
+- 둘째 줄: 수열 A의 원소 N개 (각 1 이상 1,000,000 이하)
+
+### 출력
+
+각 원소의 오큰수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력          | 출력        |
+| ------------- | ----------- |
+| `4` `3 5 2 7` | `5 7 7 -1`  |
+| `4` `9 5 4 8` | `-1 8 8 -1` |
+
+## 풀이
+
+스택에 인덱스를 저장하며 오른쪽으로 순회하면서, 현재 원소가 스택 최상단 인덱스의 원소보다 크면 오큰수가 결정되는 방식으로 O(N)에 처리한다.
+
+1. 원소 배열 `arr`과 인덱스를 담을 `Stack`을 초기화한다.
+2. 배열을 왼쪽에서 오른쪽으로 순회한다.
+3. 현재 원소 `arr[i]`가 스택 최상단 인덱스가 가리키는 값보다 크면, 해당 인덱스를 팝하고 `arr[그 인덱스] = arr[i]`로 오큰수를 기록한다.
+4. 순회 후 스택에 남은 인덱스들은 오큰수가 없으므로 `arr[index] = -1`로 설정한다.
+5. 결과 배열을 출력한다.
+
+**핵심 아이디어**: 스택에 원소 값이 아닌 **인덱스**를 저장하면, 오큰수가 결정되는 시점에 해당 위치를 직접 수정할 수 있다. 각 원소는 스택에 최대 한 번 push/pop되므로 전체 시간 복잡도가 O(N)으로 보장된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Stack;
+import java.util.StringTokenizer;
+
+public class Day33BOJ17298 { // 17298 오큰수 스택
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		Stack<Integer> stack = new Stack<>();
+		int N = Integer.parseInt(br.readLine());
+		int[] arr = new int[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int idx = 0;
+		while (st.hasMoreTokens()) {
+			arr[idx++] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 0; i < N; i++) {
+			while (!stack.isEmpty() && arr[stack.peek()] < arr[i])
+				arr[stack.pop()] = arr[i];
+			stack.push(i);
+		}
+		while (!stack.isEmpty()) {
+			arr[stack.pop()] = -1;
+		}
+
+		System.out.println(Arrays.toString(arr).replaceAll("[\\[\\],]", ""));
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 각 원소는 스택에 최대 한 번 push, 한 번 pop
+- 공간: O(N) — 스택과 배열

@@ -1,0 +1,72 @@
+---
+title: "BOJ 8674 - Tabliczka"
+date: "2025-12-21"
+description: "수학 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "8674"
+problem_url: "https://www.acmicpc.net/problem/8674"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8674 - Tabliczka](https://www.acmicpc.net/problem/8674)
+
+a x b 구구단표에서 홀수인 칸의 개수를 구하라.
+
+### 입력
+
+두 양의 정수 a와 b가 주어진다.
+
+### 출력
+
+홀수 곱의 개수를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `3 3` | `3`  |
+
+## 풀이
+
+곱이 홀수가 되려면 두 수 모두 홀수여야 한다는 성질을 이용한다.
+
+1. a 또는 b가 짝수이면 모든 곱에 짝수가 포함되므로 0을 출력한다
+2. 둘 다 홀수이면 홀수 곱의 개수는 `min(a, b)`이다
+
+**핵심 아이디어**: `i * j`가 홀수이려면 i와 j 모두 홀수여야 하며, 1~a 중 홀수의 개수와 1~b 중 홀수의 개수를 곱하면 된다. 코드에서는 `min(a, b)`로 단순화했다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+  long long int a, b;
+  cin >> a >> b;
+
+  if (a % 2 == 0 || b % 2 == 0)
+  {
+    cout << 0 << '\n';
+  }
+  else
+  {
+    cout << min(a, b) << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

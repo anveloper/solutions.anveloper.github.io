@@ -1,0 +1,66 @@
+---
+title: "BOJ 4740 - 거울, 오! 거울"
+date: "2024-08-22"
+description: "문자열을 뒤집어서 출력하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4740"
+problem_url: "https://www.acmicpc.net/problem/4740"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4740 - 거울, 오! 거울](https://www.acmicpc.net/problem/4740)
+
+여러 문자열이 주어지면 각각을 뒤집어 출력하라. `***`이 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 문자열이 주어진다. `***`이 입력되면 종료.
+
+### 출력
+
+각 문자열을 뒤집어 출력한다.
+
+### 예제
+
+| 입력         | 출력   |
+| ------------ | ------ |
+| `abcd` `***` | `dcba` |
+
+## 풀이
+
+한 줄씩 읽어 종료 조건을 확인하고, 뒤집어 출력한다.
+
+1. `getline`으로 한 줄씩 읽는다
+2. `***`이면 종료한다
+3. `reverse`로 문자열을 뒤집어 출력한다
+
+**핵심 아이디어**: STL의 `reverse`로 문자열을 O(N)에 뒤집어 출력한다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+string s;
+int main()
+{
+  while (1)
+  {
+    getline(cin, s);
+    if (s == "***")
+      break;
+    reverse(s.begin(), s.end());
+    cout << s << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N) (T: 줄 수, N: 문자열 길이)
+- 공간: O(N)

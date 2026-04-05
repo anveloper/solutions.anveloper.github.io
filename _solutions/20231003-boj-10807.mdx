@@ -1,0 +1,85 @@
+---
+title: "BOJ 10807 - 개수 세기"
+date: "2023-10-03"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10807"
+problem_url: "https://www.acmicpc.net/problem/10807"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10807 - 개수 세기](https://www.acmicpc.net/problem/10807)
+
+N개의 정수가 주어질 때, 정수 v가 몇 개인지 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 정수의 개수 N (1 ≤ N ≤ 100), 둘째 줄에 N개의 정수, 셋째 줄에 찾을 정수 v가 주어진다.
+
+### 출력
+
+정수 v가 몇 개인지 출력한다.
+
+### 예제
+
+| 입력                             | 출력 |
+| -------------------------------- | ---- |
+| `11` `1 4 1 2 4 2 4 2 3 4 4` `2` | `3`  |
+
+## 풀이
+
+N개의 정수를 배열에 저장한 뒤, 배열을 순회하며 v와 같은 값의 개수를 센다.
+
+1. N개의 정수를 배열에 저장한다
+2. 찾을 정수 v를 입력받는다
+3. 배열을 순회하며 v와 같은 값이면 count를 증가시킨다
+4. 최종 count를 출력한다
+
+**핵심 아이디어**: 단순 선형 탐색으로 일치하는 원소의 개수를 센다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day606BOJ10807개수세기 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int N = Integer.parseInt(br.readLine());
+    int count = 0;
+    int[] arr = new int[N];
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    for (int i = 0; i < N; i++) {
+      arr[i] = Integer.parseInt(st.nextToken());
+    }
+
+    int b = Integer.parseInt(br.readLine());
+
+    for (int j = 0; j < arr.length; j++) {
+      if (b == arr[j]) {
+        count++;
+      }
+    }
+    System.out.println(count);
+
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

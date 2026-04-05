@@ -1,0 +1,75 @@
+---
+title: "BOJ 7770 - 아즈텍 피라미드"
+date: "2025-05-24"
+description: "수학 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "7770"
+problem_url: "https://www.acmicpc.net/problem/7770"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7770 - 아즈텍 피라미드](https://www.acmicpc.net/problem/7770)
+
+N개의 블록으로 아즈텍 피라미드를 만들 때, 최대 높이를 구하라. 높이 h인 피라미드에 필요한 블록 수는 `(2h³ + h) / 3`이다.
+
+### 입력
+
+블록 수 N이 주어진다.
+
+### 출력
+
+최대 높이를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `1`  | `1`  |
+
+## 풀이
+
+이분 탐색으로 조건을 만족하는 최대 높이를 찾는다.
+
+1. 높이 h에 필요한 블록 수 `(2h³ + h) / 3`이 N 이하인 최대 h를 구한다
+2. 이분 탐색으로 lo~hi 범위를 좁혀간다
+3. `2*mid³ + mid <= 3*N` 조건으로 판별한다
+
+**핵심 아이디어**: 블록 수는 높이의 3차 함수이므로 이분 탐색으로 O(log N)에 최대 높이를 구할 수 있다.
+
+## 코드
+
+```python
+import sys
+
+
+def max_height(n: int) -> int:
+    lo, hi = 0, int((1.5 * n) ** (1 / 3)) + 3
+    while 2 * hi**3 + hi <= 3 * n:
+        hi *= 2
+    while lo + 1 < hi:
+        mid = (lo + hi) // 2
+        if 2 * mid**3 + mid <= 3 * n:
+            lo = mid
+        else:
+            hi = mid
+    return lo
+
+
+def main():
+    n = int(sys.stdin.readline().strip())
+    print(max_height(n))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

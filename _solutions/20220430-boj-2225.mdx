@@ -1,0 +1,113 @@
+---
+title: "BOJ 2225 - 합분해"
+date: "2022-04-30"
+description: "수학, 다이나믹 프로그래밍 문제"
+tags: ["수학", "다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "2225"
+problem_url: "https://www.acmicpc.net/problem/2225"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2225 - 합분해](https://www.acmicpc.net/problem/2225)
+
+0부터 N까지의 정수 K개를 더해서 N을 만드는 경우의 수를 구한다. 순서가 다른 경우는 다른 경우로 취급하며, 같은 수를 여러 번 사용할 수 있다. 결과를 1,000,000,000으로 나눈 나머지를 출력한다.
+
+### 입력
+
+- 첫째 줄: 정수 N과 K (1 이상 200 이하)
+
+### 출력
+
+- 경우의 수 mod 1,000,000,000
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `20 2` | `21` |
+| `6 4`  | `84` |
+
+## 풀이
+
+2차원 DP를 이용해 "K개의 정수를 더해서 N을 만드는 경우의 수"를 점화식으로 계산한다.
+
+1. `dp[k][n]`을 "k개의 수를 더해서 n을 만드는 경우의 수"로 정의한다.
+2. 기저 조건:
+   - `dp[1][*] = 1` (수 하나로 임의의 n을 만드는 방법은 1가지)
+   - `dp[*][0] = 1` (어떤 k개로 0을 만드는 방법은 모두 0을 쓰는 1가지)
+3. 점화식: `dp[k][n] = dp[k-1][n] + dp[k][n-1]`
+   - k개의 합으로 n을 만들 때, 마지막 수가 0이면 앞 k-1개가 n을 만드는 경우
+   - 마지막 수가 1 이상이면 k개가 n-1을 만드는 경우에서 하나씩 증가한 것
+4. 계산 중 1,000,000,000으로 나눈 나머지를 유지한다.
+
+**핵심 아이디어**: `dp[k][n] = dp[k-1][n] + dp[k][n-1]`이라는 점화식은 n을 k개로 나누는 문제를 "마지막 원소를 0으로 고정할 때와 아닐 때"로 분리한 것이다. 이는 조합론적으로 C(N+K-1, K-1)과 같다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.util.Scanner;
+
+public class Day82BOJ2225합분해DP { // 2225 합분해
+	static final int MOD = 1_000_000_000;
+	static int N, K, ans;
+	static Integer[][] dp;
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		N = sc.nextInt();
+		K = sc.nextInt();
+		dp = new Integer[K + 1][N + 1];
+
+		System.out.println(recur2(K, N));
+		sc.close();
+	}
+
+	private static int recur(int k, int n) {
+		if (k == 1 || n == 0)
+			return 1;
+		if (dp[k][n] != null)
+			return dp[k][n];
+		return dp[k][n] = (recur(k - 1, n) + recur(k, n - 1)) % MOD;
+	}
+
+	private static int recur2(int k, int n) {
+		return dp[k][n] = (k == 1 || n == 0) ? 1
+				: ((dp[k][n] != null) ? dp[k][n] : (recur(k - 1, n) + recur(k, n - 1)) % MOD);
+	}
+}
+// 예제 1
+// 20 2
+//
+// 0 ~ 20
+// 1 : 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 = 각 1
+// 2 : 0+20 1+19 2+18 3+17 4+16 5+15 6+14 7+13 8+12 9+11 10+10
+// --- 11+9 12+8 13+7 14+6 15+5 16+4 17+3 18+2 19+1 20+0
+// = 21
+
+// 예제 2
+// 6 4
+// --- 0 1 2 3 4 5 6
+// 1-0~6 : 0 1 2 3 4 5 6 = 각 1
+// 2-0: 0+0 = 1
+// 2-1: 0+1 1+0 = 2
+// 2-2: 0+2 1+1 2+1 = 3
+// 2-3: 0+3 1+2 2+1 3+0 = 4
+// 2-4: 0+4 1+3 2+2 3+1 4+0 = 5
+// 2-5: 0+5 1+4 2+3 3+2 4+1 5+0 = 6
+// 2-6: 0+6 1+5 2+4 3+3 4+2 5+1 6+0 = 7
+// 3-0: 0+0+0 = 1
+// 3-1: 0+0+1 0+1+0 1+0+0 = 3
+// 4-6: result = 84
+```
+
+## 복잡도
+
+- 시간: O(N × K) — DP 테이블의 각 상태를 한 번씩 계산
+- 공간: O(N × K) — 2차원 dp 테이블

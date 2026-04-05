@@ -1,0 +1,79 @@
+---
+title: "BOJ 1459 - 걷기"
+date: "2023-04-13"
+description: "수학, 많은 조건 분기 문제"
+tags: ["수학", "많은 조건 분기"]
+platform: "boj"
+problem_number: "1459"
+problem_url: "https://www.acmicpc.net/problem/1459"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1459 - 걷기](https://www.acmicpc.net/problem/1459)
+
+(0,0)에서 (X,Y)까지 이동할 때 최소 시간을 구하라. 한 블록 직선 이동에 W분, 대각선 이동에 S분이 걸린다.
+
+### 입력
+
+X, Y, W, S가 주어진다.
+
+### 출력
+
+최소 이동 시간을 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `4 2 3 10` | `18` |
+
+## 풀이
+
+세 가지 이동 전략의 최솟값을 구한다.
+
+1. **직선만 사용**: (X+Y) \* W
+2. **대각선 최대 사용**: 대각선으로 min(X,Y)만큼 이동 후 나머지 직선 → min(X,Y)*S + |X-Y|*W
+3. **전부 대각선**: max(X,Y)만큼 대각선 이동 (X+Y 홀수면 마지막 1칸 직선)
+
+**핵심 아이디어**: 대각선 비용이 직선 2번보다 싸면 대각선을 최대한 쓰고, 비싸면 직선만 사용하는 것이 최적이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day431BOJ1459걷기 {
+  static long X, Y, W, S;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    X = Long.parseLong(st.nextToken());
+    Y = Long.parseLong(st.nextToken());
+    W = Long.parseLong(st.nextToken());
+    S = Long.parseLong(st.nextToken());
+
+    System.out.println(
+        Math.min(
+            Math.min(
+                (X + Y) * W,
+                (X + Y) % 2 == 0
+                    ? Math.max(X, Y) * S
+                    : (Math.max(X, Y) - 1) * S + W),
+            Math.min(X, Y) * S + Math.abs(X - Y) * W));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

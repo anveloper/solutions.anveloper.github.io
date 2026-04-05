@@ -1,0 +1,65 @@
+---
+title: "BOJ 3063 - 게시판"
+date: "2025-06-07"
+description: "수학, 기하학 문제"
+tags: ["수학", "기하학"]
+platform: "boj"
+problem_number: "3063"
+problem_url: "https://www.acmicpc.net/problem/3063"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3063 - 게시판](https://www.acmicpc.net/problem/3063)
+
+직사각형 게시판 위에 현수막이 걸릴 때, 게시판의 보이는 면적을 구하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 게시판의 좌하단/우상단 좌표와 현수막의 좌하단/우상단 좌표가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 보이는 면적을 출력한다.
+
+### 예제
+
+| 입력                    | 출력 |
+| ----------------------- | ---- |
+| `1` `1 1 10 10 3 3 8 8` | `56` |
+
+## 풀이
+
+게시판 넓이에서 현수막과 겹치는 영역을 빼서 보이는 면적을 구한다.
+
+1. 게시판의 전체 넓이를 계산한다
+2. 현수막과 게시판이 겹치지 않으면 전체 넓이를 그대로 출력한다
+3. 겹치면 겹치는 직사각형의 넓이를 계산하여 전체 넓이에서 뺀다
+
+**핵심 아이디어**: 두 직사각형의 겹침 영역은 x, y 각 축에서 `max(좌측) ~ min(우측)` 범위의 교집합으로 구한다.
+
+## 코드
+
+```python
+import sys
+
+
+for t in range(int(sys.stdin.readline())):
+    x1, y1, x2, y2, tx1, ty1, tx2, ty2 = map(int, sys.stdin.readline().split())
+
+    base = (x2 - x1) * (y2 - y1)
+    if tx2 <= x1 or ty2 <= y1 or x2 <= tx1 or y2 <= ty1:
+        print(base)
+        continue
+
+    hide = (min(x2, tx2) - max(x1, tx1)) * (min(y2, ty2) - max(y1, ty1))
+    print(base - hide)
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

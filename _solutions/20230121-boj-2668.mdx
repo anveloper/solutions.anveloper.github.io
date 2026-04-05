@@ -1,0 +1,98 @@
+---
+title: "BOJ 2668 - 숫자고르기"
+date: "2023-01-21"
+description: "그래프 이론, 그래프 탐색, 깊이 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "2668"
+problem_url: "https://www.acmicpc.net/problem/2668"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2668 - 숫자고르기](https://www.acmicpc.net/problem/2668)
+
+1~N까지의 수가 적힌 표의 첫째 줄에서 수를 뽑으면, 뽑은 수의 집합과 그 아래 둘째 줄 수의 집합이 같도록 최대한 많이 뽑아라.
+
+### 입력
+
+첫째 줄에 N (1 이상 100 이하), 둘째 줄부터 표의 둘째 줄 값이 주어진다.
+
+### 출력
+
+뽑은 수의 개수와 뽑은 수를 오름차순으로 출력한다.
+
+### 예제
+
+| 입력                            | 출력            |
+| ------------------------------- | --------------- |
+| `7` `3` `1` `1` `5` `5` `4` `6` | `3` `1` `3` `5` |
+
+## 풀이
+
+각 노드에서 DFS로 사이클을 찾아, 사이클에 속한 모든 노드를 선택한다.
+
+1. `i → arr[i]`를 간선으로 하는 함수 그래프를 구성한다
+2. 각 노드 i에서 시작하여 DFS로 탐색한다
+3. 탐색 중 시작 노드 i로 돌아오면 사이클이 존재하므로 i를 결과에 추가한다
+4. 방문 배열로 무한 루프를 방지한다
+5. 결과를 정렬하여 출력한다
+
+**핵심 아이디어**: 뽑은 집합과 둘째 줄 집합이 같으려면, 선택된 노드들이 함수 그래프에서 사이클을 이루어야 한다. 모든 사이클을 찾으면 최대 선택 집합이 된다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.*;
+
+public class Day348BOJ2668숫자고르기 {
+    static int N;
+    static int[] arr;
+    static boolean[] visited;
+    static List<Integer> list;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+        arr = new int[N + 1];
+        for (int i = 0; i < N; i++) {
+            arr[i + 1] = Integer.parseInt(br.readLine());
+        }
+
+        list = new ArrayList<>();
+        for (int i = 1; i <= N; i++) {
+            visited = new boolean[N + 1];
+            dfs(i, i);
+        }
+
+        System.out.println(list.size());
+        Collections.sort(list);
+        for (Integer i : list) {
+            System.out.println(i);
+        }
+    }
+
+    static void dfs(int n, int start) {
+        if (arr[n] == start) {
+            list.add(n);
+            return;
+        }
+
+        visited[n] = true;
+        if (!visited[arr[n]]) {
+            dfs(arr[n], start);
+        }
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) - 각 노드에서 최대 N번 DFS
+- 공간: O(N) - 방문 배열 및 결과 리스트

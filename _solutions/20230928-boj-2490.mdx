@@ -1,0 +1,73 @@
+---
+title: "BOJ 2490 - 윷놀이"
+date: "2023-09-28"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2490"
+problem_url: "https://www.acmicpc.net/problem/2490"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2490 - 윷놀이](https://www.acmicpc.net/problem/2490)
+
+윷을 세 번 던져 나온 결과(0: 배, 1: 등)를 바탕으로 도/개/걸/윷/모를 판별한다.
+
+### 입력
+
+3줄에 걸쳐 4개의 숫자(0 또는 1)가 주어진다.
+
+### 출력
+
+각 던지기 결과를 A(모), B(도), C(개), D(걸), E(윷) 중 하나로 출력한다.
+
+### 예제
+
+| 입력                          | 출력        |
+| ----------------------------- | ----------- |
+| `0 1 0 0` `1 1 1 0` `0 0 1 1` | `A` `D` `C` |
+
+## 풀이
+
+4개의 윷 값을 합산하여 배열 인덱스로 결과를 매핑한다.
+
+1. 배(0)의 합계가 0이면 모(E), 1이면 도(A), 2이면 개(B), 3이면 걸(C), 4이면 윷(D)
+2. 합계를 인덱스로 사용하여 `{"D", "C", "B", "A", "E"}` 배열에서 결과를 가져온다
+3. 3번 반복한다
+
+**핵심 아이디어**: 등(1)의 합계를 배열 인덱스로 활용하면 조건 분기 없이 결과를 매핑할 수 있다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day630BOJ2490윷놀이 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String[] arr = { "D", "C", "B", "A", "E" };
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 3; i++) {
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      int sum = 0;
+      while (st.hasMoreTokens()) {
+        sum += Integer.parseInt(st.nextToken());
+      }
+      sb.append(arr[sum] + "\n");
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 3x4 반복
+- 공간: O(1)

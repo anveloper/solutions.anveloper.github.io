@@ -1,0 +1,91 @@
+---
+title: "BOJ 12605 - 단어순서 뒤집기"
+date: "2024-11-29"
+description: "문장의 단어 순서를 뒤집어 출력하는 스택 문제"
+tags: ["구현", "문자열", "스택"]
+platform: "boj"
+problem_number: "12605"
+problem_url: "https://www.acmicpc.net/problem/12605"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 12605 - 단어순서 뒤집기](https://www.acmicpc.net/problem/12605)
+
+문장이 주어지면 단어의 순서를 뒤집어 출력하라.
+
+### 입력
+
+테스트 케이스 수 N, 각 케이스마다 문장이 한 줄씩 주어진다.
+
+### 출력
+
+각 케이스마다 "Case #i:" 형식과 함께 단어 순서를 뒤집은 문장을 출력한다.
+
+### 예제
+
+| 입력                 | 출력                      |
+| -------------------- | ------------------------- |
+| `1` `this is a test` | `Case #1: test a is this` |
+
+## 풀이
+
+스택을 이용하여 단어 순서를 뒤집는다.
+
+1. 문장을 공백 기준으로 분리하면서 각 단어와 공백을 스택에 push한다
+2. 스택에서 pop하면 자연스럽게 역순이 되므로 이를 이어 붙인다
+3. "Case #i:" 형식으로 출력한다
+
+**핵심 아이디어**: 스택의 LIFO 특성을 이용하면 단어 순서가 자연스럽게 뒤집힌다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <stack>
+#include <string>
+
+using namespace std;
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+
+  int N;
+  cin >> N;
+  cin.ignore();
+  for (int i = 1; i <= N; i++)
+  {
+    string s, temp, ans;
+    stack<string> st;
+    getline(cin, s);
+
+    for (int k = 0; k < s.length(); k++)
+    {
+      if (s[k] == ' ')
+      {
+        st.push(temp);
+        st.push(" ");
+        temp.clear();
+      }
+      else
+        temp += s[k];
+    }
+    st.push(temp);
+    while (!st.empty())
+    {
+      ans += st.top();
+      st.pop();
+    }
+    cout << "Case #" << i << ": " << ans << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (N: 테스트 케이스, L: 문장 길이)
+- 공간: O(L)

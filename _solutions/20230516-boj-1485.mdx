@@ -1,0 +1,111 @@
+---
+title: "BOJ 1485 - 정사각형"
+date: "2023-05-16"
+description: "정렬, 기하학 문제"
+tags: ["정렬", "기하학"]
+platform: "boj"
+problem_number: "1485"
+problem_url: "https://www.acmicpc.net/problem/1485"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1485 - 정사각형](https://www.acmicpc.net/problem/1485)
+
+4개의 점이 주어질 때 정사각형을 이루는지 판별하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 4개의 좌표가 주어진다.
+
+### 출력
+
+정사각형이면 1, 아니면 0을 출력한다.
+
+### 예제
+
+| 입력                                                | 출력    |
+| --------------------------------------------------- | ------- |
+| `2` `1 1` `1 2` `2 1` `2 2` `2 2` `3 2` `3 3` `2 3` | `1` `1` |
+
+## 풀이
+
+4개 점 사이의 6개 거리를 정렬하여 4개의 변과 2개의 대각선이 각각 같은지 확인한다.
+
+1. 4개 점의 모든 쌍(6개)에 대해 거리 제곱을 구한다
+2. 6개 거리를 정렬한다
+3. 앞 4개(변)가 같고, 뒤 2개(대각선)가 같으면 정사각형이다
+
+**핵심 아이디어**: 정사각형은 4변이 같고 2대각선이 같은 유일한 사각형이다. 거리 제곱을 사용하여 실수 오차를 피한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day464BOJ1485정사각형 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < N; i++) {
+
+      List<Point> points = new ArrayList<>();
+      for (int k = 0; k < 4; k++) {
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int x = Integer.parseInt(st.nextToken());
+        int y = Integer.parseInt(st.nextToken());
+        points.add(new Point(x, y));
+      }
+
+      if (isSquare(points))
+        sb.append(1);
+      else
+        sb.append(0);
+
+      sb.append('\n');
+    }
+
+    System.out.println(sb);
+  }
+
+  private static boolean isSquare(List<Point> points) {
+    List<Long> deltas = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      for (int j = i + 1; j < 4; j++) {
+        deltas.add(points.get(i).getDelta(points.get(j)));
+      }
+    }
+
+    Collections.sort(deltas);
+
+    return deltas.get(0).equals(deltas.get(1)) && deltas.get(1).equals(deltas.get(2))
+        && deltas.get(2).equals(deltas.get(3)) && deltas.get(4).equals(deltas.get(5));
+  }
+
+  static class Point {
+    int x, y;
+
+    public Point(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    public long getDelta(Point o) {
+      return (long) (Math.pow(x - o.x, 2) + Math.pow(y - o.y, 2));
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T) - 각 케이스 고정 연산
+- 공간: O(1)

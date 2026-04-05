@@ -1,0 +1,68 @@
+---
+title: "BOJ 10870 - 피보나치 수 5"
+date: "2022-03-14"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "10870"
+problem_url: "https://www.acmicpc.net/problem/10870"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10870 - 피보나치 수 5](https://www.acmicpc.net/problem/10870)
+
+정수 N이 주어질 때, N번째 피보나치 수를 구하라. (F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2))
+
+### 입력
+
+첫째 줄에 N (0 이상 20 이하)이 주어진다.
+
+### 출력
+
+N번째 피보나치 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `10` | `55` |
+
+## 풀이
+
+재귀 함수로 피보나치 수를 직접 계산한다.
+
+1. 기저 조건: n이 0이면 0, n이 1이면 1을 반환한다
+2. 재귀: recur(n-1) + recur(n-2)를 반환한다
+
+**핵심 아이디어**: N이 최대 20이므로 중복 계산이 발생하는 단순 재귀로도 충분하다. 삼항 연산자로 기저/재귀를 한 줄에 표현했다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day35BOJ10870재귀피보 { // 10870 재귀피보
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+
+		System.out.println(recur(N));
+		sc.close();
+	}
+
+	private static int recur(int n) {
+		return (n > 1) ? recur(n - 1) + recur(n - 2) : n;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(2^N) — 메모이제이션 없는 재귀 (N이 최대 20이라 실용적)
+- 공간: O(N) — 재귀 스택 깊이

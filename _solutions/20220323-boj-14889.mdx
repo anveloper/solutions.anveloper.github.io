@@ -1,0 +1,129 @@
+---
+title: "BOJ 14889 - 스타트와 링크"
+date: "2022-03-23"
+description: "브루트포스 알고리즘, 백트래킹 문제"
+tags: ["브루트포스 알고리즘", "백트래킹"]
+platform: "boj"
+problem_number: "14889"
+problem_url: "https://www.acmicpc.net/problem/14889"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14889 - 스타트와 링크](https://www.acmicpc.net/problem/14889)
+
+N명(N은 짝수)을 스타트 팀과 링크 팀으로 N/2명씩 나누는 문제다. 팀 능력치는 팀원 i, j 쌍에 대한 `S[i][j] + S[j][i]` 값의 합이다. 두 팀의 능력치 차이의 최솟값을 구한다.
+
+### 입력
+
+- 첫째 줄: N (4 ≤ N ≤ 20, 짝수)
+- 다음 N줄: N×N 능력치 배열
+
+### 출력
+
+두 팀의 능력치 차이의 최솟값
+
+### 예제
+
+| 입력                                        | 출력 |
+| ------------------------------------------- | ---- |
+| `4` `0 1 2 3` `4 0 5 6` `7 1 0 2` `3 4 5 0` | `0`  |
+
+## 풀이
+
+DFS(백트래킹)로 N명 중 N/2명을 선택하는 모든 조합을 탐색한다. 각 조합에서 방문 배열로 팀을 구분하고 두 팀의 능력치 차이를 계산하여 최솟값을 갱신한다.
+
+1. `dfs(idx, count)` 함수로 N/2명이 선택될 때까지 조합을 탐색한다.
+2. `count == N/2`이면 `diff()` 함수로 두 팀의 능력치 차이를 계산한다.
+3. `diff()` 함수에서 `visit[i] == true`인 팀을 스타트 팀, `false`인 팀을 링크 팀으로 구분하고 각 팀의 능력치를 합산한다.
+4. 차이가 0이면 즉시 출력하고 종료한다.
+5. 그렇지 않으면 최솟값을 갱신한다.
+
+**핵심 아이디어:** N/2명을 선택하는 조합을 구하면, 선택된 멤버가 스타트 팀, 나머지가 자동으로 링크 팀이 된다. 조합 탐색이므로 시작 인덱스 `idx`를 사용하여 중복 없는 C(N, N/2) 가지만 탐색한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day44BOJ14889스타트와링크DFS { // 14889스타트와 링크
+	static int N;
+	static int min = Integer.MAX_VALUE;
+
+	static int[][] map;
+	static boolean[] visit;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+
+		map = new int[N][N];
+		visit = new boolean[N];
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		dfs(0, 0);
+		System.out.println(min);
+
+	}
+
+	static void dfs(int idx, int count) {
+		if (count == N / 2) {
+			diff();
+			return;
+		}
+
+		for (int i = idx; i < N; i++) {
+			if (!visit[i]) {
+				visit[i] = true;
+				dfs(i + 1, count + 1);
+				visit[i] = false;
+			}
+		}
+	}
+
+	static void diff() {
+		int team_start = 0;
+		int team_link = 0;
+
+		for (int i = 0; i < N - 1; i++) {
+			for (int j = i + 1; j < N; j++) {
+				if (visit[i] == true && visit[j] == true) {
+					team_start += map[i][j];
+					team_start += map[j][i];
+				} else if (visit[i] == false && visit[j] == false) {
+					team_link += map[i][j];
+					team_link += map[j][i];
+				}
+			}
+		}
+		int val = Math.abs(team_start - team_link);
+
+		if (val == 0) {
+			System.out.println(val);
+			System.exit(0);
+		}
+
+		min = Math.min(val, min);
+
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(C(N, N/2) \* N^2) — 조합 탐색 후 능력치 계산
+- 공간: O(N^2) — 능력치 배열 저장

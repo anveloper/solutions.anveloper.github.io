@@ -1,0 +1,564 @@
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url("/fonts/PretendardVariable-subset.woff2") format("woff2-variations");
+  font-weight: 45 920;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "D2Coding Ligature";
+  src: url("/fonts/D2CodingLigature-subset.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "MaruBuri";
+  src: url("/fonts/MaruBuri-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MaruBuri";
+  src: url("/fonts/MaruBuri-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "East Sea Dokdo";
+  src: url("/fonts/EastSeaDokdo-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+@custom-variant korean (&:is(.korean *));
+@custom-variant terminal (&:is(.terminal *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Pretendard Variable", sans-serif;
+  --font-mono: "D2Coding Ligature", monospace;
+  --font-serif: "MaruBuri", serif;
+  --font-brush: "East Sea Dokdo", cursive;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-primary-sky: var(--primary-sky);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.985 0.002 247.839);
+  --foreground: oklch(0.13 0.028 261.692);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.13 0.028 261.692);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.13 0.028 261.692);
+  --primary: oklch(0.21 0.034 264.665);
+  --primary-foreground: oklch(0.985 0.002 247.839);
+  --primary-sky: oklch(0.47 0.18 250);
+  --secondary: oklch(0.967 0.003 264.542);
+  --secondary-foreground: oklch(0.21 0.034 264.665);
+  --muted: oklch(0.967 0.003 264.542);
+  --muted-foreground: oklch(0.45 0.027 264.364);
+  --accent: oklch(0.967 0.003 264.542);
+  --accent-foreground: oklch(0.21 0.034 264.665);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.928 0.006 264.531);
+  --input: oklch(0.928 0.006 264.531);
+  --ring: oklch(0.707 0.022 261.325);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0.002 247.839);
+  --sidebar-foreground: oklch(0.13 0.028 261.692);
+  --sidebar-primary: oklch(0.21 0.034 264.665);
+  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-accent: oklch(0.967 0.003 264.542);
+  --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
+  --sidebar-border: oklch(0.928 0.006 264.531);
+  --sidebar-ring: oklch(0.707 0.022 261.325);
+}
+
+.dark {
+  --background: oklch(0.13 0.028 261.692);
+  --foreground: oklch(0.985 0.002 247.839);
+  --card: oklch(0.18 0.03 264);
+  --card-foreground: oklch(0.985 0.002 247.839);
+  --popover: oklch(0.18 0.03 264);
+  --popover-foreground: oklch(0.985 0.002 247.839);
+  --primary: oklch(0.928 0.006 264.531);
+  --primary-foreground: oklch(0.21 0.034 264.665);
+  --primary-sky: oklch(0.65 0.2 250);
+  --secondary: oklch(0.25 0.03 260);
+  --secondary-foreground: oklch(0.985 0.002 247.839);
+  --muted: oklch(0.25 0.03 260);
+  --muted-foreground: oklch(0.65 0.02 260);
+  --accent: oklch(0.25 0.03 260);
+  --accent-foreground: oklch(0.985 0.002 247.839);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(0.3 0.02 260);
+  --input: oklch(0.3 0.02 260);
+  --ring: oklch(0.551 0.027 264.364);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.18 0.03 264);
+  --sidebar-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-accent: oklch(0.25 0.03 260);
+  --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-border: oklch(0.3 0.02 260);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
+}
+
+/* ── Korean Traditional Theme ── */
+.korean {
+  --radius: 0px;
+  --background: oklch(0.93 0.02 80);
+  --foreground: oklch(0.20 0.03 40);
+  --card: oklch(0.95 0.015 80);
+  --card-foreground: oklch(0.20 0.03 40);
+  --popover: oklch(0.95 0.015 80);
+  --popover-foreground: oklch(0.20 0.03 40);
+  --primary: oklch(0.25 0.03 40);
+  --primary-foreground: oklch(0.93 0.02 80);
+  --primary-sky: oklch(0.45 0.15 25);
+  --secondary: oklch(0.88 0.03 80);
+  --secondary-foreground: oklch(0.25 0.03 40);
+  --muted: oklch(0.90 0.02 80);
+  --muted-foreground: oklch(0.45 0.03 50);
+  --accent: oklch(0.88 0.03 80);
+  --accent-foreground: oklch(0.25 0.03 40);
+  --destructive: oklch(0.45 0.18 25);
+  --border: oklch(0.75 0.04 60);
+  --input: oklch(0.82 0.03 70);
+  --ring: oklch(0.45 0.15 25);
+  --chart-1: oklch(0.45 0.15 25);
+  --chart-2: oklch(0.45 0.10 160);
+  --chart-3: oklch(0.35 0.06 230);
+  --chart-4: oklch(0.60 0.12 85);
+  --chart-5: oklch(0.50 0.08 300);
+  --sidebar: oklch(0.91 0.02 80);
+  --sidebar-foreground: oklch(0.20 0.03 40);
+  --sidebar-primary: oklch(0.25 0.03 40);
+  --sidebar-primary-foreground: oklch(0.93 0.02 80);
+  --sidebar-accent: oklch(0.88 0.03 80);
+  --sidebar-accent-foreground: oklch(0.25 0.03 40);
+  --sidebar-border: oklch(0.75 0.04 60);
+  --sidebar-ring: oklch(0.45 0.15 25);
+}
+
+/* Korean theme: font overrides */
+.korean {
+  font-family: "MaruBuri", serif;
+}
+
+.korean h1,
+.korean h2,
+.korean h3,
+.korean h4,
+.korean h5,
+.korean h6 {
+  font-family: "East Sea Dokdo", cursive;
+  font-weight: 400;
+  font-size: 1.75em;
+}
+
+/* Korean theme: hanji texture background */
+.korean body {
+  background-image: url("/images/textures/hanji-texture.webp");
+  background-repeat: repeat;
+  background-blend-mode: multiply;
+}
+
+/* Korean theme: square corners everywhere */
+.korean [class*="rounded"] {
+  border-radius: 0 !important;
+}
+
+/* Korean theme: thicker border lines */
+.korean .border {
+  border-width: 2px;
+}
+
+/* Korean theme: header style */
+.korean header {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background-color: var(--background);
+  border-bottom: 2px solid var(--border);
+}
+
+/* Korean theme: footer style */
+.korean footer {
+  border-top: 3px solid var(--border);
+}
+
+/* Korean theme: code blocks keep monospace */
+.korean [data-rehype-pretty-code-figure] code {
+  font-family: var(--font-mono);
+}
+
+.korean [data-rehype-pretty-code-figure] pre {
+  border-radius: 0;
+  border-width: 2px;
+}
+
+/* Korean theme: code uses light theme colors */
+.korean [data-rehype-pretty-code-figure] pre {
+  background-color: var(--muted);
+  color: var(--shiki-light);
+}
+
+.korean [data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-light);
+}
+
+/* Korean theme: selection color */
+.korean ::selection {
+  background-color: oklch(0.45 0.15 25 / 0.3);
+  color: var(--foreground);
+}
+
+/* Korean theme: scrollbar */
+.korean ::-webkit-scrollbar-thumb {
+  border-radius: 0;
+}
+
+/* ── Terminal CRT Theme ── */
+.terminal {
+  --radius: 0px;
+  --background: oklch(0.08 0.005 145);
+  --foreground: oklch(0.85 0.18 145);
+  --card: oklch(0.12 0.008 145);
+  --card-foreground: oklch(0.85 0.18 145);
+  --popover: oklch(0.12 0.008 145);
+  --popover-foreground: oklch(0.85 0.18 145);
+  --primary: oklch(0.80 0.22 145);
+  --primary-foreground: oklch(0.08 0.005 145);
+  --primary-sky: oklch(0.70 0.18 165);
+  --secondary: oklch(0.15 0.01 145);
+  --secondary-foreground: oklch(0.80 0.18 145);
+  --muted: oklch(0.15 0.01 145);
+  --muted-foreground: oklch(0.55 0.10 145);
+  --accent: oklch(0.18 0.02 145);
+  --accent-foreground: oklch(0.85 0.18 145);
+  --destructive: oklch(0.60 0.22 25);
+  --border: oklch(0.25 0.06 145);
+  --input: oklch(0.20 0.03 145);
+  --ring: oklch(0.70 0.18 145);
+  --chart-1: oklch(0.80 0.22 145);
+  --chart-2: oklch(0.70 0.18 165);
+  --chart-3: oklch(0.60 0.15 180);
+  --chart-4: oklch(0.75 0.20 130);
+  --chart-5: oklch(0.65 0.12 200);
+  --sidebar: oklch(0.10 0.006 145);
+  --sidebar-foreground: oklch(0.85 0.18 145);
+  --sidebar-primary: oklch(0.80 0.22 145);
+  --sidebar-primary-foreground: oklch(0.08 0.005 145);
+  --sidebar-accent: oklch(0.18 0.02 145);
+  --sidebar-accent-foreground: oklch(0.85 0.18 145);
+  --sidebar-border: oklch(0.25 0.06 145);
+  --sidebar-ring: oklch(0.70 0.18 145);
+}
+
+/* Terminal theme: monospace font override */
+.terminal {
+  font-family: var(--font-mono);
+}
+
+.terminal h1,
+.terminal h2,
+.terminal h3,
+.terminal h4,
+.terminal h5,
+.terminal h6 {
+  font-family: var(--font-mono);
+}
+
+/* Terminal theme: text glow effect */
+.terminal {
+  text-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+}
+
+.terminal h1,
+.terminal h2,
+.terminal h3,
+.terminal h4,
+.terminal h5,
+.terminal h6 {
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+/* Terminal theme: CRT scanline overlay */
+.terminal body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Terminal theme: square corners everywhere */
+.terminal [class*="rounded"] {
+  border-radius: 0 !important;
+}
+
+/* Terminal theme: header style */
+.terminal header {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Terminal theme: footer style */
+.terminal footer {
+  border-top: 1px solid var(--border);
+}
+
+/* Terminal theme: code blocks use dark shiki theme */
+.terminal [data-rehype-pretty-code-figure] pre {
+  background-color: var(--muted);
+  color: var(--shiki-dark);
+}
+
+.terminal [data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-dark);
+}
+
+/* Terminal theme: selection color */
+.terminal ::selection {
+  background-color: rgba(0, 255, 65, 0.3);
+  color: var(--foreground);
+}
+
+/* Terminal theme: scrollbar */
+.terminal ::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background: oklch(0.25 0.06 145);
+}
+
+.terminal ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.40 0.10 145);
+}
+
+/* Terminal theme: cursor blink for active links */
+.terminal a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ── Skip Navigation ── */
+.skip-nav {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.skip-nav:focus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  padding: 1rem 1.5rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 2px solid var(--primary-sky);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  z-index: 99999;
+}
+
+html {
+  color-scheme: dark light;
+}
+
+/* ── Focus Visible ── */
+:focus-visible {
+  outline: 2px solid var(--primary-sky);
+  outline-offset: 2px;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Forced Colors (High Contrast Mode) ── */
+@media (forced-colors: active) {
+  :root {
+    --background: Canvas;
+    --foreground: CanvasText;
+    --primary: LinkText;
+    --primary-sky: LinkText;
+    --border: CanvasText;
+    --muted-foreground: GrayText;
+  }
+
+  a {
+    color: LinkText;
+  }
+
+  button {
+    border: 1px solid ButtonText;
+  }
+
+  [data-rehype-pretty-code-figure] pre {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* ── Prefers Contrast ── */
+@media (prefers-contrast: more) {
+  :root {
+    --muted-foreground: oklch(0.35 0.03 264);
+    --border: oklch(0.6 0.01 264);
+  }
+
+  .dark {
+    --muted-foreground: oklch(0.8 0.02 260);
+    --border: oklch(0.5 0.02 260);
+  }
+}
+
+/* Smooth transitions for theme switching (respects prefers-reduced-motion via media query above) */
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* rehype-pretty-code: shiki dual theme (CSS variables) */
+[data-rehype-pretty-code-figure] pre,
+[data-rehype-pretty-code-figure] code,
+[data-rehype-pretty-code-figure] code span {
+  transition: none;
+}
+
+[data-rehype-pretty-code-figure] pre {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  border: 1px solid var(--border);
+  background-color: var(--muted);
+  color: var(--shiki-light);
+}
+
+[data-rehype-pretty-code-figure] code {
+  font-family: var(--font-mono);
+}
+
+[data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-light);
+}
+
+.dark [data-rehype-pretty-code-figure] pre {
+  background-color: var(--muted);
+  color: var(--shiki-dark);
+}
+
+.dark [data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-dark);
+}

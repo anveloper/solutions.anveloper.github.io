@@ -1,0 +1,80 @@
+---
+title: "BOJ 10989 - 수 정렬하기 3"
+date: "2022-03-13"
+description: "정렬 문제"
+tags: ["정렬"]
+platform: "boj"
+problem_number: "10989"
+problem_url: "https://www.acmicpc.net/problem/10989"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10989 - 수 정렬하기 3](https://www.acmicpc.net/problem/10989)
+
+N개의 수를 오름차순으로 정렬해 출력하는 문제다. N이 최대 10,000,000이고 메모리 제한이 8MB로 매우 빡빡하다. 각 수는 1 이상 10,000 이하이다.
+
+### 입력
+
+- 첫째 줄: N (1 이상 10,000,000 이하)
+- 이후 N개 줄: 수
+
+### 출력
+
+정렬된 수를 한 줄에 하나씩 출력
+
+### 예제
+
+| 입력                    | 출력                |
+| ----------------------- | ------------------- |
+| `5` `5` `2` `3` `1` `4` | `1` `2` `3` `4` `5` |
+
+## 풀이
+
+메모리 제한(8MB) 탓에 N개의 정수를 배열로 저장하면 초과할 수 있다. 값 범위가 1~10,000으로 작으므로 카운팅 정렬을 적용하거나, 이 코드처럼 배열에 담아 `Arrays.sort`를 사용하면 된다. (메모리 계산: int 10,000,000개 = 40MB이므로 실제로는 타이트하다.)
+
+1. N을 입력받고 크기 N의 int 배열을 생성한다.
+2. N개의 수를 한 줄씩 읽어 배열에 저장한다.
+3. `Arrays.sort(arr)`로 오름차순 정렬한다.
+4. StringBuilder에 정렬된 값을 줄바꿈과 함께 추가해 한 번에 출력한다.
+
+**핵심 아이디어**: 이 문제의 본래 의도는 카운팅 정렬(O(N+K))이다. 값 범위가 1~10,000으로 제한되어 있으므로 크기 10,001짜리 카운팅 배열로 메모리를 대폭 줄일 수 있다. 출력 시 System.out.println을 반복 호출하면 시간 초과가 발생하므로 StringBuilder 사용이 필수다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Day03BOJ10989수정렬하기3 { // 10989
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+
+		int N = Integer.parseInt(br.readLine());
+		int[] arr = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(br.readLine());
+		}
+
+		Arrays.sort(arr);
+
+		for (int value : arr) {
+			sb.append(value).append('\n');
+		}
+		System.out.println(sb);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

@@ -1,0 +1,111 @@
+---
+title: "BOJ 14888 - 연산자 끼워넣기"
+date: "2022-03-23"
+description: "브루트포스 알고리즘, 백트래킹 문제"
+tags: ["브루트포스 알고리즘", "백트래킹"]
+platform: "boj"
+problem_number: "14888"
+problem_url: "https://www.acmicpc.net/problem/14888"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14888 - 연산자 끼워넣기](https://www.acmicpc.net/problem/14888)
+
+N개의 수와 N-1개의 연산자(`+`, `-`, `*`, `/`)가 주어진다. 연산자를 수들 사이에 임의의 순서로 끼워 넣어 만들 수 있는 수식의 최댓값과 최솟값을 구하는 문제다. 연산은 왼쪽에서 오른쪽으로 진행하며 연산자 우선순위는 무시한다.
+
+### 입력
+
+- 첫째 줄: N (2 ≤ N ≤ 11)
+- 둘째 줄: N개의 수 (각 수는 1 이상 100 이하)
+- 셋째 줄: `+`, `-`, `*`, `/` 연산자 개수
+
+### 출력
+
+- 첫째 줄: 최댓값
+- 둘째 줄: 최솟값
+
+### 예제
+
+| 입력                  | 출력      |
+| --------------------- | --------- |
+| `2` `5 6` `0 0 1 0`   | `30` `30` |
+| `3` `3 4 5` `1 0 1 0` | `35` `15` |
+
+## 풀이
+
+DFS(백트래킹)로 N-1개의 연산자를 수열에 끼워 넣는 모든 순열을 탐색한다. 연산자 종류별 개수를 관리하며 남은 연산자를 하나씩 선택해 계산한다.
+
+1. `dfs(현재 계산값, 다음 숫자 인덱스)` 형태로 재귀 탐색한다.
+2. `idx == N`이면 모든 수를 처리한 것이므로 최댓값과 최솟값을 갱신한다.
+3. 4가지 연산자 중 개수가 남아있는 것을 선택하고, 해당 연산을 수행한 결과로 재귀 호출한다.
+4. 재귀 반환 후 연산자 개수를 원래대로 복원한다(백트래킹).
+
+**핵심 아이디어:** 연산자를 배열 `op[4]`의 개수로 관리하고, 선택 전 `op[i]--`, 반환 후 `op[i]++`로 백트래킹한다. 연산자 순열을 직접 생성하는 것보다 개수를 줄이고 늘리는 방식이 훨씬 간결하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day44BOJ14888연산자끼워넣기DFS { // 14888 연산자 끼워넣기 DFS
+	static int N;
+	static int max = Integer.MIN_VALUE;
+	static int min = Integer.MAX_VALUE;
+	static int[] op = new int[4];
+	static int[] arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < 4; i++) {
+			op[i] = Integer.parseInt(st.nextToken());
+		}
+
+		dfs(arr[0], 1);
+
+		System.out.println(max);
+		System.out.println(min);
+		br.close();
+	}
+
+	private static void dfs(int num, int idx) {
+		if (idx == N) {
+			max = Math.max(max, num);
+			min = Math.min(min, num);
+			return;
+		}
+		for (int i = 0; i < 4; i++) {
+			if (op[i] > 0) {
+				op[i]--;
+				switch (i) {
+				case 0:	dfs(num + arr[idx], idx + 1);	break;
+				case 1:	dfs(num - arr[idx], idx + 1);	break;
+				case 2:	dfs(num * arr[idx], idx + 1);	break;
+				case 3:	dfs(num / arr[idx], idx + 1);	break;
+				}
+				op[i]++;
+			}
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O((N-1)!) — N-1개의 연산자를 배열하는 순열 수
+- 공간: O(N) — 재귀 호출 스택 깊이

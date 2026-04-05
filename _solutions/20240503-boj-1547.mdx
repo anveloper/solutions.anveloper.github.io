@@ -1,0 +1,67 @@
+---
+title: "BOJ 1547 - 공"
+date: "2024-05-03"
+description: "컵을 M번 교환한 후 공이 있는 컵 번호"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "1547"
+problem_url: "https://www.acmicpc.net/problem/1547"
+difficulty: "브론즈 III"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1547 - 공](https://www.acmicpc.net/problem/1547)
+
+1번 컵 아래에 공이 있다. M번의 컵 교환이 주어질 때, 최종적으로 공이 있는 컵 번호를 구하라.
+
+### 입력
+
+첫째 줄에 교환 횟수 M, 이후 M줄에 교환할 두 컵의 번호가 주어진다.
+
+### 출력
+
+공이 들어있는 컵 번호를 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `4` `1 2` `3 2` `3 1` `3 2` | `1`  |
+
+## 풀이
+
+공의 현재 위치를 변수로 추적하면서, 각 교환에서 공이 이동하는지 확인한다.
+
+1. 공의 위치를 1로 초기화한다
+2. 각 교환 (x, y)에 대해 공이 x에 있으면 y로, y에 있으면 x로 이동시킨다
+3. 공이 x나 y에 없으면 아무 변화 없다
+4. M번 교환 후 공의 위치를 반환한다
+
+**핵심 아이디어**: 공의 위치만 추적하면 되므로, 전체 컵 배열을 관리할 필요 없이 O(M)에 해결된다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const M = input[0];
+  let cup = 1;
+  for (let i = 1; i <= M; i++) {
+    let x = input[i].split(" ")[0],
+      y = input[i].split(" ")[1];
+    if (cup == x) cup = y;
+    else if (cup == y) cup = x;
+  }
+  return cup;
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(M)
+- 공간: O(1)

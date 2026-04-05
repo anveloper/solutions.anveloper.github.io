@@ -1,0 +1,91 @@
+---
+title: "BOJ 1592 - 영식이와 친구들"
+date: "2022-03-13"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "1592"
+problem_url: "https://www.acmicpc.net/problem/1592"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1592 - 영식이와 친구들](https://www.acmicpc.net/problem/1592)
+
+N명이 원형으로 앉아 공 던지기 게임을 한다. 1번부터 시작하여, 공을 홀수 번 받은 사람은 시계 방향으로 L번째에게, 짝수 번 받은 사람은 반시계 방향으로 L번째에게 공을 던진다. 누군가 공을 M번 받으면 게임이 끝날 때, 공을 던진 총 횟수를 구하라.
+
+### 입력
+
+첫째 줄에 N(3 이상 50 이하), M(50 이하), L(N-1 이하)이 주어진다.
+
+### 출력
+
+공을 던진 횟수를 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `5 2 2` | `5`  |
+
+## 풀이
+
+원형 배열에서 공을 던지는 시뮬레이션을 수행한다.
+
+1. 크기 N의 배열로 각 사람이 공을 받은 횟수를 기록한다
+2. 현재 위치(idx)에서 받은 횟수를 증가시키고, M이 되면 종료한다
+3. 받은 횟수가 홀수이면 시계 방향(+L), 짝수이면 반시계 방향(-L)으로 이동한다
+4. 인덱스가 범위를 벗어나면 N을 더하거나 빼서 원형 보정한다
+
+**핵심 아이디어**: 원형 배열의 인덱스 이동은 나머지 연산 대신, 범위 초과 시 N을 가감하여 처리한다. 게임이 반드시 종료되므로 무한 루프 걱정이 없다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day12BOJ1592영식이와친구들 { // 1592
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		int N = sc.nextInt(); // 3이상 50이하
+		int M = sc.nextInt(); // 50이하
+		int L = sc.nextInt(); // N - 1 이하
+		int[] cnt = new int[N];
+		int ans = 0;
+		int idx = 0;
+		while (true) {
+			cnt[idx]++;
+
+			if (cnt[idx] == M) {
+				break;
+			}
+			ans++;
+
+			if (cnt[idx] % 2 == 1) { // 받고 시작해서 짝수가 1로 판단
+				if (idx + L < N)
+					idx += L;
+				else
+					idx += L - N; // idx 보정
+			} else {
+				if (idx - L >= 0)
+					idx -= L;
+				else
+					idx -= L - N; // idx 보정
+			}
+		}
+		System.out.println(ans);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* M) — 최대 N명이 각각 M-1번 받을 수 있음
+- 공간: O(N) — 받은 횟수 배열

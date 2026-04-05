@@ -1,0 +1,109 @@
+---
+title: "BOJ 1038 - 감소하는 수"
+date: "2022-08-16"
+description: "브루트포스 알고리즘, 백트래킹 문제"
+tags: ["브루트포스 알고리즘", "백트래킹"]
+platform: "boj"
+problem_number: "1038"
+problem_url: "https://www.acmicpc.net/problem/1038"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1038 - 감소하는 수](https://www.acmicpc.net/problem/1038)
+
+음이 아닌 정수 X의 각 자리가 왼쪽에서 오른쪽으로 갈수록 감소하는 경우, X를 감소하는 수라고 한다. N번째 감소하는 수를 출력한다. (0번째는 0)
+
+- 감소하는 수의 예: 10, 20, 21, 30, 31, 32, 210, 9876543210, ...
+- 감소하는 수는 총 1023개이다. (0~9 중에서 부분집합을 선택하여 내림차순 정렬)
+
+### 입력
+
+첫째 줄에 N이 주어진다. (0 ≤ N ≤ 1022)
+
+### 출력
+
+N번째 감소하는 수를 출력한다. N번째 감소하는 수가 없으면 -1을 출력한다.
+
+### 예제
+
+입력:
+
+```
+18
+```
+
+출력:
+
+```
+321
+```
+
+## 풀이
+
+**핵심 아이디어**: 감소하는 수는 0~9 중 일부 숫자를 선택해 내림차순으로 배열한 것과 동일하다. 백트래킹으로 모든 감소하는 수를 미리 생성한 뒤 정렬하여 N번째를 반환한다.
+
+1. 0~9 각 숫자를 시작점으로 DFS를 수행한다. 현재 수의 마지막 자리보다 작은 숫자를 이어 붙인다.
+2. 예: 현재 수가 `32`이면 `320`, `321`을 추가하고, 다시 `3210`을 추가하는 식으로 확장한다.
+3. 모든 감소하는 수를 `List`에 담고 정렬한다.
+4. N이 1023 이상이면 -1, 아니면 N번째 원소를 출력한다.
+
+감소하는 수의 총 개수는 10개의 숫자 중 1개 이상 선택하는 경우의 수인 `2^10 - 1 = 1023`개이고, 0을 포함하면 총 1023개이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Day190BOJ1038감소하는수DFS { // 1038감소하는 수
+	static List<Long> numList;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+
+		numList = new ArrayList<>();
+
+		for (long i = 0; i < 10; i++) {
+			numList.add(i);
+
+			if (i > 0)
+				dfs(i);
+		}
+
+		Collections.sort(numList);
+
+		if (N >= 1023)
+			System.out.println(-1);
+		else
+			System.out.println(numList.get(N));
+
+	}
+
+	public static void dfs(long num) {
+		long last = num % 10;
+
+		for (long i = last - 1; i >= 0; i--) {
+			numList.add(num * 10 + i);
+
+			if (last > 0)
+				dfs(num * 10 + i);
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(2^10) — 감소하는 수는 최대 1023개이므로 상수 시간
+- 공간: O(2^10) — 모든 감소하는 수를 리스트에 저장

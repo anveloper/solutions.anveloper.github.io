@@ -1,0 +1,74 @@
+---
+title: "BOJ 4749 - Take Your Vitamins"
+date: "2026-03-14"
+description: "영양소 함량과 기준량을 비교하여 퍼센트 표시 및 미미한 항목을 분류하는 구현 문제"
+tags: ["수학", "구현", "문자열", "파싱"]
+platform: "boj"
+problem_number: "4749"
+problem_url: "https://www.acmicpc.net/problem/4749"
+difficulty: "브론즈 III"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4749 - Take Your Vitamins](https://www.acmicpc.net/problem/4749)
+
+> 각 영양소의 함량과 일일 기준량이 주어질 때, 1% 이상인 항목은 퍼센트와 함께 출력하고 미미한 항목은 별도로 모아 출력하는 문제
+
+## 풀이
+
+각 영양소에 대해 `(함량 / 기준량) * 100`으로 퍼센트를 계산한다. 1% 이상이면 바로 출력하고, 미만이면 별도 벡터에 저장하여 마지막에 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cmath>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  double A, R;
+  string U, V;
+  vector<string> insignificant;
+
+  while (cin >> A && A >= 0) {
+    cin >> U >> R;
+
+    string dummy;
+    getline(cin, V);
+    if (!V.empty() && V[0] == ' ') {
+      V = V.substr(1);
+    }
+
+    double percent = (A / R) * 100.0;
+
+    int P = (int)round(percent);
+
+    if (percent >= 1.0) {
+      cout << V << " " << fixed << setprecision(1) << A << " " << U << " " << P << "%\n";
+    } else {
+      insignificant.push_back(V);
+    }
+  }
+
+  cout << "Provides no significant amount of:\n";
+  for (const string& name : insignificant) {
+    cout << name << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n) (n: 영양소 개수)
+- 공간: O(n)

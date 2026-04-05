@@ -1,0 +1,105 @@
+---
+title: "BOJ 1132 - 합"
+date: "2024-03-17"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "1132"
+problem_url: "https://www.acmicpc.net/problem/1132"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1132 - 합](https://www.acmicpc.net/problem/1132)
+
+N개의 수가 알파벳 A~J로 이루어진 문자열로 주어진다. 각 알파벳에 0~9를 대응시켜 모든 수의 합을 최대로 만들라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 알파벳으로 이루어진 수가 주어진다.
+
+### 출력
+
+합의 최댓값을 출력한다.
+
+### 예제
+
+| 입력            | 출력   |
+| --------------- | ------ |
+| `2` `ABC` `BCA` | `1875` |
+
+## 풀이
+
+각 알파벳의 자릿값 가중치를 계산하고, 가중치가 큰 알파벳에 큰 숫자를 배정하는 그리디 전략이다.
+
+1. 각 수를 뒤에서부터 순회하며 알파벳별 자릿값 가중치(1, 10, 100, ...)를 누적한다
+2. 첫 글자에 등장하는 알파벳은 0이 될 수 없으므로 flag로 표시한다
+3. 0이 가능한 알파벳 중 가중치가 가장 작은 것에 0을 배정한다
+4. 나머지 알파벳은 가중치 내림차순으로 9, 8, 7, ...을 배정하여 합을 계산한다
+
+**핵심 아이디어**: 자릿값 가중치가 클수록 큰 숫자를 배정해야 합이 최대가 되며, 선행 0 제약만 처리하면 된다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day775BOJ1132합 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+    long[] values = new long[10];
+    boolean[] flag = new boolean[10];
+    for (int i = 0; i < n; i++) {
+      String input = br.readLine();
+
+      long pos = 1;
+      for (int j = input.length() - 1; j >= 0; j--) {
+        if (j == 0)
+          flag[input.charAt(j) - 'A'] = true;
+        values[input.charAt(j) - 'A'] += pos;
+        pos *= 10;
+      }
+
+    }
+
+    int find_idx = 0;
+    long min_val = Long.MAX_VALUE;
+    for (int i = 0; i < values.length; i++) {
+      if (!flag[i] && min_val > values[i]) {
+        find_idx = i;
+        min_val = values[i];
+      }
+    }
+
+    values[find_idx] = 0;
+
+    Arrays.sort(values);
+
+    long ans = 0;
+    int pos = 9;
+
+    for (int i = values.length - 1; i >= 0; i--) {
+      if (values[i] == 0)
+        break;
+      ans += values[i] * pos;
+      pos--;
+    }
+    ans += pos * min_val;
+
+    System.out.println(ans);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* L) (L: 문자열 최대 길이)
+- 공간: O(1) (크기 10 고정 배열)

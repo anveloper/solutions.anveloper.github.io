@@ -1,0 +1,74 @@
+---
+title: "BOJ 1408 - 24"
+date: "2024-04-28"
+description: "현재 시각과 목표 시각의 차이를 계산"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1408"
+problem_url: "https://www.acmicpc.net/problem/1408"
+difficulty: "브론즈 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1408 - 24](https://www.acmicpc.net/problem/1408)
+
+현재 시각과 임무 시작 시각이 주어질 때, 남은 시간을 HH:MM:SS 형식으로 출력하라.
+
+### 입력
+
+첫째 줄에 현재 시각, 둘째 줄에 임무 시작 시각이 HH:MM:SS 형식으로 주어진다.
+
+### 출력
+
+남은 시간을 HH:MM:SS 형식으로 출력한다.
+
+### 예제
+
+| 입력                  | 출력       |
+| --------------------- | ---------- |
+| `10:10:10` `11:11:11` | `01:01:01` |
+
+## 풀이
+
+시/분/초 각각에서 빌림(borrow) 처리하며 차이를 계산한다.
+
+1. 초 차이가 음수이면 60을 더하고 분에서 1을 뺀다
+2. 분 차이가 음수이면 60을 더하고 시에서 1을 뺀다
+3. 시 차이가 음수이면 24를 더한다 (다음 날 넘어가는 경우)
+4. 2자리로 패딩하여 출력한다
+
+**핵심 아이디어**: 60진법/24진법 뺄셈의 빌림 처리를 순서대로 적용한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [h, m, s] = input[0].split(":").map(Number);
+  let [sh, sm, ss] = input[1].split(":").map(Number);
+  let [rh, rm, rs] = [];
+  if (ss >= s) rs = ss - s;
+  else {
+    rs = 60 + ss - s;
+    sm -= 1;
+  }
+  if (sm >= m) rm = sm - m;
+  else {
+    rm = 60 + sm - m;
+    sh -= 1;
+  }
+  if (sh >= h) rh = sh - h;
+  else rh = 24 + sh - h;
+  return [rh, rm, rs].map((v) => (String(v).length === 1 ? "0" + String(v) : v)).join(":");
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

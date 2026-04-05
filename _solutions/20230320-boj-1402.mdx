@@ -1,0 +1,67 @@
+---
+title: "BOJ 1402 - 아무래도이문제는A번난이도인것같다"
+date: "2023-03-20"
+description: "수학, 애드 혹, 해 구성하기 문제"
+tags: ["수학", "애드 혹", "해 구성하기"]
+platform: "boj"
+problem_number: "1402"
+problem_url: "https://www.acmicpc.net/problem/1402"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1402 - 아무래도이문제는A번난이도인것같다](https://www.acmicpc.net/problem/1402)
+
+정수 A가 주어질 때, A를 약수의 곱으로 분해한 뒤 약수의 합으로 B를 만들 수 있는지 판별하라.
+
+### 입력
+
+테스트 케이스 수 T, 이후 각 줄에 A, B가 주어진다.
+
+### 출력
+
+각 줄에 가능하면 "yes", 불가능하면 "no"를 출력한다.
+
+### 예제
+
+| 입력                    | 출력              |
+| ----------------------- | ----------------- |
+| `3` `2 -1` `-1 5` `3 2` | `yes` `yes` `yes` |
+
+## 풀이
+
+모든 정수 A에 대해 항상 B를 만들 수 있으므로 무조건 "yes"를 출력한다.
+
+1. 임의의 정수 A는 `A × 1 × 1 × ... × 1`로 분해할 수 있다
+2. 1을 원하는 만큼 추가하면 합을 자유롭게 조절할 수 있다
+3. 따라서 어떤 A, B 쌍이든 항상 가능하다
+
+**핵심 아이디어**: 약수 분해에서 1을 무한히 추가할 수 있으므로 곱은 변하지 않고 합만 증가시킬 수 있다. 감소도 가능하므로 항상 "yes"이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+
+public class Day407BOJ1402A번난이도 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    int t = Integer.parseInt(br.readLine());
+    while (t-- > 0) {
+      sb.append("yes").append('\n');
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

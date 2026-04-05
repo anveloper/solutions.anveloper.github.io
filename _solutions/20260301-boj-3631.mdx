@@ -1,0 +1,90 @@
+---
+title: "BOJ 3631 - Cutting a Block"
+date: "2026-03-01"
+description: "수학, 애드 혹 문제"
+tags: ["수학", "애드 혹"]
+platform: "boj"
+problem_number: "3631"
+problem_url: "https://www.acmicpc.net/problem/3631"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3631 - Cutting a Block](https://www.acmicpc.net/problem/3631)
+
+X _ Y _ Z 크기의 직육면체 블록을 n개의 동일한 작은 블록으로 자르려 한다. 각 축 방향으로 몇 등분할지 결정하여, `a * b * c = n`이 되는 `(a, b, c)`를 찾고, 각 조각의 크기를 출력한다.
+
+### 입력
+
+- X, Y, Z (블록 크기), n (조각 수)
+
+### 출력
+
+n개의 조각 각각에 대해 `x1 y1 z1 x2 y2 z2` (꼭짓점 좌표)를 출력한다.
+
+## 풀이
+
+n을 세 인수 `a * b * c`로 분해한다. 가장 작은 인수부터 탐색하여 첫 번째 유효한 분해를 사용한다.
+
+1. i가 n의 약수이면, `n/i`를 다시 `j * k`로 분해
+2. 각 축을 a, b, c 등분하여 조각 좌표를 생성
+3. 3중 루프로 모든 조각의 꼭짓점 좌표를 출력
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+  double X, Y, Z;
+  int n;
+  if (!(cin >> X >> Y >> Z >> n)) return 0;
+
+  int a = 1, b = 1, c = 1;
+  bool found = false;
+
+  for (int i = 1; i <= n; ++i) {
+    if (n % i == 0) {
+      for (int j = 1; j <= n / i; ++j) {
+        if ((n / i) % j == 0) {
+          a = i;
+          b = j;
+          c = n / i / j;
+          found = true;
+          break;
+        }
+      }
+    }
+    if (found) break;
+  }
+
+  double dx = X / a;
+  double dy = Y / b;
+  double dz = Z / c;
+
+  cout << fixed << setprecision(8);
+
+  for (int i = 0; i < a; ++i) {
+    for (int j = 0; j < b; ++j) {
+      for (int k = 0; k < c; ++k) {
+        cout << i * dx << " " << j * dy << " " << k * dz << " "
+              << (i + 1) * dx << " " << (j + 1) * dy << " "
+              << (k + 1) * dz << "\n";
+      }
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n + a*b*c) — 인수 분해 + 조각 출력
+- 공간: O(1) — 상수 변수만 사용

@@ -1,0 +1,90 @@
+---
+title: "BOJ 11286 - 절댓값 힙"
+date: "2022-06-16"
+description: "자료 구조, 우선순위 큐 문제"
+tags: ["자료 구조", "우선순위 큐"]
+platform: "boj"
+problem_number: "11286"
+problem_url: "https://www.acmicpc.net/problem/11286"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11286 - 절댓값 힙](https://www.acmicpc.net/problem/11286)
+
+N개의 연산을 처리하는 절댓값 기준 최소 우선순위 큐 문제다. 양의 정수 또는 음의 정수 x가 입력되면 힙에 삽입하고, 0이 입력되면 절댓값이 가장 작은 값을 삭제·출력한다. 절댓값이 같으면 실제 값이 더 작은 것을 우선 출력한다. Java의 `PriorityQueue`에 커스텀 Comparator를 적용하여 구현한다.
+
+### 입력
+
+- 첫째 줄: 연산 수 N (1 이상 100,000 이하)
+- 둘째 줄부터 N개 줄: 정수 x (-100,000 이상 100,000 이하)
+
+### 출력
+
+0 연산마다 절댓값 최솟값(동일 시 더 작은 값)을 한 줄씩 출력한다. 힙이 비어있으면 0을 출력한다.
+
+### 예제
+
+| 입력                              | 출력              |
+| --------------------------------- | ----------------- |
+| `7` `1` `-1` `0` `0` `0` `-2` `0` | `-1` `1` `0` `-2` |
+
+## 풀이
+
+Java `PriorityQueue`에 절댓값 우선, 동일 절댓값 시 실제 값 오름차순 Comparator를 적용한다.
+
+1. Comparator: `|o1| > |o2|`이면 양수(o1이 뒤), `|o1| == |o2|`이면 실제 값 차이로 비교, 그 외 음수(o1이 앞)
+2. 입력 x가 0이면 힙에서 `poll()` — 비어있으면 0 출력
+3. x가 0이 아니면 `offer(x)`로 삽입
+4. StringBuilder로 출력 누적 후 한 번에 출력
+
+**핵심 아이디어:** 절댓값을 기준으로 정렬하되 동률 시 실제 값을 보조 기준으로 사용하는 커스텀 Comparator 하나만 정의하면, 표준 라이브러리 `PriorityQueue`가 힙 구조를 자동으로 유지해준다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.PriorityQueue;
+
+public class Day129BOJ11286절대값힙PQ { // 11286
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> {
+			if (Math.abs(o1) > Math.abs(o2))
+				return Math.abs(o1) - Math.abs(o2);
+			else if (Math.abs(o1) == Math.abs(o2))
+				return o1 - o2;
+			else
+				return -1;
+		}); // new Comparator<Integer>() compare함수를 오버라이드 하는게 속도가 더 좋다.
+
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < N; i++) {
+			int x = Integer.parseInt(br.readLine());
+			if (x == 0) {
+				if (pq.isEmpty())
+					sb.append("0").append("\n");
+				else
+					sb.append(pq.poll()).append("\n");
+			} else {
+				pq.offer(x);
+			}
+		}
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) — N번의 연산 각각 O(log N)
+- 공간: O(N) — 우선순위 큐

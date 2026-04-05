@@ -1,0 +1,85 @@
+---
+title: "BOJ 3154 - 알람시계"
+date: "2025-04-26"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "3154"
+problem_url: "https://www.acmicpc.net/problem/3154"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3154 - 알람시계](https://www.acmicpc.net/problem/3154)
+
+전화기 키패드에서 시간을 입력할 때, 연속된 숫자 사이의 이동 거리(맨해튼 거리)의 합이 최소가 되는 시간을 구하라. 주어진 시간 이후의 가장 가까운 시간을 찾아야 한다. 시간은 `HH:MM` 형식이며, HH는 0~99, MM은 0~59이다.
+
+### 입력
+
+`HH:MM` 형식의 시간이 주어진다.
+
+### 출력
+
+입력 시간 이후에 키패드 입력 비용이 최소인 시간을 `HH:MM` 형식으로 출력한다.
+
+### 예제
+
+| 입력    | 출력    |
+| ------- | ------- |
+| `00:00` | `00:00` |
+| `12:34` | `12:34` |
+
+## 풀이
+
+전화기 키패드의 좌표를 정의하고, 주어진 시간부터 모든 후보 시간의 입력 비용을 계산하여 최솟값을 찾는다.
+
+1. 0~9 각 숫자의 키패드 좌표를 배열로 정의한다
+2. 연속된 네 자리 숫자(HH:MM)의 맨해튼 거리 합을 계산하는 함수를 정의한다
+3. 주어진 시간부터 시작하여 분을 60씩 증가(시를 24씩 증가)시키며 후보를 탐색한다
+4. 각 후보의 입력 비용을 계산하고, 현재 최솟값보다 작으면 갱신한다
+5. HH가 100 이상이 되면 탐색을 종료한다
+
+**핵심 아이디어**: HH는 0~99, MM은 0~59이므로 분을 60 단위로, 시를 24 단위로 증가시키면서 동일 시각의 다른 날을 탐색하여 최소 비용 시간을 찾는다.
+
+## 코드
+
+```python
+x_list = [2, 1, 2, 3, 1, 2, 3, 1, 2, 3]
+y_list = [1, 4, 4, 4, 3, 3, 3, 2, 2, 2]
+
+
+def effort(n1, n2):
+    return abs(x_list[n1] - x_list[n2]) + abs(y_list[n1] - y_list[n2])
+
+
+hh, mm = map(int, input().split(":"))
+
+min_time = ""
+min_effort = 1000
+while hh < 100:
+    _mm = mm
+    while _mm < 100:
+        all_effort = effort(hh // 10, hh % 10)
+        all_effort += effort(hh % 10, _mm // 10)
+        all_effort += effort(_mm // 10, _mm % 10)
+        if all_effort < min_effort:
+            add_h = ""
+            add_m = ""
+            if hh // 10 == 0:
+                add_h = "0"
+            if _mm // 10 == 0:
+                add_m = "0"
+            min_time = add_h + str(hh) + ":" + add_m + str(_mm)
+            min_effort = all_effort
+        _mm += 60
+    hh += 24
+print(min_time)
+```
+
+## 복잡도
+
+- 시간: O(1) — HH 최대 5번(0~99에서 24씩), MM 최대 1번(60씩) 반복으로 상수 시간
+- 공간: O(1) — 고정 크기 좌표 배열과 변수만 사용

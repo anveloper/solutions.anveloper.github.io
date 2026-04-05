@@ -1,0 +1,105 @@
+---
+title: "BOJ 1016 - 제곱 ㄴㄴ 수"
+date: "2022-08-04"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "1016"
+problem_url: "https://www.acmicpc.net/problem/1016"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1016 - 제곱 ㄴㄴ 수](https://www.acmicpc.net/problem/1016)
+
+어떤 수 X가 1보다 큰 어떤 수의 제곱으로 나누어 떨어지지 않을 때, X를 제곱 ㄴㄴ 수라 한다. min과 max가 주어졌을 때, min 이상 max 이하인 제곱 ㄴㄴ 수의 개수를 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 min과 max가 주어진다. (1 ≤ min ≤ max ≤ 1,000,000,000,000, max - min ≤ 1,000,000)
+
+### 출력
+
+min 이상 max 이하인 제곱 ㄴㄴ 수의 개수를 출력한다.
+
+### 예제
+
+**입력:**
+
+```
+1 10
+```
+
+**출력:**
+
+```
+7
+```
+
+## 풀이
+
+**핵심 아이디어:** 에라토스테네스의 체 응용. max의 제곱근까지의 소수 p에 대해, p²의 배수들(min~max 범위 내)을 체로 거른다. 실제로 p²가 아닌 i²(i=2,3,...,√max)의 배수를 모두 제거하면 된다.
+
+단계별 풀이:
+
+1. max의 제곱근을 구하여 `sqrt`로 저장한다.
+2. `checks[0..max-min]` 배열을 false로 초기화 (false = 제곱 ㄴㄴ 수 후보).
+3. i = 2부터 sqrt까지 반복:
+   - `squared = i * i`
+   - min 이상인 첫 번째 `squared`의 배수 `start`를 계산.
+   - `j * squared` (j=start, start+1, ...)가 max 이하인 모든 수를 `checks` 배열에 true로 표시.
+4. `checks` 배열에서 false인 원소의 수를 세어 출력한다.
+
+범위 처리: max가 최대 10^12이지만, min~max 범위는 최대 10^6이므로 `checks` 배열 크기는 관리 가능하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day178BOJ1016제곱아닌수찾기 {
+	static int cnt, res;
+	static long max, min;
+
+	public static void main(String args[]) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		min = Long.valueOf(st.nextToken());
+		max = Long.valueOf(st.nextToken());
+
+		cnt = 0;
+		res = (int) (max - min + 1);
+
+		int sqrt = ((int) Math.sqrt(max));
+		boolean[] checks = new boolean[res];
+
+		for (long i = 2; i <= sqrt; i++) {
+			long squared = i * i;
+			long start = min % squared == 0 ? min / squared : (min / squared) + 1;
+			for (long j = start; j * squared <= max; j++) {
+				checks[(int) ((j * squared) - min)] = true;
+			}
+		}
+		for (int i = 0; i < res; i++) {
+			if (!checks[i])
+				cnt++;
+		}
+
+		System.out.println(cnt);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O((max - min) × log log max) — 에라토스테네스의 체와 동일한 복잡도
+- 공간: O(max - min) — 범위 크기의 체 배열

@@ -1,0 +1,85 @@
+---
+title: "BOJ 6763 - Speed fines are not fine!"
+date: "2025-11-12"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "6763"
+problem_url: "https://www.acmicpc.net/problem/6763"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6763 - Speed fines are not fine!](https://www.acmicpc.net/problem/6763)
+
+제한 속도와 실제 속도를 입력받아 과속 여부를 판별하고, 과속이라면 초과 속도에 따른 벌금을 출력하는 문제다. 속도 제한 이하이면 축하 메시지를, 초과이면 초과 정도에 따라 $100, $270, $500의 벌금을 출력한다.
+
+### 입력
+
+두 정수 `a`(제한 속도)와 `b`(실제 속도)가 주어진다.
+
+### 출력
+
+- `b <= a`이면: `Congratulations, you are within the speed limit!`
+- `b > a`이고 초과 속도(`b - a`)가 1~20이면: `You are speeding and your fine is $100.`
+- `b > a`이고 초과 속도가 21~30이면: `You are speeding and your fine is $270.`
+- `b > a`이고 초과 속도가 31 이상이면: `You are speeding and your fine is $500.`
+
+### 예제
+
+| 입력      | 출력                                               |
+| --------- | -------------------------------------------------- |
+| `100 90`  | `Congratulations, you are within the speed limit!` |
+| `100 110` | `You are speeding and your fine is $100.`          |
+| `100 125` | `You are speeding and your fine is $270.`          |
+| `100 140` | `You are speeding and your fine is $500.`          |
+
+## 풀이
+
+두 정수를 입력받아 차이를 계산하고, 구간별 조건문으로 결과를 분기한다.
+
+1. 제한 속도 `a`와 실제 속도 `b`를 입력받는다.
+2. 차이 `diff = a - b`를 계산한다.
+3. `diff >= 0`이면 속도 제한 내이므로 축하 메시지를 출력한다.
+4. `diff < 0`이면 과속이므로 `-diff`의 범위에 따라 벌금을 출력한다.
+   - 1~20: `$100`
+   - 21~30: `$270`
+   - 31 이상: `$500`
+
+**핵심 아이디어:** 속도 차이를 한 번 계산한 뒤 구간별로 분기하면 된다. `a - b`를 `diff`로 저장하면 부호만으로 과속 여부를 판별할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int a, b, diff;
+int main()
+{
+  cin >> a >> b;
+  diff = a - b;
+  if (diff >= 0)
+    cout << "Congratulations, you are within the speed limit!";
+  else
+  {
+    cout << "You are speeding and your fine is $";
+    if (1 <= -diff && -diff <= 20)
+      cout << 100;
+    else if (21 <= -diff && -diff <= 30)
+      cout << 270;
+    else if (-diff >= 31)
+      cout << 500;
+    cout << ".";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 단순 산술 연산과 조건 분기만 수행
+- 공간: O(1) — 변수 3개만 사용

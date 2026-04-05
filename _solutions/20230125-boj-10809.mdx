@@ -1,0 +1,82 @@
+---
+title: "BOJ 10809 - 알파벳 찾기"
+date: "2023-01-25"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "10809"
+problem_url: "https://www.acmicpc.net/problem/10809"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10809 - 알파벳 찾기](https://www.acmicpc.net/problem/10809)
+
+알파벳 소문자로만 이루어진 단어 S가 주어졌을 때, 각 알파벳(a~z)이 처음 등장하는 위치를 구하라. 포함되지 않은 알파벳은 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 단어 S가 주어진다 (길이 1 이상 100 이하, 소문자).
+
+### 출력
+
+a부터 z까지 각 알파벳이 처음 등장하는 위치(0-indexed)를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력       | 출력                                                                      |
+| ---------- | ------------------------------------------------------------------------- |
+| `baekjoon` | `-1 0 -1 -1 2 -1 -1 -1 -1 4 3 -1 -1 5 6 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1` |
+
+## 풀이
+
+26칸 배열을 -1로 초기화한 후, 문자열을 순회하며 각 알파벳의 첫 등장 위치를 기록한다.
+
+1. 크기 26의 정수 배열을 -1로 초기화한다
+2. 문자열의 각 문자에 대해, 해당 알파벳 인덱스(ch - 'a')가 -1이면 현재 위치를 저장한다
+3. 이미 등장한 알파벳은 건너뛴다 (첫 등장만 기록)
+4. 배열 전체를 공백으로 구분하여 출력한다
+
+**핵심 아이디어**: -1 초기값을 활용해 이미 등장한 알파벳과 미등장 알파벳을 동시에 처리한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+
+public class Day352BOJ10809알파벳찾기 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int[] arr = new int[26];
+
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = -1;
+        }
+
+        String S = br.readLine();
+
+        for (int i = 0; i < S.length(); i++) {
+            char ch = S.charAt(i);
+
+            if (arr[ch - 'a'] == -1) {
+                arr[ch - 'a'] = i;
+            }
+        }
+
+        for (int val : arr) {
+            System.out.print(val + " ");
+        }
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 문자열 길이)
+- 공간: O(1) (26칸 고정 배열)

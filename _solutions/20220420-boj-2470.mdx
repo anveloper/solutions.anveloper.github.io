@@ -1,0 +1,107 @@
+---
+title: "BOJ 2470 - 두 용액"
+date: "2022-04-20"
+description: "정렬, 이분 탐색, 두 포인터 문제"
+tags: ["정렬", "이분 탐색", "두 포인터"]
+platform: "boj"
+problem_number: "2470"
+problem_url: "https://www.acmicpc.net/problem/2470"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2470 - 두 용액](https://www.acmicpc.net/problem/2470)
+
+N개의 용액이 주어진다. 각 용액은 산성(양수) 또는 알칼리성(음수) 수치를 가진다. 두 용액을 혼합했을 때 특성값의 합이 0에 가장 가까운 두 용액을 찾아 출력한다.
+
+### 입력
+
+- 첫째 줄: 용액의 수 N (2 이상 100,000 이하)
+- 둘째 줄: N개의 용액 특성값 (각 특성값은 -1,000,000,000 이상 1,000,000,000 이하의 정수)
+
+### 출력
+
+- 합이 0에 가장 가까운 두 용액의 특성값을 오름차순으로 출력
+
+### 예제
+
+| 입력                       | 출력     |
+| -------------------------- | -------- |
+| `5` `[-2, 4, -99, -1, 98]` | `-99 98` |
+
+## 풀이
+
+배열을 정렬한 뒤 양쪽 끝에 포인터를 놓고, 두 용액의 합을 비교하며 0에 가장 가까운 쌍을 찾는 투 포인터 방식으로 해결한다.
+
+1. N개의 용액을 입력받아 오름차순 정렬한다.
+2. 왼쪽 포인터 `l = 0`, 오른쪽 포인터 `r = N-1`로 초기화한다.
+3. `l < r`인 동안 반복한다:
+   - `arr[l] + arr[r]`의 합을 계산한다.
+   - 합의 절댓값이 현재 최솟값보다 작으면 정답 쌍을 갱신한다.
+   - 합이 양수이면 `r--`, 음수이면 `l++`로 포인터를 이동한다.
+4. 최종 기록된 두 용액 값을 출력한다.
+
+**핵심 아이디어**: 정렬 후 투 포인터를 사용하면, 합이 양수일 때 오른쪽을 줄이고 음수일 때 왼쪽을 늘리는 방식으로 O(N) 안에 최적 쌍을 탐색할 수 있다. 이분 탐색과 결합하지 않아도 투 포인터만으로 충분하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Day135BOJ2470두용액정렬 { // 2470 두 용액 정렬
+	static int N, L, R;
+	static int[] arr;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N];
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++)
+			arr[i] = Integer.parseInt(st.nextToken());
+
+		Arrays.sort(arr);
+
+		solve(0, N - 1);
+
+		System.out.println(L + " " + R);
+		br.close();
+	}
+
+	static void solve(int l, int r) {
+		int max = 2000000000;
+
+		while (l < r) {
+			int sum = arr[l] + arr[r];
+
+			// 두 용액 갱신
+			if (Math.abs(sum) < max) {
+				L = arr[l];
+				R = arr[r];
+				max = Math.abs(sum);
+			}
+
+			if (sum > 0)
+				r--;
+			else
+				l++;
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) — 정렬 O(N log N) + 투 포인터 탐색 O(N)
+- 공간: O(N) — 용액 배열 저장

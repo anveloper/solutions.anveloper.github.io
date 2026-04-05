@@ -1,0 +1,96 @@
+---
+title: "BOJ 1268 - 임시 반장 정하기"
+date: "2024-03-08"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1268"
+problem_url: "https://www.acmicpc.net/problem/1268"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1268 - 임시 반장 정하기](https://www.acmicpc.net/problem/1268)
+
+N명의 학생이 5학년 동안 각각 소속된 반 번호가 주어진다. 5년 중 한 해라도 같은 반이었던 학생의 수가 가장 많은 학생을 임시 반장으로 선출한다. 동률이면 번호가 작은 학생을 선택한다.
+
+### 입력
+
+첫째 줄에 학생 수 N, 이후 N줄에 5개의 반 번호가 주어진다.
+
+### 출력
+
+임시 반장의 번호를 출력한다 (1-indexed).
+
+### 예제
+
+| 입력                                                            | 출력 |
+| --------------------------------------------------------------- | ---- |
+| `5` `2 3 1 7 3` `4 1 9 6 8` `5 5 2 4 4` `6 5 2 6 7` `8 4 2 2 2` | `4`  |
+
+## 풀이
+
+각 학생에 대해 5년간 같은 반이었던 고유한 학생 수를 세고, 가장 많은 학생을 선출한다.
+
+1. N×5 배열에 각 학생의 연도별 반 번호를 저장한다
+2. 각 학생 i에 대해 5개 학년을 순회하며 같은 반인 학생 k를 찾는다
+3. HashSet으로 중복을 제거하여 고유한 같은 반 학생 수를 구한다
+4. 가장 큰 값을 가진 학생의 번호(1-indexed)를 출력한다
+
+**핵심 아이디어**: 같은 학생이 여러 학년에서 같은 반일 수 있으므로, Set으로 중복을 제거하여 정확한 인원을 센다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day766BOJ1268임시반장정하기 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st;
+
+    int n = Integer.parseInt(bf.readLine());
+    int[][] arr = new int[n][5];
+    int max = 0;
+    int ans = 0;
+
+    for (int i = 0; i < n; i++) {
+      st = new StringTokenizer(bf.readLine());
+      for (int j = 0; j < 5; j++) {
+        arr[i][j] = Integer.parseInt(st.nextToken());
+      }
+    }
+
+    for (int i = 0; i < n; i++) {
+      Set<Integer> sameClass = new HashSet<>();
+
+      for (int j = 0; j < 5; j++) {
+        for (int k = 0; k < n; k++) {
+          if (arr[i][j] == arr[k][j] && k != i) {
+            sameClass.add(k);
+          }
+        }
+      }
+
+      if (max < sameClass.size()) {
+        max = sameClass.size();
+        ans = i;
+      }
+    }
+    System.out.println(ans + 1);
+    bf.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N² \* 5) — 각 학생에 대해 5학년, N명 비교
+- 공간: O(N) — HashSet 및 N×5 배열

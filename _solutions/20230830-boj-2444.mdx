@@ -1,0 +1,80 @@
+---
+title: "BOJ 2444 - 별 찍기 - 7"
+date: "2023-08-30"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2444"
+problem_url: "https://www.acmicpc.net/problem/2444"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2444 - 별 찍기 - 7](https://www.acmicpc.net/problem/2444)
+
+N이 주어질 때, 별로 다이아몬드 모양을 출력한다. 가장 넓은 줄은 2\*N-1개의 별이다.
+
+### 입력
+
+첫째 줄에 N이 주어진다 (1 이상 100 이하).
+
+### 출력
+
+2\*N-1줄에 걸쳐 다이아몬드 모양의 별을 출력한다.
+
+### 예제
+
+| 입력 | 출력                              |
+| ---- | --------------------------------- |
+| `3`  | `  *` ` ***` `*****` ` ***` `  *` |
+
+## 풀이
+
+상단 삼각형과 하단 삼각형으로 나누어 이중 반복문으로 공백과 별을 출력한다.
+
+1. 상단(0~N-1행): 공백 (N-i-1)개, 별 (2\*i+1)개를 출력한다
+2. 하단(1~N-1행): 공백 i개, 별 (2\*(N-i)-1)개를 출력한다
+3. BufferedWriter로 문자 단위 출력을 처리한다
+
+**핵심 아이디어**: 다이아몬드는 상단 증가 삼각형과 하단 감소 삼각형의 결합이다. 공백 수와 별 수의 패턴을 수식화하여 이중 루프로 구현한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day572BOJ2444별찍기7 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n - i - 1; j++)
+        bw.write(' ');
+      for (int j = 0; j < 2 * i + 1; j++)
+        bw.write('*');
+      bw.write('\n');
+    }
+    for (int i = 1; i < n; i++) {
+      for (int j = 0; j < i; j++)
+        bw.write(' ');
+      for (int j = 0; j < 2 * (n - i) - 1; j++)
+        bw.write('*');
+      bw.write('\n');
+    }
+    bw.flush();
+    bw.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(1)

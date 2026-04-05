@@ -1,0 +1,89 @@
+---
+title: "BOJ 2669 - 직사각형 네개의 합집합의 면적 구하기"
+date: "2023-06-02"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2669"
+problem_url: "https://www.acmicpc.net/problem/2669"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2669 - 직사각형 네개의 합집합의 면적 구하기](https://www.acmicpc.net/problem/2669)
+
+좌표 평면 위에 4개의 직사각형이 주어졌을 때, 이들의 합집합 면적을 구하라.
+
+### 입력
+
+4줄에 걸쳐 각 직사각형의 왼쪽 아래 (x1, y1)과 오른쪽 위 (x2, y2) 좌표가 주어진다. 좌표는 1 이상 100 이하.
+
+### 출력
+
+합집합의 면적을 출력한다.
+
+### 예제
+
+| 입력                                    | 출력 |
+| --------------------------------------- | ---- |
+| `1 2 4 4` `2 3 5 7` `3 1 6 5` `7 3 8 6` | `26` |
+
+## 풀이
+
+101 x 101 격자에 직사각형 영역을 표시하고, true인 칸의 수를 세면 합집합 면적이 된다.
+
+1. boolean 101 x 101 배열을 생성한다
+2. 4개 직사각형에 대해, 해당 영역의 칸을 true로 표시한다
+3. 겹치는 부분은 이미 true이므로 자동으로 중복이 제거된다
+4. 전체 배열을 순회하며 true인 칸의 수가 합집합 면적이다
+
+**핵심 아이디어**: 좌표 범위가 최대 100으로 작으므로, 격자 채우기 방식으로 겹침을 자연스럽게 처리할 수 있다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day481BOJ2669직사각형합집합면적 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+    boolean[][] map = new boolean[101][101];
+
+    for (int i = 0; i < 4; i++) {
+      StringTokenizer st = new StringTokenizer(in.readLine());
+      int c1 = Integer.parseInt(st.nextToken());
+      int r1 = Integer.parseInt(st.nextToken());
+      int c2 = Integer.parseInt(st.nextToken());
+      int r2 = Integer.parseInt(st.nextToken());
+
+      for (int r = r1; r < r2; r++) {
+        for (int c = c1; c < c2; c++) {
+          map[r][c] = true;
+        }
+      }
+    }
+
+    int cnt = 0;
+    for (int r = 0; r < 101; r++) {
+      for (int c = 0; c < 101; c++) {
+        if (map[r][c] == true) {
+          cnt++;
+        }
+      }
+    }
+    System.out.println(cnt);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) (100 x 100 고정 격자)
+- 공간: O(1) (101 x 101 고정 배열)

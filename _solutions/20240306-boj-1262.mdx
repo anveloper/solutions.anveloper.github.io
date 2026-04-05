@@ -1,0 +1,85 @@
+---
+title: "BOJ 1262 - 알파벳 다이아몬드"
+date: "2024-03-06"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1262"
+problem_url: "https://www.acmicpc.net/problem/1262"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1262 - 알파벳 다이아몬드](https://www.acmicpc.net/problem/1262)
+
+무한 평면에 주기 (2N-1)로 반복되는 알파벳 다이아몬드 패턴이 있다. 중심에서의 맨해튼 거리에 따라 알파벳이 결정되고, N 이상이면 `.`이다. (R1, C1)부터 (R2, C2)까지의 영역을 출력하라.
+
+### 입력
+
+N, R1, C1, R2, C2가 공백으로 주어진다.
+
+### 출력
+
+지정된 영역의 패턴을 출력한다.
+
+### 예제
+
+| 입력        | 출력                                    |
+| ----------- | --------------------------------------- |
+| `3 0 0 4 4` | `a.a.a` `...b.` `a.cba` `...b.` `a.a.a` |
+
+## 풀이
+
+각 좌표를 주기 (2N-1)로 나머지 연산하여 다이아몬드 중심으로부터의 맨해튼 거리를 구한다.
+
+1. 주기 `length = 2N - 1`로 좌표를 모듈러 연산하여 타일링을 처리한다
+2. 각 (r, c)에 대해 중심 (N-1, N-1)로부터의 맨해튼 거리를 계산한다
+3. 거리가 N 이상이면 `.`, 미만이면 `'a' + (거리 % 26)`을 출력한다
+4. (R1, C1)부터 (R2, C2)까지 이중 반복문으로 순회한다
+
+**핵심 아이디어**: 무한 타일링을 모듈러 연산으로 처리하고, 맨해튼 거리로 다이아몬드 형태와 알파벳을 결정한다.
+
+## 코드
+
+```java
+package day799;
+
+import java.util.*;
+
+public class Day764BOJ1262알파벳다이아몬드 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    String[] input = sc.nextLine().split(" ");
+    int N = Integer.parseInt(input[0]);
+    int R1 = Integer.parseInt(input[1]);
+    int C1 = Integer.parseInt(input[2]);
+    int R2 = Integer.parseInt(input[3]);
+    int C2 = Integer.parseInt(input[4]);
+    int length = 2 * N - 1;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0, s = R1; i < R2 - R1 + 1; i++, s++) {
+      for (int j = 0, e = C1; j < C2 - C1 + 1; j++, e++) {
+        int x = s % (length);
+        int y = e % (length);
+        int dis = Math.abs((N - 1) - x) + Math.abs((N - 1) - y);
+
+        if (dis >= N)
+          sb.append(".");
+        else
+          sb.append((char) (((dis % 26)) + 'a'));
+      }
+      sb.append("\n");
+    }
+    System.out.println(sb);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O((R2 - R1) \* (C2 - C1)) — 출력 영역 크기
+- 공간: O((R2 - R1) \* (C2 - C1)) — StringBuilder 출력 버퍼

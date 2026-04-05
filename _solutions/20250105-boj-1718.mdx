@@ -1,0 +1,62 @@
+---
+title: "BOJ 1718 - 암호"
+date: "2025-01-05"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1718"
+problem_url: "https://www.acmicpc.net/problem/1718"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1718 - 암호](https://www.acmicpc.net/problem/1718)
+
+평문과 키 문자열이 주어진다. 평문의 각 글자에서 키의 대응 글자만큼 알파벳을 앞으로 이동시켜 암호문을 만든다. 공백은 그대로 유지한다.
+
+### 입력
+
+첫째 줄에 평문, 둘째 줄에 키 문자열이 주어진다.
+
+### 출력
+
+암호문을 출력한다.
+
+### 예제
+
+| 입력                      | 출력               |
+| ------------------------- | ------------------ |
+| `nice to meet you` `abcd` | `mhaz sn ldbq xnt` |
+
+## 풀이
+
+비즈네르 암호 방식으로, 각 문자에서 키 문자의 알파벳 순서만큼 뺀 뒤 순환 처리한다.
+
+1. 평문의 각 문자를 순회한다
+2. 공백이면 그대로 출력한다
+3. 그 외에는 `(평문[i] - 키[i % 키길이] - 1) % 26 + 'a'`로 암호문 문자를 계산한다
+4. 키는 순환적으로 반복 사용된다
+
+**핵심 아이디어**: 키 문자의 알파벳 순서(a=1)만큼 평문을 앞으로 이동시키는 비즈네르 암호의 변형이다.
+
+## 코드
+
+```python
+text, key = input(), input()
+
+answer = ''
+
+for i in range(len(text)):
+    if text[i] == ' ': answer += ' '
+    else: answer += chr((ord(text[i]) - ord(key[i%len(key)]) - 1) % 26 + ord('a'))
+
+print(answer)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

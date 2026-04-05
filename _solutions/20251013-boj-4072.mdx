@@ -1,0 +1,74 @@
+---
+title: "BOJ 4072 - Words"
+date: "2025-10-13"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4072"
+problem_url: "https://www.acmicpc.net/problem/4072"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4072 - Words](https://www.acmicpc.net/problem/4072)
+
+단어 또는 문장이 한 줄씩 입력될 때, 각 단어를 역순으로 뒤집어 출력한다. 입력의 끝은 `#` 한 글자로만 이루어진 줄로 표시된다. 단어 사이의 구분자(공백 또는 개행)는 그대로 유지하여 출력한다.
+
+### 입력
+
+줄 단위로 단어가 입력된다. `#` 만 있는 줄이 나오면 입력을 종료한다.
+
+### 출력
+
+각 단어를 역순으로 출력하되, 원본의 구분자(공백·개행)를 그대로 유지한다.
+
+### 예제
+
+| 입력                | 출력            |
+| ------------------- | --------------- |
+| `Hello` `World` `#` | `olleH` `dlroW` |
+
+## 풀이
+
+단어를 하나씩 읽어 역순 출력하되, 단어 뒤의 구분자(공백 또는 개행)를 `getc`로 그대로 가져와 함께 출력한다.
+
+1. `scanf("%s", str)`로 단어를 읽는다. `#`만 있는 입력이 들어오면 루프를 종료한다.
+2. `strlen`으로 길이를 구한 뒤, 마지막 인덱스부터 0까지 역순으로 `printf`로 문자를 출력한다.
+3. 단어 출력 후 `getc(stdin)`으로 다음 문자(공백 또는 `\n`)를 읽어 그대로 출력한다. 이 방식으로 원본 구분자를 보존한다.
+4. 종료 조건인 `#`은 `str[0] == '#' && str[1] == NULL`로 확인한다.
+
+**핵심 아이디어**: 단어를 역순 출력한 뒤 `getc`로 구분자를 한 글자씩 읽으면, 단어 간 공백과 줄 구분을 원본과 동일하게 유지할 수 있다. `scanf`는 공백·개행을 건너뛰므로, 그 뒤에 남은 구분자를 `getc`로 별도 처리하는 것이 핵심이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cstring>
+
+int main()
+{
+  char str[251], c;
+  int len;
+  while (1)
+  {
+    scanf("%s", str);
+    if (str[0] == '#' && str[1] == NULL)
+      break;
+    len = strlen(str);
+    for (int i = len - 1; i >= 0; i--)
+    {
+      printf("%c", str[i]);
+    }
+    c = getc(stdin);
+    printf("%c", c);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N은 전체 입력 문자 수
+- 공간: O(L) — L은 단어 최대 길이 (250자)

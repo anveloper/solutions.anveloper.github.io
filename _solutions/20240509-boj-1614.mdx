@@ -1,0 +1,70 @@
+---
+title: "BOJ 1614 - 영식이의 손가락"
+date: "2024-05-09"
+description: "손가락 번호와 접은 횟수로 총 카운트를 계산"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1614"
+problem_url: "https://www.acmicpc.net/problem/1614"
+difficulty: "실버 III"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1614 - 영식이의 손가락](https://www.acmicpc.net/problem/1614)
+
+1부터 순서대로 손가락을 접어가며 세는데 (엄지→새끼→엄지 왕복), 아픈 손가락의 번호와 접은 횟수가 주어질 때 몇까지 세었는지 구하라.
+
+### 입력
+
+첫째 줄에 아픈 손가락 번호 (1~5), 둘째 줄에 아픈 손가락을 접은 횟수가 주어진다.
+
+### 출력
+
+몇까지 세었는지 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `3` `4` | `18` |
+
+## 풀이
+
+손가락 접기는 1→5→1 방향으로 왕복하므로 한 사이클은 8번이다. 각 손가락의 위치에 따라 주기가 다르며, 이를 수식으로 계산한다.
+
+1. 엄지(1)와 새끼(5)는 한 사이클(8)에 1번 접히므로 `b * 8`
+2. 검지(2)와 약지(4)는 8에 1번씩이지만 왕복에서 2번 접히므로, 홀/짝 횟수에 따라 간격이 달라진다
+3. 중지(3)는 8에 2번 접히므로 `b * 4`
+4. 손가락 번호에서 1을 빼 기본 오프셋을 더한다
+
+**핵심 아이디어**: 왕복 패턴에서 각 손가락의 등장 주기를 분석하면 O(1) 수식으로 답을 구할 수 있다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  let [a, b] = input.map(Number);
+  let res = a - 1;
+  if (a == 1) res += b * 8;
+  else if (a == 2) {
+    if (b % 2 == 0) res += parseInt(b / 2) * 8;
+    else res += parseInt(b / 2) * 8 + 6;
+  } else if (a == 3) res += parseInt(b * 4);
+  else if (a == 4) {
+    if (b % 2 == 0) res += parseInt((b / 2) * 8);
+    else res += parseInt(b / 2) * 8 + 2;
+  } else if (a == 5) res += b * 8;
+  return res;
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

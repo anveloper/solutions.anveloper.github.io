@@ -1,0 +1,52 @@
+---
+title: "BOJ 5337 - 웰컴"
+date: "2023-12-31"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5337"
+problem_url: "https://www.acmicpc.net/problem/5337"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5337 - 웰컴](https://www.acmicpc.net/problem/5337)
+
+주어진 "Welcome" ASCII 아트를 그대로 출력하라.
+
+### 입력
+
+없음.
+
+### 출력
+
+3줄의 ASCII 아트를 출력한다.
+
+## 풀이
+
+고정된 3줄의 ASCII 아트 문자열을 `println`으로 출력한다.
+
+1. 각 줄의 특수 문자를 이스케이프 처리하여 문자열 리터럴로 작성한다
+2. `\n`으로 줄바꿈을 포함하여 한 번에 출력한다
+
+**핵심 아이디어**: 고정 출력 문제이다.
+
+## 코드
+
+```java
+package day699;
+
+public class Day698BOJ5337웰컴 {
+  public static void main(String[] args) {
+    System.out.println(".  .   .\n|  | _ | _. _ ._ _  _\n|/\\|(/.|(_.(_)[ | )(/.");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 출력
+- 공간: O(1) — 고정 문자열

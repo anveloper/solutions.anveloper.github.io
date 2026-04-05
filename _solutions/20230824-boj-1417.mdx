@@ -1,0 +1,75 @@
+---
+title: "BOJ 1417 - 국회의원 선거"
+date: "2023-08-24"
+description: "구현, 자료 구조, 그리디 알고리즘 문제"
+tags: ["구현", "자료 구조", "그리디 알고리즘", "시뮬레이션", "우선순위 큐"]
+platform: "boj"
+problem_number: "1417"
+problem_url: "https://www.acmicpc.net/problem/1417"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1417 - 국회의원 선거](https://www.acmicpc.net/problem/1417)
+
+N명의 후보의 득표수가 주어질 때, 1번 후보(다솜이)가 당선되려면 최소 몇 명의 유권자를 매수해야 하는지 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 후보의 득표수가 주어진다 (1번이 다솜이).
+
+### 출력
+
+최소 매수 인원을 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `3` `5` `7` `7` | `3`  |
+
+## 풀이
+
+최대 힙으로 가장 득표가 많은 후보에서 1표씩 가져오는 그리디를 반복한다.
+
+1. 다솜이 외의 후보 득표를 최대 힙에 넣는다
+2. 힙의 최댓값이 다솜이 이상인 동안 반복한다
+3. 최대 득표 후보에서 1표를 빼고 다솜이에게 1표를 더한다
+
+**핵심 아이디어**: 항상 가장 위협적인(득표가 많은) 후보에서 매수하는 것이 최적이다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day564BOJ1417국회위원 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+    int a = Integer.parseInt(br.readLine());
+    PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+    while (n-- > 1)
+      pq.add(Integer.parseInt(br.readLine()));
+    int cnt = 0;
+    while (!pq.isEmpty() && pq.peek() >= a) {
+      cnt++;
+      a++;
+      pq.add(pq.poll() - 1);
+    }
+    System.out.println(cnt);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(V \* N log N) - V는 총 득표수
+- 공간: O(N)

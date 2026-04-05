@@ -1,0 +1,86 @@
+---
+title: "BOJ 5525 - IOIOI"
+date: "2022-11-10"
+description: "문자열 문제"
+tags: ["문자열"]
+platform: "boj"
+problem_number: "5525"
+problem_url: "https://www.acmicpc.net/problem/5525"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5525 - IOIOI](https://www.acmicpc.net/problem/5525)
+
+N이 주어졌을 때 `IOI`가 N번 반복되는 패턴 P(N) (예: P(2) = `IOIOI`)이 문자열 S에 몇 번 포함되는지 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 S의 길이 M, 셋째 줄에 문자열 S가 주어진다 (1 이상 1,000,000 이하).
+
+### 출력
+
+S 안에 P(N)이 몇 번 포함되는지 출력한다.
+
+### 예제
+
+| 입력                     | 출력 |
+| ------------------------ | ---- |
+| `1` `13` `OOIOIOIOIIOII` | `4`  |
+
+## 풀이
+
+연속된 `IOI` 패턴의 카운트를 누적하며 한 번의 순회로 해결한다.
+
+1. 인덱스 1부터 M-2까지 순회하며 `s[i-1]=='I' && s[i]=='O' && s[i+1]=='I'`를 확인한다
+2. 조건 충족 시 count를 증가시키고 i를 1 추가 이동한다 (다음 `OI` 확인을 위해)
+3. count가 N에 도달하면 result를 증가시키고 count를 1 감소시킨다 (겹치는 패턴 처리)
+4. 조건 불충족 시 count를 0으로 리셋한다
+
+**핵심 아이디어**: `IOI` 단위로 연속 매칭 횟수를 세면 O(M)에 해결되며, N회 연속 시 결과를 카운트하고 count를 1 줄여 슬라이딩한다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.*;
+
+public class Day276BOJ5525IOIOI {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int N = Integer.parseInt(br.readLine());
+		int M = Integer.parseInt(br.readLine());
+		char s[] = br.readLine().toCharArray();
+
+		int result = 0;
+		int count = 0;
+
+		for (int i = 1; i < M - 1; i++) {
+			if (s[i - 1] == 'I' && s[i] == 'O' && s[i + 1] == 'I') {
+				count++;
+
+				if (count == N) {
+					count--;
+					result++;
+				}
+				i++;
+			} else {
+				count = 0;
+			}
+		}
+
+		System.out.println(result);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(M) - 문자열 한 번 순회
+- 공간: O(M) - 문자 배열 저장

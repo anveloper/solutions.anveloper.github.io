@@ -1,0 +1,72 @@
+---
+title: "BOJ 2440 - 별 찍기 - 3"
+date: "2023-07-25"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2440"
+problem_url: "https://www.acmicpc.net/problem/2440"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2440 - 별 찍기 - 3](https://www.acmicpc.net/problem/2440)
+
+첫째 줄에 N개의 별, 둘째 줄에 N-1개, ..., N째 줄에 1개의 별을 출력한다.
+
+### 입력
+
+첫째 줄에 N이 주어진다 (1 이상 100 이하).
+
+### 출력
+
+N줄에 걸쳐 별을 감소하는 개수로 출력한다.
+
+### 예제
+
+| 입력 | 출력                          |
+| ---- | ----------------------------- |
+| `5`  | `*****` `****` `***` `**` `*` |
+
+## 풀이
+
+이중 반복문으로 각 줄에 감소하는 개수의 별을 출력한다.
+
+1. i를 0부터 N-1까지 반복한다 (행)
+2. j를 i+1부터 N까지 반복하며 별을 출력한다 (각 행의 별 개수 = N-i)
+3. 각 행 출력 후 줄바꿈한다
+
+**핵심 아이디어**: 첫 번째 행은 N개, 마지막 행은 1개의 별을 출력하는 역삼각형 패턴이다.
+
+## 코드
+
+```java
+package day549;
+
+import java.util.*;
+
+public class Day534BOJ2440별찍기3 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    int num = sc.nextInt();
+
+    for (int i = 0; i < num; i++) {
+
+      for (int j = i + 1; j <= num; j++) {
+        System.out.print("*");
+      }
+      System.out.println();
+    }
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(1)

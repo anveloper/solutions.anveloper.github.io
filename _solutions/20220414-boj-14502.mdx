@@ -1,0 +1,161 @@
+---
+title: "BOJ 14502 - 연구소"
+date: "2022-04-14"
+description: "구현, 그래프 이론, 브루트포스 알고리즘 문제"
+tags: ["구현", "그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "너비 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "14502"
+problem_url: "https://www.acmicpc.net/problem/14502"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14502 - 연구소](https://www.acmicpc.net/problem/14502)
+
+N x M 격자 지도에 바이러스가 존재하는 연구소가 있다. 지도는 빈 칸(0), 벽(1), 바이러스(2)로 구성된다. 바이러스는 상하좌우 4방향으로 인접한 빈 칸에 퍼진다. 빈 칸 중 3개를 선택해 벽을 세울 때, 바이러스가 퍼진 후 남아있는 안전 영역(0인 칸)의 최대 크기를 구하는 문제다.
+
+### 입력
+
+- 첫째 줄: 지도의 세로 크기 N, 가로 크기 M (3 ≤ N, M ≤ 8)
+- 다음 N개의 줄: 지도 정보 (0: 빈 칸, 1: 벽, 2: 바이러스)
+
+### 출력
+
+안전 영역의 최대 크기를 출력한다.
+
+### 예제
+
+| 입력                                                                                                                  | 출력 |
+| --------------------------------------------------------------------------------------------------------------------- | ---- |
+| `7 7` `2 0 0 0 1 1 0` `0 0 1 0 1 2 0` `0 1 1 0 1 0 0` `0 1 0 0 0 0 0` `0 0 0 0 0 1 1` `0 1 0 0 0 0 0` `0 1 0 0 0 0 0` | `27` |
+
+## 풀이
+
+빈 칸 중 3개를 골라 벽을 세우는 모든 경우를 브루트포스(DFS)로 탐색하고, 각 경우마다 BFS로 바이러스를 시뮬레이션하여 안전 영역의 최대 크기를 구한다.
+
+1. 지도를 입력받으며 바이러스의 위치를 `vlist`에 저장한다.
+2. DFS를 이용해 빈 칸(0)에 벽(3)을 세우는 경우를 재귀적으로 탐색한다. 깊이가 3이 되면 BFS를 호출한다.
+3. BFS에서는 원본 지도를 복사(`vmap`)한 뒤, 바이러스 위치에서 출발하여 상하좌우로 바이러스를 전파한다.
+4. BFS 완료 후 `vmap`에서 0인 칸의 수를 세어 안전 영역 크기를 계산하고, `ans`의 최댓값을 갱신한다.
+5. DFS 백트래킹 시 임시 벽(3)을 다시 0으로 복원한다.
+
+**핵심 아이디어**: 격자 크기가 최대 8x8로 작으므로, 빈 칸 중 3개를 선택하는 조합을 완전 탐색해도 충분히 빠르다. DFS로 벽 배치를 결정하고, BFS로 바이러스 전파를 시뮬레이션하는 전형적인 브루트포스 + 시뮬레이션 패턴이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day66BOJ14502연구소DFS와BFS {
+	static int N, M, ans;
+	static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+	static int[][] map, vmap;
+	static List<int[]> vlist;
+	static Queue<int[]> q;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		ans = 0;
+
+		map = new int[N][M];
+		vlist = new ArrayList<>();
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+				if (map[i][j] == 2) {
+					vlist.add(new int[] { i, j });
+				}
+			}
+		}
+		// 1. 3개 선택 dfs()
+		// 2. 바이러스 시뮬레이션 bfs()
+		// 3. 안전지역 체크
+		dfs(0);
+
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static void dfs(int d) {
+		if (d == 3) {
+			bfs();
+			return;
+		}
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (map[i][j] == 0) {
+					map[i][j] = 3;
+					dfs(d + 1);
+					map[i][j] = 0; // visited 대용
+				}
+			}
+		}
+	}
+
+	private static void bfs() {
+		vmap = new int[N][];
+		for (int i = 0; i < N; i++)
+			vmap[i] = map[i].clone();
+
+		q = new LinkedList<>();
+
+		for (int[] a : vlist)
+			q.add(a);
+
+		while (!q.isEmpty()) {
+			int[] curr = q.poll();
+			int r = curr[0];
+			int c = curr[1];
+
+			for (int i = 0; i < 4; i++) {
+				int nr = r + dr[i];
+				int nc = c + dc[i];
+				if (index(nr, nc))
+					continue;
+				if (vmap[nr][nc] != 0)
+					continue;
+				vmap[nr][nc] = 2;
+				q.add(new int[] { nr, nc });
+			}
+		}
+		check(vmap);
+	}
+
+	private static void check(int[][] a) {
+		int cnt = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (a[i][j] == 0)
+					cnt++;
+			}
+		}
+		ans = Math.max(ans, cnt);
+	}
+
+	private static boolean index(int r, int c) {
+		return r < 0 || c < 0 || r >= N || c >= M;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(NM _ C(NM, 3)) — 빈 칸 중 3개 조합 선택 후 BFS 시뮬레이션, 최악 O((NM)^3 _ NM)
+- 공간: O(NM) — 지도 복사 배열 및 BFS 큐

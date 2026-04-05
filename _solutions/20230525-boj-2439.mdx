@@ -1,0 +1,77 @@
+---
+title: "BOJ 2439 - 별 찍기 - 2"
+date: "2023-05-25"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2439"
+problem_url: "https://www.acmicpc.net/problem/2439"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2439 - 별 찍기 - 2](https://www.acmicpc.net/problem/2439)
+
+N이 주어졌을 때, 오른쪽 정렬로 별을 1개부터 N개까지 찍는 직각삼각형을 출력하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 100)이 주어진다.
+
+### 출력
+
+N줄에 걸쳐 오른쪽 정렬된 별을 출력한다.
+
+### 예제
+
+| 입력 | 출력                                    |
+| ---- | --------------------------------------- |
+| `5`  | `    *` `   **` `  ***` ` ****` `*****` |
+
+## 풀이
+
+각 줄에 (N-i)개의 공백과 i개의 별을 출력한다.
+
+1. i번째 줄(1-indexed)에 (N-i)개의 공백을 먼저 출력한다
+2. 이어서 i개의 별을 출력한다
+3. BufferedWriter를 사용하여 출력을 버퍼링한다
+
+**핵심 아이디어**: 별 찍기 1과 달리 공백을 앞에 추가하여 오른쪽 정렬 효과를 만든다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day526BOJ2439별찍기2 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    int N = Integer.parseInt(br.readLine());
+    br.close();
+
+    for (int i = 1; i <= N; i++) {
+      for (int j = 1; j <= N - i; j++) {
+        bw.write(' ');
+      }
+      for (int k = 1; k <= i; k++) {
+        bw.write('*');
+      }
+      bw.newLine();
+    }
+    bw.flush();
+    bw.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(1)

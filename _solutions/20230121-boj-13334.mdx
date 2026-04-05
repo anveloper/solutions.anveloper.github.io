@@ -1,0 +1,100 @@
+---
+title: "BOJ 13334 - 철로"
+date: "2023-01-21"
+description: "자료 구조, 정렬, 스위핑 문제"
+tags: ["자료 구조", "정렬", "스위핑", "우선순위 큐"]
+platform: "boj"
+problem_number: "13334"
+problem_url: "https://www.acmicpc.net/problem/13334"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13334 - 철로](https://www.acmicpc.net/problem/13334)
+
+N명의 사람이 집과 사무실 좌표로 주어진다. 길이 d인 철로 구간을 하나 설치하여, 집과 사무실이 모두 철로 위에 있는 사람 수를 최대화하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 집과 사무실 좌표, 마지막 줄에 d가 주어진다.
+
+### 출력
+
+철로 구간에 완전히 포함되는 최대 사람 수를 출력한다.
+
+### 예제
+
+| 입력                                                                   | 출력 |
+| ---------------------------------------------------------------------- | ---- |
+| `8` `5 40` `35 25` `10 20` `10 40` `20 10` `25 35` `40 10` `30 0` `30` | `4`  |
+
+## 풀이
+
+구간을 오른쪽 끝 기준으로 정렬한 뒤, 스위핑과 최소 힙으로 포함 가능한 구간 수를 추적한다.
+
+1. 각 사람의 (집, 사무실) 좌표를 (min, max)로 정규화한다
+2. 오른쪽 끝(max) 기준 오름차순으로 정렬한다
+3. 각 구간을 순회하며, 왼쪽 끝(min)을 최소 힙에 넣는다
+4. 힙에서 현재 구간의 `오른쪽 끝 - d`보다 작은 왼쪽 끝을 모두 제거한다 (철로 범위 밖)
+5. 힙의 크기가 현재 철로 위치에서 포함 가능한 사람 수이다
+
+**핵심 아이디어**: 오른쪽 끝 기준 정렬 후, 철로의 오른쪽 끝을 현재 구간의 오른쪽 끝에 맞추면 왼쪽 끝이 `오른쪽 끝 - d` 이상인 구간만 포함된다. 최소 힙으로 범위 밖 구간을 효율적으로 제거한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.*;
+
+public class Day348BOJ13334철로 {
+    static int N, d, ans = -1;
+    static List<int[]> list;
+    static PriorityQueue<Integer> pq;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        list = new ArrayList<>();
+        pq = new PriorityQueue<>();
+
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            int h = Integer.parseInt(st.nextToken());
+            int o = Integer.parseInt(st.nextToken());
+            list.add(h < o ? new int[] { h, o } : new int[] { o, h });
+        }
+        d = Integer.parseInt(br.readLine());
+
+        list.sort((o1, o2) -> {
+            if (o1[1] == o2[1])
+                return o1[0] - o2[0];
+            else
+                return o1[1] - o2[1];
+        });
+
+        for (int i = 0; i < N; i++) {
+            int[] cur = list.get(i);
+            pq.add(cur[0]);
+            while (!pq.isEmpty()) {
+                if (pq.peek() >= cur[1] - d)
+                    break;
+                pq.poll();
+            }
+            ans = Math.max(ans, pq.size());
+        }
+        System.out.println(ans);
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

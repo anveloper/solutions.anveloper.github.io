@@ -1,0 +1,92 @@
+---
+title: "BOJ 1715 - 카드 정렬하기"
+date: "2022-04-28"
+description: "자료 구조, 그리디 알고리즘, 우선순위 큐 문제"
+tags: ["자료 구조", "그리디 알고리즘", "우선순위 큐"]
+platform: "boj"
+problem_number: "1715"
+problem_url: "https://www.acmicpc.net/problem/1715"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1715 - 카드 정렬하기](https://www.acmicpc.net/problem/1715)
+
+N개의 카드 묶음이 있고 각 묶음의 카드 수가 주어진다. 두 묶음을 합칠 때마다 합친 묶음의 카드 수만큼 비교 횟수가 발생한다. 모든 묶음을 하나로 합칠 때 필요한 총 비교 횟수의 최솟값을 구한다.
+
+### 입력
+
+- 첫째 줄: 묶음의 수 N (1 이상 100,000 이하)
+- 이후 N개의 줄: 각 묶음의 카드 수 (1 이상 1,000 이하)
+
+### 출력
+
+- 최소 비교 횟수
+
+### 예제
+
+| 입력               | 출력  |
+| ------------------ | ----- |
+| `3` `10` `20` `40` | `100` |
+
+## 풀이
+
+항상 가장 작은 두 묶음을 먼저 합치는 그리디 전략이 최적이다. 우선순위 큐(최소 힙)를 활용하여 효율적으로 구현한다.
+
+1. N개의 카드 묶음 수를 모두 최소 힙(PriorityQueue)에 넣는다.
+2. 힙에 원소가 2개 이상인 동안:
+   - 가장 작은 두 값을 꺼내 합산한다.
+   - 합산 결과를 총 비교 횟수(`ans`)에 더한다.
+   - 합산된 값을 다시 힙에 넣는다.
+3. 힙에 원소가 1개 남으면 종료하고 `ans`를 출력한다.
+
+**핵심 아이디어**: 허프만 코딩(Huffman Coding)과 동일한 원리이다. 작은 값들을 먼저 합칠수록 이후 합산에서 큰 값이 반복 계산되지 않아 총 비교 횟수가 최소화된다. 매번 정렬하는 대신 최소 힙을 사용해 O(log N) 삽입/삭제로 해결한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.PriorityQueue;
+
+public class Day80BOJ1715카드정렬PQ {
+	static int N;
+	static long ans, tmp;
+	static PriorityQueue<Long> pq;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		ans = 0;
+		pq = new PriorityQueue<>();
+		// 그리디적인 생각으로는 오름차순으로 정렬하고,
+		// 작은 수 끼리 더한다.
+		// 다만, 더해서 만들어진 값이 또 다시 작은수라고 보장할 수 없다.
+		// ex) 40, 41, 45, 79, 82 -> (81), 45, 79, 82
+		// 두 개를 합치고 매번 정렬하면 시간이 과도하게 사용된다.
+		// Priority Queue에 계속 넣어서 합치는 방법
+		// 값만 나오면 되니, int[] arr도 필요 없을 듯
+		// N도 재활용 안해도 될듯.
+		while (N-- > 0)
+			pq.add(Long.parseLong(br.readLine()));
+
+		while (pq.size() > 1) { // 두개를 뽑아서 하나로 합친다. 2개이상이다.
+			ans += tmp = pq.poll() + pq.poll(); // 비교횟수 증가
+			pq.add(tmp); // 현재 합쳐진 값 큐에 추가
+		}
+
+		System.out.println(ans); // 1개 남으면 탈출할테니
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) — N-1번의 합산, 매번 힙 삽입/삭제 O(log N)
+- 공간: O(N) — 우선순위 큐 크기

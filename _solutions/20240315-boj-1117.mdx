@@ -1,0 +1,86 @@
+---
+title: "BOJ 1117 - 색칠 1"
+date: "2024-03-15"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1117"
+problem_url: "https://www.acmicpc.net/problem/1117"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1117 - 색칠 1](https://www.acmicpc.net/problem/1117)
+
+W×H 크기의 종이를 x=f 위치에서 접은 뒤, 직사각형 영역 (x1, y1)~(x2, y2)를 c+1번 칠한다. 펼친 후 칠해지지 않은 면적을 구하라.
+
+### 입력
+
+W, H, f, c, x1, y1, x2, y2가 공백으로 주어진다.
+
+### 출력
+
+칠해지지 않은 면적을 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `10 10 5 0 1 1 6 9` | `28` |
+
+## 풀이
+
+접은 후 칠하면 대칭 위치도 함께 칠해지므로, 칠해지는 가로 폭을 대칭 고려하여 계산한다.
+
+1. 접는 위치 `f`에서 `min(f, W-f)`를 기준으로 접히는 쪽을 결정한다
+2. 칠하는 영역의 x축 범위가 접힘 경계를 기준으로 어디에 위치하는지에 따라 3가지 케이스로 나눈다
+3. 접힌 쪽에 속하는 부분은 폭이 2배로 칠해지고, 나머지는 1배로 칠해진다
+4. 칠해진 총 면적 = 가로 폭 \* (c+1) \* 세로 높이(y2-y1)
+5. 전체 면적 W\*H에서 칠해진 면적을 뺀다
+
+**핵심 아이디어**: 종이 접기의 대칭성을 이용하여 실제 칠해지는 가로 폭만 수학적으로 계산하면 시뮬레이션 없이 O(1)에 해결된다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day773BOJ1117색칠 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int W = Integer.parseInt(st.nextToken());
+    int H = Integer.parseInt(st.nextToken());
+    int f = Integer.parseInt(st.nextToken());
+    int c = Integer.parseInt(st.nextToken());
+    int x1 = Integer.parseInt(st.nextToken());
+    int y1 = Integer.parseInt(st.nextToken());
+    int x2 = Integer.parseInt(st.nextToken());
+    int y2 = Integer.parseInt(st.nextToken());
+    int divider = Integer.min(W - f, f);
+    long max = ((long) W) * H;
+    long cnt = 0L;
+
+    if (x1 <= divider && divider <= x2) {
+      cnt += (divider - x1) * 2;
+      cnt += (x2 - divider);
+    } else if (divider <= x1) {
+      cnt += x2 - x1;
+    } else {
+      cnt += (x2 - x1) * 2;
+    }
+    System.out.println(max - (cnt * (c + 1) * (y2 - y1)));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 수학적 계산만 수행
+- 공간: O(1) — 상수 변수만 사용

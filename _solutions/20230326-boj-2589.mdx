@@ -1,0 +1,121 @@
+---
+title: "BOJ 2589 - 보물섬"
+date: "2023-03-26"
+description: "그래프 이론, 브루트포스 알고리즘, 그래프 탐색 문제"
+tags: ["그래프 이론", "브루트포스 알고리즘", "그래프 탐색", "너비 우선 탐색", "격자 그래프"]
+platform: "boj"
+problem_number: "2589"
+problem_url: "https://www.acmicpc.net/problem/2589"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2589 - 보물섬](https://www.acmicpc.net/problem/2589)
+
+보물섬 지도가 주어질 때, 육지('L')로만 이동하여 가장 먼 두 지점 사이의 최단 거리를 구하라. 이동은 상하좌우 인접한 육지로만 가능하다.
+
+### 입력
+
+첫째 줄에 세로 N, 가로 M이 주어지고, 이후 N줄에 'W'(바다)와 'L'(육지)로 이루어진 지도가 주어진다.
+
+### 출력
+
+가장 먼 두 육지 사이의 최단 거리를 출력한다.
+
+### 예제
+
+| 입력                                                    | 출력 |
+| ------------------------------------------------------- | ---- |
+| `5 7` `WLLWWWL` `LLLWLLL` `LWLWLWW` `LWLWLLL` `WLLWLWW` | `8`  |
+
+## 풀이
+
+모든 육지 칸에서 BFS를 수행하여 각 시작점에서의 최대 거리를 구하고, 그 중 최댓값을 답으로 한다.
+
+1. N×M 지도를 입력받는다
+2. 모든 칸을 순회하며 육지('L')인 칸에서 BFS를 시작한다
+3. BFS에서 상하좌우 인접한 미방문 육지로 이동하며 거리를 누적한다
+4. 각 BFS에서 도달한 최대 거리를 전역 최댓값과 비교하여 갱신한다
+
+**핵심 아이디어**: 트리의 지름과 유사한 문제로, 모든 육지에서 BFS를 수행하는 브루트포스 방식이다. 각 BFS는 O(N*M)이고 시작점이 최대 N*M개이므로 전체 O((N\*M)²)이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day413BOJ2589보물섬 {
+  static int N, M, ans = 0;
+  static int[] dr = { -1, 1, 0, 0 }, dc = { 0, 0, -1, 1 };
+  static char[][] map;
+  static boolean[][] visited;
+  static Queue<int[]> q;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+
+    map = new char[N][M];
+
+    for (int i = 0; i < N; i++)
+      map[i] = br.readLine().toCharArray();
+
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        if (map[i][j] == 'L')
+          ans = Math.max(ans, bfs(i, j));
+      }
+    }
+    System.out.println(ans);
+    br.close();
+  }
+
+  private static int bfs(int i, int j) {
+    int cnt = 0;
+    q = new LinkedList<>();
+    visited = new boolean[N][M];
+
+    q.add(new int[] { i, j, 0 });
+    visited[i][j] = true;
+    while (!q.isEmpty()) {
+      int[] cur = q.poll();
+      for (int dir = 0; dir < 4; dir++) {
+        int nr = cur[0] + dr[dir];
+        int nc = cur[1] + dc[dir];
+        int c = cur[2] + 1;
+        if (index(nr, nc))
+          continue;
+        if (visited[nr][nc])
+          continue;
+        if (map[nr][nc] != 'L')
+          continue;
+        q.add(new int[] { nr, nc, c });
+        visited[nr][nc] = true;
+        cnt = Math.max(cnt, c);
+      }
+    }
+    return cnt;
+  }
+
+  private static boolean index(int nr, int nc) {
+    return nr < 0 || nr >= N || nc < 0 || nc >= M;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O((N\*M)²) - 모든 육지 칸에서 BFS
+- 공간: O(N\*M)

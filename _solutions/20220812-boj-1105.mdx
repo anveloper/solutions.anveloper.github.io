@@ -1,0 +1,87 @@
+---
+title: "BOJ 1105 - 팔"
+date: "2022-08-12"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "1105"
+problem_url: "https://www.acmicpc.net/problem/1105"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1105 - 팔](https://www.acmicpc.net/problem/1105)
+
+L 이상 R 이하의 자연수 중에서 숫자 8이 가장 적게 들어있는 수의 8 개수를 구하라.
+
+### 입력
+
+첫째 줄에 L과 R이 주어진다 (1 이상 2,000,000,000 이하).
+
+### 출력
+
+범위 내에서 8이 가장 적게 들어있는 수에 포함된 8의 개수를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `1 10`      | `0`  |
+| `88 88`     | `2`  |
+| `800 899`   | `1`  |
+| `8808 8880` | `2`  |
+
+## 풀이
+
+L과 R의 공통 접두사에서 8의 개수를 센다.
+
+1. L과 R의 자릿수가 다르면 0을 출력한다 (8이 없는 수가 반드시 존재)
+2. 자릿수가 같으면 높은 자리부터 L과 R을 비교한다
+3. 같은 자리의 숫자가 동일하고 그 숫자가 8이면 카운트를 증가한다
+4. 숫자가 다른 자리가 나오면 즉시 종료한다
+
+**핵심 아이디어**: 두 수가 달라지는 자리 이후로는 8이 아닌 숫자를 자유롭게 선택할 수 있으므로, 공통 접두사에 포함된 8만이 피할 수 없는 8이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day186BOJ1105 {
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		String L = st.nextToken();
+		String R = st.nextToken();
+		int cnt = 0;
+
+		if (L.length() == R.length()) {
+			for (int i = 0; i < L.length(); i++) {
+				if (L.charAt(i) != R.charAt(i)) {
+					break;
+				} else {
+					if (L.charAt(i) == '8') {
+						cnt++;
+					}
+				}
+			}
+		}
+		System.out.println(cnt);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(D) - D는 자릿수 (최대 10)
+- 공간: O(1)

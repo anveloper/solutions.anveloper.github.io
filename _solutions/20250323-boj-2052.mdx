@@ -1,0 +1,68 @@
+---
+title: "BOJ 2052 - 지수연산"
+date: "2025-03-23"
+description: "수학, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["수학", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "2052"
+problem_url: "https://www.acmicpc.net/problem/2052"
+difficulty: "브론즈 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2052 - 지수연산](https://www.acmicpc.net/problem/2052)
+
+정수 N이 주어질 때, `1 / 2^N`을 정확한 소수로 출력하라.
+
+### 입력
+
+정수 N이 주어진다.
+
+### 출력
+
+`1 / 2^N`의 정확한 소수 표현을 출력한다 (뒤의 불필요한 0 제거).
+
+### 예제
+
+| 입력 | 출력    |
+| ---- | ------- |
+| `3`  | `0.125` |
+
+## 풀이
+
+고정밀 소수 표현 후 뒤의 0을 제거한다.
+
+1. `1 / pow(2, N)`을 소수점 300자리까지 포맷팅한다
+2. 뒤에서부터 0이 아닌 자리까지 잘라낸다
+3. 결과를 출력한다
+
+**핵심 아이디어**: Python의 `pow`는 정수 정밀도가 무한하므로, 충분한 자릿수로 포맷팅하면 정확한 결과를 얻을 수 있다.
+
+## 코드
+
+```python
+def exponentiation(N):
+    answer = "%.300f" % (1 / pow(2, N))
+
+    slice_idx = len(answer)
+
+    for idx in range(len(answer) - 1, 1, -1):
+        if answer[idx] != "0":
+            slice_idx = idx + 1
+            break
+
+    return answer[:slice_idx]
+
+
+if __name__ == "__main__":
+    N = int(input())
+    print(exponentiation(N))
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

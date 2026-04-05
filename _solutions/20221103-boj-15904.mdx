@@ -1,0 +1,82 @@
+---
+title: "BOJ 15904 - UCPC는 무엇의 약자일까?"
+date: "2022-11-03"
+description: "그리디 알고리즘, 문자열 문제"
+tags: ["그리디 알고리즘", "문자열"]
+platform: "boj"
+problem_number: "15904"
+problem_url: "https://www.acmicpc.net/problem/15904"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15904 - UCPC는 무엇의 약자일까?](https://www.acmicpc.net/problem/15904)
+
+주어진 문자열에서 `U`, `C`, `P`, `C` 4글자가 순서대로 부분 수열로 존재하는지 판별하는 문제이다. 존재하면 `I love UCPC`, 존재하지 않으면 `I hate UCPC`를 출력한다.
+
+### 입력
+
+알파벳 대문자로만 이루어진 문자열이 한 줄에 주어진다. 문자열의 길이는 최대 100이다.
+
+### 출력
+
+문자열 안에 `UCPC`가 부분 수열로 존재하면 `I love UCPC`, 그렇지 않으면 `I hate UCPC`를 출력한다.
+
+### 예제
+
+| 입력      | 출력          |
+| --------- | ------------- |
+| `UCUCPC`  | `I love UCPC` |
+| `UCPCPC`  | `I love UCPC` |
+| `ASDFJKL` | `I hate UCPC` |
+
+## 풀이
+
+목표 문자열 `UCPC`를 앞에서부터 순서대로 매칭하는 투 포인터(greedy) 방식을 사용한다.
+
+1. 목표 배열 `{'U', 'C', 'P', 'C'}`와 매칭 인덱스 `index = 0`을 초기화한다
+2. 입력 문자열을 왼쪽부터 순회하며 현재 문자가 `ucpc[index]`와 같으면 `index`를 증가시킨다
+3. `index == 4`가 되면 4글자 모두 순서대로 등장한 것이므로 `I love UCPC`를 반환한다
+4. 끝까지 순회 후 `index != 4`이면 `I hate UCPC`를 반환한다
+
+**핵심 아이디어**: 부분 수열 판별은 목표 문자를 순서대로 탐욕적으로 매칭하면 O(N)으로 해결된다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.*;
+
+public class Day269BOJ15904UCPC {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println(solution(br.readLine()));
+	}
+
+	static String solution(String s) {
+		char[] ucpc = { 'U', 'C', 'P', 'C' };
+		int index = 0;
+
+		for (int i = 0; i < s.length(); i++) {
+			if (s.charAt(i) == ucpc[index]) {
+				index++;
+			}
+
+			if (index == 4) {
+				return "I love UCPC";
+			}
+		}
+
+		return "I hate UCPC";
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,69 @@
+---
+title: "BOJ 4581 - Voting"
+date: "2026-03-03"
+description: "투표 결과를 분석하여 찬성, 반대, 동률, 정족수 미달을 판별하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4581"
+problem_url: "https://www.acmicpc.net/problem/4581"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4581 - Voting](https://www.acmicpc.net/problem/4581)
+
+> 투표 문자열에서 Y, N, P, A를 세어 정족수 미달, 찬성, 반대, 동률을 판별하는 문제
+
+## 풀이
+
+결석(A)이 전체 인원의 절반 이상이면 정족수 미달이다. 그렇지 않으면 찬성(Y)과 반대(N) 수를 비교하여 결과를 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  string vote;
+  while (cin >> vote && vote != "#") {
+    int y = 0, n = 0, p = 0, a = 0;
+    int total = vote.length();
+
+    for (char c : vote) {
+      if (c == 'Y') y++;
+      else if (c == 'N') n++;
+      else if (c == 'P') p++;
+      else if (c == 'A') a++;
+    }
+
+    if (a * 2 >= total) {
+      cout << "need quorum\n";
+    }
+    else if (y > n) {
+      cout << "yes\n";
+    }
+    else if (n > y) {
+      cout << "no\n";
+    }
+    else {
+      cout << "tie\n";
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 투표 문자열 길이)
+- 공간: O(1)

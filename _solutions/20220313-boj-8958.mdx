@@ -1,0 +1,84 @@
+---
+title: "BOJ 8958 - OX퀴즈"
+date: "2022-03-13"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "8958"
+problem_url: "https://www.acmicpc.net/problem/8958"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8958 - OX퀴즈](https://www.acmicpc.net/problem/8958)
+
+OX 퀴즈의 결과가 문자열로 주어진다. 연속된 O의 점수는 1, 2, 3, ... 으로 증가하고, X가 나오면 다시 1부터 시작한다. 각 테스트 케이스의 총점을 구하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T가 주어진다. 이후 T줄에 O와 X로 이루어진 문자열이 주어진다.
+
+### 출력
+
+각 테스트 케이스의 총점을 출력한다.
+
+### 예제
+
+| 입력                                                                          | 출력                    |
+| ----------------------------------------------------------------------------- | ----------------------- |
+| `5` `OOXXOXXOOO` `OOXXOOXXOO` `OXOXOXOXOXOXOX` `OOOOOOOOOO` `OOOOXOOOOXOOOOX` | `10` `10` `7` `55` `30` |
+
+## 풀이
+
+문자열을 순회하며 연속 O 카운트를 유지하고, O마다 누적 점수를 더한다.
+
+1. 연속 O 카운트(cnt)를 0으로 초기화한다
+2. O를 만나면 cnt를 1 증가시키고, cnt를 총점에 더한다
+3. X를 만나면 cnt를 0으로 리셋한다
+4. 문자열 순회 후 총점을 출력한다
+
+**핵심 아이디어**: 연속 O k개의 점수 합은 1+2+...+k이다. cnt를 매번 누적하면 별도의 합 공식 없이 한 번의 순회로 해결된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day09BOJ8958오엑스퀴즈 { // 8958 OX문제
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		int N = Integer.parseInt(br.readLine());
+
+		for (int n = 0; n < N; n++) {
+			String str = br.readLine();
+			char[] sArr = str.toCharArray();
+			int cnt = 0;
+			int ans = 0;
+			for (char c : sArr) {
+				if (c == 'O') {
+					ans += ++cnt;
+				} else if (c == 'X') {
+					cnt = 0;
+				}
+			}
+
+			sb.append(ans).append("\n");
+		}
+
+		System.out.println(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* L) — T개 테스트 케이스, 각 문자열 길이 L
+- 공간: O(L) — 문자 배열

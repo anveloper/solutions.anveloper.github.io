@@ -1,0 +1,127 @@
+---
+title: "BOJ 15740 - A+B - 9"
+date: "2024-11-02"
+description: "매우 큰 두 정수의 덧셈을 구현하는 큰 수 연산 문제"
+tags: ["수학", "큰 수 연산"]
+platform: "boj"
+problem_number: "15740"
+problem_url: "https://www.acmicpc.net/problem/15740"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15740 - A+B - 9](https://www.acmicpc.net/problem/15740)
+
+매우 큰 두 정수 A와 B가 주어질 때, A+B를 출력하라. 10000자리까지 가능하다.
+
+### 입력
+
+두 정수 A, B가 주어진다 (최대 10000자리).
+
+### 출력
+
+A + B를 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `1 2` | `3`  |
+
+## 풀이
+
+문자열 기반 큰 수 덧셈/뺄셈을 구현한다.
+
+1. 부호를 분리하고 절댓값 비교 함수 `abscomp`를 구현한다
+2. 부호가 같으면 끝자리부터 올림 처리하며 덧셈한다
+3. 부호가 다르면 절댓값이 큰 쪽에서 작은 쪽을 빌림 처리하며 뺄셈한다
+4. 결과를 스택에 저장한 뒤 역순으로 출력한다
+
+**핵심 아이디어**: 10000자리 수는 어떤 정수형으로도 표현할 수 없으므로, 문자 단위로 올림/빌림을 처리하는 긴 덧셈/뺄셈이 필요하다.
+
+## 코드
+
+```cpp
+#include <stdio.h>
+#include <string.h>
+
+char n1[10004], n2[10004], s1, s2, *p1, *p2, stk[10010];
+int sp, l1, l2, cr, a, b;
+
+int abscomp()
+{
+  int x = l1, y = l2, i, j;
+  x -= s1, y -= s2, i = 1 + s1, j = 1 + s2;
+  if (x > y)
+    return 1;
+  if (x < y)
+    return -1;
+  while (n1[i] && n2[j])
+  {
+    if (n1[i] > n2[j])
+      return 1;
+    if (n1[i++] < n2[j++])
+      return -1;
+  }
+  return 0;
+}
+
+int main()
+{
+  scanf("%s %s", &n1[1], &n2[1]);
+  l1 = strlen(&n1[1]), l2 = strlen(&n2[1]);
+  if (n1[1] == '-')
+    s1 = 1, n1[1] = 0;
+  if (n2[1] == '-')
+    s2 = 1, n2[1] = 0;
+  if (s1 == s2)
+  {
+    while (n1[l1] || n2[l2])
+    {
+      a = n1[l1] ? n1[l1--] - '0' : 0;
+      b = n2[l2] ? n2[l2--] - '0' : 0;
+      stk[sp++] = (a + b + cr) % 10, cr = (a + b + cr) / 10;
+    }
+    if (cr)
+      stk[sp++] = cr;
+  }
+  else
+  {
+    cr = abscomp();
+    if (!cr)
+      s1 = 0, stk[sp++] = 0;
+    else
+    {
+      if (cr > 0)
+        p1 = n1, p2 = n2;
+      else
+        p1 = n2, p2 = n1, s1 = s2, l1 ^= l2 ^= l1 ^= l2;
+      cr = 0;
+      while (p1[l1] || p2[l2])
+      {
+        a = p1[l1] ? p1[l1--] - '0' : 0;
+        b = p2[l2] ? p2[l2--] - '0' : 0;
+        if ((a -= b + cr) < 0)
+          cr = 1, a += 10;
+        else
+          cr = 0;
+        stk[sp++] = a;
+      }
+      while (!stk[sp - 1])
+        sp--;
+    }
+  }
+  if (s1)
+    putchar('-');
+  while (sp > 0)
+    printf("%d", stk[--sp]);
+}
+```
+
+## 복잡도
+
+- 시간: O(max(L1, L2)) (L1, L2: 각 수의 자릿수)
+- 공간: O(max(L1, L2))

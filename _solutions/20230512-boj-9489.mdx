@@ -1,0 +1,107 @@
+---
+title: "BOJ 9489 - 사촌"
+date: "2023-05-12"
+description: "자료 구조, 트리 문제"
+tags: ["자료 구조", "트리"]
+platform: "boj"
+problem_number: "9489"
+problem_url: "https://www.acmicpc.net/problem/9489"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9489 - 사촌](https://www.acmicpc.net/problem/9489)
+
+수열이 레벨 순서로 주어질 때, 특정 노드 K의 사촌 노드(부모가 다르지만 조부모가 같은 노드) 수를 구하라. 연속 증가하는 수들은 같은 부모의 자식이다.
+
+### 입력
+
+여러 테스트 케이스가 주어진다. 각 케이스의 첫째 줄에 n, k, 둘째 줄에 n개의 수가 주어진다. n=0, k=0이면 종료.
+
+### 출력
+
+각 테스트 케이스마다 K의 사촌 수를 출력한다.
+
+### 예제
+
+| 입력                                       | 출력 |
+| ------------------------------------------ | ---- |
+| `12 11` `1 2 3 4 5 6 7 8 9 10 11 12` `0 0` | `5`  |
+
+## 풀이
+
+연속 증가 패턴으로 부모 레벨을 추정하고, 사촌 조건(부모 다름 + 조부모 같음)을 검사한다.
+
+1. 수열에서 이전 값과 연속이 아닌 위치에서 레벨(부모 인덱스)을 증가시킨다
+2. `levels[i]` = 노드 i의 부모 레벨 인덱스
+3. K의 인덱스(idx)를 찾은 후, 모든 노드 중 `levels[i] != levels[idx]`(부모 다름)이면서 `levels[levels[i]] == levels[levels[idx]]`(조부모 같음)인 노드를 센다
+
+**핵심 아이디어**: "이전 수 + 1이 아닌 곳에서 새로운 부모 그룹이 시작된다"는 규칙으로 트리를 명시적으로 구성하지 않고 부모 관계를 추론한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day460BOJ9489사촌 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    StringTokenizer st;
+
+    while (true) {
+      st = new StringTokenizer(br.readLine());
+
+      int n = Integer.parseInt(st.nextToken());
+      int k = Integer.parseInt(st.nextToken());
+
+      if (n == 0 && k == 0)
+        break;
+
+      int levels[] = new int[n + 1];
+      levels[0] = -1;
+
+      int idx = 0;
+      int level = -1;
+      int prev = -1;
+
+      st = new StringTokenizer(br.readLine());
+
+      for (int i = 1; i <= n; i++) {
+        int num = Integer.parseInt(st.nextToken());
+
+        if (num == k)
+          idx = i;
+
+        if (num != prev + 1)
+          ++level;
+
+        levels[i] = level;
+        prev = num;
+      }
+
+      int ans = 0;
+
+      for (int i = 1; i <= n; i++) {
+        if (levels[i] != levels[idx] && levels[levels[i]] == levels[levels[idx]])
+          ++ans;
+      }
+      sb.append(ans).append('\n');
+    }
+
+    System.out.println(sb);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

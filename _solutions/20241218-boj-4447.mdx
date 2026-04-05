@@ -1,0 +1,99 @@
+---
+title: "BOJ 4447 - 좋은놈 나쁜놈"
+date: "2024-12-18"
+description: "이름에서 G와 B의 개수를 비교하여 성향을 판별하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4447"
+problem_url: "https://www.acmicpc.net/problem/4447"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4447 - 좋은놈 나쁜놈](https://www.acmicpc.net/problem/4447)
+
+이름 문자열에서 대소문자 구분 없이 G와 B의 개수를 비교하여 성향을 판별하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 이름 문자열이 주어진다.
+
+### 출력
+
+G가 더 많으면 "GOOD", B가 더 많으면 "A BADDY", 같으면 "NEUTRAL"을 이름과 함께 출력한다.
+
+### 예제
+
+| 입력       | 출력           |
+| ---------- | -------------- |
+| `1` `Gary` | `Gary is GOOD` |
+
+## 풀이
+
+각 문자열에서 G/g와 B/b의 출현 횟수를 비교한다.
+
+1. 문자열을 순회하며 G/g와 B/b의 개수를 센다
+2. G가 더 많으면 GOOD, B가 더 많으면 A BADDY, 같으면 NEUTRAL을 출력한다
+3. "이름 is 결과" 형식으로 출력한다
+
+**핵심 아이디어**: 대소문자를 모두 같은 문자로 취급하여 카운팅하는 단순 비교 문제이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+
+  int test;
+  cin >> test;
+  cin.ignore();
+
+  string str;
+
+  for (int i = 0; i < test; i++)
+  {
+    getline(cin, str);
+
+    int cntg = 0;
+    int cntb = 0;
+
+    for (int i = 0; i < str.length(); i++)
+    {
+      if (str[i] == 'G' || str[i] == 'g')
+      {
+        cntg++;
+      }
+      else if (str[i] == 'B' || str[i] == 'b')
+      {
+        cntb++;
+      }
+    }
+
+    if (cntg == cntb)
+    {
+      cout << str << " is " << "NEUTRAL\n";
+    }
+    else if (cntg > cntb)
+    {
+      cout << str << " is " << "GOOD\n";
+    }
+    else
+    {
+      cout << str << " is " << "A BADDY\n";
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T × L) (L: 이름 길이)
+- 공간: O(L)

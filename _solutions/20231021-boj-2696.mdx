@@ -1,0 +1,105 @@
+---
+title: "BOJ 2696 - 중앙값 구하기"
+date: "2023-10-21"
+description: "자료 구조, 우선순위 큐 문제"
+tags: ["자료 구조", "우선순위 큐"]
+platform: "boj"
+problem_number: "2696"
+problem_url: "https://www.acmicpc.net/problem/2696"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2696 - 중앙값 구하기](https://www.acmicpc.net/problem/2696)
+
+수열을 차례로 읽으면서 홀수 번째 수를 읽을 때마다 지금까지 읽은 수의 중앙값을 출력하라.
+
+### 입력
+
+첫째 줄에 T, 각 테스트 케이스에 M과 M개의 수가 주어진다.
+
+### 출력
+
+중앙값 출력 횟수와 중앙값들을 한 줄에 최대 10개씩 출력한다.
+
+### 예제
+
+| 입력                        | 출력            |
+| --------------------------- | --------------- |
+| `1` `9` `1 2 3 4 5 6 7 8 9` | `5` `1 2 3 4 5` |
+
+## 풀이
+
+최대 힙과 최소 힙을 이용하여 중앙값을 O(log N)에 유지한다.
+
+1. 최대 힙(왼쪽)과 최소 힙(오른쪽)의 크기를 같거나 최소 힙이 1개 더 많게 유지한다
+2. 새 수를 넣은 후 최대 힙의 top이 최소 힙의 top보다 크면 교환한다
+3. 홀수 번째마다 최소 힙의 top(중앙값)을 출력한다
+
+**핵심 아이디어**: 두 힙으로 수열을 반으로 나누면 중앙값은 항상 최소 힙의 top에 위치한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.util.*;
+import java.io.*;
+
+public class Day624BOJ2696중앙값구하기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    StringBuilder sb = new StringBuilder();
+    int T = Integer.parseInt(st.nextToken());
+
+    while (T-- > 0) {
+      st = new StringTokenizer(br.readLine());
+      int M = Integer.parseInt(st.nextToken());
+      sb.append((M + 1) / 2);
+      sb.append("\n");
+
+      PriorityQueue<Integer> minPQ = new PriorityQueue<>(Collections.reverseOrder());
+      PriorityQueue<Integer> maxPQ = new PriorityQueue<>();
+
+      int cnt = 0;
+      for (int i = 0; i < M; i++) {
+        if (i % 10 == 0)
+          st = new StringTokenizer(br.readLine());
+        int var = Integer.parseInt(st.nextToken());
+
+        if (minPQ.size() == maxPQ.size())
+          maxPQ.add(var);
+        else
+          minPQ.add(var);
+
+        if (!minPQ.isEmpty() && !maxPQ.isEmpty()) {
+          if (minPQ.peek() > maxPQ.peek()) {
+            int tmp = maxPQ.poll();
+            maxPQ.add(minPQ.poll());
+            minPQ.add(tmp);
+          }
+        }
+
+        if (i % 2 == 0) {
+          sb.append(maxPQ.peek());
+          sb.append(" ");
+          cnt++;
+          if (cnt % 10 == 0)
+            sb.append("\n");
+        }
+      }
+      sb.append("\n");
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(M log M) - M은 수열 길이
+- 공간: O(M)

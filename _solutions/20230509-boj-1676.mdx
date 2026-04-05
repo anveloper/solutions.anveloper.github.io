@@ -1,0 +1,72 @@
+---
+title: "BOJ 1676 - 팩토리얼 0의 개수"
+date: "2023-05-09"
+description: "수학 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "1676"
+problem_url: "https://www.acmicpc.net/problem/1676"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1676 - 팩토리얼 0의 개수](https://www.acmicpc.net/problem/1676)
+
+N!의 뒤에서부터 처음 0이 아닌 숫자가 나올 때까지 0의 개수를 구하라.
+
+### 입력
+
+N이 주어진다 (0 이상 500 이하).
+
+### 출력
+
+N! 뒤의 0의 개수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `10` | `2`  |
+
+## 풀이
+
+N!에 포함된 5의 인수 개수를 세어 뒤의 0 개수를 구한다.
+
+1. N을 5로 나누어 5의 배수 개수를 더한다
+2. N을 다시 5로 나누어 25, 125, ... 의 배수 개수를 더한다
+3. N이 5 미만이 될 때까지 반복한다
+
+**핵심 아이디어**: 뒤의 0은 10=2×5의 쌍 수이며, 2는 항상 충분하므로 5의 인수 개수만 세면 된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.util.Scanner;
+
+public class Day457BOJ1676팩토리얼0의개수 {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    int num = sc.nextInt();
+    int ans = 0;
+
+    while (num >= 5) {
+      ans += num / 5;
+      num /= 5;
+    }
+    System.out.println(ans);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log5 N)
+- 공간: O(1)

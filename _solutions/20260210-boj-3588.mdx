@@ -1,0 +1,94 @@
+---
+title: "BOJ 3588 - Water Main Break"
+date: "2026-02-10"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "3588"
+problem_url: "https://www.acmicpc.net/problem/3588"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3588 - Water Main Break](https://www.acmicpc.net/problem/3588)
+
+수도관 파열이 발생했을 때 낭비되는 총 물의 양을 구하는 문제이다. 파열 구간 `[s, e]`와 N개의 건물 구간 `[si, fi]` 및 건물의 시간당 물 소비량 `ri`가 주어진다. 파열 구간과 각 건물 구간이 겹치는 길이에 `ri`를 곱한 값의 합이 낭비되는 총 물의 양이다.
+
+### 입력
+
+- 첫 줄에 테스트 케이스 수 T가 주어진다.
+- 각 케이스마다:
+  - N (건물 수)
+  - s e (파열 구간 시작과 끝)
+  - N줄에 걸쳐 `si fi ri` (건물 구간과 시간당 소비량)
+
+### 출력
+
+각 케이스마다 `Data Set k:` 헤더와 함께 낭비되는 총 물의 양을 출력하고, 빈 줄을 출력한다.
+
+### 예제
+
+| 입력                             | 출력               |
+| -------------------------------- | ------------------ |
+| `1` `2` `3 8` `1 5 10` `6 10 20` | `Data Set 1:` `80` |
+
+## 풀이
+
+각 건물 구간과 파열 구간의 겹치는 길이를 계산하여 소비량을 곱한 값을 합산하는 구현 문제이다.
+
+1. 테스트 케이스 수 T를 읽는다.
+2. 각 케이스마다 건물 수 N과 파열 구간 `[s, e]`를 읽는다.
+3. N개의 건물 정보 `(si, fi, ri)`를 읽으면서:
+   - 겹치는 구간의 시작을 `max(s, si)`, 끝을 `min(e, fi)`로 계산한다.
+   - `overlap_start <= overlap_end`이면 겹치는 길이는 `overlap_end - overlap_start + 1`이다.
+   - 겹치는 길이 × `ri`를 `total_wasted`에 누적한다.
+4. `"Data Set k:\n"` 형식으로 결과를 출력하고 빈 줄을 출력한다.
+
+**핵심 아이디어**: 두 구간 `[s, e]`와 `[si, fi]`의 교집합은 `[max(s, si), min(e, fi)]`이다. 교집합의 길이가 0 이상인 경우에만 누적하면 된다. 낭비량이 int 범위를 초과할 수 있으므로 `long long` 타입을 사용한다.
+
+## 코드
+
+```cpp
+#include <cstdio>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+  int t;
+  if (scanf("%d", &t) != 1) return 0;
+
+  for (int i = 1; i <= t; i++) {
+    int n, s, e;
+    if (scanf("%d", &n) != 1) break;
+    if (scanf("%d %d", &s, &e) != 2) break;
+
+    long long total_wasted = 0;
+
+    for (int j = 0; j < n; j++) {
+      int si, fi, ri;
+      scanf("%d %d %d", &si, &fi, &ri);
+
+      int overlap_start = max(s, si);
+      int overlap_end = min(e, fi);
+
+      if (overlap_start <= overlap_end) {
+        total_wasted += (long long)(overlap_end - overlap_start + 1) * ri;
+      }
+    }
+
+    printf("Data Set %d:\n", i);
+    printf("%lld\n\n", total_wasted);
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T × N) — 각 케이스마다 N개의 건물 구간을 순회
+- 공간: O(1) — 추가 자료구조 없이 변수만 사용

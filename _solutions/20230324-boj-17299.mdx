@@ -1,0 +1,94 @@
+---
+title: "BOJ 17299 - 오등큰수"
+date: "2023-03-24"
+description: "자료 구조, 스택 문제"
+tags: ["자료 구조", "스택"]
+platform: "boj"
+problem_number: "17299"
+problem_url: "https://www.acmicpc.net/problem/17299"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17299 - 오등큰수](https://www.acmicpc.net/problem/17299)
+
+수열에서 각 원소의 오등큰수를 구하라. `A[i]`의 오등큰수는 오른쪽에 있으면서 등장 횟수가 `F(A[i])`보다 큰 가장 왼쪽 수이다. 없으면 -1이다.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 수열이 주어진다.
+
+### 출력
+
+각 원소의 오등큰수를 출력한다.
+
+### 예제
+
+| 입력                | 출력               |
+| ------------------- | ------------------ |
+| `7` `1 1 2 3 4 2 1` | `-1 -1 1 2 2 1 -1` |
+
+## 풀이
+
+등장 횟수 배열과 스택을 사용하여 오등큰수를 구한다.
+
+1. 먼저 각 수의 등장 횟수 `cnt[]`를 센다
+2. 왼쪽부터 순회하며 스택에 인덱스를 넣는다
+3. 새 원소의 등장 횟수가 스택 top의 등장 횟수보다 크면, 스택에서 pop하며 오등큰수를 기록한다
+4. 순회 후 스택에 남은 인덱스는 -1로 처리한다
+
+**핵심 아이디어**: 오큰수(NGE) 문제의 변형으로, 값 대신 등장 횟수를 비교 기준으로 사용한다. 스택에 각 원소가 최대 한 번 들어가고 나오므로 O(N)이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day411BOJ17299오등큰수 {
+  static int N;
+  static int[] arr, cnt, stack;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+
+    N = Integer.parseInt(br.readLine());
+    arr = new int[N];
+    cnt = new int[1000001];
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++) {
+      arr[i] = Integer.parseInt(st.nextToken());
+      cnt[arr[i]]++;
+    }
+
+    stack = new int[N];
+    int top = 0;
+    for (int i = 0; i < N; i++) {
+      while (top > 0 && cnt[arr[stack[top - 1]]] < cnt[arr[i]]) {
+        arr[stack[--top]] = arr[i];
+      }
+      stack[top++] = i;
+    }
+    while (top > 0) {
+      arr[stack[--top]] = -1;
+    }
+
+    for (int i = 0; i < N; i++) {
+      sb.append(arr[i]).append(' ');
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,112 @@
+---
+title: "BOJ 14226 - 이모티콘"
+date: "2023-07-29"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색"]
+platform: "boj"
+problem_number: "14226"
+problem_url: "https://www.acmicpc.net/problem/14226"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 14226 - 이모티콘](https://www.acmicpc.net/problem/14226)
+
+화면에 이모티콘 1개가 있다. 복사(화면→클립보드), 붙여넣기(클립보드→화면 추가), 삭제(화면에서 1개 제거) 세 연산으로 정확히 S개를 만드는 최소 시간을 구하라.
+
+### 입력
+
+S가 주어진다 (2 이상 1000 이하).
+
+### 출력
+
+최소 시간(초)을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `6`  | `5`  |
+
+## 풀이
+
+BFS로 (화면 개수, 클립보드 개수) 상태를 탐색하여 최소 시간을 구한다.
+
+1. 상태를 (화면 이모티콘 수, 클립보드 이모티콘 수)로 정의한다
+2. 각 상태에서 복사/붙여넣기/삭제 세 가지 연산을 시도한다
+3. `visited[cnt][temp]` 2차원 배열로 중복 방문을 방지한다
+4. 화면 개수가 S가 되면 현재 시간을 반환한다
+
+**핵심 아이디어**: 클립보드 내용이 다르면 같은 화면 개수라도 다른 상태이므로, 2차원 상태 공간을 BFS로 탐색한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day538BOJ14226이모티콘 {
+  static int N;
+  static int time = -1;
+
+  static class Status {
+    int cnt;
+    int temp;
+
+    public Status(int cnt, int temp) {
+      super();
+      this.cnt = cnt;
+      this.temp = temp;
+    }
+  }
+
+  static boolean visited[][];
+
+  public static void main(String[] args) throws NumberFormatException, IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+
+    Queue<Status> q = new LinkedList<>();
+
+    q.add(new Status(1, 0));
+    visited = new boolean[N + 1][N + 1];
+    while (!q.isEmpty()) {
+      int size = q.size();
+      time++;
+      for (int i = 0; i < size; i++) {
+        Status s = q.poll();
+
+        if (s.cnt == N) {
+          System.out.println(time);
+          return;
+        }
+        if (s.cnt <= N && !visited[s.cnt][s.cnt]) {
+          visited[s.cnt][s.cnt] = true;
+          q.add(new Status(s.cnt, s.cnt));
+        }
+
+        if (s.cnt + s.temp <= N && s.temp <= N && s.temp != 0 && !visited[s.cnt + s.temp][s.temp]) {
+          visited[s.cnt + s.temp][s.temp] = true;
+          q.add(new Status(s.cnt + s.temp, s.temp));
+        }
+
+        if (s.cnt <= N && s.temp <= N && s.cnt != 0 && !visited[s.cnt - 1][s.temp]) {
+          visited[s.cnt - 1][s.temp] = true;
+          q.add(new Status(s.cnt - 1, s.temp));
+        }
+      }
+    }
+    System.out.println(time);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(S²)
+- 공간: O(S²)

@@ -1,0 +1,59 @@
+---
+title: "BOJ 1453 - 피시방 알바"
+date: "2024-05-03"
+description: "이미 사용 중인 자리에 앉으려는 손님 수"
+tags: ["구현", "자료구조"]
+platform: "boj"
+problem_number: "1453"
+problem_url: "https://www.acmicpc.net/problem/1453"
+difficulty: "브론즈 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1453 - 피시방 알바](https://www.acmicpc.net/problem/1453)
+
+피시방에 100개의 자리가 있다. N명의 손님이 순서대로 원하는 자리 번호를 말할 때, 이미 사용 중인 자리를 요청하는 손님은 거절당한다. 거절당하는 손님 수를 구하라.
+
+### 입력
+
+첫째 줄에 손님 수 N, 둘째 줄에 각 손님이 원하는 자리 번호가 주어진다.
+
+### 출력
+
+거절당하는 손님 수를 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `4` `1 2 3 4` | `0`  |
+
+## 풀이
+
+전체 손님 수에서 서로 다른 자리 번호의 수를 빼면 중복 요청(거절) 수가 된다.
+
+1. 손님들의 요청 배열에서 Set을 생성하여 고유한 자리 번호를 구한다
+2. 전체 배열 길이에서 Set의 크기를 빼면 중복된 요청 수가 된다
+
+**핵심 아이디어**: Set은 중복을 허용하지 않으므로, 배열 길이와 Set 크기의 차이가 곧 거절당한 손님 수이다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  input.shift();
+  const arr = input[0].split(" ");
+  return arr.length - new Set(arr).size;
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

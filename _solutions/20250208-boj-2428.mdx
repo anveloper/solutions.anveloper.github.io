@@ -1,0 +1,67 @@
+---
+title: "BOJ 2428 - 표절"
+date: "2025-02-08"
+description: "정렬, 이분 탐색 문제"
+tags: ["정렬", "이분 탐색"]
+platform: "boj"
+problem_number: "2428"
+problem_url: "https://www.acmicpc.net/problem/2428"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2428 - 표절](https://www.acmicpc.net/problem/2428)
+
+N개의 파일 크기가 주어질 때, 두 파일의 크기 비율이 0.9 이상인 쌍의 수를 구하라.
+
+### 입력
+
+파일 수 N과 각 파일의 크기가 주어진다.
+
+### 출력
+
+조건을 만족하는 쌍의 수를 출력한다.
+
+### 예제
+
+| 입력               | 출력 |
+| ------------------ | ---- |
+| `4` `10 15 20 100` | `2`  |
+
+## 풀이
+
+정렬 후 이분 탐색으로 각 파일과 쌍을 이룰 수 있는 범위를 구한다.
+
+1. 파일 크기를 오름차순 정렬한다
+2. 각 파일에 대해 `li[i] >= 0.9 * li[m]`인 최대 인덱스를 이분 탐색한다
+3. 해당 범위 내 파일 수를 쌍의 수에 더한다
+
+**핵심 아이디어**: 정렬 후 이분 탐색으로 O(N log N)에 모든 쌍을 계산할 수 있다.
+
+## 코드
+
+```python
+N = int(input())
+li = sorted(map(int, input().split()))
+res = 0
+for i in range(N - 1):
+    s, e = i + 1, N - 1
+    t = -1
+    while s <= e:
+        m = (s + e) // 2
+        if li[i] >= 0.9 * li[m]:
+            t = m
+            s = m + 1
+        else:
+            e = m - 1
+    res += t - i if t > -1 else 0
+print(res)
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

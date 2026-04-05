@@ -1,0 +1,79 @@
+---
+title: "BOJ 1259 - 팰린드롬수"
+date: "2023-08-23"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1259"
+problem_url: "https://www.acmicpc.net/problem/1259"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1259 - 팰린드롬수](https://www.acmicpc.net/problem/1259)
+
+주어진 수가 팰린드롬(앞뒤가 같은 수)인지 판별한다. 0이 입력될 때까지 반복한다.
+
+### 입력
+
+한 줄에 하나씩 수가 주어진다. 마지막 줄은 0이다 (1 이상 99999 이하).
+
+### 출력
+
+각 수에 대해 팰린드롬이면 "yes", 아니면 "no"를 출력한다.
+
+### 예제
+
+| 입력                     | 출력             |
+| ------------------------ | ---------------- |
+| `121` `1231` `12321` `0` | `yes` `no` `yes` |
+
+## 풀이
+
+문자열의 양 끝에서부터 중앙까지 대칭 여부를 확인한다.
+
+1. 0이 입력될 때까지 반복한다
+2. 문자열 길이의 절반만큼 순회하며 앞(i)과 뒤(length-1-i) 문자를 비교한다
+3. 하나라도 다르면 "no", 모두 같으면 "yes"를 출력한다
+
+**핵심 아이디어**: 투 포인터 방식으로 양 끝에서 중앙으로 접근하며 대칭을 확인한다. 절반만 비교하면 충분하다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day563BOJ1259펠린드롬수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    while (true) {
+      String str = br.readLine();
+      boolean chk = true;
+
+      if (str.equals("0"))
+        break;
+
+      for (int i = 0; i < str.length() / 2; i++) {
+        if (str.charAt(i) != str.charAt(str.length() - 1 - i))
+          chk = false;
+      }
+
+      if (chk)
+        System.out.println("yes");
+      else
+        System.out.println("no");
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D) — D는 수의 자릿수
+- 공간: O(D) — 문자열 저장

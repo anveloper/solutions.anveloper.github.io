@@ -1,0 +1,96 @@
+---
+title: "BOJ 2621 - 카드게임"
+date: "2025-01-29"
+description: "구현, 많은 조건 분기 문제"
+tags: ["구현", "많은 조건 분기"]
+platform: "boj"
+problem_number: "2621"
+problem_url: "https://www.acmicpc.net/problem/2621"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2621 - 카드게임](https://www.acmicpc.net/problem/2621)
+
+5장의 카드(색상, 숫자)로 포커와 유사한 핸드 랭킹을 매긴다. 스트레이트 플러시, 포카드, 풀하우스 등 9가지 등급에 따라 점수를 계산하라.
+
+### 입력
+
+5줄에 카드의 색상(R/B/Y/G)과 숫자(1~9)가 주어진다.
+
+### 출력
+
+핸드의 점수를 출력한다.
+
+### 예제
+
+| 입력                          | 출력  |
+| ----------------------------- | ----- |
+| `Y 3` `B 1` `B 4` `Y 5` `Y 2` | `503` |
+
+## 풀이
+
+포커 핸드 판정과 유사하게, 높은 등급부터 순서대로 조건을 확인한다.
+
+1. 색상 빈도와 숫자 빈도를 각각 집계한다
+2. 스트레이트 플러시(같은 색 + 연속) → 포카드(같은 수 4개) → 풀하우스(3+2) 순으로 확인한다
+3. 플러시(같은 색 5개) → 스트레이트(연속) → 트리플(3개) → 투페어 → 원페어 → 하이카드
+4. 각 등급에 맞는 점수 공식을 적용하여 최종 점수를 계산한다
+
+**핵심 아이디어**: 높은 등급부터 if-elif 체인으로 판별하면, 먼저 매칭되는 조건이 최고 등급이 된다.
+
+## 코드
+
+```python
+import sys
+input = sys.stdin.readline
+
+card = [list(input().split()) for _ in range(5)]
+colors = [i[0] for i in card]
+numbers = [int(i[1]) for i in card]
+cnt_color = {'R':0, 'B':0, 'Y':0, 'G':0}
+cnt_num = [0 for _ in range(11)]
+for i in range(5):
+    color, number = card[i][0], int(card[i][1])
+    cnt_color[color] += 1
+    cnt_num[number] += 1
+
+sort_nums = numbers.copy()
+sort_nums.sort()
+if 5 in cnt_color.values() and sort_nums[0]+1 == sort_nums[1] and sort_nums[1]+1 == sort_nums[2] and sort_nums[2]+1 == sort_nums[3] and sort_nums[3]+1 == sort_nums[4]:
+    score = max(numbers) + 900
+elif 4 in cnt_num:
+    score = cnt_num.index(4) + 800
+elif 3 in cnt_num and 2 in cnt_num:
+    score = cnt_num.index(3)*10 + cnt_num.index(2) + 700
+elif 5 in cnt_color.values():
+    score = max(numbers) + 600
+elif sort_nums[0]+1 == sort_nums[1] and sort_nums[1]+1 == sort_nums[2] and sort_nums[2]+1 == sort_nums[3] and sort_nums[3]+1 == sort_nums[4]:
+    score = max(numbers) + 500
+elif 3 in cnt_num:
+    score = cnt_num.index(3) + 400
+elif 2 in cnt_num:
+    first = cnt_num.index(2)
+    num1 = numbers.copy()
+    for i in num1:
+        if i == first:
+            numbers.remove(i)
+    cnt_num[first] = 0
+    if 2 in cnt_num: #7
+        second = cnt_num.index(2)
+        score = max(first, second)*10 + min(first, second) + 300
+    else: #8
+        score = first + 200
+else:
+    score = max(numbers) + 100
+
+print(score)
+```
+
+## 복잡도
+
+- 시간: O(1) — 카드 5장 고정
+- 공간: O(1) — 고정 크기 배열

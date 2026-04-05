@@ -1,0 +1,69 @@
+---
+title: "BOJ 4592 - 중복을 없애자"
+date: "2025-03-20"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4592"
+problem_url: "https://www.acmicpc.net/problem/4592"
+difficulty: "브론즈 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4592 - 중복을 없애자](https://www.acmicpc.net/problem/4592)
+
+정렬된 수열에서 연속으로 중복되는 숫자를 제거하여 출력하는 문제다. 입력의 첫 번째 숫자는 수열의 길이 N이며, 이후 N개의 숫자가 주어질 때 인접한 중복값을 제거한 결과를 출력한다.
+
+### 입력
+
+- 여러 줄 입력 (0이 단독으로 오면 종료)
+- 각 줄: `N num1 num2 ... numN` 형식 (공백 구분)
+
+### 출력
+
+- 각 테스트 케이스에 대해 인접 중복이 제거된 수열을 공백으로 구분하여 출력하고 마지막에 `$` 추가
+
+### 예제
+
+| 입력              | 출력      |
+| ----------------- | --------- |
+| `5 1 1 2 2 3` `0` | `1 2 3 $` |
+
+## 풀이
+
+정렬된 수열에서 인접한 두 원소를 비교하여 다를 때만 결과에 추가하는 단순 구현 문제다.
+
+1. `0`이 입력되면 종료하는 반복 루프를 구성한다.
+2. 입력 줄을 공백으로 분리하고, 첫 원소를 N으로, 나머지를 수열로 사용한다.
+3. 첫 번째 원소는 무조건 결과에 추가한다.
+4. 인덱스 1부터 N-1까지 이전 원소(`numbers[index-1]`)와 현재 원소(`numbers[index]`)를 비교하여 다를 때만 결과에 추가한다.
+5. 결과 문자열 뒤에 `$`를 붙여 출력한다.
+
+**핵심 아이디어**: 인접 원소 비교만으로 중복을 제거할 수 있는 것은 수열이 정렬되어 있기 때문이다. 같은 값은 반드시 연속으로 붙어 있으므로 이전 값과 비교하는 것으로 충분하다.
+
+## 코드
+
+```python
+while True:
+    numbers = input()
+    result = ""
+    if numbers == "0":
+        break
+    else:
+        numbers = numbers.split(" ")
+        N = int(numbers[0])
+        numbers = numbers[1:]
+        result += numbers[0] + " "
+        for index in range(1, N):
+            if numbers[index - 1] != numbers[index]:
+                result += numbers[index] + " "
+        print(f"{result}$")
+```
+
+## 복잡도
+
+- 시간: O(N) — 수열을 한 번 순회
+- 공간: O(N) — 결과 문자열 저장

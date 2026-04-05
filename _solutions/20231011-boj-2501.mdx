@@ -1,0 +1,81 @@
+---
+title: "BOJ 2501 - 약수 구하기"
+date: "2023-10-11"
+description: "수학, 브루트포스 알고리즘 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2501"
+problem_url: "https://www.acmicpc.net/problem/2501"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2501 - 약수 구하기](https://www.acmicpc.net/problem/2501)
+
+자연수 N의 K번째 약수를 구하라. K번째 약수가 없으면 0을 출력한다.
+
+### 입력
+
+N과 K가 주어진다.
+
+### 출력
+
+N의 K번째로 작은 약수를 출력한다. 없으면 0을 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `6 3` | `3`  |
+
+## 풀이
+
+1부터 N까지 순회하며 약수를 세고, K번째 약수를 찾는다.
+
+1. 1부터 N까지 i로 나누어 떨어지는지 확인한다
+2. 약수를 찾을 때마다 카운트를 증가시킨다
+3. 카운트가 K가 되면 해당 약수를 출력하고 종료한다
+4. 끝까지 K번째를 못 찾으면 0을 출력한다
+
+**핵심 아이디어**: 약수를 오름차순으로 찾으므로 1부터 순서대로 나눗셈을 검사하면 된다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day614BOJ2501약수구하기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int N = Integer.parseInt(st.nextToken());
+    int K = Integer.parseInt(st.nextToken());
+
+    int cnt = 0;
+    int res = 0;
+
+    for (int i = 1; i <= N; i++) {
+      if (N % i == 0) {
+        cnt++;
+      }
+
+      if (cnt == K) {
+        res = i;
+        break;
+      }
+    }
+    System.out.println(res);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

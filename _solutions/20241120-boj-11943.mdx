@@ -1,0 +1,67 @@
+---
+title: "BOJ 11943 - 파일 옮기기"
+date: "2024-11-20"
+description: "두 바구니의 사과와 귤을 한쪽으로 모을 때 최소 이동 횟수를 구하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "11943"
+problem_url: "https://www.acmicpc.net/problem/11943"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11943 - 파일 옮기기](https://www.acmicpc.net/problem/11943)
+
+두 바구니에 사과와 귤이 섞여 있을 때, 한 바구니에는 사과만, 다른 바구니에는 귤만 모으려면 최소 몇 개를 옮겨야 하는지 구하라.
+
+### 입력
+
+첫째 줄에 첫 번째 바구니의 사과(a)와 귤(b) 수, 둘째 줄에 두 번째 바구니의 사과(c)와 귤(d) 수가 주어진다.
+
+### 출력
+
+최소 이동 횟수를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `1 2` `3 4` | `5`  |
+
+## 풀이
+
+두 가지 경우 중 이동 횟수가 적은 쪽을 선택한다.
+
+1. 경우 1: 바구니1의 사과를 바구니2로, 바구니2의 귤을 바구니1로 옮긴다 → `a + d`
+2. 경우 2: 바구니1의 귤을 바구니2로, 바구니2의 사과를 바구니1로 옮긴다 → `b + c`
+3. 두 경우 중 `min(a + d, b + c)`를 출력한다
+
+**핵심 아이디어**: 과일을 한 종류로 모으는 방법은 2가지뿐이므로 두 경우의 이동 수를 비교하면 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+
+  int a, b, c, d;
+  cin >> a >> b >> c >> d;
+  cout << min(a + d, b + c) << endl;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

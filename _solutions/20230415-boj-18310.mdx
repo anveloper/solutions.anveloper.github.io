@@ -1,0 +1,74 @@
+---
+title: "BOJ 18310 - 안테나"
+date: "2023-04-15"
+description: "수학, 그리디 알고리즘, 정렬 문제"
+tags: ["수학", "그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "18310"
+problem_url: "https://www.acmicpc.net/problem/18310"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 18310 - 안테나](https://www.acmicpc.net/problem/18310)
+
+일직선 위 N개의 집 위치가 주어질 때, 모든 집까지의 거리 합이 최소인 안테나 설치 위치를 구하라. 여러 곳이면 가장 작은 위치를 출력한다.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 N개의 집 위치가 주어진다.
+
+### 출력
+
+안테나 설치 위치를 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `4` `5 1 7 9` | `5`  |
+
+## 풀이
+
+집 위치를 정렬한 뒤 중앙값(하위 중앙값)을 선택한다.
+
+1. N개의 집 위치를 오름차순 정렬한다
+2. N이 짝수이면 N/2-1번째, 홀수이면 N/2번째 원소를 출력한다
+
+**핵심 아이디어**: 거리 합을 최소화하는 위치는 중앙값이다. 짝수 개일 때 두 중앙값 중 작은 것을 선택한다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day433BOJ18310안테나 {
+  static int N;
+  static int[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    arr = new int[N];
+    for (int i = 0; i < N; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    Arrays.sort(arr);
+    System.out.println(N % 2 == 0 ? arr[N / 2 - 1] : arr[N / 2]);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

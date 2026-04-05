@@ -1,0 +1,138 @@
+---
+title: "BOJ 2042 - 구간 합 구하기"
+date: "2022-06-03"
+description: "세그먼트 트리, 자료 구조 문제"
+tags: ["세그먼트 트리", "자료 구조"]
+platform: "boj"
+problem_number: "2042"
+problem_url: "https://www.acmicpc.net/problem/2042"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2042 - 구간 합 구하기](https://www.acmicpc.net/problem/2042)
+
+어떤 수열의 특정 원소 값을 바꾸거나, 특정 구간의 합을 구하는 두 종류의 쿼리를 처리하는 문제다. 원소 수 N이 최대 1,000,000이고 쿼리 수가 최대 20,000 + 20,000개이므로, 매번 구간 합을 선형으로 계산하면 시간 초과가 발생한다. 세그먼트 트리를 이용해 점 업데이트와 구간 쿼리를 O(log N)에 처리한다.
+
+### 입력
+
+- 첫째 줄: 수의 개수 N, 변경 횟수 M, 구간 합 쿼리 횟수 K
+- 둘째 줄부터 N개 줄: 각 수 (long 범위)
+- 이후 M+K개 줄: `a b c` 형식
+  - a=1이면 b번째 수를 c로 변경
+  - a=2이면 b번째부터 c번째까지의 합 출력
+
+### 출력
+
+a=2인 쿼리마다 구간 합을 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                                                | 출력      |
+| --------------------------------------------------- | --------- |
+| `5 2 2` `1 2 3 4 5` `1 3 6` `2 2 5` `1 5 2` `2 3 5` | `17` `12` |
+
+## 풀이
+
+세그먼트 트리(Segment Tree)를 구축하여 점 업데이트(Point Update)와 구간 합 쿼리(Range Sum Query)를 처리한다.
+
+1. 트리 크기를 `2^ceil(log2(N) + 1)`로 계산하여 배열 초기화
+2. `init` 함수로 리프 노드에 원소 값을 저장하고, 부모 노드는 자식 합으로 초기화
+3. a=1(업데이트): `arr[b]`와 새 값 c의 차이(diff)를 구해 경로 상의 모든 노드에 반영
+4. a=2(쿼리): 구간 `[b, c]`와 겹치는 노드의 값을 재귀적으로 합산
+
+**핵심 아이디어:** 업데이트 시 절댓값이 아닌 차이(diff)를 전파함으로써, 트리 전체를 재구성하지 않고 O(log N)에 수정 완료한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day116BOJ2042세그먼트트리공부용 { // 2042 구간 합 segment tree 공부용..
+	static int N, M, K;
+	static long[] arr, tree;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+
+		arr = new long[N + 1];
+		for (int i = 1; i < N + 1; i++)
+			arr[i] = Long.parseLong(br.readLine());
+
+		// tree의 사이즈를 구하는 방법
+		// 1. 2^k >= N인 최소 k를 찾는다.
+		// 2 k >= log N / log 2 를 올림, 더하기 1
+
+		int k = (int) Math.ceil(Math.log(N) / Math.log(2)) + 1;
+		int size = (int) Math.pow(2, k);
+		// tree = new long[N * 4]; // 그냥 무지성으로 4를 곱해도..
+		tree = new long[size];
+
+		init(1, N, 1);
+
+		for (int i = 0; i < M + K; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			long c = Long.parseLong(st.nextToken());
+			if (a == 1) {
+				long dif = c - arr[b];
+				arr[b] = c;
+				update(1, N, 1, b, dif);
+			} else if (a == 2)
+				sb.append(sum(1, N, 1, b, (int) c) + "\n");
+		}
+
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static long init(int st, int ed, int node) {
+		if (st == ed)
+			return tree[node] = arr[st];
+		int mid = (st + ed) / 2;
+		return tree[node] = init(st, mid, node * 2) + init(mid + 1, ed, node * 2 + 1);
+	}
+
+	public static long sum(int st, int ed, int node, int left, int right) {
+		if (left > ed || right < st)
+			return 0;
+
+		if (left <= st && ed <= right)
+			return tree[node];
+
+		int mid = (st + ed) / 2;
+		return sum(st, mid, node * 2, left, right) + sum(mid + 1, ed, node * 2 + 1, left, right);
+	}
+
+	private static void update(int st, int ed, int node, int idx, long dif) {
+		if (idx < st || idx > ed)
+			return;
+		tree[node] += dif;
+		if (st == ed)
+			return;
+
+		int mid = (st + ed) / 2;
+		update(st, mid, node * 2, idx, dif);
+		update(mid + 1, ed, node * 2 + 1, idx, dif);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O((N + M + K) log N) — 트리 구축 O(N), 각 쿼리 O(log N)
+- 공간: O(N) — 세그먼트 트리 배열 크기 약 4N

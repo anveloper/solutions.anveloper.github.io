@@ -1,0 +1,70 @@
+---
+title: "BOJ 10808 - 알파벳 개수"
+date: "2023-10-09"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "10808"
+problem_url: "https://www.acmicpc.net/problem/10808"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10808 - 알파벳 개수](https://www.acmicpc.net/problem/10808)
+
+알파벳 소문자로만 이루어진 단어가 주어질 때, 각 알파벳이 몇 개 포함되어 있는지 구한다.
+
+### 입력
+
+첫째 줄에 알파벳 소문자로만 이루어진 단어가 주어진다 (길이 1 이상 100 이하).
+
+### 출력
+
+각 알파벳(a~z)의 개수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력       | 출력                                                  |
+| ---------- | ----------------------------------------------------- |
+| `baekjoon` | `1 1 0 0 1 0 0 0 0 1 1 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0` |
+
+## 풀이
+
+크기 26인 카운팅 배열을 사용하여 각 알파벳의 출현 횟수를 센다.
+
+1. 크기 26의 정수 배열을 초기화한다
+2. 문자열을 순회하며 각 문자의 인덱스(c - 'a')에 해당하는 배열 값을 증가시킨다
+3. 배열의 값을 순서대로 출력한다
+
+**핵심 아이디어**: 문자를 배열 인덱스로 변환(c - 97)하여 O(1)에 카운팅한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day612BOJ10808알파벳개수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int[] arr = new int[26];
+    String s = br.readLine();
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      arr[c - 97]++;
+    }
+    for (int i = 0; i < 26; i++) {
+      System.out.print(arr[i] + " ");
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N은 문자열 길이
+- 공간: O(1) — 크기 26 고정 배열

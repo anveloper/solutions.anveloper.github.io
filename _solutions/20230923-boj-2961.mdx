@@ -1,0 +1,102 @@
+---
+title: "BOJ 2961 - 도영이가 만든 맛있는 음식"
+date: "2023-09-23"
+description: "브루트포스 알고리즘, 비트마스킹, 백트래킹 문제"
+tags: ["브루트포스 알고리즘", "비트마스킹", "백트래킹"]
+platform: "boj"
+problem_number: "2961"
+problem_url: "https://www.acmicpc.net/problem/2961"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2961 - 도영이가 만든 맛있는 음식](https://www.acmicpc.net/problem/2961)
+
+N개의 재료가 각각 신맛(곱)과 쓴맛(합)을 가질 때, 1개 이상의 재료를 사용하여 신맛과 쓴맛의 차이가 최소인 조합을 구하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 각 재료의 신맛과 쓴맛이 주어진다.
+
+### 출력
+
+신맛과 쓴맛 차이의 최솟값을 출력한다.
+
+### 예제
+
+| 입력       | 출력 |
+| ---------- | ---- |
+| `1` `3 10` | `7`  |
+
+## 풀이
+
+부분집합 열거(백트래킹)로 모든 조합을 탐색하며 신맛(곱)과 쓴맛(합)의 차이 최솟값을 구한다.
+
+1. 각 재료를 포함/미포함하는 부분집합을 재귀로 생성한다
+2. 포함된 재료의 신맛은 곱하고 쓴맛은 더한다
+3. 공집합이 아닌 경우에만 `|신맛 - 쓴맛|`의 최솟값을 갱신한다
+
+**핵심 아이디어**: N이 최대 10이므로 2^10 = 1024가지 부분집합을 모두 탐색해도 충분하다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day596BOJ2961도영이음식 {
+  static int ans;
+  static boolean[] sel;
+  static int[][] arr;
+  static int N;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    N = Integer.parseInt(br.readLine());
+    sel = new boolean[N];
+    ans = Integer.MAX_VALUE;
+    arr = new int[N][2];
+
+    for (int i = 0; i < N; i++) {
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      arr[i][0] = Integer.parseInt(st.nextToken());
+      arr[i][1] = Integer.parseInt(st.nextToken());
+    }
+
+    subSet(0, 1, 0);
+
+    System.out.println(ans);
+  }
+
+  public static void subSet(int cnt, int mul, int sum) {
+    if (cnt == N) {
+      int c = 0;
+      for (int i = 0; i < N; i++) {
+        if (sel[i])
+          continue;
+        c++;
+      }
+      if (c == N)
+        return;
+      ans = Math.min(ans, Math.abs(mul - sum));
+      return;
+    }
+
+    sel[cnt] = true;
+    subSet(cnt + 1, mul * arr[cnt][0], sum + arr[cnt][1]);
+    sel[cnt] = false;
+    subSet(cnt + 1, mul, sum);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(2^N)
+- 공간: O(N)

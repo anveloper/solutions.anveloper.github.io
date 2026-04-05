@@ -1,0 +1,120 @@
+---
+title: "BOJ 16120 - PPAP"
+date: "2023-02-13"
+description: "자료 구조, 문자열, 스택 문제"
+tags: ["자료 구조", "문자열", "스택"]
+platform: "boj"
+problem_number: "16120"
+problem_url: "https://www.acmicpc.net/problem/16120"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16120 - PPAP](https://www.acmicpc.net/problem/16120)
+
+PPAP 문자열은 다음과 같이 정의된다:
+
+- `P`는 PPAP 문자열이다.
+- PPAP 문자열에서 `P` 하나를 `PPAP`로 교체한 문자열도 PPAP 문자열이다.
+
+주어진 문자열이 PPAP 문자열인지 판단하는 문제이다.
+
+### 입력
+
+첫째 줄에 문자열이 주어진다. 문자열의 길이는 1 이상 1,000,000 이하이며, `P`와 `A`로만 이루어진다.
+
+### 출력
+
+문자열이 PPAP이면 `PPAP`를, 아니라면 `NP`를 출력한다.
+
+### 예제
+
+**입력 1**
+
+```
+PPAP
+```
+
+**출력 1**
+
+```
+PPAP
+```
+
+**입력 2**
+
+```
+P
+```
+
+**출력 2**
+
+```
+PPAP
+```
+
+**입력 3**
+
+```
+PPAPAP
+```
+
+**출력 3**
+
+```
+NP
+```
+
+## 풀이
+
+**핵심 아이디어**: `P`의 개수를 카운터로 추적하는 방식으로 스택을 시뮬레이션한다. 문자열을 왼쪽부터 순회하면서 규칙을 검사한다.
+
+1. `cnt`를 현재 연속된 `P` 개수로 관리한다.
+2. 문자가 `P`이면 `cnt`를 1 증가시킨다.
+3. 문자가 `A`이면 다음 조건을 확인한다:
+   - 다음 문자가 `P`이고 현재 `cnt > 1`이면 `PPAP` 패턴이 성립 → `cnt`를 1 감소시키고 다음 인덱스를 건너뛴다.
+   - 그 외의 경우는 PPAP 문자열이 아니다.
+4. 순회 완료 후 `cnt == 1`이면 최종적으로 하나의 `P`로 축약된 것이므로 `PPAP`이다.
+
+이 방식은 스택에서 `P` 카운터만 유지하는 최적화로, 실제 `PPAP → P` 축약을 O(1)에 처리한다.
+
+## 코드
+
+```java
+import java.io.*;
+
+public class Day371BOJ16120PPAP {
+    static int cnt;
+    static char[] crr;
+    static boolean ans;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        crr = br.readLine().toCharArray();
+        ans = true;
+        for (int i = 0; i < crr.length; i++) {
+            if (crr[i] == 'P') {
+                cnt++;
+            } else {
+                if (i + 1 < crr.length && crr[i + 1] == 'P' && cnt > 1) {
+                    i++;
+                    cnt--;
+                } else {
+                    ans = false;
+                    break;
+                }
+            }
+        }
+        System.out.println(ans && cnt == 1 ? "PPAP" : "NP");
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 문자열을 한 번 순회
+- 공간: O(1) — `cnt` 변수만 사용 (입력 배열 제외)

@@ -1,0 +1,71 @@
+---
+title: "BOJ 1222 - 홍준 프로그래밍 대회"
+date: "2024-04-01"
+description: "팀원 수의 공약수를 이용해 최대 팀 점수를 구하는 문제"
+tags: ["수학", "정수론", "조화수"]
+platform: "boj"
+problem_number: "1222"
+problem_url: "https://www.acmicpc.net/problem/1222"
+difficulty: "골드 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1222 - 홍준 프로그래밍 대회](https://www.acmicpc.net/problem/1222)
+
+N개의 학교의 학생 수가 주어질 때, 같은 수의 배수인 학교들로 팀을 구성하여 (팀원 수 x 학생 수)의 최대 점수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 각 학교의 학생 수가 주어진다.
+
+### 출력
+
+최대 점수를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `5` `1 2 3 4 5` | `5`  |
+
+## 풀이
+
+카운팅 배열과 배수 열거로 각 약수에 대한 팀 점수를 계산한다.
+
+1. 각 학생 수의 빈도를 카운팅 배열에 기록한다
+2. 2부터 최대값 M까지 모든 d에 대해 d의 배수인 학교 수를 센다
+3. 팀원이 2명 이상이면 d x 학교 수로 점수를 계산하고 최대값을 갱신한다
+4. d=1일 때(모든 학교)는 N이 기본 답이 된다
+
+**핵심 아이디어**: 배수 열거는 조화 급수 합(M/2 + M/3 + ... + 1)으로 O(M log M)에 수행되어 효율적이다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = Number(input[0]);
+  const arr = input[1].split(" ").map(Number);
+  const M = Math.max(...arr);
+  const carr = Array(M + 1).fill(0);
+  arr.map((s) => carr[s]++);
+  let ans = N;
+  for (let d = 2; d <= M; d++) {
+    let cnt = 0;
+    for (let i = d; i <= M; i += d) cnt += carr[i];
+    if (cnt > 1 && d * cnt > ans) ans = d * cnt;
+  }
+  return ans;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(M log M) — M은 최대 학생 수
+- 공간: O(M)

@@ -1,0 +1,89 @@
+---
+title: "BOJ 1652 - 누울 자리를 찾아라"
+date: "2023-04-21"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "1652"
+problem_url: "https://www.acmicpc.net/problem/1652"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1652 - 누울 자리를 찾아라](https://www.acmicpc.net/problem/1652)
+
+N x N 방에 짐('X')과 빈 칸('.')이 있을 때, 가로로 누울 수 있는 자리와 세로로 누울 수 있는 자리의 수를 구하라. 누우려면 연속 2칸 이상의 빈 칸이 필요하다.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 100), 이후 N줄에 방의 상태가 주어진다.
+
+### 출력
+
+가로로 누울 수 있는 자리 수와 세로로 누울 수 있는 자리 수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                                        | 출력  |
+| ------------------------------------------- | ----- |
+| `5` `.....` `..X..` `.....` `...X.` `.....` | `5 4` |
+
+## 풀이
+
+연속 2칸 빈 칸의 시작점을 찾되, 3칸째가 빈 칸이 아닌(또는 범위 밖) 위치만 카운트하여 중복을 방지한다.
+
+1. 모든 칸을 순회하며 가로/세로 각각 검사한다
+2. 가로: (i,j)와 (i,j+1)이 모두 '.'이고, (i,j+2)가 'X'이거나 범위 밖이면 카운트
+3. 세로: (i,j)와 (i+1,j)가 모두 '.'이고, (i+2,j)가 'X'이거나 범위 밖이면 카운트
+4. 이 조건은 연속 빈 칸 구간의 끝에서만 카운트하여 한 구간에 하나만 셈을 보장한다
+
+**핵심 아이디어**: 연속 빈 칸 구간의 "끝"을 감지하여 카운트하면, 길이 2 이상인 구간을 정확히 한 번만 셀 수 있다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+
+public class Day439BOJ1652누울자리를찾아라 {
+  static int N;
+  static int[] ans = new int[2];
+  static char[][] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    arr = new char[N][N];
+
+    for (int i = 0; i < N; i++)
+      arr[i] = br.readLine().toCharArray();
+
+    ans[0] = 0;
+    ans[1] = 0;
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < N; j++) {
+        if (i + 1 < N) {
+          if (arr[i][j] == '.' && arr[i + 1][j] == '.' && (i + 2 >= N || arr[i + 2][j] == 'X')) {
+            ans[1] += 1;
+          }
+        }
+        if (j + 1 < N) {
+          if (arr[i][j] == '.' && arr[i][j + 1] == '.' && (j + 2 >= N || arr[i][j + 2] == 'X')) {
+            ans[0] += 1;
+          }
+        }
+      }
+    }
+    System.out.println(ans[0] + " " + ans[1]);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N²)

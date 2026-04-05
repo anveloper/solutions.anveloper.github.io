@@ -1,0 +1,147 @@
+---
+title: "BOJ 1045 - 도로"
+date: "2023-07-26"
+description: "그래프 이론, 그리디 알고리즘, 최소 스패닝 트리 문제"
+tags: ["그래프 이론", "그리디 알고리즘", "최소 스패닝 트리"]
+platform: "boj"
+problem_number: "1045"
+problem_url: "https://www.acmicpc.net/problem/1045"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1045 - 도로](https://www.acmicpc.net/problem/1045)
+
+N개 도시와 도로 연결 가능 여부가 주어질 때, 정확히 M개의 도로를 선택하여 모든 도시를 연결하면서 각 도시의 도로 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 N줄에 인접 행렬(Y/N)이 주어진다.
+
+### 출력
+
+각 도시에 연결된 도로 수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력                    | 출력    |
+| ----------------------- | ------- |
+| `3 3` `NYY` `YNY` `YYN` | `2 2 2` |
+
+## 풀이
+
+MST로 N-1개 간선을 우선 선택하고, 남은 M-(N-1)개는 사전순으로 추가한다.
+
+1. 모든 간선을 (a,b) 사전순으로 정렬한다
+2. Union-Find로 MST 간선 N-1개를 우선 선택한다
+3. MST에 포함되지 않은 간선 중 사전순으로 남은 M-(N-1)개를 추가 선택한다
+4. 선택된 각 간선의 양 끝점 카운트를 증가시킨다
+
+**핵심 아이디어**: MST로 연결성을 보장한 뒤, 나머지 간선을 사전순으로 추가하면 조건을 만족한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day535BOJ1045도로 {
+  private static class Edge implements Comparable<Edge> {
+    int a, b;
+
+    Edge(int a, int b) {
+      this.a = a;
+      this.b = b;
+    }
+
+    @Override
+    public int compareTo(Edge o) {
+      if (a == o.a) {
+        return Integer.compare(b, o.b);
+      }
+      return Integer.compare(a, o.a);
+    }
+  }
+
+  private static int[] P;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    int N = Integer.parseInt(st.nextToken());
+    int M = Integer.parseInt(st.nextToken());
+
+    PriorityQueue<Edge> edges1 = new PriorityQueue<>();
+    PriorityQueue<Edge> edges2 = new PriorityQueue<>();
+
+    for (int i = 0; i < N; i++) {
+      char[] line = br.readLine().toCharArray();
+      for (int j = i + 1; j < N; j++) {
+        if (line[j] == 'Y') {
+          edges1.offer(new Edge(i, j));
+        }
+      }
+    }
+
+    // MST!
+    int cnt = 0;
+    P = new int[N];
+    for (int i = 0; i < N; i++)
+      P[i] = i;
+
+    int[] ans = new int[N];
+
+    while (!edges1.isEmpty()) {
+      Edge e = edges1.poll();
+      int pu = find(e.a);
+      int pv = find(e.b);
+      if (pu != pv) {
+        M--;
+        cnt++;
+        P[pv] = pu;
+        ans[e.a]++;
+        ans[e.b]++;
+      } else {
+        edges2.offer(e);
+      }
+    }
+
+    while (M > 0 && !edges2.isEmpty()) {
+      Edge e = edges2.poll();
+      ans[e.a]++;
+      ans[e.b]++;
+      M--;
+    }
+
+    StringBuilder sb = new StringBuilder();
+    if (M != 0 || cnt != N - 1) {
+      sb.append(-1);
+    } else {
+      for (int i = 0; i < N; i++) {
+        if (i == 0)
+          sb.append(ans[i]);
+        else
+          sb.append(" ").append(ans[i]);
+      }
+    }
+    System.out.println(sb);
+  }
+
+  private static int find(int a) {
+    if (P[a] == a)
+      return a;
+    return P[a] = find(P[a]);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(E log E)
+- 공간: O(V + E)

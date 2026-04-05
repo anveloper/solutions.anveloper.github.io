@@ -1,0 +1,103 @@
+---
+title: "BOJ 15655 - N과 M (6)"
+date: "2022-04-05"
+description: "백트래킹 문제"
+tags: ["백트래킹"]
+platform: "boj"
+problem_number: "15655"
+problem_url: "https://www.acmicpc.net/problem/15655"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15655 - N과 M (6)](https://www.acmicpc.net/problem/15655)
+
+N개의 자연수 중에서 M개를 고른 수열을 모두 출력하는 문제이다. 단, 수열은 **오름차순**이어야 한다. 즉, 같은 수는 중복 선택 불가이며 선택한 수들은 반드시 증가하는 순서여야 한다. 기본 N과 M (2)와 달리 임의의 N개 자연수 중에서 선택한다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. (1 ≤ M ≤ N ≤ 8)
+둘째 줄에 N개의 자연수가 주어진다. 각 자연수는 10,000보다 작거나 같다.
+
+### 출력
+
+한 줄에 하나씩, 오름차순인 M개짜리 수열을 모두 출력한다.
+
+### 예제
+
+| 입력            | 출력                                |
+| --------------- | ----------------------------------- |
+| `3 1` `3 1 4`   | `1` `3` `4`                         |
+| `4 2` `9 8 7 1` | `1 7` `1 8` `1 9` `7 8` `7 9` `8 9` |
+
+## 풀이
+
+N개의 자연수 중 M개를 고르는 조합(중복 없음, 오름차순)을 백트래킹으로 열거한다. 입력 배열을 먼저 정렬하고, 현재 인덱스 이후의 원소만 선택하도록 제한하여 오름차순 조건을 자연스럽게 만족한다.
+
+1. 입력받은 N개의 수를 `Arrays.sort()`로 오름차순 정렬한다.
+2. `comb(d, idx)` 재귀 함수를 호출한다. `d`는 현재 선택 깊이, `idx`는 탐색 시작 인덱스이다.
+3. `d == M`이면 선택된 배열 `sel`을 출력하고 반환한다.
+4. `idx == N`이면 더 이상 선택할 원소가 없으므로 반환한다.
+5. `arr[idx]`를 선택하고 `comb(d+1, idx+1)` 호출, 선택하지 않고 `comb(d, idx+1)` 호출하여 모든 경우를 탐색한다.
+
+**핵심 아이디어**: 선택/미선택 분기로 조합을 구현한다. `idx`를 항상 1씩 증가시켜 앞 인덱스로 돌아가지 않으므로, 정렬된 배열에서 자동으로 오름차순이 보장된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day57BOJ15655N과M6조합 { // 15655
+	static int N, M;
+	static int[] arr, sel;
+	static StringBuilder sb;
+	static List<String> ans;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		arr = new int[N];
+		sel = new int[M];
+		sb = new StringBuilder();
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		Arrays.sort(arr);
+		comb(0, 0);
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void comb(int d, int idx) {
+		if (d == M) {
+			sb.append(Arrays.toString(sel).replaceAll("[\\[\\],]", "").trim()).append("\n");
+			return;
+		}
+		if (idx == N)
+			return;
+
+		sel[d] = arr[idx];
+		comb(d + 1, idx + 1);
+		comb(d, idx + 1);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(C(N,M)) — N개 중 M개를 고르는 조합의 수
+- 공간: O(N) — 재귀 스택 깊이 N, 선택 배열 M

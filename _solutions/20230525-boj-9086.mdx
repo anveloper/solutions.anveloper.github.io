@@ -1,0 +1,74 @@
+---
+title: "BOJ 9086 - 문자열"
+date: "2023-05-25"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "9086"
+problem_url: "https://www.acmicpc.net/problem/9086"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9086 - 문자열](https://www.acmicpc.net/problem/9086)
+
+T개의 문자열이 주어졌을 때, 각 문자열의 첫 글자와 마지막 글자를 출력하라.
+
+### 입력
+
+첫째 줄에 T, 이후 T줄에 문자열이 주어진다.
+
+### 출력
+
+각 문자열의 첫 글자와 마지막 글자를 이어 붙여 한 줄에 출력한다.
+
+### 예제
+
+| 입력                         | 출력           |
+| ---------------------------- | -------------- |
+| `3` `ACDKJFOWIEGHE` `O` `AB` | `AE` `OO` `AB` |
+
+## 풀이
+
+각 문자열에서 charAt(0)과 charAt(length-1)을 추출하여 출력한다.
+
+1. T개의 문자열을 반복문으로 읽는다
+2. 각 문자열의 첫 번째 문자와 마지막 문자를 이어 붙여 출력한다
+3. BufferedWriter로 출력을 버퍼링한다
+
+**핵심 아이디어**: 문자열 길이가 1인 경우 첫 글자와 마지막 글자가 같으므로 별도 처리 없이 동일 로직으로 처리된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+
+public class Day473BOJ9086문자열 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    int cnt = Integer.parseInt(br.readLine());
+
+    for (int i = 0; i < cnt; i++) {
+      String T = br.readLine();
+      bw.write(String.valueOf(T.charAt(0)) + T.charAt(T.length() - 1));
+      bw.newLine();
+    }
+
+    bw.flush();
+    bw.close();
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(L) (L: 최대 문자열 길이)

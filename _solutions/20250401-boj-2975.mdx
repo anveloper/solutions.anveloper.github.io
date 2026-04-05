@@ -1,0 +1,59 @@
+---
+title: "BOJ 2975 - Transactions"
+date: "2025-04-01"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "2975"
+problem_url: "https://www.acmicpc.net/problem/2975"
+difficulty: "브론즈 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2975 - Transactions](https://www.acmicpc.net/problem/2975)
+
+은행 계좌 잔액과 거래(입금 D 또는 출금 W)가 주어진다. 거래 후 잔액이 -200 미만이면 `Not allowed`를 출력하고, 아니면 거래 후 잔액을 출력하라. 입력이 `0 W 0`이면 종료한다.
+
+### 입력
+
+각 줄에 현재 잔액, 거래 유형(`W` 또는 `D`), 거래 금액이 주어진다. `0 W 0`이 입력의 끝이다.
+
+### 출력
+
+각 거래에 대해 잔액 또는 `Not allowed`를 출력한다.
+
+### 예제
+
+| 입력                                        | 출력                       |
+| ------------------------------------------- | -------------------------- |
+| `1000 W 500` `700 D 300` `-200 W 1` `0 W 0` | `500` `1000` `Not allowed` |
+
+## 풀이
+
+각 거래를 순차적으로 처리하며, 출금 시 잔액이 -200 미만이 되는지 검사한다.
+
+1. 잔액, 거래 유형, 금액을 입력받는다
+2. 잔액과 금액이 모두 0이면 종료한다
+3. 출금(`W`)이면 잔액에서 금액을 빼고, 입금(`D`)이면 더한다
+4. 결과가 -200 미만이면 `Not allowed`를, 아니면 잔액을 출력한다
+
+**핵심 아이디어**: 마이너스 통장 한도(-200)를 초과하는지만 확인하면 되는 단순 조건 분기 문제이다.
+
+## 코드
+
+```python
+while 1:
+    a, op, b = input().split()
+    if a == b == "0":
+        break
+    s = int(a) - int(b) if op == "W" else int(a) + int(b)
+    print("Not allowed" if s < -200 else s)
+```
+
+## 복잡도
+
+- 시간: O(T) — 거래 수만큼 반복
+- 공간: O(1) — 상수 공간

@@ -1,0 +1,90 @@
+---
+title: "BOJ 3602 - iChess"
+date: "2026-01-22"
+description: "수학, 브루트포스 알고리즘, 홀짝성 문제"
+tags: ["수학", "브루트포스 알고리즘", "홀짝성"]
+platform: "boj"
+problem_number: "3602"
+problem_url: "https://www.acmicpc.net/problem/3602"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3602 - iChess](https://www.acmicpc.net/problem/3602)
+
+검은 타일 b개와 흰 타일 w개로 만들 수 있는 최대 크기의 체스판을 구하라.
+
+### 입력
+
+검은 타일 수 b와 흰 타일 수 w가 주어진다.
+
+### 출력
+
+최대 정사각형 체스판의 한 변 길이를 출력한다. 불가능하면 `Impossible`을 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `5 4` | `3`  |
+
+## 풀이
+
+한 변을 1부터 증가시키며 검은/흰 타일이 충분한지 확인한다.
+
+1. 한 변 side인 체스판에 필요한 타일: 짝수 칸 `side²/2`, 홀수 칸 `side² - side²/2`
+2. 검은/흰 배치가 두 가지 가능하므로 양쪽 모두 확인한다
+3. 충족 가능한 최대 side를 기록한다
+4. side = 1도 불가능하면 `Impossible`을 출력한다
+
+**핵심 아이디어**: 체스판의 흑/백 타일 수는 `side²`의 절반씩이며, side를 증가시키며 충분 조건을 확인하는 브루트포스로 해결한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main(void)
+
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  int b, w;
+  cin >> b >> w;
+  bool canMakeSquare = false;
+  int maxSide;
+  for (int side = 1;; side++)
+  {
+    int half = (side * side) / 2;
+    int otherHalf = (side * side) - half;
+    if ((b >= half && w >= otherHalf) || (w >= half && b >= otherHalf))
+    {
+      canMakeSquare = true;
+      maxSide = side;
+    }
+    else
+    {
+      break;
+    }
+  }
+  if (canMakeSquare == false)
+  {
+    cout << "Impossible\n";
+  }
+  else
+  {
+    cout << maxSide << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(sqrt(b + w))
+- 공간: O(1)

@@ -1,0 +1,66 @@
+---
+title: "BOJ 2420 - 사파리월드"
+date: "2023-06-08"
+description: "구현, 사칙연산, 수학 문제"
+tags: ["구현", "사칙연산", "수학"]
+platform: "boj"
+problem_number: "2420"
+problem_url: "https://www.acmicpc.net/problem/2420"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2420 - 사파리월드](https://www.acmicpc.net/problem/2420)
+
+두 정수 N과 M이 주어졌을 때, 두 수의 차이(절대값)를 출력하라.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다 (-2,000,000,000 ≤ N, M ≤ 2,000,000,000).
+
+### 출력
+
+|N - M|을 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `-5 7` | `12` |
+
+## 풀이
+
+두 수의 차이를 Math.abs()로 절대값을 구해 출력한다.
+
+1. 두 정수를 long으로 파싱한다 (int 범위 경계값의 차이가 int를 초과할 수 있음)
+2. `Math.abs(n - m)`으로 절대값을 구한다
+
+**핵심 아이디어**: 두 수가 각각 -20억, +20억일 수 있으므로 차이가 40억까지 가능하여 long 타입이 필수이다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day620BOJ2420사파리월드 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    long n = Long.parseLong(st.nextToken());
+    long m = Long.parseLong(st.nextToken());
+    System.out.print(Math.abs(n - m));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

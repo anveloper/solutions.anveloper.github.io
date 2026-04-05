@@ -1,0 +1,77 @@
+---
+title: "BOJ 2890 - 카약"
+date: "2025-03-04"
+description: "구현, 문자열, 정렬 문제"
+tags: ["구현", "문자열", "정렬"]
+platform: "boj"
+problem_number: "2890"
+problem_url: "https://www.acmicpc.net/problem/2890"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2890 - 카약](https://www.acmicpc.net/problem/2890)
+
+R x C 격자에서 1~9번 카약의 도착선(오른쪽 끝)까지 남은 거리를 기준으로 순위를 매겨라. 거리가 같으면 같은 순위이다.
+
+### 입력
+
+격자 크기 R, C와 R줄의 격자가 주어진다. 카약은 숫자 1~9로, 물은 `.`으로, 도착선은 `|`로 표시된다.
+
+### 출력
+
+카약 번호 1부터 순서대로 각 카약의 순위를 출력한다.
+
+### 예제
+
+| 입력                                          | 출력        |
+| --------------------------------------------- | ----------- |
+| `3 10` `.....1....` `..2.......` `......3...` | `2` `1` `3` |
+
+## 풀이
+
+각 카약의 오른쪽 끝에서 도착선까지의 거리를 구해 순위를 매긴다.
+
+1. 각 행에서 카약 번호를 찾고, 오른쪽 끝부터 해당 번호까지의 거리를 계산한다
+2. 거리 기준으로 정렬하여 순위를 부여하되, 같은 거리면 같은 순위를 준다
+3. 카약 번호 순으로 재정렬하여 결과를 출력한다
+
+**핵심 아이디어**: 도착선까지의 거리는 격자 오른쪽 끝에서 카약까지의 빈 칸 수로 계산할 수 있다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+r, c = map(int, input().rstrip().split())
+maps = [list(input().rstrip()) for _ in range(r)]
+arr = []
+for i in range(r):
+    for k in range(1, 10):
+        if maps[i].count(str(k)) > 0:
+            cnt = 0
+            for j in range(c - 1, -1, -1):
+                if maps[i][j] == str(k):
+                    break
+                cnt += 1
+            arr.append([cnt, k, 0])
+arr.sort(key=lambda x: x[0])
+arr[0][2] = 1
+now = 1
+for i in range(1, len(arr)):
+    if arr[i][0] != arr[i - 1][0]:
+        now += 1
+    arr[i][2] = now
+arr.sort(key=lambda x: x[1])
+for i in range(len(arr)):
+    print(arr[i][2])
+```
+
+## 복잡도
+
+- 시간: O(RC)
+- 공간: O(RC)

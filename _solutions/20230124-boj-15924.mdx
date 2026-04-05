@@ -1,0 +1,117 @@
+---
+title: "BOJ 15924 - 욱제는 사과팬이야!!"
+date: "2023-01-24"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "15924"
+problem_url: "https://www.acmicpc.net/problem/15924"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15924 - 욱제는 사과팬이야!!](https://www.acmicpc.net/problem/15924)
+
+N×M 격자에서 각 칸이 동쪽(E), 남쪽(S), 또는 양쪽(B) 방향으로 이동 가능하다. (N,M)에 도달할 수 있는 시작 위치의 수를 구하라 (모든 칸에서 (N,M)까지의 경로 수 합).
+
+### 입력
+
+첫째 줄에 N, M (1 이상 3,000 이하), 이후 N줄에 방향 문자가 주어진다.
+
+### 출력
+
+모든 칸에서 (N,M)까지의 경로 수의 합을 1,000,000,009로 나눈 나머지를 출력한다.
+
+### 예제
+
+| 입력                    | 출력 |
+| ----------------------- | ---- |
+| `3 3` `EEB` `BSB` `BBS` | `9`  |
+
+## 풀이
+
+(N,M)에서 역방향으로 DP를 구성하여 각 칸에서 도달 가능한 경로 수를 구한다.
+
+1. `dp[i][j]`를 (i,j)에서 (N-1, M-1)까지의 경로 수로 정의한다
+2. `dp[N-1][M-1] = 1`로 초기화하고, 마지막 행/열의 경계 조건을 설정한다
+3. (N-2, M-2)부터 역순으로 순회하며, 동쪽 이동 가능하면 `dp[i][j+1]`, 남쪽이면 `dp[i+1][j]`를 합산한다
+4. 모든 `dp[i][j]` 값을 합산하여 출력한다
+
+**핵심 아이디어**: 목적지에서 역방향 DP를 구성하면 한 번의 순회로 모든 시작점의 경로 수를 동시에 구할 수 있다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day351BOJ15924애플팬 {
+    private static final int MOD = 1_000_000_009;
+
+    private static final char EAST = 'E';
+    private static final char SOUTH = 'S';
+    private static final char BOTH = 'B';
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+
+        char[][] map = new char[N][M];
+        for (int i = 0; i < N; i++) {
+            String line = br.readLine();
+
+            for (int j = 0; j < M; j++) {
+                map[i][j] = line.charAt(j);
+            }
+        }
+
+        System.out.println(path(N, M, map));
+    }
+
+    private static long path(int n, int m, char[][] arr) {
+        long[][] dp = new long[n][m];
+        dp[n - 1][m - 1] = 1;
+
+        for (int i = m - 1; i >= 0; i--) {
+            if (arr[n - 1][i] == EAST || arr[n - 1][i] == BOTH)
+                dp[n - 1][i] = 1;
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            if (arr[i][m - 1] == SOUTH || arr[i][m - 1] == BOTH)
+                dp[i][m - 1] = 1;
+        }
+
+        for (int i = n - 2; i >= 0; i--) {
+            for (int j = m - 2; j >= 0; j--) {
+                long sum = (arr[i][j] == EAST || arr[i][j] == BOTH ? dp[i][j + 1] : 0) +
+                        (arr[i][j] == SOUTH || arr[i][j] == BOTH ? dp[i + 1][j] : 0);
+
+                dp[i][j] = ((dp[i][j] % MOD) + sum) % MOD;
+            }
+        }
+
+        long total = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                total = ((total % MOD) + (dp[i][j] % MOD) % MOD);
+            }
+        }
+
+        return total;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* M) - 격자 전체 순회
+- 공간: O(N \* M) - DP 배열

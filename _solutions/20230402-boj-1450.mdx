@@ -1,0 +1,117 @@
+---
+title: "BOJ 1450 - 냅색문제"
+date: "2023-04-02"
+description: "이분 탐색, 중간에서 만나기 문제"
+tags: ["이분 탐색", "중간에서 만나기"]
+platform: "boj"
+problem_number: "1450"
+problem_url: "https://www.acmicpc.net/problem/1450"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1450 - 냅색문제](https://www.acmicpc.net/problem/1450)
+
+N개의 물건과 최대 무게 C인 가방이 있을 때, 가방에 넣을 수 있는 물건 조합의 수를 구하라 (아무것도 안 넣는 경우 포함).
+
+### 입력
+
+첫째 줄에 N(최대 30), C가 주어지고, 둘째 줄에 N개 물건의 무게가 주어진다.
+
+### 출력
+
+가방에 넣을 수 있는 방법의 수를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `2 1` `1 1` | `3`  |
+
+## 풀이
+
+Meet in the Middle 기법으로 물건을 반으로 나누어 각각의 부분합 리스트를 만든 뒤, 이분 탐색으로 조합 수를 센다.
+
+1. 물건을 전반(0~N/2-1)과 후반(N/2~N-1)으로 나눈다
+2. 각 그룹에서 재귀적으로 모든 부분집합의 무게 합을 리스트에 저장한다
+3. 후반 리스트를 정렬한다
+4. 전반 리스트의 각 원소에 대해 이분 탐색으로 `전반합 + 후반합 <= C`인 후반 원소의 개수를 센다
+
+**핵심 아이디어**: N이 최대 30이므로 전체 탐색은 2^30으로 불가능하지만, 반으로 나누면 각 2^15 = 32768개로 줄어들어 이분 탐색과 결합하면 효율적이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day420BOJ1450냅색문제 {
+  static int N, C, cnt = 0, idx = 0;
+  static int[] arr;
+  static List<Integer>[] list;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    C = Integer.parseInt(st.nextToken());
+
+    arr = new int[N];
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    list = new ArrayList[] { new ArrayList<>(), new ArrayList<>() };
+    recur(0, 0, 0);
+    recur(1, N / 2, 0);
+
+    list[1].sort((o1, o2) -> (o1 - o2));
+
+    for (int i = 0; i < list[0].size(); i++) {
+      idx = -1;
+      birnarySearch(0, list[1].size() - 1, list[0].get(i));
+      cnt += idx + 1;
+    }
+    System.out.println(cnt);
+    br.close();
+  }
+
+  private static void birnarySearch(int l, int r, int value) {
+    while (l <= r) {
+      int mid = (l + r) / 2;
+      if (list[1].get(mid) + value <= C) {
+        idx = mid;
+        l = mid + 1;
+      } else {
+        r = mid - 1;
+      }
+    }
+  }
+
+  private static void recur(int t, int i, int sum) {
+    int n = N;
+    if (t == 0)
+      n /= 2;
+    if (sum > C)
+      return;
+    if (i == n) {
+      list[t].add(sum);
+      return;
+    }
+    recur(t, i + 1, sum);
+    recur(t, i + 1, sum + arr[i]);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(2^(N/2) \* log(2^(N/2))) - 부분합 생성 + 이분 탐색
+- 공간: O(2^(N/2))

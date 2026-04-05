@@ -1,0 +1,85 @@
+---
+title: "BOJ 17266 - 어두운 굴다리"
+date: "2023-04-18"
+description: "구현, 이분 탐색 문제"
+tags: ["구현", "이분 탐색"]
+platform: "boj"
+problem_number: "17266"
+problem_url: "https://www.acmicpc.net/problem/17266"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17266 - 어두운 굴다리](https://www.acmicpc.net/problem/17266)
+
+길이 N인 굴다리에 M개의 가로등이 있을 때, 모든 구간을 밝히기 위한 가로등의 최소 높이를 구하라. 높이 H인 가로등은 좌우 H만큼 비춘다.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 M, 셋째 줄에 M개의 가로등 위치가 주어진다.
+
+### 출력
+
+필요한 최소 높이를 출력한다.
+
+### 예제
+
+| 입력          | 출력 |
+| ------------- | ---- |
+| `5` `2` `2 4` | `2`  |
+
+## 풀이
+
+인접 가로등 간 거리의 최댓값과 양 끝까지의 거리를 비교하여 최소 높이를 구한다.
+
+1. 첫 가로등까지의 거리 `arr[0]`을 초기 답으로 설정한다
+2. 인접 가로등 간 거리의 절반(올림)의 최댓값을 구한다
+3. 마지막 가로등에서 끝까지의 거리 `N - arr[M-1]`과 비교한다
+
+**핵심 아이디어**: 가로등 간 간격의 절반이 필요 높이이며, 양 끝은 전체 거리가 필요하다. 이들의 최댓값이 답이다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day436BOJ17266어두운굴다리 {
+  static int N, M, ans;
+  static int[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    N = Integer.parseInt(br.readLine());
+    M = Integer.parseInt(br.readLine());
+    arr = new int[M + 2];
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < M; i++)
+      arr[i] = Integer.parseInt(st.nextToken());
+
+    ans = arr[0];
+
+    for (int i = 1; i < M; i++) {
+      int tmp = arr[i] - arr[i - 1];
+      if ((tmp & 1) == 0)
+        ans = Math.max(ans, tmp / 2);
+      else
+        ans = Math.max(ans, tmp / 2 + 1);
+    }
+    ans = Math.max(ans, N - arr[M - 1]);
+    System.out.println(ans);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(M)
+- 공간: O(M)

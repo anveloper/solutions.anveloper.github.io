@@ -1,0 +1,96 @@
+---
+title: "BOJ 3040 - 백설 공주와 일곱 난쟁이"
+date: "2022-04-04"
+description: "브루트포스 알고리즘 문제"
+tags: ["브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "3040"
+problem_url: "https://www.acmicpc.net/problem/3040"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3040 - 백설 공주와 일곱 난쟁이](https://www.acmicpc.net/problem/3040)
+
+아홉 난쟁이의 모자에 쓰인 숫자가 주어질 때, 합이 100이 되는 일곱 난쟁이를 찾아라.
+
+### 입력
+
+아홉 줄에 걸쳐 1 이상 99 이하의 서로 다른 자연수가 주어진다. 합이 100이 되는 일곱 난쟁이가 반드시 존재한다.
+
+### 출력
+
+일곱 난쟁이의 모자에 쓰인 수를 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                                       | 출력                             |
+| ------------------------------------------ | -------------------------------- |
+| `7` `8` `10` `13` `15` `19` `20` `23` `25` | `7` `8` `10` `13` `19` `20` `23` |
+
+## 풀이
+
+9명 중 7명을 선택하는 조합(C(9,7) = 36가지)을 DFS로 생성하여, 합이 100인 조합을 찾는다.
+
+1. 9개의 숫자를 배열에 저장한다
+2. `comb(d, s)` 재귀 함수로 깊이 d, 시작 인덱스 s부터 7명을 선택한다
+3. 깊이가 7이 되면 선택된 7명의 합을 계산한다
+4. 합이 100이면 결과를 출력하고 종료한다
+
+**핵심 아이디어**: C(9,7) = 36으로 경우의 수가 매우 적어 완전 탐색으로 충분히 해결 가능하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day56BOJ3040백설공주와일곱난장이DFS { // 3040 백설 공주와 일곱난장이
+	static int[] arr, ans;
+	static StringBuilder sb;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		arr = new int[9];
+		ans = new int[7];
+		sb = new StringBuilder();
+		for (int i = 0; i < 9; i++) {
+			arr[i] = Integer.parseInt(br.readLine());
+
+		}
+		comb(0, 0);
+		br.close();
+	}
+
+	private static void comb(int d, int s) {
+		if (d == 7) {
+			int sum = 0;
+			for (int i = 0; i < 7; i++) {
+				sum += ans[i];
+				sb.append(ans[i] + "\n");
+			}
+			if (sum == 100) {
+				System.out.println(sb);
+				return;
+			} else {
+				sb = new StringBuilder();
+				return;
+			}
+		}
+		for (int i = s; i < 9; i++) {
+			ans[d] = arr[i];
+			comb(d + 1, i + 1);
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(C(9,7)) = O(36)
+- 공간: O(N)

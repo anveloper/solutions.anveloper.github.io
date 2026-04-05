@@ -1,0 +1,99 @@
+---
+title: "BOJ 1135 - 뉴스 전하기"
+date: "2023-05-01"
+description: "다이나믹 프로그래밍, 그리디 알고리즘, 정렬 문제"
+tags: ["다이나믹 프로그래밍", "그리디 알고리즘", "정렬", "트리", "트리에서의 다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "1135"
+problem_url: "https://www.acmicpc.net/problem/1135"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1135 - 뉴스 전하기](https://www.acmicpc.net/problem/1135)
+
+트리 형태의 조직도에서 민식이(루트)가 모든 직원에게 전화로 뉴스를 전할 때 최소 시간을 구하라. 각 전화는 1분이 걸리고 동시에 한 명에게만 전할 수 있다.
+
+### 입력
+
+첫째 줄에 직원 수 N, 둘째 줄에 각 직원의 상관 번호가 주어진다 (0번은 -1).
+
+### 출력
+
+모든 직원이 뉴스를 받는 최소 시간을 출력한다.
+
+### 예제
+
+| 입력         | 출력 |
+| ------------ | ---- |
+| `3` `-1 0 0` | `2`  |
+
+## 풀이
+
+트리 DP로 각 노드의 서브트리 전파 시간을 구하되, 오래 걸리는 자식부터 먼저 전화한다.
+
+1. 부모-자식 관계로 트리를 구성한다
+2. 리프부터 DFS로 각 서브트리의 전파 시간을 구한다
+3. 자식들의 전파 시간을 내림차순 정렬한다
+4. i번째(0-indexed) 자식에게 i+1분에 전화하므로 `max(i+1 + 자식전파시간)`이 해당 노드의 전파 시간이다
+
+**핵심 아이디어**: 서브트리 전파 시간이 긴 자식에게 먼저 전화해야 병목이 최소화된다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day449BOJ1135뉴스전하기 {
+
+  static int N;
+  static int[] arr, dp;
+  static boolean[] used;
+  static ArrayList<Integer>[] list;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    N = Integer.parseInt(br.readLine());
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    st.nextToken();
+    list = new ArrayList[N];
+    for (int i = 0; i < N; i++)
+      list[i] = new ArrayList<>();
+    for (int i = 1; i < N; i++)
+      list[Integer.parseInt(st.nextToken())].add(i);
+
+    dp = new int[N];
+    arr = new int[N];
+    used = new boolean[N];
+    Arrays.fill(dp, -1);
+    System.out.print(dfs(0));
+  }
+
+  public static int dfs(int now) {
+    ArrayList<Integer> tmp = new ArrayList<>();
+    for (int num : list[now]) {
+      tmp.add(dfs(num));
+    }
+
+    int result = 0;
+    Collections.sort(tmp, Collections.reverseOrder());
+    for (int i = 0; i < list[now].size(); i++) {
+      result = Math.max(result, i + 1 + tmp.get(i));
+    }
+    return result;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) - 각 노드에서 자식 정렬
+- 공간: O(N)

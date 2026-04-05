@@ -1,0 +1,92 @@
+---
+title: "BOJ 1245 - 농장 관리"
+date: "2024-04-07"
+description: "격자에서 주변보다 높지 않은 봉우리의 개수를 구하는 문제"
+tags: ["그래프", "DFS"]
+platform: "boj"
+problem_number: "1245"
+problem_url: "https://www.acmicpc.net/problem/1245"
+difficulty: "골드 V"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1245 - 농장 관리](https://www.acmicpc.net/problem/1245)
+
+N x M 격자의 높이 정보가 주어질 때, 봉우리의 개수를 구하라. 봉우리는 같은 높이의 연결 영역 중 인접한 모든 셀이 자신 이하인 영역이다.
+
+### 입력
+
+첫째 줄에 N, M, 이후 N줄에 높이 정보가 주어진다.
+
+### 출력
+
+봉우리의 개수를 출력한다.
+
+### 예제
+
+| 입력                                                  | 출력 |
+| ----------------------------------------------------- | ---- |
+| `4 5` `0 0 0 0 0` `0 1 0 2 0` `0 0 0 0 0` `0 0 0 0 0` | `2`  |
+
+## 풀이
+
+DFS로 같은 높이의 연결 영역을 탐색하며 봉우리 여부를 판정한다.
+
+1. 미방문 셀에서 DFS를 시작하여 같은 높이의 인접 셀을 모두 방문한다
+2. 8방향 탐색 중 더 높은 인접 셀이 발견되면 봉우리가 아닌 것으로 표시한다
+3. DFS 완료 후 봉우리 플래그가 유지되면 카운트를 증가시킨다
+
+**핵심 아이디어**: 같은 높이의 연결 영역을 하나의 봉우리 후보로 보고, 8방향 인접 셀 중 하나라도 더 높으면 봉우리에서 제외한다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const [N, M] = input[0].split(" ").map(Number);
+  const grid = [];
+  for (let i = 1; i <= N; i++) {
+    grid.push(input[i].trim().split(" ").map(Number));
+  }
+
+  const visited = Array.from({ length: N }, () => Array(M).fill(false));
+  const dx = [-1, -1, -1, 0, 0, 1, 1, 1];
+  const dy = [-1, 0, 1, -1, 1, -1, 0, 1];
+
+  let isPeak;
+
+  const dfs = (x, y, h) => {
+    visited[x][y] = true;
+    for (let d = 0; d < 8; d++) {
+      const nx = x + dx[d];
+      const ny = y + dy[d];
+      if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+      if (grid[nx][ny] > h) isPeak = false;
+      if (grid[nx][ny] === h && !visited[nx][ny]) dfs(nx, ny, h);
+    }
+  };
+
+  let result = 0;
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (!visited[i][j]) {
+        isPeak = true;
+        dfs(i, j, grid[i][j]);
+        if (isPeak) result++;
+      }
+    }
+  }
+  return result;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N × M)
+- 공간: O(N × M)

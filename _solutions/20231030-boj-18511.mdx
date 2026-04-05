@@ -1,0 +1,89 @@
+---
+title: "BOJ 18511 - 큰 수 구성하기"
+date: "2023-10-30"
+description: "브루트포스 알고리즘, 재귀 문제"
+tags: ["브루트포스 알고리즘", "재귀"]
+platform: "boj"
+problem_number: "18511"
+problem_url: "https://www.acmicpc.net/problem/18511"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 18511 - 큰 수 구성하기](https://www.acmicpc.net/problem/18511)
+
+자연수 N과 K개의 서로 다른 한 자릿수 자연수 집합이 주어질 때, 집합의 원소만 사용하여 만들 수 있는 N 이하의 가장 큰 수를 구하라.
+
+### 입력
+
+첫째 줄에 N과 K가 공백으로 주어진다. 둘째 줄에 K개의 서로 다른 한 자릿수 자연수가 주어진다.
+
+### 출력
+
+N 이하이면서 집합의 원소만 사용하여 만들 수 있는 가장 큰 수를 출력한다.
+
+### 예제
+
+| 입력            | 출력  |
+| --------------- | ----- |
+| `657 3` `1 5 7` | `577` |
+
+## 풀이
+
+DFS로 한 자릿수부터 시작하여 자릿수를 늘려가며 N 이하인 가장 큰 수를 탐색한다.
+
+1. 주어진 숫자 배열을 정렬한다
+2. DFS에서 현재 수에 10을 곱하고 각 숫자를 더해가며 새로운 수를 만든다
+3. 만든 수가 N을 초과하면 가지치기하고, 그렇지 않으면 최댓값을 갱신한다
+4. 큰 숫자부터 탐색하므로 가능한 빠르게 최댓값에 도달한다
+
+**핵심 아이디어**: 재귀적으로 자릿수를 확장하며 N을 초과하는 순간 탐색을 중단하는 백트래킹 방식이다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day633BOJ18511큰수구성하기 {
+  private static int N, K, ans;
+  private static int[] num;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    K = Integer.parseInt(st.nextToken());
+    st = new StringTokenizer(br.readLine());
+    num = new int[K];
+    for (int i = 0; i < K; i++) {
+      num[i] = Integer.parseInt(st.nextToken());
+    }
+    Arrays.sort(num);
+    dfs(0);
+    System.out.println(ans);
+  }
+
+  private static void dfs(int now) {
+    if (now > N)
+      return;
+
+    if (ans < now)
+      ans = now;
+
+    for (int i = K - 1; i > -1; i--) {
+      dfs(now * 10 + num[i]);
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(K^d) — K는 숫자 개수, d는 N의 자릿수
+- 공간: O(d) — 재귀 호출 스택 깊이

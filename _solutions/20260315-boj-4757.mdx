@@ -1,0 +1,54 @@
+---
+title: "BOJ 4757 - A Contesting Decision"
+date: "2026-03-15"
+description: "ACM 대회 스타일로 팀별 풀이 수와 패널티를 계산하여 우승팀을 결정하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4757"
+problem_url: "https://www.acmicpc.net/problem/4757"
+difficulty: "브론즈 III"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4757 - A Contesting Decision](https://www.acmicpc.net/problem/4757)
+
+> 각 팀의 문제별 제출 횟수와 풀이 시간이 주어질 때, 가장 많은 문제를 푼 팀(동점 시 패널티가 적은 팀)을 출력하는 문제
+
+## 풀이
+
+각 팀에 대해 풀이 성공한 문제 수와 패널티를 계산한다. 패널티는 `풀이 시간 + (제출 횟수 - 1) * 20`이다. 풀이 수가 많거나, 같으면 패널티가 적은 팀을 선택한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int N;
+int cnt = -1, pen; string s;
+
+int main() {
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  cin >> N;
+  while (N--) {
+    int c = 0, p = 0; string nm; cin >> nm;
+    for (int i = 0; i < 4; i++) {
+      int x, y; cin >> x >> y;
+      if (y) c++, p += y + (x - 1) * 20;
+    }
+    if (c > cnt || (c == cnt && p < pen)) s = nm, pen = p, cnt = c;
+  }
+
+  cout << s << ' ' << cnt << ' ' << pen;
+}
+```
+
+## 복잡도
+
+- 시간: O(n) (n: 팀 수)
+- 공간: O(1)

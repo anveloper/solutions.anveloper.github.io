@@ -1,0 +1,66 @@
+---
+title: "BOJ 2986 - 파스칼"
+date: "2025-04-04"
+description: "수학, 정수론, 소수 판정 문제"
+tags: ["수학", "정수론", "소수 판정"]
+platform: "boj"
+problem_number: "2986"
+problem_url: "https://www.acmicpc.net/problem/2986"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2986 - 파스칼](https://www.acmicpc.net/problem/2986)
+
+1부터 N까지 칠판에 쓰여 있을 때, N의 약수 번째 수들을 지우는 과정을 반복하면 마지막에 지워지는 수의 개수를 구하라.
+
+### 입력
+
+자연수 N이 주어진다.
+
+### 출력
+
+마지막 단계에서 지워지는 수의 개수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `6`  | `2`  |
+
+## 풀이
+
+N의 가장 작은 소인수를 찾아 마지막 단계에서 지워지는 수를 계산한다.
+
+1. 2부터 `sqrt(N)`까지 순회하며 N의 가장 작은 약수 i를 찾는다
+2. 약수를 찾으면 마지막 단계에서 지워지는 수는 `N - N/i`개이다
+3. 약수를 찾지 못하면 N은 소수이므로 답은 `N - 1`이다
+
+**핵심 아이디어**: 매 단계에서 남은 수 중 가장 작은 약수 배수를 지우므로, 마지막 단계의 개수는 `N - N/(최소 소인수)`로 결정된다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+N = int(input())
+
+i = 2
+Counter = 1
+while i * i <= N:
+    if N % i == 0:
+        Counter = N // i
+        break
+    i += 1
+print(N - Counter)
+```
+
+## 복잡도
+
+- 시간: O(sqrt(N))
+- 공간: O(1)

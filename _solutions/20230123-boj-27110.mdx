@@ -1,0 +1,67 @@
+---
+title: "BOJ 27110 - 특식 배부"
+date: "2023-01-23"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "27110"
+problem_url: "https://www.acmicpc.net/problem/27110"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 27110 - 특식 배부](https://www.acmicpc.net/problem/27110)
+
+N명의 학생에게 3가지 특식(각각 수량이 다름)을 배부한다. 각 학생은 최대 1인분만 받을 수 있을 때, 배부 가능한 총 인분 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 3가지 특식의 수량이 주어진다.
+
+### 출력
+
+배부 가능한 총 인분 수를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `5` `3 6 4` | `12` |
+
+## 풀이
+
+각 특식별로 학생 수 N과 수량 중 작은 값을 합산한다.
+
+1. 3가지 특식 각각에 대해 `min(수량, N)`을 구한다 (N명 초과 배부 불가)
+2. 세 값을 합산하여 출력한다
+
+**핵심 아이디어**: 각 특식은 독립적으로 N명까지만 배부 가능하므로, 각각 `min(수량, N)`으로 제한한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day350BOJ27110특식배부 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        System.out.println(Math.min(Integer.parseInt(st.nextToken()), N) + Math.min(Integer.parseInt(st.nextToken()), N)
+                + Math.min(Integer.parseInt(st.nextToken()), N));
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

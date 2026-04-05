@@ -1,0 +1,79 @@
+---
+title: "BOJ 7785 - 회사에 있는 사람"
+date: "2023-05-10"
+description: "자료 구조, 집합과 맵, 해시를 사용한 집합과 맵 문제"
+tags: ["자료 구조", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "7785"
+problem_url: "https://www.acmicpc.net/problem/7785"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7785 - 회사에 있는 사람](https://www.acmicpc.net/problem/7785)
+
+출입 기록이 N개 주어질 때, 현재 회사에 있는 사람을 사전 역순으로 출력하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 10^6), 이후 N줄에 이름과 상태(enter/leave)가 주어진다.
+
+### 출력
+
+회사에 있는 사람의 이름을 사전 역순으로 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                                                         | 출력               |
+| ------------------------------------------------------------ | ------------------ |
+| `4` `Baha enter` `Asadolla enter` `Baha leave` `Arber enter` | `Asadolla` `Arber` |
+
+## 풀이
+
+TreeSet으로 출입을 관리하고, 역순 반복자로 출력한다.
+
+1. TreeSet에 enter이면 이름을 추가, leave이면 이름을 제거한다
+2. TreeSet은 자동으로 사전순 정렬을 유지한다
+3. `descendingIterator()`로 역순 순회하여 출력한다
+
+**핵심 아이디어**: TreeSet의 자동 정렬과 역순 반복자를 활용하면 별도의 정렬 없이 사전 역순 출력이 가능하다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day458BOJ7785회사에있는사람 {
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    StringTokenizer st;
+
+    int N = Integer.parseInt(br.readLine());
+    TreeSet<String> set = new TreeSet<>();
+    while (N-- > 0) {
+      st = new StringTokenizer(br.readLine());
+      String name = st.nextToken();
+      if ("enter".equals(st.nextToken()))
+        set.add(name);
+      else
+        set.remove(name);
+    }
+    Iterator<String> iter = set.descendingIterator();
+    while (iter.hasNext())
+      sb.append(iter.next()).append("\n");
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) (TreeSet 삽입/삭제)
+- 공간: O(N)

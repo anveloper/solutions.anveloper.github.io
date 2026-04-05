@@ -1,0 +1,192 @@
+---
+title: "BOJ 1287 - 할 수 있다"
+date: "2023-01-12"
+description: "수학, 구현, 자료 구조 문제"
+tags: ["수학", "구현", "자료 구조", "문자열", "사칙연산", "많은 조건 분기", "파싱", "스택", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "1287"
+problem_url: "https://www.acmicpc.net/problem/1287"
+difficulty: "플래티넘 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1287 - 할 수 있다](https://www.acmicpc.net/problem/1287)
+
+사칙연산과 괄호로 이루어진 수식이 주어졌을 때, 계산 결과를 출력하라. 올바르지 않은 수식이거나 0으로 나누는 경우 `ROCK`을 출력한다.
+
+### 입력
+
+첫째 줄에 수식이 주어진다 (길이 1 이상 1,000 이하).
+
+### 출력
+
+계산 결과를 정수로 출력한다. 불가능하면 `ROCK`을 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `1+2*3` | `7`  |
+
+## 풀이
+
+Shunting-yard 알고리즘으로 중위 표기식을 후위 표기식으로 변환한 뒤, `BigInteger`로 계산한다.
+
+1. `StringTokenizer`로 수식을 토큰화하고, 연산자 우선순위에 따라 후위 표기식 리스트를 만든다
+2. `+`, `-`는 `*`, `/`보다 우선순위가 낮으므로 스택에서 `*`, `/`를 먼저 꺼낸다
+3. `(`은 스택에 넣고, `)`이면 `(`까지 꺼낸다. 짝이 안 맞으면 `ROCK` 반환
+4. 후위 표기식을 스택 기반으로 계산한다: 피연산자는 스택에 넣고, 연산자는 두 수를 꺼내 계산
+5. 0으로 나누기(`ArithmeticException`)나 잘못된 수식(스택 크기 ≠ 1)이면 `ROCK` 반환
+
+**핵심 아이디어**: 큰 수 연산이 필요하므로 `BigInteger`를 사용하고, 수식 파싱의 모든 예외 케이스(괄호 불일치, 0 나누기, 잘못된 토큰)를 처리한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.math.BigInteger;
+import java.util.*;
+
+public class Day339BOJ1287할수있다 {
+    private static List<String> postOpr;
+    private static String[] stack;
+    private static int sp;
+    private static final String ROCK = "ROCK";
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        String answer;
+        answer = getAnswer(in.readLine());
+        System.out.println(answer);
+
+    }
+
+    private static String getAnswer(String expr) {
+        StringTokenizer st = new StringTokenizer(expr, "+-/*()", true);
+        String tkn;
+        String opr;
+        postOpr = new ArrayList<String>();
+        stack = new String[1000];
+        sp = 0;
+
+        // make post expression
+        while (st.hasMoreTokens()) {
+            tkn = st.nextToken();
+            if (tkn.equals("+") || tkn.equals("-")) {
+                while (sp > 0) {
+                    opr = stack[sp - 1];
+                    if (opr.equals("*") || opr.equals("/")) {
+                        postOpr.add(opr);
+                        sp--;
+                    } else {
+                        break;
+                    }
+                }
+                stack[sp++] = tkn;
+            } else if (tkn.equals("*") || tkn.equals("/")) {
+                while (sp > 0) {
+                    opr = stack[sp - 1];
+                    if (opr.equals("*") || opr.equals("/")) {
+                        postOpr.add(opr);
+                        sp--;
+                    } else {
+                        break;
+                    }
+                }
+                stack[sp++] = tkn;
+            } else if (tkn.equals("(")) {
+                stack[sp++] = tkn;
+            } else if (tkn.equals(")")) {
+                boolean findflag = false;
+                while (sp > 0) {
+                    opr = stack[--sp];
+                    if (opr.equals("(")) {
+                        findflag = true;
+                        break;
+                    }
+                    postOpr.add(opr);
+                }
+                if (!findflag) {
+                    return ROCK;
+                }
+            } else { // number
+                postOpr.add(tkn);
+            }
+        }
+        while (sp > 0) {
+            postOpr.add(stack[--sp]);
+        }
+
+        // // debug
+        // for (int i = 0 ; i < postOpr.size() ; i++) {
+        // System.out.print(postOpr.get(i));
+        // }
+        // System.out.println();
+
+        // calculate using BigInteger
+        sp = 0;
+        String num1 = null, num2 = null;
+        BigInteger big1, big2;
+        for (int i = 0; i < postOpr.size(); i++) {
+            opr = postOpr.get(i);
+            if (isOperator(opr)) {
+                num2 = (sp > 0) ? stack[--sp] : null;
+                num1 = (sp > 0) ? stack[--sp] : null;
+                if (num1 == null || num2 == null
+                        || isOperator(num1) || isOperator(num2)
+                        || isBracket(num1) || isBracket(num2)) {
+                    return ROCK;
+                }
+                big1 = new BigInteger(num1);
+                big2 = new BigInteger(num2);
+                if (opr.equals("+")) {
+                    stack[sp++] = (big1.add(big2)).toString(10);
+                } else if (opr.equals("-")) {
+                    stack[sp++] = (big1.subtract(big2)).toString(10);
+                } else if (opr.equals("*")) {
+                    stack[sp++] = (big1.multiply(big2)).toString(10);
+                } else if (opr.equals("/")) {
+                    try {
+                        stack[sp++] = (big1.divide(big2)).toString(10);
+                    } catch (ArithmeticException e) {
+                        return ROCK;
+                    }
+                }
+            } else if (isBracket(opr)) {
+                return ROCK;
+            } else {
+                stack[sp++] = opr;
+            }
+        }
+        if (sp != 1) {
+            return ROCK;
+        } else {
+            return stack[0];
+        }
+    }
+
+    private static boolean isOperator(String opr) {
+        if (opr.equals("+") || opr.equals("-") || opr.equals("*") || opr.equals("/")) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isBracket(String opr) {
+        if (opr.equals("(") || opr.equals(")")) {
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

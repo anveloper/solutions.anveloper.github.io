@@ -1,0 +1,64 @@
+---
+title: "BOJ 3088 - 화분 부수기"
+date: "2025-07-13"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "3088"
+problem_url: "https://www.acmicpc.net/problem/3088"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3088 - 화분 부수기](https://www.acmicpc.net/problem/3088)
+
+N개의 돌을 순서대로 던지는데, 각 돌은 3개의 화분에 맞는다. 돌이 맞기 전에 이미 깨진 화분이 하나도 없는 경우에만 점수를 얻을 때, 총 점수를 구하라.
+
+### 입력
+
+돌의 수 N과 각 돌이 맞추는 3개 화분의 번호가 주어진다.
+
+### 출력
+
+총 점수를 출력한다.
+
+### 예제
+
+| 입력                | 출력 |
+| ------------------- | ---- |
+| `2` `1 2 3` `3 4 5` | `1`  |
+
+## 풀이
+
+화분의 깨짐 상태를 추적하며 점수를 카운트한다.
+
+1. 각 돌이 맞추는 3개 화분이 모두 아직 깨지지 않았으면 점수를 1 증가시킨다
+2. 해당 3개 화분을 깨진 상태로 표시한다
+3. 이미 하나라도 깨져 있으면 점수 없이 화분만 표시한다
+
+**핵심 아이디어**: 불리언 배열로 화분 상태를 관리하면, 각 돌마다 O(1)에 3개 화분의 상태를 확인할 수 있다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+d = [False] * 1000001
+answer = 0
+for _ in range(int(input())):
+    a, b, c = map(int, input().split())
+    if not (d[a] or d[b] or d[c]):
+        answer += 1
+    d[a] = d[b] = d[c] = True
+print(answer)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(M) (M: 최대 화분 번호)

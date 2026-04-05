@@ -1,0 +1,100 @@
+---
+title: "BOJ 12738 - 가장 긴 증가하는 부분 수열 3"
+date: "2022-12-05"
+description: "이분 탐색, 가장 긴 증가하는 부분 수열 문제"
+tags: ["이분 탐색", "가장 긴 증가하는 부분 수열"]
+platform: "boj"
+problem_number: "12738"
+problem_url: "https://www.acmicpc.net/problem/12738"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 12738 - 가장 긴 증가하는 부분 수열 3](https://www.acmicpc.net/problem/12738)
+
+수열 A가 주어졌을 때, 가장 긴 증가하는 부분 수열을 구하는 프로그램을 작성하시오. 예를 들어, 수열 A = `{10, 20, 10, 30, 20, 50}`인 경우에 가장 긴 증가하는 부분 수열은 A = `{10, 20, 30, 50}`이고, 길이는 4이다.
+
+### 입력
+
+첫째 줄에 수열 A의 크기 N (1 ≤ N ≤ 1,000,000)이 주어진다. 둘째 줄에는 수열 A를 이루고 있는 Ai가 주어진다. (-1,000,000,000 ≤ Ai ≤ 1,000,000,000)
+
+### 출력
+
+첫째 줄에 수열 A의 가장 긴 증가하는 부분 수열의 길이를 출력한다.
+
+### 예제
+
+입력:
+
+```
+6
+10 20 10 30 20 50
+```
+
+출력:
+
+```
+4
+```
+
+## 풀이
+
+**핵심 아이디어**: O(N²) DP 대신 이분 탐색으로 O(N log N)에 LIS 길이를 구한다. `sequence` 배열은 실제 LIS가 아니라 각 길이의 LIS 끝 원소 중 가장 작은 값을 저장한다. 이를 통해 다음 원소가 삽입될 위치를 이분 탐색으로 빠르게 찾는다.
+
+1. **`sequence` 배열의 의미**: `sequence[k]`는 길이 `k+1`인 증가 부분 수열의 마지막 원소 중 가장 작은 값이다. 이 배열은 항상 오름차순을 유지한다.
+2. **원소 처리**: 각 원소 `A[i]`에 대해
+   - `sequence[answer-1] < A[i]`이면 수열 길이가 늘어나므로 `sequence[answer++] = A[i]`
+   - 그렇지 않으면, `sequence`에서 `A[i]` 이상인 첫 번째 위치를 이분 탐색으로 찾아 그 자리의 값을 `A[i]`로 교체한다.
+3. **이분 탐색 구현**: `low = 0`, `high = answer`로 시작하여 `sequence[mid] < A[i]`이면 `low = mid + 1`, 아니면 `high = mid`로 좁혀 나간다.
+4. **음수 원소 처리**: 값의 범위가 -10^9 ~ 10^9로 음수를 포함하므로 인덱스 기반의 이분 탐색이 필요하다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+public class Day301BOJ12738가장긴증가부분수열 {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		String[] input = br.readLine().split(" ");
+		int[] A = new int[N];
+		for (int i = 0; i < N; i++)
+			A[i] = Integer.parseInt(input[i]);
+		int[] sequence = new int[N];
+		sequence[0] = A[0];
+		int answer = 1;
+		for (int i = 1; i < N; i++) {
+			if (sequence[answer - 1] < A[i]) {
+				sequence[answer] = A[i];
+				answer++;
+			} else {
+				int low = 0;
+				int high = answer;
+				int middle = (low + high) / 2;
+				while (low < high) {
+					if (sequence[middle] < A[i])
+						low = middle + 1;
+					else
+						high = middle;
+					middle = (low + high) / 2;
+				}
+				sequence[middle] = A[i];
+			}
+		}
+		System.out.print(answer);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) — N개의 원소 각각에 대해 이분 탐색 O(log N)
+- 공간: O(N) — sequence 배열

@@ -1,0 +1,100 @@
+---
+title: "BOJ 2263 - 트리의 순회"
+date: "2022-04-01"
+description: "트리, 분할 정복, 재귀 문제"
+tags: ["트리", "분할 정복", "재귀"]
+platform: "boj"
+problem_number: "2263"
+problem_url: "https://www.acmicpc.net/problem/2263"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2263 - 트리의 순회](https://www.acmicpc.net/problem/2263)
+
+N개 노드의 이진 트리에서 중위 순회(inorder)와 후위 순회(postorder) 결과가 주어질 때, 전위 순회(preorder) 결과를 구하라.
+
+### 입력
+
+첫째 줄에 N (1 이상 100,000 이하), 둘째 줄에 중위 순회 결과, 셋째 줄에 후위 순회 결과가 주어진다.
+
+### 출력
+
+전위 순회 결과를 출력한다.
+
+### 예제
+
+| 입력                | 출력    |
+| ------------------- | ------- |
+| `3` `1 2 3` `1 3 2` | `2 1 3` |
+
+## 풀이
+
+후위 순회의 마지막 원소가 루트임을 이용하여 분할 정복으로 트리를 재구성한다.
+
+1. 중위 순회에서 각 노드의 인덱스를 `getRootIdx` 배열에 미리 저장한다 (O(1) 조회)
+2. 후위 순회의 마지막 원소가 현재 서브트리의 루트이다
+3. 루트를 출력하고 (전위 순회), 중위 순회에서 루트 위치를 기준으로 왼쪽/오른쪽 서브트리를 분할한다
+4. 왼쪽 서브트리 크기 l을 이용해 후위 순회 구간도 분할한다
+5. 왼쪽, 오른쪽 서브트리에 대해 재귀적으로 반복한다
+
+**핵심 아이디어**: 후위 순회의 마지막 = 루트, 중위 순회에서 루트 위치로 좌/우 분할. 인덱스 배열로 O(1) 조회하여 총 O(N)에 해결한다.
+
+## 코드
+
+```java
+import java.io.*;
+import java.util.*;
+
+class Day365BOJ2263트리의순회 {
+    static int N;
+    static int[] inOrder, postOrder;
+    static int[] getRootIdx;
+    static StringBuilder sb = new StringBuilder();
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        inOrder = new int[N];
+        postOrder = new int[N];
+
+        getRootIdx = new int[N + 1];
+
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++)
+            inOrder[i] = Integer.parseInt(st.nextToken());
+
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++)
+            postOrder[i] = Integer.parseInt(st.nextToken());
+
+        for (int i = 0; i < N; i++)
+            getRootIdx[inOrder[i]] = i;
+
+        recur(0, N - 1, 0, N - 1);
+        System.out.println(sb);
+        br.close();
+    }
+
+    private static void recur(int inSt, int inEd, int poSt, int poEd) {
+        if (inSt > inEd || poSt > poEd)
+            return;
+        int r = postOrder[poEd];
+        sb.append(r + " ");
+
+        int inRoot = getRootIdx[r];
+        int l = inRoot - inSt;
+        recur(inSt, inRoot - 1, poSt, poSt + l - 1);
+        recur(inRoot + 1, inEd, poSt + l, poEd - 1);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) - 각 노드를 정확히 한 번 방문
+- 공간: O(N) - 인덱스 배열 및 재귀 스택

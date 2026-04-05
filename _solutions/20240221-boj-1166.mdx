@@ -1,0 +1,87 @@
+---
+title: "BOJ 1166 - 선물"
+date: "2024-02-21"
+description: "이분 탐색 문제"
+tags: ["이분 탐색"]
+platform: "boj"
+problem_number: "1166"
+problem_url: "https://www.acmicpc.net/problem/1166"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1166 - 선물](https://www.acmicpc.net/problem/1166)
+
+L x W x H 크기의 상자에 정육면체 선물 N개를 넣으려 할 때, 정육면체 한 변의 최대 길이를 구하라.
+
+### 입력
+
+첫째 줄에 N, L, W, H가 주어진다.
+
+### 출력
+
+정육면체 한 변의 최대 길이를 출력한다.
+
+### 예제
+
+| 입력      | 출력  |
+| --------- | ----- |
+| `2 3 7 2` | `2.0` |
+
+## 풀이
+
+이분 탐색으로 정육면체 변의 길이를 결정하고, 해당 길이로 N개를 넣을 수 있는지 판별한다.
+
+1. 탐색 범위를 0부터 min(L, W, H)로 설정한다
+2. 중간값 mid에 대해 `(L/mid) * (W/mid) * (H/mid)`로 넣을 수 있는 개수를 계산한다
+3. N개 이상이면 더 큰 값을, 미만이면 더 작은 값을 탐색한다
+4. 충분한 반복(5000회) 후 수렴한 값을 출력한다
+
+**핵심 아이디어**: 실수 이분 탐색으로 변 길이를 정하면, 각 차원별로 넣을 수 있는 개수의 곱으로 총 수납량을 O(1)에 판별한다.
+
+## 코드
+
+```java
+package day799;
+
+import java.io.*;
+import java.util.*;
+
+public class Day750BOJ1166선물 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    int N = Integer.parseInt(st.nextToken());
+    long L = Long.parseLong(st.nextToken());
+    long W = Long.parseLong(st.nextToken());
+    long H = Long.parseLong(st.nextToken());
+    double min = L;
+    min = Math.min(min, W);
+    min = Math.min(min, H);
+
+    double l = 0;
+    double h = min;
+    double mid;
+    for (int i = 0; i < 5000; ++i) {
+      mid = (l + h) / 2;
+
+      if ((long) (L / mid) * (long) (W / mid) * (long) (H / mid) < N) {
+        h = mid;
+      } else {
+        l = mid;
+      }
+    }
+
+    System.out.print(l);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log M) - 이분 탐색 반복 (고정 5000회)
+- 공간: O(1)

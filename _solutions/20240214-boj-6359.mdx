@@ -1,0 +1,86 @@
+---
+title: "BOJ 6359 - 만취한 상범"
+date: "2024-02-14"
+description: "수학, 구현, 정수론 문제"
+tags: ["수학", "구현", "정수론", "시뮬레이션"]
+platform: "boj"
+problem_number: "6359"
+problem_url: "https://www.acmicpc.net/problem/6359"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6359 - 만취한 상범](https://www.acmicpc.net/problem/6359)
+
+N개의 감방이 있고, i번째 라운드에서 i의 배수 번호 감방의 잠금을 토글한다. N라운드 후 열려 있는 감방의 수를 구하라.
+
+### 입력
+
+테스트 케이스 수 T, 이후 각 케이스마다 N이 주어진다.
+
+### 출력
+
+각 케이스마다 열린 감방의 수를 출력한다.
+
+### 예제
+
+| 입력          | 출력     |
+| ------------- | -------- |
+| `2` `5` `100` | `2` `10` |
+
+## 풀이
+
+1부터 N까지 각 라운드에서 해당 배수 번호의 감방을 토글하는 시뮬레이션을 수행한다.
+
+1. 크기 N+1의 배열을 0으로 초기화한다
+2. i = 1부터 N까지 반복하며, i의 배수 번호 감방의 상태를 토글한다 (0→1, 1→0)
+3. 최종적으로 값이 1인 감방의 수를 센다
+
+**핵심 아이디어**: 약수의 개수가 홀수인 번호(=완전제곱수)만 열린 상태가 된다. 따라서 결과는 √N의 정수 부분과 같다.
+
+## 코드
+
+```java
+package day749;
+
+import java.util.*;
+
+public class Day743BOJ6359만취상범 {
+
+  static int N;
+  static int[] d;
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    StringBuilder sb = new StringBuilder();
+    int t = sc.nextInt();
+    for (int tc = 1; tc <= t; tc++) {
+      N = sc.nextInt();
+      d = new int[N + 1];
+      for (int i = 1; i <= N; i++) {
+        for (int j = 1; i * j <= N; j++) {
+          if (d[i * j] != 0)
+            d[i * j] = 0;
+          else
+            d[i * j] = 1;
+        }
+      }
+      int ans = 0;
+      for (int i = 1; i <= N; i++) {
+        ans += d[i];
+      }
+      sb.append(ans + "\n");
+    }
+    System.out.println(sb);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N) — 조화급수 합 (N/1 + N/2 + ... + N/N)
+- 공간: O(N) — 감방 상태 배열

@@ -1,0 +1,71 @@
+---
+title: "BOJ 11720 - 숫자의 합"
+date: "2023-01-25"
+description: "구현, 수학, 문자열 문제"
+tags: ["구현", "수학", "문자열"]
+platform: "boj"
+problem_number: "11720"
+problem_url: "https://www.acmicpc.net/problem/11720"
+difficulty: "브론즈 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11720 - 숫자의 합](https://www.acmicpc.net/problem/11720)
+
+N개의 숫자가 공백 없이 주어졌을 때, 각 자릿수의 합을 구하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 100), 둘째 줄에 N개의 숫자가 공백 없이 이어진 문자열이 주어진다.
+
+### 출력
+
+각 숫자의 합을 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `5` `54321` | `15` |
+
+## 풀이
+
+문자열을 바이트 배열로 변환한 후 각 바이트에서 '0'을 빼서 합산한다.
+
+1. 첫째 줄(N)은 읽고 무시한다
+2. 둘째 줄 문자열을 `getBytes()`로 바이트 배열로 변환한다
+3. 각 바이트 값에서 '0'(48)을 빼면 정수값을 얻을 수 있다
+4. 모든 값을 합산하여 출력한다
+
+**핵심 아이디어**: 문자열을 바이트 배열로 직접 변환하면 문자 단위 파싱 없이 ASCII 값 차이로 각 자릿수를 빠르게 추출할 수 있다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+
+public class Day352BOJ11720숫자의합 {
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        br.readLine();
+
+        int sum = 0;
+
+        for (byte value : br.readLine().getBytes())
+            sum += (value - '0');
+
+        System.out.print(sum);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

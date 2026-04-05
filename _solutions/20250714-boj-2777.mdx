@@ -1,0 +1,83 @@
+---
+title: "BOJ 2777 - 숫자 놀이"
+date: "2025-07-14"
+description: "수학, 그리디 알고리즘 문제"
+tags: ["수학", "그리디 알고리즘"]
+platform: "boj"
+problem_number: "2777"
+problem_url: "https://www.acmicpc.net/problem/2777"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2777 - 숫자 놀이](https://www.acmicpc.net/problem/2777)
+
+자연수 N의 각 자릿수를 곱하면 N이 되는 가장 짧은 수를 찾을 때, 그 자릿수를 구하라.
+
+### 입력
+
+테스트 케이스 수와 각 자연수 N이 주어진다.
+
+### 출력
+
+최소 자릿수를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력     | 출력 |
+| -------- | ---- |
+| `1` `12` | `2`  |
+
+## 풀이
+
+9부터 2까지 큰 수로 그리디하게 나눈다.
+
+1. N을 9부터 2까지 나누어 떨어지는 가장 큰 수로 반복 나눈다
+2. 나눌 때마다 자릿수를 증가시킨다
+3. N이 1이 되면 자릿수를 출력하고, 10 초과이면서 더 이상 나눌 수 없으면 -1을 출력한다
+
+**핵심 아이디어**: 큰 수(9)부터 나누면 자릿수가 최소화된다. 2~9로 나눌 수 없으면 한 자리 수 곱으로 표현 불가능하다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+
+test_check = [i for i in range(9, 1, -1)]
+T = int(input())
+for i in range(T):
+    n = int(input())
+    nums = []
+    final_check = 0
+    if n == 1:
+        nums.append(1)
+    else:
+        while True:
+            check = 0
+            for j in test_check:
+                if n % j == 0:
+                    nums.append(j)
+                    n = n // j
+                    check = 1
+                    break
+            if n == 1:
+                break
+            if check == 0 and n > 10:
+                final_check = -1
+                break
+    if final_check == -1:
+        print(final_check)
+    else:
+        print(len(nums))
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,109 @@
+---
+title: "BOJ 2910 - 빈도 정렬"
+date: "2023-05-26"
+description: "자료 구조, 정렬, 집합과 맵 문제"
+tags: ["자료 구조", "정렬", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "2910"
+problem_url: "https://www.acmicpc.net/problem/2910"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2910 - 빈도 정렬](https://www.acmicpc.net/problem/2910)
+
+N개의 수를 등장 횟수 내림차순으로, 같으면 먼저 등장한 순으로 정렬하여 출력하라.
+
+### 입력
+
+첫째 줄에 N, C, 둘째 줄에 N개의 수가 주어진다.
+
+### 출력
+
+빈도 정렬된 수를 출력한다.
+
+### 예제
+
+| 입력              | 출력        |
+| ----------------- | ----------- |
+| `5 2` `2 1 2 1 2` | `2 2 2 1 1` |
+
+## 풀이
+
+LinkedHashMap으로 등장 순서를 보존하며 빈도를 세고, 빈도 내림차순으로 정렬한다.
+
+1. LinkedHashMap에 각 수의 등장 횟수를 기록한다 (삽입 순서 보존)
+2. 엔트리를 빈도 내림차순으로 정렬한다 (같으면 삽입 순서 유지)
+3. 각 수를 빈도만큼 반복하여 출력한다
+
+**핵심 아이디어**: LinkedHashMap은 삽입 순서를 보존하므로 빈도가 같을 때 먼저 등장한 순서가 자연스럽게 유지된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day474BOJ2910빈도정렬 {
+  static int N, C;
+  static LinkedHashMap<String, Integer> hashMapList, result;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    C = Integer.parseInt(st.nextToken());
+
+    hashMapList = new LinkedHashMap<>();
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++) {
+      String str = st.nextToken();
+      if (hashMapList.containsKey(str)) {
+        int cnt = hashMapList.get(str) + 1;
+        hashMapList.put(str, cnt);
+      } else {
+        hashMapList.put(str, 1);
+      }
+    }
+
+    result = sortMapByValue(hashMapList, 1);
+    Object[] key = result.keySet().toArray();
+    for (int i = 0; i < key.length; i++) {
+      int cnt = result.get(key[i]);
+      while (cnt > 0) {
+        bw.write(key[i] + " ");
+        cnt--;
+      }
+    }
+    bw.flush();
+    br.close();
+    bw.close();
+  }
+
+  public static LinkedHashMap<String, Integer> sortMapByValue(Map<String, Integer> map, Integer orderBy) {
+    List<Map.Entry<String, Integer>> entries = new LinkedList<>(map.entrySet());
+    if (orderBy == 0) {
+      Collections.sort(entries, (o1, o2) -> o1.getValue().compareTo(o2.getValue()));
+    } else {
+      Collections.sort(entries, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+    }
+
+    LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
+    for (Map.Entry<String, Integer> entry : entries) {
+      result.put(entry.getKey(), entry.getValue());
+    }
+    return result;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

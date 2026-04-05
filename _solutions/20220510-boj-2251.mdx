@@ -1,0 +1,120 @@
+---
+title: "BOJ 2251 - 물통"
+date: "2022-05-10"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "2251"
+problem_url: "https://www.acmicpc.net/problem/2251"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2251 - 물통](https://www.acmicpc.net/problem/2251)
+
+용량이 A, B, C인 세 물통이 있다. 처음에 세 번째 물통 C에만 물이 가득 차 있다. 한 물통에서 다른 물통으로 물을 가득 채우거나 빌 때까지 붓는다. A 물통이 비어 있을 때 C 물통에 담긴 물의 양으로 가능한 모든 경우를 오름차순 출력한다.
+
+### 입력
+
+- 첫째 줄: 세 물통의 용량 A B C (1 ≤ A, B, C ≤ 200)
+
+### 출력
+
+A가 0일 때 C에 담긴 물의 양을 공백으로 구분하여 오름차순 출력한다.
+
+### 예제
+
+| 입력     | 출력             |
+| -------- | ---------------- |
+| `1 2 10` | `1 2 4 5 7 8 10` |
+
+## 풀이
+
+세 물통의 현재 상태 `(a, b, c)`를 노드로 간주하고 BFS로 모든 도달 가능한 상태를 탐색한다. 시작 상태는 `(0, 0, C)`이고, 매 상태에서 가능한 6가지 이동(A→B, A→C, B→A, B→C, C→A, C→B)을 수행하여 미방문 상태를 큐에 추가한다.
+
+1. `visited[a][b][c]` 3차원 배열로 방문 여부를 관리한다.
+2. 초기 상태 `(0, 0, C)`를 큐에 넣고 BFS를 시작한다.
+3. 각 상태에서 6가지 방향으로 물 붓기를 시뮬레이션한다.
+4. 물 붓기는 받는 쪽이 가득 차거나 붓는 쪽이 빌 때까지 진행한다.
+5. a가 0인 상태에서의 c값을 우선순위 큐에 수집하여 오름차순 출력한다.
+
+**핵심 아이디어**: 상태를 `(a, b, c)` 세 물통의 현재 물 양 조합으로 정의하면 물 배분 문제를 그래프 탐색으로 변환할 수 있다. A+B+C는 항상 일정하므로 실제로는 `(a, b)` 두 값만 알면 `c = A+B+C - a - b`가 결정된다. visited 배열 크기는 최대 201^3이나 실제 도달 가능한 상태는 매우 적다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day92BOJ2251물통 {
+	static int A, B, C;
+	static boolean[][][] visited;
+	static Queue<int[]> q;
+	static PriorityQueue<Integer> ans;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		A = Integer.parseInt(st.nextToken());
+		B = Integer.parseInt(st.nextToken());
+		C = Integer.parseInt(st.nextToken());
+
+		visited = new boolean[A + 1][B + 1][C + 1];
+		q = new LinkedList<>();
+		ans = new PriorityQueue<>();
+
+		bfs();
+
+		while (!ans.isEmpty())
+			sb.append(ans.poll() + " ");
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static void bfs() {
+		q.add(new int[] { 0, 0, C });
+		while (!q.isEmpty()) {
+			int[] tmp = q.poll();
+			int a = tmp[0], b = tmp[1], c = tmp[2];
+			if (visited[a][b][c])
+				continue;
+			visited[a][b][c] = true;
+
+			if (a == 0) ans.add(c);
+
+			if (a + b > A) q.add(new int[] { A, a + b - A, c });
+			else q.add(new int[] { a + b, 0, c });
+
+			if (a + b > B) q.add(new int[] { a + b - B, B, c });
+			else q.add(new int[] { 0, a + b, c });
+
+			if (a + c > A) q.add(new int[] { A, b, a + c - A });
+			else q.add(new int[] { a + c, b, 0 });
+
+			if (a + c > C) q.add(new int[] { a + c - C, b, C });
+			else q.add(new int[] { 0, b, a + c });
+
+			if (b + c > B) q.add(new int[] { a, B, b + c - B });
+			else q.add(new int[] { a, b + c, 0 });
+
+			if (b + c > C) q.add(new int[] { a, b + c - C, C });
+			else q.add(new int[] { a, 0, b + c });
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(A _ B _ C) — 가능한 상태 수만큼 BFS 탐색
+- 공간: O(A _ B _ C) — visited 3차원 배열

@@ -1,0 +1,75 @@
+---
+title: "BOJ 2725 - 보이는 점의 개수"
+date: "2025-01-30"
+description: "수학, 정수론, 누적 합 문제"
+tags: ["수학", "정수론", "누적 합", "유클리드 호제법"]
+platform: "boj"
+problem_number: "2725"
+problem_url: "https://www.acmicpc.net/problem/2725"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2725 - 보이는 점의 개수](https://www.acmicpc.net/problem/2725)
+
+원점에서 1사분면의 격자점을 바라볼 때, 다른 점에 가려지지 않는 보이는 점의 개수를 구하라.
+
+### 입력
+
+테스트 케이스 수와 각 N이 주어진다 (N은 1000 이하).
+
+### 출력
+
+각 N에 대해 보이는 점의 수를 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `1` `4` | `13` |
+
+## 풀이
+
+오일러 파이 함수(서로소 관계)를 이용한 누적 합으로 계산한다.
+
+1. 좌표 (i, j)가 보이려면 `gcd(i, j) = 1`이어야 한다
+2. 각 i에 대해 1~i 중 i와 서로소인 수의 개수를 2배하여 더한다 (대칭)
+3. DP 배열에 누적 합을 저장하여 각 쿼리를 O(1)에 응답한다
+
+**핵심 아이디어**: 점 (i, j)가 보이는 조건은 `gcd(i, j) = 1`이며, 이는 오일러 피 함수와 동일하다.
+
+## 코드
+
+```python
+def gcd(i, j):
+    if j == 0:
+        return i
+    return gcd(j, i % j)
+
+dp = [0 for _ in range(1001)]
+dp[1] = 3
+for i in range(2, 1001):
+    cnt = 0
+    for j in range(1, i+1):
+        if i == j:
+            continue
+
+        if gcd(i, j) == 1:
+            cnt += 2
+    dp[i] = dp[i-1] + cnt
+
+
+T = int(input())
+for _ in range(T):
+    N = int(input())
+
+    print(dp[N])
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

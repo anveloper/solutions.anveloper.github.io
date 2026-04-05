@@ -1,0 +1,118 @@
+---
+title: "BOJ 17070 - 파이프 옮기기 1"
+date: "2022-07-08"
+description: "다이나믹 프로그래밍, 그래프 이론, 그래프 탐색 문제"
+tags: ["다이나믹 프로그래밍", "그래프 이론", "그래프 탐색"]
+platform: "boj"
+problem_number: "17070"
+problem_url: "https://www.acmicpc.net/problem/17070"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17070 - 파이프 옮기기 1](https://www.acmicpc.net/problem/17070)
+
+N x N 크기의 집에서 파이프를 (1, 1)에서 (N, N)까지 옮기는 경우의 수를 구하는 문제이다. 파이프는 항상 두 칸을 차지하며, 세 가지 방향(가로, 세로, 대각선)으로 놓일 수 있다.
+
+- 가로(방향 0): 오른쪽으로만 이동 가능
+- 세로(방향 1): 아래로만 이동 가능
+- 대각선(방향 2): 오른쪽, 아래, 오른쪽 아래 대각선으로 이동 가능
+
+1은 벽이며, 대각선으로 이동 시 좌우·상하 칸도 비어 있어야 한다.
+
+### 입력
+
+첫째 줄에 N(3 ≤ N ≤ 16)이 주어진다.
+다음 N줄에 맵 정보가 주어진다. 0은 빈 칸, 1은 벽이다.
+
+### 출력
+
+파이프를 (N, N)으로 옮기는 방법의 수를 출력한다. (불가능하면 0 출력)
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `3` `0 0 0` `0 0 0` `0 0 0` | `3`  |
+
+## 풀이
+
+파이프의 현재 위치와 방향을 상태로 DFS를 수행하여, (N-1, N-1)에 도달하는 경우의 수를 카운트한다.
+
+1. 초기 상태는 파이프가 (0, 0)-(0, 1)에 가로로 놓여 있으므로 `dfs(0, 1, 0)`으로 시작한다.
+2. `dir = 0`(가로): 오른쪽 `(r, c+1)`으로만 이동 가능하다. 해당 칸이 빈 칸이어야 한다.
+3. `dir = 1`(세로): 아래 `(r+1, c)`로만 이동 가능하다. 해당 칸이 빈 칸이어야 한다.
+4. `dir = 2`(대각선): 오른쪽, 아래, 오른쪽 아래 대각선 세 방향 모두 이동 가능하다. 이동 시 `(r, c+1)`, `(r+1, c)`, `(r+1, c+1)` 세 칸이 모두 비어야 한다.
+5. `(r, c) == (N-1, N-1)`에 도달하면 `ans++` 한다.
+
+**핵심 아이디어**: 파이프의 끝 좌표 `(r, c)`와 방향 `dir`을 상태로 관리하는 DFS 완전탐색이다. N이 최대 16으로 작아 DFS로 충분하다. DP로도 풀 수 있으며 `dp[r][c][dir]`로 정의하면 O(N^2)에 처리 가능하다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day151BOJ17070파이프옮기기DFS { // 17070 그래프 탐색
+	static int N, ans;
+	static int[][] map;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+
+		N = Integer.parseInt(br.readLine());
+		map = new int[N][N];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		ans = 0;
+
+		dfs(0, 1, 0);
+
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static void dfs(int r, int c, int dir) {
+		if (r == N - 1 && c == N - 1) {
+			ans++;
+			return;
+		}
+		switch (dir) {
+		case 0:
+			if (c + 1 < N && map[r][c + 1] == 0)
+				dfs(r, c + 1, 0);
+			break;
+		case 1:
+			if (r + 1 < N && map[r + 1][c] == 0)
+				dfs(r + 1, c, 1);
+			break;
+		case 2:
+			if (c + 1 < N && map[r][c + 1] == 0)
+				dfs(r, c + 1, 0);
+			if (r + 1 < N && map[r + 1][c] == 0)
+				dfs(r + 1, c, 1);
+			break;
+		}
+
+		if (c + 1 < N && r + 1 < N && map[r][c + 1] == 0 && map[r + 1][c] == 0 && map[r + 1][c + 1] == 0)
+			dfs(r + 1, c + 1, 2);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(3^(N²)) — 최악의 경우 DFS, 실제로는 방향 제약으로 훨씬 작음
+- 공간: O(N²)

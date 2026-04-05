@@ -1,0 +1,71 @@
+---
+title: "BOJ 6810 - ISBN"
+date: "2025-09-08"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산"]
+platform: "boj"
+problem_number: "6810"
+problem_url: "https://www.acmicpc.net/problem/6810"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6810 - ISBN](https://www.acmicpc.net/problem/6810)
+
+ISBN 코드의 일부인 세 숫자 `a`, `b`, `c`가 주어진다. 이 숫자들을 이용하여 "1-3-sum"을 계산하는 문제다. 1-3-sum은 `91 + a*1 + b*3 + c*1` 공식으로 계산된다. 결과는 `"The 1-3-sum is X"` 형식으로 출력한다.
+
+### 입력
+
+세 정수 `a`, `b`, `c`가 한 줄에 공백으로 구분되어 주어진다.
+
+```
+1 2 3
+```
+
+### 출력
+
+`The 1-3-sum is X` 형식으로 출력한다 (X는 계산 결과).
+
+```
+The 1-3-sum is 101
+```
+
+### 예제
+
+| 입력    | 출력                 |
+| ------- | -------------------- |
+| `1 2 3` | `The 1-3-sum is 101` |
+
+## 풀이
+
+주어진 수식을 그대로 계산하여 출력한다.
+
+1. 세 정수 `a`, `b`, `c`를 입력받는다.
+2. `91 + a*1 + b*3 + c*1`을 계산한다.
+3. 지정된 형식에 맞춰 결과를 출력한다.
+
+**핵심 아이디어**: ISBN 체크섬 계산의 일부를 구현하는 문제로, 고정된 수식을 그대로 적용하면 된다. 기저값 91은 이전 자릿수 합산에서 이미 주어진 값이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int a, b, c;
+
+int main()
+{
+  cin >> a >> b >> c;
+  cout << "The 1-3-sum is " << 91 + a * 1 + b * 3 + c * 1;
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 입력 3개에 대한 단일 연산
+- 공간: O(1) — 변수 3개만 사용

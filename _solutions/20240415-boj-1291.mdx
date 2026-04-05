@@ -1,0 +1,86 @@
+---
+title: "BOJ 1291 - 이면수와 임현수"
+date: "2024-04-15"
+description: "주어진 수가 이면수, 임현수 조건을 만족하는지 판별하는 문제"
+tags: ["수학", "구현", "정수론"]
+platform: "boj"
+problem_number: "1291"
+problem_url: "https://www.acmicpc.net/problem/1291"
+difficulty: "실버 III"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1291 - 이면수와 임현수](https://www.acmicpc.net/problem/1291)
+
+주어진 수가 이면수(자릿수 합이 홀수)와 임현수(소인수 개수가 짝수이고 1 이상)를 만족하는지 판별하여 4가지로 분류하라.
+
+### 입력
+
+첫째 줄에 자연수 N이 주어진다.
+
+### 출력
+
+이면수이면서 임현수이면 3, 이면수만이면 1, 임현수만이면 2, 둘 다 아니면 4를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `12` | `3`  |
+
+## 풀이
+
+이면수와 임현수 조건을 각각 독립적으로 판별한다.
+
+1. 이면수 판별: 자릿수의 합이 홀수인지 확인한다
+2. 임현수 판별: 소인수분해하여 소인수의 총 개수(중복 포함)가 짝수이고 1 이상인지 확인한다
+3. 두 조건의 조합에 따라 1, 2, 3, 4 중 하나를 출력한다
+
+**핵심 아이디어**: 소인수분해는 sqrt(N)까지만 탐색하면 되며, 두 조건은 독립적으로 판별 가능하다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0];
+
+  const isImyeon = (n) => {
+    const digits = String(n).split("").map(Number);
+    const sum = digits.reduce((a, b) => a + b, 0);
+    return sum % 2 === 1;
+  };
+
+  const isImhyeon = (n) => {
+    let cnt = 0;
+    let temp = n;
+    for (let i = 2; i * i <= temp; i++) {
+      while (temp % i === 0) {
+        cnt++;
+        temp = Math.floor(temp / i);
+      }
+    }
+    if (temp > 1) cnt++;
+    return cnt % 2 === 0 && cnt > 0;
+  };
+
+  const a = isImyeon(N);
+  const b = isImhyeon(N);
+
+  if (a && b) return 3;
+  if (a) return 1;
+  if (b) return 2;
+  return 4;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(sqrt(N))
+- 공간: O(1)

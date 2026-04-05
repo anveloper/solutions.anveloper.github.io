@@ -1,0 +1,86 @@
+---
+title: "BOJ 2566 - 최댓값"
+date: "2023-11-13"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2566"
+problem_url: "https://www.acmicpc.net/problem/2566"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2566 - 최댓값](https://www.acmicpc.net/problem/2566)
+
+9x9 격자에 0 이상 100 이하의 자연수가 주어질 때, 최댓값과 그 위치(행, 열)를 구하라.
+
+### 입력
+
+9개 줄에 걸쳐 9개의 자연수가 공백으로 구분되어 주어진다.
+
+### 출력
+
+첫째 줄에 최댓값, 둘째 줄에 최댓값이 위치한 행과 열 번호를 공백으로 출력한다 (1-indexed).
+
+### 예제
+
+| 입력                              | 출력       |
+| --------------------------------- | ---------- |
+| `3 23 85 34 17 74 25 52 65` `...` | `85` `1 3` |
+
+## 풀이
+
+9x9 배열을 순회하며 최댓값과 그 좌표를 추적한다.
+
+1. 9x9 배열에 입력값을 저장한다
+2. 이중 반복문으로 전체를 순회하며 현재 최댓값보다 큰 값을 발견하면 갱신한다
+3. 최댓값과 위치를 1-indexed로 변환하여 출력한다
+
+**핵심 아이디어**: 고정 크기(9x9) 배열의 단순 순회로 최댓값과 위치를 동시에 추적한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day646BOJ2566최댓값 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int[][] arr = new int[9][9];
+
+    for (int i = 0; i < 9; i++) {
+      String[] strArr = br.readLine().split(" ");
+      for (int j = 0; j < strArr.length; j++) {
+        arr[i][j] = Integer.parseInt(strArr[j]);
+      }
+    }
+
+    int num = 0;
+    int x = 0;
+    int y = 0;
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        if (num < arr[i][j]) {
+          num = arr[i][j];
+          x = i;
+          y = j;
+        }
+      }
+    }
+
+    System.out.println(num);
+    System.out.println((x + 1) + " " + (y + 1));
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 크기 9x9 = 81번 비교
+- 공간: O(1) — 고정 크기 9x9 배열

@@ -1,0 +1,125 @@
+---
+title: "BOJ 2630 - 색종이 만들기"
+date: "2022-03-26"
+description: "분할 정복, 재귀 문제"
+tags: ["분할 정복", "재귀"]
+platform: "boj"
+problem_number: "2630"
+problem_url: "https://www.acmicpc.net/problem/2630"
+difficulty: "실버 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2630 - 색종이 만들기](https://www.acmicpc.net/problem/2630)
+
+N×N 크기의 정사각형 색종이가 있다. 각 칸은 흰색(0) 또는 파란색(1)으로 칠해져 있다. 이 색종이를 잘라서 모두 같은 색으로 이루어진 정사각형 조각들을 만들려 한다. 잘라진 흰색 정사각형과 파란색 정사각형의 개수를 각각 구한다.
+
+### 입력
+
+첫째 줄에 N이 주어진다. N은 2의 거듭제곱수이며 1 이상 128 이하이다. 다음 N개의 줄에는 각 행의 칸 값(0 또는 1)이 공백으로 구분되어 주어진다.
+
+### 출력
+
+첫째 줄에 흰색 정사각형의 개수, 둘째 줄에 파란색 정사각형의 개수를 출력한다.
+
+### 예제
+
+**입력**
+
+```
+8
+1 1 0 0 0 0 1 1
+1 1 0 0 0 0 1 1
+0 0 0 0 1 1 0 0
+0 0 0 0 1 1 0 0
+1 0 0 0 1 1 1 1
+0 1 0 0 1 1 1 1
+0 0 1 1 1 1 1 1
+0 0 1 1 1 1 1 1
+```
+
+**출력**
+
+```
+9
+7
+```
+
+## 풀이
+
+**핵심 아이디어**: 쿼드트리(Quad Tree) 방식의 분할 정복으로, 현재 영역이 단일 색이면 카운트를 증가시키고, 아니면 4등분하여 재귀 호출한다.
+
+1. `recur(r, c, size)` 함수를 정의한다. `(r, c)`를 시작점으로 `size×size` 영역을 처리한다.
+2. `check(r, c, size)`로 해당 영역이 단색인지 확인한다.
+   - 단색이면 흰색(`W++`) 또는 파란색(`B++`)을 카운트하고 반환한다.
+   - 단색이 아니면 `n = size / 2`로 크기를 반으로 줄여 4개의 사분면으로 재귀 분할한다.
+3. 4개의 사분면: 좌상(`r, c`), 우상(`r, c+n`), 좌하(`r+n, c`), 우하(`r+n, c+n`).
+4. 초기 호출은 `recur(0, 0, N)`이다.
+
+`check` 함수의 비용은 O(size²)이고, 각 분할 단계에서 4배씩 영역이 줄어든다. 전체 시간 복잡도는 O(N² log N)이다.
+
+## 코드
+
+```java
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day359BOJ2630색종이만들기 {
+    static int N, W = 0, B = 0;
+    static boolean[][] map;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        map = new boolean[N][N];
+
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < N; j++)
+                map[i][j] = st.nextToken().equals("1");
+        }
+
+        recur(0, 0, N);
+
+        System.out.println(W + "\n" + B);
+        br.close();
+    }
+
+    private static void recur(int r, int c, int size) {
+        if (check(r, c, size)) {
+            if (map[r][c])
+                B++;
+            else
+                W++;
+            return;
+        }
+        int n = size / 2;
+        recur(r, c, n);
+        recur(r, c + n, n);
+        recur(r + n, c, n);
+        recur(r + n, c + n, n);
+    }
+
+    private static boolean check(int r, int c, int size) {
+        boolean chk = map[r][c];
+        for (int i = r; i < r + size; i++) {
+            for (int j = c; j < c + size; j++) {
+                if (map[i][j] != chk)
+                    return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N² log N) — 분할 정복 시 각 레벨에서 O(N²) 비용 발생
+- 공간: O(N²) — 지도 배열 및 재귀 스택

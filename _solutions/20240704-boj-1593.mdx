@@ -1,0 +1,77 @@
+---
+title: "BOJ 1593 - 문자 해독"
+date: "2024-07-04"
+description: "슬라이딩 윈도우와 문자 빈도 배열 비교로 애너그램 부분 문자열 개수를 구하는 문제"
+tags: ["문자열", "슬라이딩 윈도우"]
+platform: "boj"
+problem_number: "1593"
+problem_url: "https://www.acmicpc.net/problem/1593"
+difficulty: "골드 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1593 - 문자 해독](https://www.acmicpc.net/problem/1593)
+
+단어 W와 문자열 S가 주어질 때, S에서 W의 순열(애너그램)이 부분 문자열로 몇 번 등장하는지 구하라.
+
+### 입력
+
+첫째 줄에 W의 길이 g와 S의 길이 s, 둘째 줄에 W, 셋째 줄에 S가 주어진다.
+
+### 출력
+
+W의 순열이 S의 부분 문자열로 나타나는 횟수를 출력한다.
+
+### 예제
+
+| 입력                        | 출력 |
+| --------------------------- | ---- |
+| `4 11` `cAda` `AbrAcaDaBrA` | `2`  |
+
+## 풀이
+
+길이 g인 슬라이딩 윈도우를 S 위에서 이동시키며, 윈도우 내 문자 빈도가 W의 문자 빈도와 일치하는지 확인한다.
+
+1. W의 각 문자 빈도를 크기 58 배열(A-z)에 기록한다
+2. S를 순회하며 현재 문자를 윈도우에 추가한다
+3. 윈도우 크기가 g에 도달하면 빈도 배열을 비교하여 일치 시 카운트를 증가시킨다
+4. 윈도우의 왼쪽 문자를 제거하고 다음으로 이동한다
+
+**핵심 아이디어**: 슬라이딩 윈도우로 빈도 배열을 유지하면 매번 정렬 없이 O(1) 비교(고정 크기 배열)로 애너그램 여부를 판별할 수 있다.
+
+## 코드
+
+```python
+g, s = map(int, input().split())
+W = input()
+S = input()
+
+answer = 0
+wa = [0] * 58
+sa = [0] * 58
+
+for x in W:
+    wa[ord(x) - 65] += 1
+
+start, length = 0, 0
+for i in range(s):
+    sa[ord(S[i]) - 65] += 1
+    length += 1
+
+    if length == g:
+        if wa == sa:
+            answer += 1
+        sa[ord(S[start]) - 65] -= 1
+        start += 1
+        length -= 1
+
+print(answer)
+```
+
+## 복잡도
+
+- 시간: O(S \* A) (A: 알파벳 크기 58, 배열 비교)
+- 공간: O(A)

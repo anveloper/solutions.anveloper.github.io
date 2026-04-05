@@ -1,0 +1,71 @@
+---
+title: "BOJ 2739 - 구구단"
+date: "2023-06-15"
+description: "구현, 수학 문제"
+tags: ["구현", "수학"]
+platform: "boj"
+problem_number: "2739"
+problem_url: "https://www.acmicpc.net/problem/2739"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2739 - 구구단](https://www.acmicpc.net/problem/2739)
+
+N이 주어졌을 때, N단 구구단을 출력하라.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 9)이 주어진다.
+
+### 출력
+
+N _ 1부터 N _ 9까지의 결과를 형식에 맞게 출력한다.
+
+### 예제
+
+| 입력 | 출력                                       |
+| ---- | ------------------------------------------ |
+| `2`  | `2 * 1 = 2` `2 * 2 = 4` `...` `2 * 9 = 18` |
+
+## 풀이
+
+1부터 9까지 반복하며 N \* i를 형식에 맞춰 출력한다.
+
+1. N을 입력받는다
+2. 1부터 9까지 반복하며 "N * i = N*i" 형식으로 StringBuilder에 추가한다
+3. 한 번에 출력한다
+
+**핵심 아이디어**: 출력 형식 "N \* i = 결과"를 정확히 맞추는 것이 핵심이다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+
+public class Day494BOJ2739구구단 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int a = Integer.parseInt(br.readLine());
+
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 1; i < 10; i++) {
+      sb.append(a).append(' ').append('*').append(' ').append(i);
+      sb.append(' ').append('=').append(' ').append(a * i).append('\n');
+    }
+    System.out.print(sb);
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) (9번 반복 고정)
+- 공간: O(1)

@@ -1,0 +1,111 @@
+---
+title: "BOJ 5639 - 이진 검색 트리"
+date: "2022-03-30"
+description: "그래프 이론, 그래프 탐색, 트리 문제"
+tags: ["그래프 이론", "그래프 탐색", "트리", "재귀"]
+platform: "boj"
+problem_number: "5639"
+problem_url: "https://www.acmicpc.net/problem/5639"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5639 - 이진 검색 트리](https://www.acmicpc.net/problem/5639)
+
+이진 검색 트리의 전위 순회 결과가 주어졌을 때, 후위 순회 결과를 출력하는 문제이다. 이진 검색 트리의 성질(`왼쪽 자식 < 부모 < 오른쪽 자식`)을 이용해 실제 트리를 복원하거나 그 구조를 분석하여 후위 순회를 수행한다.
+
+### 입력
+
+- 전위 순회 순서로 노드 값을 한 줄씩 입력 (EOF까지)
+- 노드 값: 양의 정수
+
+### 출력
+
+후위 순회 순서로 노드 값을 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                                        | 출력                                        |
+| ------------------------------------------- | ------------------------------------------- |
+| `50` `30` `24` `5` `28` `45` `98` `52` `60` | `5` `28` `24` `45` `30` `60` `52` `98` `50` |
+
+## 풀이
+
+전위 순회 결과를 순서대로 읽어 BST에 삽입한 후 후위 순회(postOrder)를 수행한다. BST의 삽입 규칙에 따라 트리 구조가 자동으로 복원된다.
+
+1. 첫 번째 줄을 루트 노드로 생성한다.
+2. 이후 입력값을 `root.insert(num)`으로 BST에 삽입한다. 현재 값보다 작으면 왼쪽, 크면 오른쪽 자식으로 재귀 삽입한다.
+3. EOF를 감지하면 삽입을 종료한다.
+4. `postOrder(root)`를 호출하여 왼쪽 → 오른쪽 → 루트 순서로 후위 순회 결과를 출력한다.
+
+**핵심 아이디어**: 전위 순회의 첫 값이 루트임을 이용해 BST를 그대로 복원할 수 있다. 전위 순회 순서대로 삽입하면 BST 성질에 의해 원래 트리 구조가 완벽하게 재현되며, 이후 후위 순회만 수행하면 정답을 얻는다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day51BOJ5639이진트리탐색노드구현 {
+	static class Node {
+		int idx;
+		Node l, r;
+
+		Node(int idx) {
+			this.idx = idx;
+		}
+
+		void insert(int num) {
+			if (num < this.idx) {
+				if (this.l == null) {
+					this.l = new Node(num);
+				} else {
+					this.l.insert(num);
+				}
+			} else {
+				if (this.r == null) {
+					this.r = new Node(num);
+				} else {
+					this.r.insert(num);
+				}
+			}
+		}
+	}
+
+	static int[] tree;
+	static StringBuilder sb;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		sb = new StringBuilder();
+		Node root = new Node(Integer.parseInt(br.readLine()));
+		while (true) {
+			String n = br.readLine();
+			if (n == null)
+				break;
+			root.insert(Integer.parseInt(n));
+		}
+		postOrder(root);
+		System.out.println(sb);
+		br.close();
+	}
+
+	static void postOrder(Node node) {
+		if(node.l!=null)
+			postOrder(node.l);
+		if(node.r!=null)
+			postOrder(node.r);
+		sb.append(node.idx).append("\n");
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — 편향 트리 최악의 경우 삽입마다 O(N), 전체 N번 삽입
+- 공간: O(N) — 노드 N개 및 재귀 스택 (편향 시 O(N))

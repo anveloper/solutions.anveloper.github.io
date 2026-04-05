@@ -1,0 +1,81 @@
+---
+title: "BOJ 2870 - 수학숙제"
+date: "2023-05-27"
+description: "문자열, 정렬, 파싱 문제"
+tags: ["문자열", "정렬", "파싱"]
+platform: "boj"
+problem_number: "2870"
+problem_url: "https://www.acmicpc.net/problem/2870"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2870 - 수학숙제](https://www.acmicpc.net/problem/2870)
+
+N줄의 문자열에서 수를 모두 추출하여 오름차순으로 출력하라. 선행 0은 제거하고, 수가 매우 클 수 있다.
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 문자열이 주어진다.
+
+### 출력
+
+추출된 모든 수를 오름차순으로 한 줄에 하나씩 출력한다.
+
+### 예제
+
+| 입력                | 출력          |
+| ------------------- | ------------- |
+| `2` `a]0123` `0a00` | `0` `0` `123` |
+
+## 풀이
+
+정규식으로 숫자 부분을 추출하여 BigInteger로 변환하고 정렬한다.
+
+1. 각 줄을 비숫자 문자(`\\D`)로 split하여 숫자 문자열을 추출한다
+2. 빈 문자열을 제외하고 BigInteger로 변환하여 리스트에 추가한다
+3. 리스트를 정렬하여 출력한다
+
+**핵심 아이디어**: BigInteger를 사용하여 선행 0 제거와 큰 수 비교를 자동으로 처리한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+import java.math.*;
+
+public class Day475BOJ2870수학숙제 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
+    int i, j, n = Integer.parseInt(in.readLine());
+    StringBuilder res = new StringBuilder();
+    ArrayList<BigInteger> paper = new ArrayList<>();
+    String line[];
+    for (i = 0; i < n; i++) {
+      line = in.readLine().split("\\D");
+      for (j = 0; j < line.length; j++)
+        if (!line[j].equals(""))
+          paper.add(new BigInteger(line[j]));
+    }
+    paper.sort(null);
+    n = paper.size();
+    for (i = 0; i < n; i++)
+      res.append(paper.get(i) + "\n");
+    out.write(res.toString());
+    out.close();
+    in.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

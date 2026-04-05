@@ -1,0 +1,113 @@
+---
+title: "BOJ 8980 - 택배"
+date: "2023-10-28"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "8980"
+problem_url: "https://www.acmicpc.net/problem/8980"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8980 - 택배](https://www.acmicpc.net/problem/8980)
+
+N개의 마을을 순서대로 지나는 트럭(용량 C)이 M건의 택배를 최대한 많이 배달하려 한다. 각 택배는 출발지, 도착지, 수량이 주어진다.
+
+### 입력
+
+첫째 줄에 N, C, 둘째 줄에 M, 이후 M줄에 출발지, 도착지, 수량이 주어진다.
+
+### 출력
+
+배달할 수 있는 최대 택배 수를 출력한다.
+
+### 예제
+
+| 입력                                                             | 출력 |
+| ---------------------------------------------------------------- | ---- |
+| `4 40` `6` `3 4 20` `1 2 10` `1 3 20` `1 4 30` `2 3 10` `2 4 20` | `70` |
+
+## 풀이
+
+도착지가 빠른 순으로 정렬하여 그리디하게 배달을 확정한다.
+
+1. 택배를 도착지 오름차순으로 정렬한다 (같으면 출발지 오름차순)
+2. 각 택배에 대해 경로 구간의 최대 적재량을 확인한다
+3. 남은 용량과 택배 수량 중 최솟값만큼 배달을 확정한다
+4. 해당 구간의 적재량을 갱신한다
+
+**핵심 아이디어**: 도착지가 가까운 택배를 먼저 처리하면 트럭 공간을 빨리 비워 더 많은 택배를 실을 수 있다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+import java.util.*;
+
+public class Day631BOJ8980택배 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(in.readLine(), " ");
+    int N = Integer.parseInt(st.nextToken());
+    int C = Integer.parseInt(st.nextToken());
+    int M = Integer.parseInt(in.readLine());
+
+    Delivery info[] = new Delivery[M];
+    for (int i = 0; i < M; i++) {
+      st = new StringTokenizer(in.readLine(), " ");
+      int from = Integer.parseInt(st.nextToken());
+      int to = Integer.parseInt(st.nextToken());
+      int cnt = Integer.parseInt(st.nextToken());
+      info[i] = new Delivery(from, to, cnt);
+    }
+    Arrays.sort(info);
+
+    int box[] = new int[N + 1];
+    int max, possible, total = 0;
+    for (int i = 0; i < M; i++) {
+      int from = info[i].from;
+      int to = info[i].to;
+      int cnt = info[i].cnt;
+      max = 0;
+      for (int j = from; j < to; j++) {
+        max = Math.max(max, box[j]);
+      }
+      possible = Math.min(C - max, cnt);
+      total += possible;
+      for (int j = from; j < to; j++) {
+        box[j] += possible;
+      }
+    }
+    System.out.println(total + box[N]);
+  }
+
+  static class Delivery implements Comparable<Delivery> {
+    int from, to, cnt;
+
+    public Delivery(int from, int to, int cnt) {
+      this.from = from;
+      this.to = to;
+      this.cnt = cnt;
+    }
+
+    @Override
+    public int compareTo(Delivery o) {
+      if (this.to == o.to)
+        return this.from - o.from;
+      else
+        return this.to - o.to;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(M \* N + M log M) - 정렬 + 구간 탐색
+- 공간: O(N + M)

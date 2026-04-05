@@ -1,0 +1,84 @@
+---
+title: "BOJ 11648 - 지속"
+date: "2024-10-19"
+description: "각 자릿수를 곱하는 과정을 반복하여 한 자리가 될 때까지의 횟수를 구하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "11648"
+problem_url: "https://www.acmicpc.net/problem/11648"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11648 - 지속](https://www.acmicpc.net/problem/11648)
+
+양의 정수의 각 자릿수를 곱하는 연산을 한 자리 수가 될 때까지 반복했을 때, 반복 횟수(지속)를 구하라.
+
+### 입력
+
+양의 정수 N이 주어진다.
+
+### 출력
+
+지속 횟수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `39` | `3`  |
+
+## 풀이
+
+문자열로 관리하며 자릿수 곱을 반복 계산한다.
+
+1. 수를 문자열로 저장하고 한 자리가 될 때까지 반복한다
+2. 각 반복에서 모든 자릿수의 곱을 구한다
+3. 곱을 다시 문자열로 변환하고 단계 수를 증가시킨다
+4. 한 자리가 되면 단계 수를 출력한다
+
+**핵심 아이디어**: 자릿수 곱은 급격히 줄어들므로 반복 횟수는 매우 적다 (대부분 한 자리 이내).
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+int stage;
+
+int getNum(string str)
+{
+  int num = 1;
+  if (str == "0")
+    return 0;
+  for (auto s : str)
+    num *= s - '0';
+  return num;
+}
+
+int main()
+{
+  cin >> s;
+
+  while (1)
+  {
+    if (s.size() == 1)
+      break;
+    stage++;
+    int num = getNum(s);
+    s = to_string(num);
+  }
+
+  cout << stage;
+}
+```
+
+## 복잡도
+
+- 시간: O(d \* k) (d: 자릿수, k: 반복 횟수)
+- 공간: O(d)

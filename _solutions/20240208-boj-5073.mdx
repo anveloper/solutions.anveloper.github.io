@@ -1,0 +1,84 @@
+---
+title: "BOJ 5073 - 삼각형과 세 변"
+date: "2024-02-08"
+description: "수학, 구현, 기하학 문제"
+tags: ["수학", "구현", "기하학"]
+platform: "boj"
+problem_number: "5073"
+problem_url: "https://www.acmicpc.net/problem/5073"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5073 - 삼각형과 세 변](https://www.acmicpc.net/problem/5073)
+
+세 변의 길이가 주어질 때 삼각형의 종류를 판별하라. 삼각형이 성립하지 않으면 Invalid, 세 변이 같으면 Equilateral, 두 변이 같으면 Isosceles, 모두 다르면 Scalene이다. 0 0 0이 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 세 변의 길이가 주어지며, 0 0 0이면 종료한다.
+
+### 출력
+
+각 케이스마다 삼각형의 종류를 출력한다.
+
+### 예제
+
+| 입력                    | 출력                    |
+| ----------------------- | ----------------------- |
+| `7 7 7` `6 5 4` `0 0 0` | `Equilateral` `Scalene` |
+
+## 풀이
+
+세 변의 관계를 조건 분기로 판별한다.
+
+1. 세 변이 모두 같으면 정삼각형(Equilateral)이다
+2. 가장 긴 변이 나머지 두 변의 합 이상이면 삼각형이 아니다(Invalid)
+3. 세 변이 모두 다르면 부등변삼각형(Scalene), 아니면 이등변삼각형(Isosceles)이다
+
+**핵심 아이디어**: 삼각형 부등식(두 변의 합이 나머지 한 변보다 큼)을 먼저 검증한 후 등변 관계를 분류한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.*;
+
+public class Day737BOJ5073삼각형과세변 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    while (true) {
+      StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+      int a = Integer.parseInt(st.nextToken());
+      int b = Integer.parseInt(st.nextToken());
+      int c = Integer.parseInt(st.nextToken());
+
+      if (a == b && b == c) {
+        if (a == 0) {
+          break;
+        }
+        sb.append("Equilateral" + "\n");
+      } else if (a + b <= c || a + c <= b || b + c <= a) {
+        sb.append("Invalid" + "\n");
+      } else if (a != b && b != c && a != c) {
+        sb.append("Scalene" + "\n");
+      } else {
+        sb.append("Isosceles" + "\n");
+      }
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T) — T는 테스트 케이스 수, 각 케이스 O(1)
+- 공간: O(1) — 상수 변수만 사용

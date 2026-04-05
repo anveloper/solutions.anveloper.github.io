@@ -1,0 +1,56 @@
+---
+title: "BOJ 6887 - Squares"
+date: "2025-05-13"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "6887"
+problem_url: "https://www.acmicpc.net/problem/6887"
+difficulty: "브론즈 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6887 - Squares](https://www.acmicpc.net/problem/6887)
+
+양의 정수 n이 주어질 때, `i² <= n`을 만족하는 가장 큰 정수 i를 구하라.
+
+### 입력
+
+양의 정수 n이 주어진다.
+
+### 출력
+
+`The largest square has side length i.` 형식으로 출력한다.
+
+### 예제
+
+| 입력 | 출력                                    |
+| ---- | --------------------------------------- |
+| `8`  | `The largest square has side length 2.` |
+
+## 풀이
+
+1부터 순회하며 제곱이 n을 초과하는 최초 지점을 찾는다.
+
+1. i를 1부터 증가시키며 `i²`이 n보다 큰 시점을 찾는다
+2. `i - 1`이 조건을 만족하는 최대값이다
+
+**핵심 아이디어**: 정수의 제곱근의 내림값을 구하는 문제로, 반복문 또는 `int(sqrt(n))`으로 해결 가능하다.
+
+## 코드
+
+```python
+n = int(input())
+i = 1
+while i * i <= n:
+    i += 1
+print("The largest square has side length " + str(i - 1) + ".")
+```
+
+## 복잡도
+
+- 시간: O(sqrt(N))
+- 공간: O(1)

@@ -1,0 +1,147 @@
+---
+title: "BOJ 2922 - 즐거운 단어"
+date: "2022-12-19"
+description: "브루트포스 알고리즘, 백트래킹 문제"
+tags: ["브루트포스 알고리즘", "백트래킹"]
+platform: "boj"
+problem_number: "2922"
+problem_url: "https://www.acmicpc.net/problem/2922"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2922 - 즐거운 단어](https://www.acmicpc.net/problem/2922)
+
+알파벳 대문자와 `_`(밑줄)로 이루어진 문자열이 주어진다. 밑줄은 어떤 알파벳으로도 대체할 수 있다. "즐거운 단어"의 조건은 다음과 같다.
+
+- 반드시 L이 하나 이상 포함되어야 한다.
+- 자음이 3개 이상 연속으로 나타나면 안 된다.
+- 모음(A, E, I, O, U)이 3개 이상 연속으로 나타나면 안 된다.
+- L은 자음으로 취급한다.
+
+밑줄을 알파벳으로 적절히 바꾸어 즐거운 단어가 되는 경우의 수를 구하라.
+
+### 입력
+
+알파벳 대문자와 `_`로 이루어진 문자열이 한 줄 주어진다. (길이 ≤ 100)
+
+알파벳 26자 중 모음은 A, E, I, O, U (5개), 자음은 나머지 20개, L은 자음 중 하나.
+
+### 출력
+
+즐거운 단어가 되는 경우의 수를 출력한다.
+
+### 예제
+
+```
+_
+```
+
+출력:
+
+```
+26
+```
+
+## 풀이
+
+**핵심 아이디어**: 백트래킹으로 밑줄 위치에 모음(5개), L(1개), L 제외 자음(20개)을 넣어보며 탐색한다. 각 밑줄에서 세 가지 타입(모음 5가지, L 1가지, L 제외 자음 20가지)으로 분기하되, 동일 타입 내에서는 개수만 곱해주면 된다. 마지막까지 탐색 후 조건(L 포함, 연속 자음 3개 이하, 연속 모음 3개 이하)을 만족하면 카운트한다.
+
+1. 문자열을 `BLANK`, `VOWEL`, `CONSONANT`, `LWORD` 타입으로 변환한다.
+2. 재귀로 각 위치를 처리하며, `BLANK`이면 세 가지 타입(자음 20개, 모음 5개, L 1개)으로 분기하여 각 개수를 곱한다.
+3. 모든 위치 처리 후(base case) 연속 자음/모음 개수 확인 및 L 포함 여부 확인 후 1 또는 0 반환.
+4. 조건 위반 시 조기 종료로 가지치기를 할 수도 있지만, 문자열 길이가 100이하이므로 현재 구현으로도 충분하다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day315BOJ2922즐거운단어 {
+    static enum Type {
+        BLANK, VOWEL, CONSONANT, LWORD
+    }
+
+    static Type[] arr;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String str = br.readLine();
+        arr = new Type[str.length()];
+
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == '_')
+                arr[i] = Type.BLANK;
+            else
+                switch (c) {
+                    case 'A':
+                    case 'E':
+                    case 'I':
+                    case 'O':
+                    case 'U':
+                        arr[i] = Type.VOWEL;
+                        break;
+                    case 'L':
+                        arr[i] = Type.LWORD;
+                        break;
+                    default:
+                        arr[i] = Type.CONSONANT;
+                        break;
+                }
+        }
+
+        System.out.println(recur(0));
+        br.close();
+    }
+
+    private static long recur(int idx) {
+        if (idx == arr.length) {
+            int c = 0, v = 0;
+            boolean l = false;
+            for (int i = 0; i < arr.length; i++) {
+                if (arr[i] == Type.LWORD) {
+                    l = true;
+                }
+                if (arr[i] == Type.CONSONANT || arr[i] == Type.LWORD) {
+                    c++;
+                    v = 0;
+                } else if (arr[i] == Type.VOWEL) {
+                    v++;
+                    c = 0;
+                }
+                if (c > 2 || v > 2) {
+                    return 0;
+                }
+            }
+            if (l)
+                return 1;
+            else
+                return 0;
+        }
+        if (arr[idx] == Type.BLANK) {
+            long result = 0L;
+            arr[idx] = Type.CONSONANT;
+            result += 20 * recur(idx + 1);
+            arr[idx] = Type.VOWEL;
+            result += 5 * recur(idx + 1);
+            arr[idx] = Type.LWORD;
+            result += recur(idx + 1);
+            arr[idx] = Type.BLANK;
+            return result;
+        }
+        return recur(idx + 1);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(3^B × N) — B는 밑줄 개수, 각 밑줄마다 3가지 타입으로 분기, 각 base case에서 O(N) 검증
+- 공간: O(N) — 재귀 스택 깊이 N, 문자 타입 배열

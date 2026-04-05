@@ -1,0 +1,101 @@
+---
+title: "BOJ 2005 - 사발"
+date: "2022-12-03"
+description: "브루트포스 알고리즘, 많은 조건 분기, 다이나믹 프로그래밍 문제"
+tags: ["브루트포스 알고리즘", "많은 조건 분기", "다이나믹 프로그래밍", "기하학", "수학", "재귀"]
+platform: "boj"
+problem_number: "2005"
+problem_url: "https://www.acmicpc.net/problem/2005"
+difficulty: "플래티넘 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2005 - 사발](https://www.acmicpc.net/problem/2005)
+
+이항계수 `C(N, M)`에서 끝에 붙는 연속된 0의 개수를 구하는 문제이다. `C(N, M) = N! / (M! * (N-M)!)`이며, 이 값의 끝에 붙는 0의 개수는 2와 5가 인수로 몇 번 나타나는지에 따라 결정된다. 즉 `min(count2(C(N,M)), count5(C(N,M)))`이 답이다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. (0 ≤ M ≤ N ≤ 2,000,000,000)
+
+### 출력
+
+`C(N, M)`의 끝에 붙는 0의 개수를 출력한다.
+
+### 예제
+
+입력:
+
+```
+10 3
+```
+
+출력:
+
+```
+0
+```
+
+## 풀이
+
+**핵심 아이디어**: 팩토리얼에서 특정 소수 p의 거듭제곱 횟수를 구하는 르장드르 공식(Legendre's formula)을 이용한다. `N!`에서 소수 p의 지수는 `floor(N/p) + floor(N/p²) + floor(N/p³) + ...`이다.
+
+1. **소인수 분해 적용**: `C(N, M) = N! / (M! * (N-M)!)`이므로, 각 소수 p에 대해 `count_p(N!) - count_p(M!) - count_p((N-M)!)`을 계산한다.
+2. **5의 지수 계산**: `five_power_n(N) - five_power_n(N-M) - five_power_n(M)` — 끝자리 0에서 5는 병목이므로 중요하다.
+3. **2의 지수 계산**: `two_power_n(N) - two_power_n(N-M) - two_power_n(M)` — 2는 5보다 항상 많으므로 최솟값을 구하면 2의 지수가 답이 되지만 정확성을 위해 둘 다 계산한다.
+4. **최솟값 반환**: `min(count5, count2)` — 10 = 2 × 5이므로 끝자리 0의 수는 두 인수 중 적은 쪽에 의해 결정된다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+public class Day299BOJ2005조합0갯수 {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+		long N = Long.parseLong(st.nextToken());
+		long M = Long.parseLong(st.nextToken());
+
+		long count5 = five_power_n(N) - five_power_n(N - M) - five_power_n(M);
+		long count2 = two_power_n(N) - two_power_n(N - M) - two_power_n(M);
+		System.out.println(Math.min(count5, count2));
+	}
+
+	static long five_power_n(long num) {
+		int count = 0;
+
+		while (num >= 5) {
+			count += (num / 5);
+			num /= 5;
+		}
+		return count;
+	}
+
+	static long two_power_n(long num) {
+		int count = 0;
+
+		while (num >= 2) {
+			count += (num / 2);
+			num /= 2;
+		}
+		return count;
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(log N) — 르장드르 공식에서 p의 거듭제곱으로 나누는 반복
+- 공간: O(1)

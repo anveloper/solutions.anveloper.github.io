@@ -1,0 +1,90 @@
+---
+title: "BOJ 2295 - 세 수의 합"
+date: "2023-11-21"
+description: "자료 구조, 이분 탐색, 해시를 사용한 집합과 맵 문제"
+tags: ["자료 구조", "이분 탐색", "해시를 사용한 집합과 맵", "중간에서 만나기"]
+platform: "boj"
+problem_number: "2295"
+problem_url: "https://www.acmicpc.net/problem/2295"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2295 - 세 수의 합](https://www.acmicpc.net/problem/2295)
+
+N개의 자연수 집합 U에서 세 수 a+b+c = d를 만족하는 d의 최댓값을 구하라 (같은 수 중복 선택 가능).
+
+### 입력
+
+첫째 줄에 N, 이후 N줄에 원소가 주어진다.
+
+### 출력
+
+a+b+c = d를 만족하는 d의 최댓값을 출력한다.
+
+### 예제
+
+| 입력                      | 출력 |
+| ------------------------- | ---- |
+| `5` `2` `3` `5` `10` `18` | `18` |
+
+## 풀이
+
+중간에서 만나기(Meet in the Middle) 기법으로, 두 수의 합 집합을 미리 구한 뒤 d-c가 그 집합에 있는지 확인한다.
+
+1. 모든 쌍의 합(a+b)을 `HashSet`에 저장한다
+2. d를 큰 것부터, c를 작은 것부터 탐색한다
+3. d - c가 Set에 존재하면 d가 답이다
+
+**핵심 아이디어**: a+b+c = d를 a+b = d-c로 변환하면 O(N²)의 두 수 합 검색 문제가 되어 O(N²)에 해결된다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day654BOJ2295세수의합 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    int N, num[];
+
+    N = Integer.parseInt(br.readLine());
+
+    num = new int[N];
+
+    for (int i = 0; i < N; i++) {
+      num[i] = Integer.parseInt(br.readLine());
+    }
+    Arrays.sort(num);
+
+    Set<Integer> set = new HashSet<>();
+    for (int i = 0; i < N; i++) {
+      for (int j = i; j < N; j++) {
+        set.add(num[i] + num[j]);
+      }
+    }
+
+    for (int i = N - 1; 0 <= i; i--) {
+      for (int j = 0; j < N; j++) {
+
+        if (set.contains(num[i] - num[j])) {
+          System.out.println(num[i]);
+          return;
+        }
+      }
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N²)

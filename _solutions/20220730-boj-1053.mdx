@@ -1,0 +1,144 @@
+---
+title: "BOJ 1053 - 팰린드롬 공장"
+date: "2022-07-30"
+description: "다이나믹 프로그래밍, 브루트포스 알고리즘 문제"
+tags: ["다이나믹 프로그래밍", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1053"
+problem_url: "https://www.acmicpc.net/problem/1053"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1053 - 팰린드롬 공장](https://www.acmicpc.net/problem/1053)
+
+어떤 문자열을 팰린드롬으로 만들기 위해 4가지 연산(삽입, 삭제, 교체, 두 문자 교환)을 사용할 수 있다. 각 연산의 비용은 1이며, 두 문자 교환은 어떤 인덱스의 문자 쌍이든 가능하다. 문자열을 팰린드롬으로 만드는 데 필요한 최소 비용을 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 문자열이 주어진다. 문자열의 길이는 최대 15이며, 알파벳 소문자로만 이루어져 있다.
+
+### 출력
+
+최소 비용을 출력한다.
+
+### 예제
+
+**입력:**
+
+```
+abcba
+```
+
+**출력:**
+
+```
+0
+```
+
+**입력:**
+
+```
+abcbd
+```
+
+**출력:**
+
+```
+1
+```
+
+## 풀이
+
+**핵심 아이디어:** 두 문자 교환 연산이 있기 때문에 단순 편집 거리와 다르다. 교환은 비용 1로 두 위치의 문자를 바꿀 수 있으므로, 교환을 0번 또는 1번 사용하는 경우를 브루트포스로 처리하고, 나머지 최솟값은 DP(삽입/삭제/교체)로 구한다.
+
+단계별 풀이:
+
+1. **교환 없이:** dp(0, len-1)로 삽입/삭제/교체만으로의 최소 비용을 구한다.
+2. **교환 1번:** O(N²) 쌍에 대해 두 문자를 교환한 문자열을 만들고, 각 경우에 dp(0, len-1) + 1을 계산하여 최솟값을 갱신한다.
+3. **DP 점화식:** `dp[start][end]`는 문자열의 `[start..end]` 구간을 팰린드롬으로 만드는 최소 비용.
+   - `string[start] == string[end]`이면 `dp[start+1][end-1]`
+   - 다르면 `min(dp[start+1][end-1]+1, dp[start+1][end]+1, dp[start][end-1]+1)`
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Day173BOJ1053펠린드롬구현 { // 1053 펠린드롬 공장
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		char[] string = br.readLine().toCharArray();
+
+		int answer = Integer.MAX_VALUE;
+
+		int[][] dp = new int[string.length][string.length];
+
+		initDp(dp, string.length);
+
+		answer = Math.min(answer, dfs(dp, string, 0, string.length - 1));
+
+		for (int i = 0; i < string.length - 1; i++) {
+			char[] copyString = new char[string.length];
+			for (int j = i + 1; j < string.length; j++) {
+				System.arraycopy(string, 0, copyString, 0, string.length);
+				swap(copyString, i, j);
+				initDp(dp, string.length);
+				answer = Math.min(answer, dfs(dp, copyString, 0, string.length - 1) + 1);
+			}
+		}
+		System.out.println(answer);
+
+	}
+
+	static void swap(char[] string, int i, int j) {
+		char c = string[i];
+		string[i] = string[j];
+		string[j] = c;
+	}
+
+	static void initDp(int[][] dp, int n) {
+		for (int r = 0; r < n; r++) {
+			for (int c = 0; c < n; c++) {
+				dp[r][c] = -1;
+			}
+		}
+	}
+
+	static int dfs(int[][] dp, char[] string, int start, int end) {
+		if (dp[start][end] != -1)
+			return dp[start][end];
+
+		while (start < end) {
+			if (string[start] == string[end]) {
+				start++;
+				end--;
+			} else {
+				break;
+			}
+		}
+
+		if (start >= end) {
+			return 0;
+		}
+
+		int ret = Integer.MAX_VALUE;
+		ret = Math.min(ret, dfs(dp, string, start + 1, end - 1) + 1);
+		ret = Math.min(ret, dfs(dp, string, start + 1, end) + 1);
+		ret = Math.min(ret, dfs(dp, string, start, end - 1) + 1);
+
+		return dp[start][end] = ret;
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N² × N²) — 교환 쌍 O(N²)마다 DP O(N²) 수행 (N ≤ 15이므로 실용적)
+- 공간: O(N²) — DP 테이블 크기

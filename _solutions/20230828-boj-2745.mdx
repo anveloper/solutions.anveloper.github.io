@@ -1,0 +1,84 @@
+---
+title: "BOJ 2745 - 진법 변환"
+date: "2023-08-28"
+description: "구현, 문자열, 수학 문제"
+tags: ["구현", "문자열", "수학"]
+platform: "boj"
+problem_number: "2745"
+problem_url: "https://www.acmicpc.net/problem/2745"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2745 - 진법 변환](https://www.acmicpc.net/problem/2745)
+
+B진법 수 N이 주어질 때, 이를 10진법으로 변환하여 출력한다.
+
+### 입력
+
+첫째 줄에 B진법 수 N과 진법 B가 주어진다 (2 이상 36 이하). 10 이상의 자릿값은 A~Z로 표현한다.
+
+### 출력
+
+N을 10진법으로 변환한 값을 출력한다.
+
+### 예제
+
+| 입력       | 출력       |
+| ---------- | ---------- |
+| `ZZZZZ 36` | `60466175` |
+
+## 풀이
+
+문자열 끝에서부터 순회하며 각 자릿값에 B의 거듭제곱을 곱하여 누적한다.
+
+1. 문자열 N의 끝에서부터 순회하며 각 문자의 자릿값을 구한다
+2. 'A'~'Z'이면 (C - 'A' + 10), '0'~'9'이면 (C - '0')으로 변환한다
+3. 자릿값에 현재 자릿수의 가중치(tmp)를 곱하여 sum에 누적한다
+4. 가중치를 B배씩 증가시킨다
+
+**핵심 아이디어**: B진법 → 10진법 변환은 각 자릿값 \* B^(자릿수)를 합산하는 것이다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Day570BOJ2745진법변환 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    String N = st.nextToken();
+    int B = Integer.parseInt(st.nextToken());
+    br.close();
+
+    int tmp = 1;
+    int sum = 0;
+
+    for (int i = N.length() - 1; i >= 0; i--) {
+      char C = N.charAt(i);
+
+      if ('A' <= C && C <= 'Z') {
+        sum += (C - 'A' + 10) * tmp;
+      } else {
+        sum += (C - '0') * tmp;
+      }
+      tmp *= B;
+    }
+
+    System.out.println(sum);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(D) — D는 문자열 길이
+- 공간: O(D) — 입력 문자열 저장

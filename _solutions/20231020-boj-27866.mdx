@@ -1,0 +1,63 @@
+---
+title: "BOJ 27866 - 문자와 문자열"
+date: "2023-10-20"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "27866"
+problem_url: "https://www.acmicpc.net/problem/27866"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 27866 - 문자와 문자열](https://www.acmicpc.net/problem/27866)
+
+문자열 S와 정수 i가 주어질 때, S의 i번째 문자를 출력한다.
+
+### 입력
+
+첫째 줄에 문자열 S, 둘째 줄에 정수 i가 주어진다 (1 ≤ i ≤ |S|).
+
+### 출력
+
+S의 i번째 문자를 출력한다.
+
+### 예제
+
+| 입력         | 출력 |
+| ------------ | ---- |
+| `Sprout` `3` | `r`  |
+
+## 풀이
+
+문자열에서 i번째 문자를 charAt으로 직접 접근하여 출력한다.
+
+1. 문자열 S를 읽는다
+2. 정수 i를 읽는다
+3. S.charAt(i-1)로 i번째 문자를 출력한다 (1-based → 0-based 변환)
+
+**핵심 아이디어**: charAt 메서드로 O(1) 시간에 특정 위치의 문자를 접근한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day632BOJ27866문자와문자열 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    System.out.println(br.readLine().charAt(Integer.parseInt(br.readLine()) - 1));
+    br.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(N) — 문자열 저장

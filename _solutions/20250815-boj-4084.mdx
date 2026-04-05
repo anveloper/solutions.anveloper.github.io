@@ -1,0 +1,88 @@
+---
+title: "BOJ 4084 - Viva la Diferencia"
+date: "2025-08-15"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산", "시뮬레이션"]
+platform: "boj"
+problem_number: "4084"
+problem_url: "https://www.acmicpc.net/problem/4084"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4084 - Viva la Diferencia](https://www.acmicpc.net/problem/4084)
+
+4개의 정수 a, b, c, d가 주어질 때, 인접한 두 원소의 절댓값 차이로 새 수열을 만드는 과정을 반복하여 4개의 값이 모두 등차수열을 이룰 때까지 반복 횟수를 구하는 문제다. 네 수의 합이 0이면 종료한다.
+
+### 입력
+
+- 각 줄에 4개의 정수 a, b, c, d가 주어진다.
+- 네 수의 합이 0이면 종료한다.
+
+### 출력
+
+- 4개의 값이 등차수열이 될 때까지의 반복 횟수를 출력한다.
+
+### 예제
+
+| 입력      | 출력   |
+| --------- | ------ |
+| `4 3 2 1` | `0`    |
+| `1 5 2 4` | `4`    |
+| `0 0 0 0` | (종료) |
+
+## 풀이
+
+종료 조건을 확인하며, 4원소 수열의 인접 차이 절댓값 변환을 반복하여 횟수를 센다.
+
+1. a, b, c, d 입력 후 합이 0이면 종료
+2. 등차수열 조건: `a-b == b-c == c-d == d-a`인지 확인
+3. 조건 불만족 시 새 수열 `(|a-b|, |b-c|, |c-d|, |d-a|)`로 갱신
+4. 갱신 횟수 `cnt` 증가
+5. 조건 만족 시 `cnt` 출력
+
+**핵심 아이디어**: 새 원소를 계산하기 전에 `tmp = a`로 원래 `a` 값을 보존해야, `d`의 새 값 `|d - 원래 a|`를 올바르게 계산할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cstdlib>
+
+#define endl '\n'
+
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  int a, b, c, d, tmp, cnt;
+  while (cin >> a >> b >> c >> d)
+  {
+    cnt = 0;
+    if (a + b + c + d == 0)
+      break;
+    while (a - b != b - c || b - c != c - d || d - a != a - b)
+    {
+      tmp = a;
+      a = abs(a - b);
+      b = abs(b - c);
+      c = abs(c - d);
+      d = abs(d - tmp);
+      cnt++;
+    }
+    cout << cnt << endl;
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(K) — 등차수열이 될 때까지의 반복 횟수 K에 비례
+- 공간: O(1) — 상수 개의 변수만 사용

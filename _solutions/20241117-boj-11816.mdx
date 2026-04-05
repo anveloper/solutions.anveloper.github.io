@@ -1,0 +1,83 @@
+---
+title: "BOJ 11816 - 8진수, 10진수, 16진수"
+date: "2024-11-17"
+description: "접두사에 따라 8진수, 10진수, 16진수를 판별하여 10진수로 변환하는 문제"
+tags: ["문자열", "수학", "파싱"]
+platform: "boj"
+problem_number: "11816"
+problem_url: "https://www.acmicpc.net/problem/11816"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11816 - 8진수, 10진수, 16진수](https://www.acmicpc.net/problem/11816)
+
+접두사에 따라 8진수, 10진수, 16진수를 판별하여 10진수로 변환하라.
+
+### 입력
+
+숫자 문자열이 주어진다. "0x"로 시작하면 16진수, "0"으로 시작하면 8진수, 그 외는 10진수이다.
+
+### 출력
+
+10진수 값을 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `0x1A` | `26` |
+
+## 풀이
+
+접두사로 진법을 판별하고 `stoi`로 변환한다.
+
+1. "0x"로 시작하면 `stoi(number, nullptr, 16)`으로 16진수 변환한다
+2. "0"으로 시작하면 `stoi(number, nullptr, 8)`로 8진수 변환한다
+3. 그 외에는 10진수로 그대로 출력한다
+
+**핵심 아이디어**: C++의 `stoi` 함수에 base를 지정하면 자동으로 진법 변환이 된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  string number;
+  cin >> number;
+
+  if (number.length() > 1)
+  {
+    // 16진수
+    if (number.substr(0, 2) == "0x")
+    {
+      cout << stoi(number, nullptr, 16);
+    }
+    // 8진수
+    else if (number.substr(0, 1) == "0")
+    {
+      cout << stoi(number, nullptr, 8);
+    }
+    // 10진수
+    else
+    {
+      cout << number;
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 입력 문자열 길이)
+- 공간: O(L)

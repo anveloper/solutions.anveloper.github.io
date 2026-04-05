@@ -1,0 +1,90 @@
+---
+title: "BOJ 4758 - Filling Out the Team"
+date: "2025-11-26"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4758"
+problem_url: "https://www.acmicpc.net/problem/4758"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4758 - Filling Out the Team](https://www.acmicpc.net/problem/4758)
+
+미식축구 팀을 구성하기 위해 선수를 포지션에 배정하는 문제다. 40야드 달리기 시간(초), 체중(파운드), 벤치 프레스 횟수를 입력받아 지원할 수 있는 포지션을 출력한다. 여러 포지션을 동시에 지원할 수 있으며, 어떤 포지션에도 해당하지 않으면 `No positions`를 출력한다.
+
+### 입력
+
+입력이 `0 0 0`이 될 때까지 세 값을 반복 입력받는다.
+
+- `s`: 40야드 달리기 시간(초, 소수점 포함)
+- `w`: 체중(파운드)
+- `t`: 벤치 프레스 횟수
+
+### 출력
+
+각 입력 줄에 대해 지원 가능한 포지션을 공백으로 구분해 출력한다. 아무 포지션도 해당하지 않으면 `No positions`를 출력한다.
+
+포지션별 조건은 다음과 같다.
+
+| 포지션        | 달리기 시간 | 체중       | 벤치 프레스 |
+| ------------- | ----------- | ---------- | ----------- |
+| Wide Receiver | `s <= 4.5`  | `w >= 150` | `t >= 200`  |
+| Lineman       | `s <= 6.0`  | `w >= 300` | `t >= 500`  |
+| Quarterback   | `s <= 5.0`  | `w >= 200` | `t >= 300`  |
+
+### 예제
+
+| 입력          | 출력                        |
+| ------------- | --------------------------- |
+| `4.5 160 210` | `Wide Receiver Quarterback` |
+| `6.0 350 600` | `Lineman`                   |
+| `7.0 100 100` | `No positions`              |
+| `0 0 0`       | (종료)                      |
+
+## 풀이
+
+세 포지션의 조건을 독립적인 `if` 문으로 각각 확인하고, 아무 조건도 만족하지 않으면 `No positions`를 출력한다.
+
+1. `s`, `w`, `t`를 입력받는다. 모두 0이면 반복을 종료한다.
+2. `found` 플래그를 `false`로 초기화한다.
+3. Wide Receiver 조건(`s <= 4.5 && w >= 150 && t >= 200`)을 확인해 참이면 `found = true`로 설정하고 포지션명을 출력한다.
+4. Lineman 조건(`s <= 6.0 && w >= 300 && t >= 500`)을 확인해 참이면 동일하게 처리한다.
+5. Quarterback 조건(`s <= 5.0 && w >= 200 && t >= 300`)을 확인해 참이면 동일하게 처리한다.
+6. `found`가 `false`이면 `No positions`를 출력한다.
+
+**핵심 아이디어:** 포지션 조건이 상호 배타적이지 않으므로 독립적인 `if` 문을 사용한다. `found` 플래그로 어떤 포지션도 해당하지 않는 경우를 간결하게 처리한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  double s, w, t;
+  while (cin >> s >> w >> t && (s || w || t))
+  {
+    bool found = false;
+    if (s <= 4.5 && w >= 150 && t >= 200)
+      found = true, cout << "Wide Receiver ";
+    if (s <= 6.0 && w >= 300 && t >= 500)
+      found = true, cout << "Lineman ";
+    if (s <= 5.0 && w >= 200 && t >= 300)
+      found = true, cout << "Quarterback ";
+    if (!found)
+      cout << "No positions";
+    cout << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N개의 입력 줄에 대해 상수 번의 비교 수행
+- 공간: O(1) — 변수 4개만 사용

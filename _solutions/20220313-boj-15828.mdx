@@ -1,0 +1,87 @@
+---
+title: "BOJ 15828 - Router"
+date: "2022-03-13"
+description: "자료 구조, 큐 문제"
+tags: ["자료 구조", "큐"]
+platform: "boj"
+problem_number: "15828"
+problem_url: "https://www.acmicpc.net/problem/15828"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15828 - Router](https://www.acmicpc.net/problem/15828)
+
+라우터의 버퍼를 시뮬레이션한다. 버퍼 크기 N이 주어지고, 양의 정수는 패킷 도착(버퍼가 가득 차면 버림), 0은 맨 앞 패킷 처리, -1은 입력 종료를 의미한다. 최종 버퍼 상태를 출력하라.
+
+### 입력
+
+첫째 줄에 버퍼 크기 N이 주어진다. 둘째 줄부터 정수가 한 줄에 하나씩 주어진다. 양의 정수는 패킷 번호, 0은 처리, -1은 종료이다.
+
+### 출력
+
+버퍼에 남아있는 패킷을 순서대로 공백 구분하여 출력한다. 비어있으면 "empty"를 출력한다.
+
+### 예제
+
+| 입력                                                     | 출력 |
+| -------------------------------------------------------- | ---- |
+| `5` `1` `2` `0` `3` `4` `0` `5` `6` `0` `0` `0` `0` `-1` | `6`  |
+
+## 풀이
+
+큐를 버퍼로 사용하여 패킷 도착/처리를 시뮬레이션한다.
+
+1. 크기 N의 버퍼를 큐로 구현한다
+2. 입력이 0이면 큐의 맨 앞 패킷을 제거(처리)한다
+3. 양의 정수이고 큐 크기가 N 미만이면 패킷을 추가하고, 가득 차면 버린다
+4. -1이 입력되면 종료하고, 큐가 비어있으면 "empty", 아니면 남은 패킷을 출력한다
+
+**핵심 아이디어**: FIFO 버퍼는 큐로 자연스럽게 구현되며, 버퍼 오버플로우 시 패킷을 버리는 조건만 추가하면 된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Day25BOJ15828라우터 { // 15828
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		Queue<Integer> q = new LinkedList<>();
+		int N = Integer.parseInt(br.readLine());
+		// 0 - 처리, -1 - 끝, 나머지 - 패킷번호
+		int num = 0;
+		while (num != -1) { // 끝
+			num = Integer.parseInt(br.readLine());
+			if (num == 0) // 처리
+				q.poll();
+			else {
+				if (num > 0 && q.size() < N) // 나머지
+					q.offer(num);
+			}
+		}
+
+		if (q.isEmpty())
+			System.out.println("empty");
+		else
+			while (!q.isEmpty()) {
+				System.out.print(q.poll() + " ");
+			}
+
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(M) — 입력 명령 수 M에 비례
+- 공간: O(N) — 버퍼 크기

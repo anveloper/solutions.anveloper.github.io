@@ -1,0 +1,136 @@
+---
+title: "BOJ 7569 - 토마토"
+date: "2022-04-27"
+description: "너비 우선 탐색, 그래프 이론, 그래프 탐색 문제"
+tags: ["너비 우선 탐색", "그래프 이론", "그래프 탐색", "격자 그래프", "최단 경로"]
+platform: "boj"
+problem_number: "7569"
+problem_url: "https://www.acmicpc.net/problem/7569"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7569 - 토마토](https://www.acmicpc.net/problem/7569)
+
+M×N×H 크기의 3차원 창고(H층, 각 층 N행 M열)에 토마토가 저장되어 있다. 익은 토마토(1)는 하루마다 인접한 6방향(상, 하, 좌, 우, 위층, 아래층)의 안 익은 토마토(0)를 익힌다. 빈 칸(-1)은 제외한다. 모든 토마토가 익을 때까지 걸리는 최소 날수를 구한다. 불가능하면 -1을 출력한다.
+
+### 입력
+
+- 첫째 줄: M(열), N(행), H(층) (1 이상 100 이하)
+- 이후 H개의 블록: 각 블록은 N줄, 각 줄은 M개의 정수 (1: 익음, 0: 안익음, -1: 빈칸)
+
+### 출력
+
+- 모든 토마토가 익는 최솟날 수 (처음부터 다 익으면 0, 불가능하면 -1)
+
+### 예제
+
+| 입력                                           | 출력 |
+| ---------------------------------------------- | ---- |
+| `5 3 1` `0 -1 0 0 0` `-1 -1 0 1 1` `0 0 0 1 1` | `-1` |
+
+## 풀이
+
+다중 출발점 BFS(Multi-source BFS)를 사용하여 모든 익은 토마토에서 동시에 탐색을 시작한다. 3차원 격자에서 6방향 델타 배열을 적용한다.
+
+1. 3차원 배열을 입력받으면서 초기 익은 토마토(1)를 모두 큐에 넣는다. 빈 칸(-1)은 전체 카운트에서 제외한다.
+2. BFS를 시작한다. 큐에서 토마토를 꺼낼 때마다 전체 카운트를 하나 줄이고, 현재 시간을 기록한다.
+3. 6방향 델타(`dh`, `dr`, `dc`)를 적용해 인접 칸을 탐색한다.
+4. 인접 칸이 0이면 1로 변경하고 큐에 추가한다.
+5. BFS 종료 후 남은 카운트가 0이면 마지막 시간을 출력, 아니면 -1을 출력한다.
+
+**핵심 아이디어**: 2차원 토마토 문제(BOJ 7576)의 3차원 확장이다. 모든 초기 익은 토마토를 동시에 큐에 넣는 다중 출발점 BFS를 사용하면, 각 칸에 도달하는 최단 시간이 자연스럽게 계산된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day79BOJ7569토마토BFS3차원델타 {
+	static class Tmt {
+		int h, r, c;
+		int time;
+
+		Tmt(int h, int r, int c, int time) {
+			this.h = h;
+			this.r = r;
+			this.c = c;
+			this.time = time;
+		}
+	}
+
+	static int M, N, H; // 가로(c), 세로(r), 높이(h)
+	static int ans, tot;
+	static int[] dh = { -1, 1, 0, 0, 0, 0 }, dr = { 0, 0, -1, 1, 0, 0 }, dc = { 0, 0, 0, 0, -1, 1 };
+	static int[][][] boxes; // H, N, M : 층 > 행 > 열
+	static Queue<Tmt> q;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		M = Integer.parseInt(st.nextToken());
+		N = Integer.parseInt(st.nextToken());
+		H = Integer.parseInt(st.nextToken());
+		ans = -1; // 시간 초기화
+		tot = H * M * N;
+		boxes = new int[H][N][M]; // 입력 서순 -> 반복문 순서
+		q = new LinkedList<>();
+		// 예제 1
+		// 5 3 1 -- 열, 행, 높이
+		// 0 -1 0 0 0
+		// -1 -1 0 1 1
+		// 0 0 0 1 1
+		for (int h = 0; h < H; h++) { // 서순 주의
+			for (int n = 0; n < N; n++) {
+				st = new StringTokenizer(br.readLine());
+				for (int m = 0; m < M; m++) {
+					boxes[h][n][m] = Integer.parseInt(st.nextToken());
+					if (boxes[h][n][m] == 1)
+						q.add(new Tmt(h, n, m, 0));
+					else if (boxes[h][n][m] == -1)
+						tot--;
+				}
+			}
+		}
+
+		while (!q.isEmpty()) {
+			Tmt t = q.poll();
+			tot--;
+			ans = t.time;
+			for (int dir = 0; dir < 6; dir++) {
+				int nh = t.h + dh[dir];
+				int nr = t.r + dr[dir];
+				int nc = t.c + dc[dir];
+				if (index(nh, nr, nc))
+					continue;
+				if (boxes[nh][nr][nc] != 0)
+					continue;
+				boxes[nh][nr][nc] = 1;
+				q.add(new Tmt(nh, nr, nc, t.time + 1));
+			}
+		}
+
+		System.out.println(tot > 0 ? -1 : ans);
+		br.close();
+	}
+
+	private static boolean index(int h, int r, int c) {
+		return h < 0 || r < 0 || c < 0 || h >= H || r >= N || c >= M;
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N × M × H) — 3차원 격자의 모든 칸을 최대 한 번 방문
+- 공간: O(N × M × H) — 3차원 배열 및 BFS 큐

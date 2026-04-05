@@ -1,0 +1,84 @@
+---
+title: "BOJ 10798 - 세로읽기"
+date: "2023-08-26"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "10798"
+problem_url: "https://www.acmicpc.net/problem/10798"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10798 - 세로읽기](https://www.acmicpc.net/problem/10798)
+
+5줄의 문자열이 주어질 때, 세로로 읽은 결과를 출력한다. 각 줄의 길이가 다를 수 있다.
+
+### 입력
+
+5줄에 걸쳐 문자열이 주어진다 (각 줄 최대 15자).
+
+### 출력
+
+세로로 읽은 결과를 한 줄에 출력한다.
+
+### 예제
+
+| 입력                                    | 출력         |
+| --------------------------------------- | ------------ |
+| `ABCDE` `abcde` `01234` `FGHIJ` `fghij` | `Aa0telepon` |
+
+## 풀이
+
+5x15 문자 배열에 입력을 저장한 후, 열 우선으로 순회하여 빈 칸이 아닌 문자를 이어 붙인다.
+
+1. 5줄의 문자열을 char[5][15] 배열에 저장하며 최대 길이를 추적한다
+2. 열 인덱스 0부터 최대 길이까지 반복한다
+3. 각 열에서 5개 행을 순회하며 '\0'이 아닌 문자를 StringBuilder에 추가한다
+4. 결과를 출력한다
+
+**핵심 아이디어**: 2차원 배열에서 행-열 순회를 열-행 순회로 바꾸면 세로 읽기가 된다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+
+public class Day568BOJ10798세로읽기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    char[][] ch = new char[5][15];
+    int max = 0;
+
+    for (int i = 0; i < ch.length; i++) {
+      String str = br.readLine();
+      if (max < str.length())
+        max = str.length();
+
+      for (int j = 0; j < str.length(); j++) {
+        ch[i][j] = str.charAt(j);
+      }
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < max; i++) {
+      for (int j = 0; j < 5; j++) {
+        if (ch[j][i] == '\0')
+          continue;
+        sb.append(ch[j][i]);
+      }
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 고정 5x15 배열
+- 공간: O(1) — 고정 크기 배열

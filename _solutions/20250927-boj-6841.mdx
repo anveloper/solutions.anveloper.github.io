@@ -1,0 +1,89 @@
+---
+title: "BOJ 6841 - I Speak TXTMSG"
+date: "2025-09-27"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "6841"
+problem_url: "https://www.acmicpc.net/problem/6841"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6841 - I Speak TXTMSG](https://www.acmicpc.net/problem/6841)
+
+인터넷 채팅에서 사용되는 줄임말(TXTMSG)을 원래 표현으로 번역하는 프로그램을 작성한다. 총 11개의 줄임말이 주어지며, 입력된 단어가 줄임말이면 대응하는 원래 표현을 출력하고, 그렇지 않으면 그대로 출력한다. `TTYL`이 입력되면 해당 줄임말을 번역해 출력한 뒤 종료한다.
+
+### 입력
+
+단어를 한 줄씩 입력받는다. `TTYL`이 입력되면 종료한다.
+
+### 출력
+
+각 단어에 대해 번역 결과를 한 줄씩 출력한다. `TTYL`은 `talk to you later`로 번역 후 종료한다.
+
+### 예제
+
+| 입력        | 출력                          |
+| ----------- | ----------------------------- |
+| `CU` `TTYL` | `see you` `talk to you later` |
+
+## 풀이
+
+고정된 줄임말 사전을 `map`에 미리 저장하고, 입력 단어를 사전에서 조회하는 방식으로 구현한다.
+
+1. `map<string, string>`에 11개의 줄임말-원문 쌍을 초기화한다.
+2. 단어를 한 번에 하나씩 입력받는다.
+3. `map::find()`로 단어를 조회한다. 사전에 있으면 번역 결과를, 없으면 원문 그대로 출력한다.
+4. 입력된 단어가 `TTYL`이면 출력 후 루프를 종료한다.
+
+**핵심 아이디어**: `TTYL`의 번역도 출력해야 하므로 종료 조건 확인을 출력 이후에 배치한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+int main(void)
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  map<string, string> dict;
+  dict["CU"] = "see you";
+  dict[":-)"] = "I'm happy";
+  dict[":-("] = "I'm unhappy";
+  dict[";-)"] = "wink";
+  dict[":-P"] = "stick out my tongue";
+  dict["(~.~)"] = "sleepy";
+  dict["TA"] = "totally awesome";
+  dict["CCC"] = "Canadian Computing Competition";
+  dict["CUZ"] = "because";
+  dict["TY"] = "thank-you";
+  dict["YW"] = "you're welcome";
+  dict["TTYL"] = "talk to you later";
+  while (true)
+  {
+    string str;
+    cin >> str;
+    if (dict.find(str) != dict.end())
+      cout << dict[str] << '\n';
+    else
+      cout << str << '\n';
+    if (str == "TTYL")
+      break;
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N log K) — N개의 단어 입력, 사전 크기 K=12에 대해 `map` 조회 O(log K)
+- 공간: O(K) — 사전 크기 K에 비례 (K는 상수 12)

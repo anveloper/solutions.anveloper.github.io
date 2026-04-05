@@ -1,0 +1,99 @@
+---
+title: "BOJ 6491 - Perfection"
+date: "2025-11-01"
+description: "수학, 구현, 브루트포스 알고리즘 문제"
+tags: ["수학", "구현", "브루트포스 알고리즘", "정수론"]
+platform: "boj"
+problem_number: "6491"
+problem_url: "https://www.acmicpc.net/problem/6491"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6491 - Perfection](https://www.acmicpc.net/problem/6491)
+
+양의 정수 N이 주어졌을 때, N의 자기 자신을 제외한 약수(진약수)의 합을 구해 다음과 같이 분류한다.
+
+- 진약수의 합 `=` N이면 `PERFECT`
+- 진약수의 합 `<` N이면 `DEFICIENT`
+- 진약수의 합 `>` N이면 `ABUNDANT`
+
+0이 입력될 때까지 반복한다.
+
+### 입력
+
+- 여러 줄에 걸쳐 양의 정수 N이 주어진다.
+- 0이 입력되면 종료한다.
+
+### 출력
+
+- 각 N에 대해 `N PERFECT`, `N DEFICIENT`, `N ABUNDANT` 중 하나를 출력한다.
+
+### 예제
+
+| 입력             | 출력                                    |
+| ---------------- | --------------------------------------- |
+| `6` `12` `8` `0` | `6 PERFECT` `12 ABUNDANT` `8 DEFICIENT` |
+
+## 풀이
+
+각 입력 N에 대해 1부터 N-1까지 반복하며 약수를 구하고 합산한다. 합계와 N의 대소를 비교해 결과를 출력한다.
+
+1. 0이 입력될 때까지 반복한다.
+2. 1부터 N-1까지 반복하며 N을 나눌 수 있는 약수를 수집한다.
+3. 수집한 약수의 합을 계산한다.
+4. 합계와 N을 비교해 `PERFECT`, `DEFICIENT`, `ABUNDANT`를 결정한다.
+
+**핵심 아이디어**: 진약수의 합을 구하는 가장 직접적인 방법은 1부터 N-1까지 전부 나눠보는 것이다. 입력 범위가 크지 않으므로 O(N) 탐색으로 충분하다. 완전수(Perfect Number)는 6, 28, 496 등 매우 드물다.
+
+## 코드
+
+```cpp
+#include <vector>
+#include <iostream>
+using namespace std;
+
+vector<int> getDivisor(int x)
+{
+  vector<int> div;
+  for (int i = 1; i < x; i++)
+  {
+    if (x % i == 0)
+      div.push_back(i);
+  }
+  return div;
+}
+
+string getResult(int x)
+{
+  int sum = 0;
+  vector<int> div = getDivisor(x);
+  for (auto d : div)
+    sum += d;
+  if (sum == x)
+    return "PERFECT\n";
+  if (sum < x)
+    return "DEFICIENT\n";
+  return "ABUNDANT\n";
+}
+
+int main()
+{
+  while (1)
+  {
+    int x;
+    cin >> x;
+    if (!x)
+      break;
+    cout << x << ' ' << getResult(x);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(Q \* N) — Q개의 쿼리에 대해 각각 N까지 약수 탐색
+- 공간: O(N) — 약수 저장용 벡터

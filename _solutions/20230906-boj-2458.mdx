@@ -1,0 +1,99 @@
+---
+title: "BOJ 2458 - 키 순서"
+date: "2023-09-06"
+description: "그래프 이론, 그래프 탐색, 최단 경로 문제"
+tags: ["그래프 이론", "그래프 탐색", "최단 경로", "깊이 우선 탐색", "플로이드–워셜"]
+platform: "boj"
+problem_number: "2458"
+problem_url: "https://www.acmicpc.net/problem/2458"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2458 - 키 순서](https://www.acmicpc.net/problem/2458)
+
+N명의 학생이 있고, 일부 쌍에 대해 키 비교 결과가 주어질 때, 자신의 키 순서를 정확히 알 수 있는 학생 수를 구하라.
+
+### 입력
+
+첫째 줄에 학생 수 N과 비교 횟수 M이 주어진다. 이후 M줄에 "a b" (a가 b보다 작다) 형태의 비교 결과가 주어진다.
+
+### 출력
+
+자신의 키 순서를 정확히 알 수 있는 학생 수를 출력한다.
+
+### 예제
+
+| 입력                                      | 출력 |
+| ----------------------------------------- | ---- |
+| `6 6` `1 5` `3 4` `5 4` `4 2` `4 6` `5 2` | `1`  |
+
+## 풀이
+
+플로이드-워셜로 모든 쌍의 도달 가능성을 구한 뒤, 나머지 모든 학생과 순서가 결정된 학생을 센다.
+
+1. 키 비교 관계를 인접 행렬에 기록한다
+2. 플로이드-워셜로 전이적 폐쇄(transitive closure)를 구한다
+3. 각 학생에 대해 자신보다 크거나 작은 학생 수를 합산한다
+4. 그 합이 N-1이면 순서를 정확히 알 수 있다
+
+**핵심 아이디어**: i→j 또는 j→i 경로가 존재하면 둘의 순서가 결정되며, 모든 다른 학생과 순서가 결정되면 자기 등수를 알 수 있다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day579BOJ2458키순서 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int n = Integer.parseInt(st.nextToken());
+    int m = Integer.parseInt(st.nextToken());
+    boolean[][] check = new boolean[n][n];
+    for (int i = 0; i < m; i++) {
+      st = new StringTokenizer(br.readLine());
+      int a = Integer.parseInt(st.nextToken()) - 1;
+      int b = Integer.parseInt(st.nextToken()) - 1;
+      check[a][b] = true;
+    }
+
+    for (int k = 0; k < n; k++) {
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+          if (check[i][k] && check[k][j]) {
+            check[i][j] = true;
+          }
+        }
+      }
+    }
+
+    int[] cnt = new int[n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        if (check[i][j] || check[j][i]) {
+          cnt[i]++;
+        }
+      }
+    }
+
+    int res = 0;
+    for (int num : cnt) {
+      if (num == n - 1)
+        res++;
+    }
+    System.out.println(res);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(V³)
+- 공간: O(V²)

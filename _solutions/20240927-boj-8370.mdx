@@ -1,0 +1,61 @@
+---
+title: "BOJ 8370 - Plane"
+date: "2024-09-27"
+description: "두 종류 비행기의 총 좌석 수를 계산하는 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "8370"
+problem_url: "https://www.acmicpc.net/problem/8370"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 8370 - Plane](https://www.acmicpc.net/problem/8370)
+
+두 종류의 비행기 대수(n1, n2)와 각 좌석 수(k1, k2)가 주어질 때, 총 좌석 수를 출력하라.
+
+### 입력
+
+n1, k1, n2, k2가 주어진다.
+
+### 출력
+
+`n1*k1 + n2*k2`를 출력한다.
+
+### 예제
+
+| 입력          | 출력  |
+| ------------- | ----- |
+| `1 100 2 200` | `500` |
+
+## 풀이
+
+4개의 정수를 입력받아 곱의 합을 계산한다.
+
+1. n1, k1, n2, k2를 입력받는다
+2. `n1 * k1 + n2 * k2`를 계산하여 출력한다
+
+**핵심 아이디어**: 단순 사칙연산 문제로 O(1)에 해결된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  int n1, n2, k1, k2;
+  cin >> n1 >> k1 >> n2 >> k2;
+  cout << n1 * k1 + n2 * k2;
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

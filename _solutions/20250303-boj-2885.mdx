@@ -1,0 +1,72 @@
+---
+title: "BOJ 2885 - 초콜릿 식사"
+date: "2025-03-03"
+description: "수학, 그리디 알고리즘, 정수론 문제"
+tags: ["수학", "그리디 알고리즘", "정수론", "비트마스킹"]
+platform: "boj"
+problem_number: "2885"
+problem_url: "https://www.acmicpc.net/problem/2885"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2885 - 초콜릿 식사](https://www.acmicpc.net/problem/2885)
+
+K조각의 초콜릿이 필요할 때, 2의 거듭제곱 크기인 초콜릿 판을 사서 반으로 쪼개어 K조각을 만들려면 몇 번 쪼개야 하는지 구하라.
+
+### 입력
+
+필요한 초콜릿 조각 수 K가 주어진다 (1 이상 1,000,000 이하).
+
+### 출력
+
+사야 하는 초콜릿 판의 크기와 쪼개는 횟수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력 | 출력  |
+| ---- | ----- |
+| `6`  | `8 2` |
+
+## 풀이
+
+K 이상인 최소 2의 거듭제곱을 구한 뒤, 반복 분할로 K조각을 조합한다.
+
+1. `2^0, 2^1, ...` 중 K 이상인 최소값을 초콜릿 판 크기로 정한다
+2. K가 판 크기와 같으면 쪼갤 필요 없이 0을 출력한다
+3. 아니면 판을 반으로 쪼개며, 쪼갠 조각이 K 이하면 K에서 빼고, 아니면 다시 쪼갠다
+4. 매 쪼개기마다 횟수를 1 증가시킨다
+
+**핵심 아이디어**: 이진법으로 K를 표현하면, 각 비트에 해당하는 조각을 분할로 얻어야 하므로 분할 횟수가 결정된다.
+
+## 코드
+
+```python
+import sys
+
+K = int(sys.stdin.readline())
+x = [2**i for i in range(21)]
+for i in x:
+    if K <= i:
+        choco = i
+        break
+cnt = 0
+temp = choco
+if K != choco:
+    while K:
+        temp //= 2
+        if K >= temp:
+            K = K - temp
+            cnt += 1
+        else:
+            cnt += 1
+print(choco, cnt)
+```
+
+## 복잡도
+
+- 시간: O(log K)
+- 공간: O(1)

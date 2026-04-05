@@ -1,0 +1,78 @@
+---
+title: "BOJ 2231 - 분해합"
+date: "2022-03-13"
+description: "브루트포스 알고리즘 문제"
+tags: ["브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "2231"
+problem_url: "https://www.acmicpc.net/problem/2231"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2231 - 분해합](https://www.acmicpc.net/problem/2231)
+
+자연수 N의 분해합이란 N과 N의 각 자릿수의 합을 의미한다. 어떤 자연수 M의 분해합이 N이면 M을 N의 생성자라 한다. 자연수 N이 주어졌을 때, 가장 작은 생성자를 구하라. (예: 198의 분해합 = 198+1+9+8 = 216)
+
+### 입력
+
+첫째 줄에 자연수 N (1 이상 1,000,000 이하)이 주어진다.
+
+### 출력
+
+N의 가장 작은 생성자를 출력한다. 생성자가 없으면 0을 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `216` | `198` |
+
+## 풀이
+
+0부터 N-1까지 순회하며 각 수의 분해합이 N인지 확인하는 브루트포스로 풀이한다.
+
+1. 0부터 N-1까지 모든 수 i에 대해 분해합(i + 각 자릿수의 합)을 계산한다
+2. 분해합이 N과 같으면 i가 가장 작은 생성자이므로 출력하고 종료한다
+3. 끝까지 찾지 못하면 0을 출력한다
+
+**핵심 아이디어**: 생성자는 반드시 N보다 작으므로 0부터 N-1까지만 탐색하면 된다. 작은 수부터 탐색하므로 처음 찾은 생성자가 최솟값이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day42BOJ2231분해합브루트포스 { // 2231 분해합
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		int ans = 0;
+		for (int i = 0; i < N; i++) {
+			int tmp = i;
+			int sum = 0;
+			while (tmp != 0) {
+				sum += tmp % 10;
+				tmp /= 10;
+			}
+			if (sum + i == N) {
+				ans = i;
+				break;
+			}
+		}
+
+		System.out.println(ans);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* log N) — N개의 수 각각에 대해 자릿수 분해 O(log N)
+- 공간: O(1) — 상수 공간만 사용

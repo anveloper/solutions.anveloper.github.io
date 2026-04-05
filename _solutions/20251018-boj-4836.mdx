@@ -1,0 +1,161 @@
+---
+title: "BOJ 4836 - 춤"
+date: "2025-10-18"
+description: "구현, 문자열, 파싱 문제"
+tags: ["구현", "문자열", "파싱"]
+platform: "boj"
+problem_number: "4836"
+problem_url: "https://www.acmicpc.net/problem/4836"
+difficulty: "실버 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4836 - 춤](https://www.acmicpc.net/problem/4836)
+
+춤 동작을 나타내는 단어 시퀀스가 입력되며, 다음 5가지 규칙에 대한 위반 여부를 검사한다.
+
+- 규칙 1: `dip` 바로 앞에 `jiggle`이 없어야 하고, 두 단어 앞에도 `jiggle`이 없어야 하며, `dip` 바로 뒤에 `twirl`이 없어야 한다.
+- 규칙 2: 시퀀스의 마지막 세 단어가 `clap stomp clap` 이어야 한다.
+- 규칙 3: `twirl`이 있으면 반드시 `hop`도 있어야 한다.
+- 규칙 4: 첫 번째 단어가 `jiggle`이 아니어야 한다.
+- 규칙 5: `dip`이 적어도 하나 있어야 한다.
+
+위반된 규칙 번호들을 수집하여 `form ok`, `form error X`, `form errors X and Y` 등의 형식으로 출력한다.
+
+### 입력
+
+EOF까지 줄 단위로 단어 시퀀스가 입력된다.
+
+### 출력
+
+각 줄에 대해 `form ok` 또는 `form error/errors ...` 형식으로 위반 규칙을 출력하고, 이후 원본 시퀀스를 출력한다.
+
+### 예제
+
+| 입력                         | 출력                                              |
+| ---------------------------- | ------------------------------------------------- |
+| `jiggle dip clap stomp clap` | `form errors 1 and 4: jiggle DIP clap stomp clap` |
+
+## 풀이
+
+입력 줄을 공백으로 파싱하여 단어 배열을 만들고, 각 규칙을 순서대로 검사한다.
+
+1. `getline`으로 한 줄을 읽고, 공백 기준으로 분리하여 단어 벡터 `v`를 만든다. 동시에 `dip`, `twirl`, `hop` 등장 여부 플래그를 설정한다.
+2. 규칙 1 검사: `dip` 단어를 순회하며, 앞 1·2칸에 `jiggle`이 있거나 뒤 1칸에 `twirl`이 있는 `dip`는 정상으로 간주하고, 그 외의 `dip`는 위반으로 판정하여 `DIP`으로 표시하고 에러 집합에 1을 추가한다.
+3. 규칙 2 검사: 마지막 세 단어가 `clap stomp clap`인지 확인한다.
+4. 규칙 3 검사: `twirl`이 있는데 `hop`이 없으면 에러 3을 추가한다.
+5. 규칙 4 검사: 첫 단어가 `jiggle`이면 에러 4를 추가한다.
+6. 규칙 5 검사: `dip`이 한 번도 없으면 에러 5를 추가한다.
+7. 에러 집합이 비어있으면 `ok`, 하나면 `error X`, 둘 이상이면 `errors X and Y` (중간은 `, `로 구분) 형식으로 출력한다.
+
+**핵심 아이디어**: 에러 번호를 `set`에 관리하면 중복 없이 정렬된 순서로 유지된다. `dip` 규칙은 각 `dip` 위치의 문맥(앞뒤 단어)을 개별적으로 검사하여 위반 여부를 판단한다. 위반한 `dip`는 `DIP`으로 변환하여 출력 시 시각적으로 구분한다.
+
+## 코드
+
+```cpp
+#include <string>
+#include <vector>
+#include <iostream>
+#include <set>
+using namespace std;
+
+using ll = long long;
+using vi = vector<int>;
+using vll = vector<ll>;
+using ull = unsigned long long;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
+using t3 = tuple<int, int, int>;
+using i128 = __int128;
+
+string s;
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+  while (getline(cin, s))
+  {
+    s += ' ';
+    vector<string> v;
+    string temp = "";
+    int flag = 1, flag2 = 0, flag3 = 0;
+    for (auto &i : s)
+    {
+      if (i == ' ')
+      {
+        if (temp == "dip")
+          flag = 0;
+        if (temp == "twirl")
+          flag2 = 1;
+        if (temp == "hop")
+          flag3 = 1;
+        v.push_back(temp);
+        temp = "";
+      }
+      else
+        temp += i;
+    }
+    set<int> e;
+    int N = v.size();
+    for (int i = 0; i < N; ++i)
+    {
+      if (v[i] != "dip")
+        continue;
+      if (i && v[i - 1] == "jiggle")
+        continue;
+      if (i > 1 && v[i - 2] == "jiggle")
+        continue;
+      if (i < N - 1 && v[i + 1] == "twirl")
+        continue;
+      v[i] = "DIP";
+      e.insert(1);
+    }
+    if (N < 3 || v[N - 3] != "clap" || v[N - 2] != "stomp" || v[N - 1] != "clap")
+      e.insert(2);
+    if (flag2)
+    {
+      if (!flag3)
+        e.insert(3);
+    }
+    if (v[0] == "jiggle")
+      e.insert(4);
+    if (flag)
+      e.insert(5);
+    cout << "form ";
+    if (e.empty())
+      cout << "ok";
+    else if (e.size() > 1)
+    {
+      cout << "errors ";
+      vi w;
+      for (auto &i : e)
+        w.push_back(i);
+      int M = w.size();
+      for (int i = 0; i < M; ++i)
+      {
+        cout << w[i];
+        if (i < M - 2)
+          cout << ", ";
+        else if (i == M - 2)
+          cout << " and ";
+      }
+    }
+    else
+      cout << "error " << *e.begin();
+    cout << ": ";
+    for (auto &i : v)
+      cout << i << ' ';
+    cout << '\n';
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — N은 한 줄의 단어 수 (각 줄마다 선형 탐색)
+- 공간: O(N) — 단어 벡터 및 에러 집합

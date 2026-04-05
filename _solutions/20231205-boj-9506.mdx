@@ -1,0 +1,95 @@
+---
+title: "BOJ 9506 - 약수들의 합"
+date: "2023-12-05"
+description: "수학, 구현, 정수론 문제"
+tags: ["수학", "구현", "정수론"]
+platform: "boj"
+problem_number: "9506"
+problem_url: "https://www.acmicpc.net/problem/9506"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9506 - 약수들의 합](https://www.acmicpc.net/problem/9506)
+
+자연수 n이 주어질 때, n이 완전수인지 판별하라. 완전수이면 자신을 제외한 약수들의 합을 등식으로 출력하고, 아니면 "NOT perfect"를 출력한다. -1이 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 걸쳐 자연수 n이 주어지며, 마지막에 -1이 주어진다.
+
+### 출력
+
+완전수이면 `n = a + b + ...` 형태로, 아니면 `n is NOT perfect.`를 출력한다.
+
+### 예제
+
+| 입력     | 출력            |
+| -------- | --------------- |
+| `6` `-1` | `6 = 1 + 2 + 3` |
+
+## 풀이
+
+1부터 n-1까지 순회하며 약수를 찾고, 약수의 합이 n과 같으면 완전수로 판별한다.
+
+1. 1부터 n-1까지 반복하며 n의 약수를 배열에 저장하고 합을 누적한다
+2. 합이 n과 같으면 약수들을 `+`로 연결하여 등식을 출력한다
+3. 합이 n과 다르면 "NOT perfect" 메시지를 출력한다
+4. -1이 입력될 때까지 반복한다
+
+**핵심 아이디어**: 완전수의 정의(자신을 제외한 약수의 합 = 자신)를 그대로 검증한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.util.*;
+
+public class Day668BOJ9506약수들의합 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    StringBuilder sb = new StringBuilder();
+
+    while (true) {
+      int n = sc.nextInt();
+      if (n == -1)
+        break;
+
+      int[] arr = new int[n];
+      int sum = 0;
+      int index = 0;
+      for (int i = 1; i < n; i++) {
+        if (n % i == 0) {
+          arr[index++] = i;
+          sum += i;
+        }
+      }
+
+      if (sum != n) {
+        sb.append(n + " is NOT perfect.\n");
+        continue;
+      }
+
+      sb.append(n + " = ");
+      for (int i = 0; i < index; i++) {
+        if (i == index - 1)
+          sb.append(arr[i]);
+        else
+          sb.append(arr[i] + " + ");
+      }
+      sb.append("\n");
+    }
+    System.out.println(sb);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

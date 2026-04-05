@@ -1,0 +1,74 @@
+---
+title: "BOJ 1527 - 금민수의 개수"
+date: "2024-06-14"
+description: "4와 7로만 이루어진 금민수를 재귀적으로 생성하여 범위 내 개수를 구하는 문제"
+tags: ["브루트포스"]
+platform: "boj"
+problem_number: "1527"
+problem_url: "https://www.acmicpc.net/problem/1527"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1527 - 금민수의 개수](https://www.acmicpc.net/problem/1527)
+
+A 이상 B 이하의 수 중 4와 7로만 이루어진 금민수의 개수를 구하라.
+
+### 입력
+
+A와 B가 공백으로 구분되어 주어진다 (`1 <= A <= B <= 10^9`).
+
+### 출력
+
+금민수의 개수를 출력한다.
+
+### 예제
+
+| 입력    | 출력 |
+| ------- | ---- |
+| `1 100` | `6`  |
+
+## 풀이
+
+"0"부터 시작하여 4와 7을 재귀적으로 이어붙여 모든 금민수를 생성하고, [A, B] 범위 내의 수를 세면 된다.
+
+1. 재귀 함수에서 현재 문자열에 "4" 또는 "7"을 이어붙인다
+2. 생성된 수가 10^9을 초과하면 재귀를 중단한다
+3. [A, B] 범위에 포함되면 카운트를 증가시킨다
+
+**핵심 아이디어**: D자리 금민수는 2^D개뿐이므로 10자리까지 해도 총 약 2046개만 생성하면 된다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+A, B = map(int, input().split())
+res = 0
+
+
+def check(n):
+    global res
+    num = int(n)
+
+    if num > 1e9:
+        return
+    if A <= num and num <= B:
+        res += 1
+    check(n + "4")
+    check(n + "7")
+
+
+check("0")
+
+print(res)
+```
+
+## 복잡도
+
+- 시간: O(2^k), k는 최대 자릿수 (약 10)
+- 공간: O(k) (재귀 스택)

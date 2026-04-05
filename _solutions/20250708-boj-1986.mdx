@@ -1,0 +1,102 @@
+---
+title: "BOJ 1986 - 체스"
+date: "2025-07-08"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "1986"
+problem_url: "https://www.acmicpc.net/problem/1986"
+difficulty: "실버 I"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1986 - 체스](https://www.acmicpc.net/problem/1986)
+
+N×M 체스판에 퀸, 나이트, 폰이 배치되어 있다. 어떤 말로도 공격받지 않는 안전한 칸의 수를 구하라.
+
+### 입력
+
+첫째 줄에 N, M, 이후 3줄에 퀸, 나이트, 폰의 위치가 주어진다.
+
+### 출력
+
+안전한 칸의 수를 출력한다.
+
+### 예제
+
+| 입력                              | 출력 |
+| --------------------------------- | ---- |
+| `4 4` `2 1 4 2 4` `1 1 2` `1 2 3` | `6`  |
+
+## 풀이
+
+퀸은 8방향으로 직선 이동하며 다른 말에 막히고, 나이트는 L자로 이동한다. 각각의 공격 범위를 표시한다.
+
+1. 퀸, 나이트, 폰의 위치를 occupied 배열에 표시한다
+2. 각 퀸에서 8방향으로 직선 탐색하며, 다른 말을 만나면 그 칸까지만 공격 표시 후 중단한다
+3. 각 나이트에서 8개의 L자 이동 위치를 공격 표시한다
+4. 전체 칸에서 occupied도 아니고 unsafe도 아닌 칸을 세어 출력한다
+
+**핵심 아이디어**: 퀸의 공격은 다른 말에 의해 차단되므로, 각 방향으로 이동하며 occupied 칸을 만나면 탐색을 중단해야 한다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+N, M = map(int, input().split())
+
+
+def read_pieces():
+    data = list(map(int, input().split()))
+    k, coords = data[0], data[1:]
+    pieces = [(coords[i], coords[i + 1]) for i in range(0, 2 * k, 2)]
+    return pieces
+
+
+queens = read_pieces()
+knights = read_pieces()
+pawns = read_pieces()
+
+occupied = [[False] * (M + 1) for _ in range(N + 1)]
+unsafe = [[False] * (M + 1) for _ in range(N + 1)]
+
+for x, y in queens + knights + pawns:
+    occupied[x][y] = True
+
+dirs = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
+for qx, qy in queens:
+    for dx, dy in dirs:
+        nx, ny = qx + dx, qy + dy
+        while 1 <= nx <= N and 1 <= ny <= M:
+            unsafe[nx][ny] = True
+            if occupied[nx][ny]:
+                break
+            nx += dx
+            ny += dy
+
+k_moves = [(2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
+for kx, ky in knights:
+    for dx, dy in k_moves:
+        nx, ny = kx + dx, ky + dy
+        if 1 <= nx <= N and 1 <= ny <= M:
+            unsafe[nx][ny] = True
+
+safe_cnt = 0
+for r in range(1, N + 1):
+    for c in range(1, M + 1):
+        if not occupied[r][c] and not unsafe[r][c]:
+            safe_cnt += 1
+
+print(safe_cnt)
+```
+
+## 복잡도
+
+- 시간: O(Q \* max(N, M) + K + N \* M) — Q는 퀸 수, K는 나이트 수
+- 공간: O(N \* M) — 보드 배열

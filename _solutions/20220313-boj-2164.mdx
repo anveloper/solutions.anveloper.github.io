@@ -1,0 +1,74 @@
+---
+title: "BOJ 2164 - 카드2"
+date: "2022-03-13"
+description: "자료 구조, 큐 문제"
+tags: ["자료 구조", "큐"]
+platform: "boj"
+problem_number: "2164"
+problem_url: "https://www.acmicpc.net/problem/2164"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2164 - 카드2](https://www.acmicpc.net/problem/2164)
+
+1부터 N까지 번호가 적힌 카드가 위에서 아래로 순서대로 놓여 있다. 제일 위 카드를 버리고, 그 다음 카드를 제일 아래로 옮기는 동작을 마지막 한 장이 남을 때까지 반복할 때, 마지막에 남는 카드 번호를 구하라.
+
+### 입력
+
+첫째 줄에 정수 N (1 이상 500,000 이하)이 주어진다.
+
+### 출력
+
+마지막에 남게 되는 카드의 번호를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `6`  | `4`  |
+
+## 풀이
+
+큐로 카드 더미를 구현하여 버리기/이동 동작을 시뮬레이션한다.
+
+1. 1부터 N까지를 큐에 순서대로 넣는다
+2. 카드가 1장 남을 때까지: 맨 앞 카드를 버리고(poll), 다음 맨 앞 카드를 맨 뒤로 보낸다(poll → offer)
+3. 마지막 남은 한 장을 출력한다
+
+**핵심 아이디어**: BOJ 2161(카드1)과 동일한 시뮬레이션이지만, 마지막 카드만 출력하면 된다. 큐의 FIFO 특성이 카드 더미의 위/아래 동작과 정확히 대응된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class Day15BOJ2164카드2 {
+	public static void main(String[] args) {
+		Queue<Integer> q = new LinkedList<>();
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		for (int n = 1; n <= N; n++) {
+			q.offer(n);
+		}
+		while(q.size()!=1) {
+			q.poll();
+			q.offer(q.poll());
+		}
+		System.out.println(q.poll());
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

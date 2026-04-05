@@ -1,0 +1,75 @@
+---
+title: "BOJ 2810 - 컵홀더"
+date: "2022-03-13"
+description: "구현, 그리디 알고리즘, 문자열 문제"
+tags: ["구현", "그리디 알고리즘", "문자열"]
+platform: "boj"
+problem_number: "2810"
+problem_url: "https://www.acmicpc.net/problem/2810"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2810 - 컵홀더](https://www.acmicpc.net/problem/2810)
+
+영화관 좌석 배열이 문자열로 주어진다. `S`는 일반 좌석(컵홀더 1개 공유), `L`은 2인용 좌석(컵홀더 2개 공유, 양쪽 끝에 하나씩). 각 사람이 컵홀더를 최대 1개씩 사용할 때, 최대 몇 명이 컵홀더를 사용할 수 있는지 구하는 문제이다.
+
+### 입력
+
+첫째 줄에 사람 수 N (1 이상 50 이하)이 주어진다. 둘째 줄에 N개의 문자로 구성된 좌석 배열 문자열이 주어진다. (`S` 또는 `L`)
+
+### 출력
+
+컵홀더를 사용할 수 있는 최대 사람 수를 출력한다.
+
+### 예제
+
+| 입력      | 출력 |
+| --------- | ---- |
+| `3` `SSL` | `3`  |
+
+## 풀이
+
+문자열을 한 번 순회하며 컵홀더 수를 세는 그리디 방식으로 해결한다. `S` 좌석은 좌우 컵홀더 2개를 1명이 공유하므로 1개 사용 가능, `L` 좌석은 2명이 양 끝 컵홀더 2개를 사용하므로 2개 사용 가능하다.
+
+1. 컵홀더 카운트 `cnt`를 1로 초기화한다(좌석 배열 맨 왼쪽 컵홀더).
+2. 문자열을 순회하면서 `S`이면 `cnt++`, `L`이면 `cnt++`하고 인덱스를 하나 추가로 건너뛴다(`i++`).
+3. 최종적으로 컵홀더 수는 사람 수를 초과할 수 없으므로 `Math.min(cnt, T)`를 출력한다.
+
+**핵심 아이디어:** `S` 1개당 컵홀더 2개 중 1개를 사용하고, `L` 2인 좌석은 양 끝 컵홀더 2개를 모두 사용한다. 컵홀더 총 수는 `1 + (S 개수) + (L 쌍 수 × 2)`이지만 최대값은 사람 수 T로 제한된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.util.Scanner;
+
+public class Day11BOJ2810컵홀더 {// 2810
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int T = Integer.parseInt(sc.nextLine());
+		String s = sc.nextLine();
+		int cnt = 1;
+		for (int i = 0; i < T; i++) {
+			char c = s.charAt(i);
+			if (c == 'S')
+				cnt++;
+			else if (c == 'L') {
+				cnt++;
+				i++;
+			}
+		} // 컵의 최대 갯수는 사람 수를 넘지 않는다!!!!!
+		System.out.println(cnt <= T ? cnt : T);
+		sc.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 문자열 한 번 순회
+- 공간: O(1) — 추가 자료구조 없음

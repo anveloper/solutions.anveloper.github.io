@@ -1,0 +1,73 @@
+---
+title: "BOJ 4732 - 조옮김"
+date: "2026-03-13"
+description: "음표 시퀀스를 주어진 반음 수만큼 조옮김하는 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4732"
+problem_url: "https://www.acmicpc.net/problem/4732"
+difficulty: "브론즈 III"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4732 - 조옮김](https://www.acmicpc.net/problem/4732)
+
+> 음표들이 주어지면 지정된 반음 수만큼 이동시킨 결과를 출력하는 문제
+
+## 풀이
+
+12개 음계를 인덱스로 매핑하고, 샵/플랫 포함 음표를 파싱하여 해당 인덱스에 이동량을 더한 뒤 모듈로 12로 변환한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <map>
+#include <sstream>
+
+using namespace std;
+
+map<string, int> noteToIdx = {
+    {"A", 0}, {"A#", 1}, {"Bb", 1}, {"B", 2}, {"Cb", 2}, {"B#", 3}, {"C", 3}, {"C#", 4}, {"Db", 4},
+    {"D", 5}, {"D#", 6}, {"Eb", 6}, {"E", 7}, {"Fb", 7}, {"E#", 8}, {"F", 8}, {"F#", 9}, {"Gb", 9},
+    {"G", 10}, {"G#", 11}, {"Ab", 11}
+};
+
+string idxToNote[] = {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  string line;
+  while (getline(cin, line) && line != "***") {
+    vector<string> notes;
+    stringstream ss(line);
+    string temp;
+    while (ss >> temp) notes.push_back(temp);
+
+    int move;
+    cin >> move;
+    cin.ignore();
+
+    for (int i = 0; i < notes.size(); i++) {
+      int currentIdx = noteToIdx[notes[i]];
+      int nextIdx = (currentIdx + move) % 12;
+      if (nextIdx < 0) nextIdx += 12;
+
+      cout << idxToNote[nextIdx] << (i == notes.size() - 1 ? "" : " ");
+    }
+    cout << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n) (n: 음표 개수)
+- 공간: O(n)

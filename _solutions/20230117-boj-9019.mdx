@@ -1,0 +1,128 @@
+---
+title: "BOJ 9019 - DSLR"
+date: "2023-01-17"
+description: "그래프 이론, 그래프 탐색, 너비 우선 탐색 문제"
+tags: ["그래프 이론", "그래프 탐색", "너비 우선 탐색", "역추적"]
+platform: "boj"
+problem_number: "9019"
+problem_url: "https://www.acmicpc.net/problem/9019"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9019 - DSLR](https://www.acmicpc.net/problem/9019)
+
+레지스터에 0~9999 값이 저장되어 있다. D(2배 mod 10000), S(-1, 0이면 9999), L(왼쪽 순환 시프트), R(오른쪽 순환 시프트) 네 가지 명령을 사용해 A에서 B로 바꾸는 최소 명령 수열을 구하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T, 각 케이스마다 A와 B가 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 최소 명령 수열을 출력한다.
+
+### 예제
+
+| 입력                            | 출력            |
+| ------------------------------- | --------------- |
+| `3` `1234 3412` `1000 1` `1 16` | `LL` `L` `DDDD` |
+
+## 풀이
+
+0~9999를 정점으로 한 BFS로 최소 명령 경로를 탐색한다.
+
+1. 시작값 A를 큐에 넣고 BFS를 시작한다
+2. 현재 값에서 D, S, L, R 연산을 적용한 4개의 다음 값을 생성한다
+3. 미방문 값이면 큐에 넣고 명령 문자열을 누적한다
+4. 목표값 B에 도달하면 누적된 명령 문자열을 출력한다
+
+**핵심 아이디어**: 0~9999의 10,000개 정점에서 각각 4개 간선이 있는 그래프의 최단 경로 문제이다. BFS로 가중치 없는 최단 경로를 보장한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class Day344BOJ9019DSLR {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt();
+
+        for (int tc = 1; tc <= T; tc++) {
+            int A = sc.nextInt(), B = sc.nextInt();
+            boolean[] visit = new boolean[10000];
+            visit[A] = true;
+
+            Queue<Register> que = new LinkedList<>();
+            que.add(new Register(A, ""));
+
+            while (!que.isEmpty()) {
+                Register cur = que.poll();
+
+                if (cur.num == B) {
+                    System.out.println(cur.command);
+                    break;
+                }
+
+                if (!visit[cur.D()]) {
+                    que.add(new Register(cur.D(), cur.command + "D"));
+                    visit[cur.D()] = true;
+                }
+                if (!visit[cur.S()]) {
+                    que.add(new Register(cur.S(), cur.command + "S"));
+                    visit[cur.S()] = true;
+                }
+                if (!visit[cur.L()]) {
+                    que.add(new Register(cur.L(), cur.command + "L"));
+                    visit[cur.L()] = true;
+                }
+                if (!visit[cur.R()]) {
+                    que.add(new Register(cur.R(), cur.command + "R"));
+                    visit[cur.R()] = true;
+                }
+
+            }
+        }
+        sc.close();
+    }
+
+    static class Register {
+        int num;
+        String command;
+
+        Register(int num, String command) {
+            this.num = num;
+            this.command = command;
+        }
+
+        int D() {
+            return (num * 2) % 10000;
+        }
+
+        int S() {
+            return num == 0 ? 9999 : num - 1;
+        }
+
+        int L() {
+            return num % 1000 * 10 + num / 1000;
+        }
+
+        int R() {
+            return num % 10 * 1000 + num / 10;
+        }
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(10000 \* 4) - 최대 10,000개 정점 × 4개 연산
+- 공간: O(10000) - 방문 및 명령 문자열 저장

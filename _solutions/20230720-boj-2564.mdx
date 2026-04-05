@@ -1,0 +1,95 @@
+---
+title: "BOJ 2564 - 경비원"
+date: "2023-07-20"
+description: "구현, 많은 조건 분기 문제"
+tags: ["구현", "많은 조건 분기"]
+platform: "boj"
+problem_number: "2564"
+problem_url: "https://www.acmicpc.net/problem/2564"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2564 - 경비원](https://www.acmicpc.net/problem/2564)
+
+직사각형 블록의 둘레에 상점들과 경비원이 위치할 때, 경비원에서 각 상점까지 블록 둘레를 따라 이동하는 최단 거리의 합을 구한다.
+
+### 입력
+
+첫째 줄에 블록의 가로 X, 세로 Y가 주어진다. 둘째 줄에 상점 수 N이 주어진다. 다음 N줄에 상점 위치, 마지막 줄에 경비원 위치가 (방향, 거리) 형태로 주어진다. 방향은 1(북), 2(남), 3(서), 4(동)이다.
+
+### 출력
+
+경비원에서 모든 상점까지의 최단 거리 합을 출력한다.
+
+### 예제
+
+| 입력                               | 출력 |
+| ---------------------------------- | ---- |
+| `10 5` `3` `1 4` `3 2` `2 8` `1 6` | `32` |
+
+## 풀이
+
+각 위치를 직사각형 둘레 위의 1차원 좌표로 변환한 후, 시계/반시계 방향 중 짧은 거리를 선택한다.
+
+1. 방향과 거리를 기반으로 각 위치를 둘레 위의 누적 거리로 변환한다
+   - 북(1): d, 동(4): X + d, 남(2): 2X + Y - d, 서(3): 2X + 2Y - d
+2. 경비원 위치(arr[N])와 각 상점(arr[i]) 간의 직선 거리를 구한다
+3. 직선 거리와 (둘레 - 직선 거리) 중 작은 값을 선택한다
+4. 모든 상점에 대한 최단 거리를 합산한다
+
+**핵심 아이디어**: 2차원 직사각형 둘레 문제를 1차원 원형 좌표로 변환하면, 두 점 간 최단 거리는 시계/반시계 방향 중 짧은 쪽이 된다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day529BOJ2564경비원 {
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int X = Integer.parseInt(st.nextToken());
+    int Y = Integer.parseInt(st.nextToken());
+    int N = Integer.parseInt(br.readLine());
+    int[] arr = new int[N + 1];
+    for (int i = 0; i < N + 1; i++) {
+      st = new StringTokenizer(br.readLine());
+      int tmp = Integer.parseInt(st.nextToken());
+      int d = Integer.parseInt(st.nextToken());
+      switch (tmp) {
+        case 1:
+          arr[i] = d;
+          break;
+        case 4:
+          arr[i] = X + d;
+          break;
+        case 2:
+          arr[i] = 2 * X + Y - d;
+          break;
+        case 3:
+          arr[i] = 2 * X + 2 * Y - d;
+          break;
+      }
+    }
+
+    int answer = 0;
+    for (int i = 0; i < N; i++) {
+      answer += Math.min(Math.abs(arr[N] - arr[i]), (2 * X + 2 * Y) - (Math.abs(arr[N] - arr[i])));
+    }
+    System.out.print(answer);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

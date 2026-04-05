@@ -1,0 +1,62 @@
+---
+title: "BOJ 16170 - 오늘의 날짜는?"
+date: "2024-11-13"
+description: "현재 UTC 날짜를 출력하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "16170"
+problem_url: "https://www.acmicpc.net/problem/16170"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16170 - 오늘의 날짜는?](https://www.acmicpc.net/problem/16170)
+
+현재 UTC 기준의 연도, 월, 일을 출력하라.
+
+### 입력
+
+입력 없음.
+
+### 출력
+
+연도, 월, 일을 각각 한 줄씩 출력한다.
+
+### 예제
+
+| 입력   | 출력             |
+| ------ | ---------------- |
+| (없음) | `2024` `11` `13` |
+
+## 풀이
+
+C 표준 라이브러리의 시간 함수를 사용한다.
+
+1. `time(NULL)`로 현재 시간을 구한다
+2. `gmtime`으로 UTC 기준 `tm` 구조체를 얻는다
+3. `tm_year + 1900`, `tm_mon + 1`, `tm_mday`를 출력한다
+
+**핵심 아이디어**: `gmtime`은 UTC 기준 시간을 반환하며, `tm_year`는 1900부터의 연 차이, `tm_mon`은 0-indexed이다.
+
+## 코드
+
+```cpp
+#include <stdio.h>
+#include <time.h>
+int main()
+{
+  time_t timer;
+  struct tm *t;
+  timer = time(NULL);
+  t = gmtime(&timer);
+  printf("%d\n%d\n%d", t->tm_year + 1900, t->tm_mon + 1, t->tm_mday);
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

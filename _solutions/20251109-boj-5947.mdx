@@ -1,0 +1,91 @@
+---
+title: "BOJ 5947 - Book Club"
+date: "2025-11-09"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "5947"
+problem_url: "https://www.acmicpc.net/problem/5947"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5947 - Book Club](https://www.acmicpc.net/problem/5947)
+
+N명의 회원이 Q개의 질문에 답변한 설문 데이터가 있다. 총 P개의 조건이 주어지며, 각 조건은 `질문 번호 qj`와 `기대 답변 aj`로 구성된다. P개의 조건을 모두 만족하는 회원의 수를 출력한다.
+
+### 입력
+
+- 첫 번째 줄: 회원 수 N, 질문 수 Q, 조건 수 P
+- 이후 N줄: 각 회원의 Q개 답변 (1~N번 회원 순서대로)
+- 이후 P줄: 조건 `qj aj` (qj번 질문의 답이 aj인 사람을 찾음)
+
+### 출력
+
+- P개의 조건을 모두 만족하는 회원의 수
+
+### 예제
+
+| 입력                            | 출력 |
+| ------------------------------- | ---- |
+| `3 2 1` `1 2` `3 4` `1 2` `1 1` | `2`  |
+
+## 풀이
+
+각 조건마다 모든 회원을 탐색하여 조건을 만족하는 횟수를 누적하고, 모든 조건을 만족한 회원을 카운트한다.
+
+1. N, Q, P를 입력받는다.
+2. 2차원 배열 `a[N][Q]`에 각 회원의 답변을 저장한다.
+3. P개의 조건 `(qj, aj)`를 입력받으며, 각 조건마다 N명을 전부 확인한다.
+4. 회원 j의 qj번 답변이 aj와 일치하면 해당 회원의 카운트(`check[j]`)를 증가시킨다.
+5. 모든 조건 처리 후 `check[i] == P`인 회원의 수를 출력한다.
+
+**핵심 아이디어**: 각 조건을 순차적으로 처리하면서 조건을 만족하는 회원의 카운트를 누적한다. 최종적으로 `check[i] == P`인 회원은 모든 조건을 만족한 사람이다. P * N번의 비교로 O(P*N) 시간에 해결된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int n, q, p, a[50001][51], check[50001];
+
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+
+  cin >> n >> q >> p;
+  for (int i = 1; i <= n; i++)
+    for (int j = 1; j <= q; j++)
+      cin >> a[i][j];
+
+  for (int i = 0; i < p; i++)
+  {
+    int qj, aj;
+    cin >> qj >> aj;
+    for (int j = 1; j <= n; j++)
+    {
+      if (a[j][qj] == aj)
+        check[j]++;
+    }
+  }
+
+  int ans = 0;
+  for (int i = 1; i <= n; i++)
+  {
+    if (check[i] == p)
+      ans++;
+  }
+  cout << ans << '\n';
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N*Q + P*N) — 입력 처리 O(N*Q)와 조건 탐색 O(P*N)
+- 공간: O(N\*Q) — 회원별 답변 저장 2차원 배열

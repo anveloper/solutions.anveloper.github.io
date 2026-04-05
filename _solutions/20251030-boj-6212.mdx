@@ -1,0 +1,85 @@
+---
+title: "BOJ 6212 - Dream Counting"
+date: "2025-10-30"
+description: "수학, 브루트포스 알고리즘 문제"
+tags: ["수학", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "6212"
+problem_url: "https://www.acmicpc.net/problem/6212"
+difficulty: "실버 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6212 - Dream Counting](https://www.acmicpc.net/problem/6212)
+
+N부터 M까지의 정수에서 각 숫자(0~9)가 총 몇 번 등장하는지 구하라.
+
+### 입력
+
+두 정수 N과 M이 주어진다.
+
+### 출력
+
+0부터 9까지 각 숫자의 등장 횟수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력   | 출력                   |
+| ------ | ---------------------- |
+| `1 20` | `2 12 3 2 2 2 2 2 2 2` |
+
+## 풀이
+
+N부터 M까지 모든 수의 각 자릿수를 직접 세어 집계한다.
+
+1. 0~9 카운트 배열을 초기화한다
+2. N부터 M까지 각 수에 대해 10으로 나누며 각 자릿수를 추출한다
+3. 해당 자릿수의 카운트를 증가시킨다
+4. 최종 카운트를 출력한다
+
+**핵심 아이디어**: 범위가 충분히 작으면 브루트포스로 각 수의 자릿수를 직접 세는 방식이 간단하고 정확하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int iN, iM;
+  cin >> iN >> iM;
+
+  vector<int> vecCount(10, 0);
+  for (int i = iN; i <= iM; ++i)
+  {
+    int iTemp = i;
+    while (iTemp > 0)
+    {
+      ++vecCount[iTemp % 10];
+      iTemp /= 10;
+    }
+  }
+
+  for (int i = 0; i < 10; ++i)
+  {
+    cout << vecCount[i] << (i == 9 ? "\n" : " ");
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O((M - N) \* log M)
+- 공간: O(1)

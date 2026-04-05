@@ -1,0 +1,67 @@
+---
+title: "BOJ 5523 - 경기 결과"
+date: "2024-12-31"
+description: "N번의 경기에서 A와 B의 승수를 세는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5523"
+problem_url: "https://www.acmicpc.net/problem/5523"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5523 - 경기 결과](https://www.acmicpc.net/problem/5523)
+
+N번의 경기에서 A와 B의 총 승수를 구하라.
+
+### 입력
+
+경기 수 N, 각 경기마다 A와 B의 점수가 주어진다.
+
+### 출력
+
+A의 승수와 B의 승수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력                  | 출력  |
+| --------------------- | ----- |
+| `3` `3 1` `1 2` `4 2` | `2 1` |
+
+## 풀이
+
+각 경기의 점수를 비교하여 승수를 센다.
+
+1. A 점수가 B보다 크면 A_count를 증가시킨다
+2. B 점수가 A보다 크면 B_count를 증가시킨다
+3. 최종 승수를 출력한다
+
+**핵심 아이디어**: 단순 비교 카운팅으로 O(N)에 해결된다.
+
+## 코드
+
+```cpp
+#include <stdio.h>
+int main()
+{
+  int N, A, B, A_count = 0, B_count = 0;
+  scanf("%d", &N);
+  for (int i = 0; i < N; i++)
+  {
+    scanf("%d %d", &A, &B);
+    if (A > B)
+      A_count++;
+    else if (A < B)
+      B_count++;
+  }
+  printf("%d %d", A_count, B_count);
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

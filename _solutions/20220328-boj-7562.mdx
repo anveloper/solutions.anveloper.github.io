@@ -1,0 +1,119 @@
+---
+title: "BOJ 7562 - 나이트의 이동"
+date: "2022-03-28"
+description: "너비 우선 탐색, 그래프 이론, 그래프 탐색 문제"
+tags: ["너비 우선 탐색", "그래프 이론", "그래프 탐색", "최단 경로", "격자 그래프"]
+platform: "boj"
+problem_number: "7562"
+problem_url: "https://www.acmicpc.net/problem/7562"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7562 - 나이트의 이동](https://www.acmicpc.net/problem/7562)
+
+L자 모양으로 이동하는 체스 나이트가 시작 위치에서 목표 위치까지 이동하는 최소 이동 횟수를 구하는 문제이다. 체스판의 크기는 N x N이며, 여러 테스트 케이스가 주어진다.
+
+### 입력
+
+- 첫 번째 줄: 테스트 케이스 수 T
+- 각 케이스: 체스판 크기 N, 시작 좌표 (r1, c1), 목표 좌표 (r2, c2)
+
+### 출력
+
+각 테스트 케이스마다 최소 이동 횟수를 출력한다.
+
+### 예제
+
+| 입력                                                     | 출력         |
+| -------------------------------------------------------- | ------------ |
+| `3` `8` `0 0` `7 0` `100` `0 0` `30 50` `10` `1 1` `1 1` | `5` `28` `0` |
+
+## 풀이
+
+BFS를 활용하여 나이트의 최단 이동 경로를 탐색한다. BFS는 너비 우선으로 탐색하므로 처음 목표 위치에 도달했을 때의 이동 횟수가 최솟값임이 보장된다.
+
+1. 나이트의 8가지 이동 방향을 `dr[]`, `dc[]` 배열로 정의한다.
+2. 시작 위치를 큐에 삽입하고 방문 처리한다.
+3. 큐에서 위치를 꺼내 8방향으로 이동을 시도하고, 유효한 범위이고 미방문이면 큐에 추가한다.
+4. 목표 위치에 도달하면 해당 이동 횟수(거리 d)를 반환한다.
+
+**핵심 아이디어**: 나이트의 8가지 L자 이동을 방향 배열로 미리 정의하고, BFS의 레벨(distance)을 `Point` 객체의 필드 `d`로 관리한다. 방문 배열 `visited[][]`로 중복 탐색을 방지하여 효율을 높인다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Day49BOJ7562나이트이동BFS구현연습 { // 7562 나이트 이동
+	static int N;
+	static boolean[][] visited;
+	static int[] dr = { -1, -2, -2, -1, 1, 2, 2, 1 };
+	static int[] dc = { -2, -1, 1, 2, -2, -1, 1, 2 };
+	static Point st, ed;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer stn = null;
+		int T = Integer.parseInt(br.readLine());
+		for (int tc = 0; tc < T; tc++) {
+			N = Integer.parseInt(br.readLine());
+			visited = new boolean[N][N];
+			stn = new StringTokenizer(br.readLine());
+			st = new Point(Integer.parseInt(stn.nextToken()), Integer.parseInt(stn.nextToken()), 0);
+			stn = new StringTokenizer(br.readLine());
+			ed = new Point(Integer.parseInt(stn.nextToken()), Integer.parseInt(stn.nextToken()), 0);
+			sb.append(bfs()).append("\n");
+		}
+		System.out.println(sb);
+		br.close();
+	}
+
+	private static int bfs() {
+		Queue<Point> q = new LinkedList<>();
+		q.add(st);
+		visited[st.r][st.c] = true;
+		while (!q.isEmpty()) {
+			Point n = q.poll();
+			if (n.r == ed.r && n.c == ed.c)
+				return n.d;
+			for (int d = 0; d < 8; d++) {
+				int nr = n.r + dr[d];
+				int nc = n.c + dc[d];
+				if (nr < 0 || nc < 0 || nr >= N || nc >= N)
+					continue;
+				if (visited[nr][nc])
+					continue;
+				visited[nr][nc] = true;
+				q.add(new Point(nr, nc, n.d + 1));
+			}
+		}
+		return 0;
+	}
+
+	static class Point {
+		int r, c, d = 0;
+
+		public Point(int r, int c, int d) {
+			this.r = r;
+			this.c = c;
+			this.d = d;
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — N x N 격자의 모든 칸을 최대 한 번씩 방문
+- 공간: O(N²) — visited 배열 및 큐 최대 크기

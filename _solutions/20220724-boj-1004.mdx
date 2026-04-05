@@ -1,0 +1,94 @@
+---
+title: "BOJ 1004 - 어린 왕자"
+date: "2022-07-24"
+description: "수학, 기하학 문제"
+tags: ["수학", "기하학"]
+platform: "boj"
+problem_number: "1004"
+problem_url: "https://www.acmicpc.net/problem/1004"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1004 - 어린 왕자](https://www.acmicpc.net/problem/1004)
+
+2차원 평면 위에 출발점과 도착점, 그리고 N개의 원이 주어진다. 출발점에서 도착점으로 이동할 때 원의 경계를 최소 몇 번 교차해야 하는지 구하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스의 수 T가 주어진다. 각 테스트 케이스에서 첫 줄에 출발점과 도착점의 좌표 `x1 y1 x2 y2`가 주어진다. 다음 줄에 원의 수 n이 주어지고, 이후 n줄에 각 원의 중심 `cx cy`와 반지름 `r`이 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 경계를 넘는 최소 횟수를 출력한다.
+
+### 예제
+
+| 입력                                              | 출력    |
+| ------------------------------------------------- | ------- |
+| `2` `0 0 10 0` `1` `5 0 4` `0 0 10 0` `1` `5 0 6` | `0` `2` |
+
+## 풀이
+
+각 원에 대해 출발점과 도착점의 포함 여부 XOR로 교차 횟수를 계산한다.
+
+1. 점이 원 안에 있는지 확인: `(x - cx)² + (y - cy)² < r²`이면 내부
+2. 각 원에 대해 출발점 포함 여부와 도착점 포함 여부를 XOR 연산
+   - XOR이 true이면 해당 원을 정확히 한 번 교차해야 함 → cnt++
+   - XOR이 false이면 둘 다 안쪽이거나 둘 다 바깥 → 교차 불필요
+3. 모든 원에 대해 cnt를 합산하여 출력
+4. 빠른 입력을 위해 `System.in.read()` 기반 커스텀 파서 사용
+
+**핵심 아이디어**: 출발점과 도착점 중 하나만 원 안에 있으면 반드시 그 원의 경계를 홀수 번 교차해야 하며, 최솟값은 1번이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+public class Day167BOJ1004기하학 {
+	static boolean enclosed(int x, int y, int cx, int cy, int r) {
+		return (x - cx) * (x - cx) + (y - cy) * (y - cy) < r * r;
+	}
+
+	public static void main(String args[]) throws Exception {
+		int T = readInt();
+		StringBuilder sb = new StringBuilder();
+		while (T-- > 0) {
+			int x1 = readInt(), y1 = readInt();
+			int x2 = readInt(), y2 = readInt();
+			int n = readInt();
+			int cnt = 0;
+			while (n-- > 0) {
+				int cx = readInt(), cy = readInt(), r = readInt();
+				if (enclosed(x1, y1, cx, cy, r) ^ enclosed(x2, y2, cx, cy, r))
+					cnt++;
+			}
+			sb.append(cnt + "\n");
+		}
+		System.out.println(sb);
+	}
+
+	static int readInt() throws Exception {
+		int sum = 0;
+		boolean isNegative = false;
+		while (true) {
+			int input = System.in.read();
+			if (input == '\n' || input == ' ')
+				return isNegative ? sum * -1 : sum;
+			else if (input == '-')
+				isNegative = true;
+			else
+				sum = (sum * 10) + input - '0';
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(T × N) (테스트 케이스 수 × 원의 수)
+- 공간: O(1)

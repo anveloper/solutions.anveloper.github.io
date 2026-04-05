@@ -1,0 +1,120 @@
+---
+title: "BOJ 1759 - 암호 만들기"
+date: "2022-05-03"
+description: "수학, 브루트포스 알고리즘, 조합론 문제"
+tags: ["수학", "브루트포스 알고리즘", "조합론", "백트래킹"]
+platform: "boj"
+problem_number: "1759"
+problem_url: "https://www.acmicpc.net/problem/1759"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1759 - 암호 만들기](https://www.acmicpc.net/problem/1759)
+
+C개의 알파벳 소문자 중에서 L개를 골라 오름차순으로 나열한 암호를 만든다. 이 암호는 모음(a, e, i, o, u)이 최소 1개, 자음이 최소 2개 포함되어야 한다.
+
+### 입력
+
+- 첫째 줄: 암호의 길이 L과 사용할 문자의 수 C (3 ≤ L ≤ C ≤ 15)
+- 둘째 줄: C개의 알파벳 소문자 (공백으로 구분)
+
+### 출력
+
+조건을 만족하는 모든 암호를 사전 순으로 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                | 출력                                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------- |
+| `4 6` `a t c i s w` | `acis` `acit` `aciw` `acst` `acsw` `actw` `aist` `aisw` `aitw` `astw` `cist` `cisw` `citw` `cstw` `istw` |
+
+## 풀이
+
+주어진 C개의 문자에서 L개를 선택하는 조합을 백트래킹으로 열거하고, 각 조합이 모음 1개 이상 + 자음 2개 이상 조건을 만족하면 수집한다. 문자를 오름차순 정렬 후 탐색하면 자동으로 사전 순 출력이 보장된다.
+
+1. 입력 문자를 `Arrays.sort`로 오름차순 정렬한다.
+2. `comb(idx, n)` 함수에서 `idx`번째 자리에 넣을 문자를 `arr[n]`부터 순서대로 탐색한다.
+3. `idx == L`에 도달하면 `check()` 함수로 모음/자음 개수를 검사한다.
+4. 조건 통과 시 현재 조합 문자열을 결과 리스트에 추가한다.
+5. 최종 리스트를 순서대로 출력한다.
+
+**핵심 아이디어**: 입력 문자를 미리 정렬해두면 조합 탐색 순서 자체가 사전 순이 된다. 또한 `i+1`부터 재귀 호출하여 같은 문자를 중복 선택하지 않고 순서가 앞선 문자를 다시 고르지 않도록 한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Day85BOJ1759암호만들기조합 {
+	static int N, C;
+	static char[] arr, tmp;
+	static List<String> ans;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String[] str = br.readLine().split(" ");
+		N = Integer.parseInt(str[0]);
+		C = Integer.parseInt(str[1]);
+		arr = br.readLine().replaceAll(" ", "").toCharArray();
+		tmp = new char[N];
+		ans = new ArrayList<>();
+		Arrays.sort(arr);
+		comb(0, 0);
+		System.out.println(toString(ans));
+		br.close();
+	}
+
+	private static void comb(int idx, int n) {
+		if (idx == N) {
+			if (check(0, 0))
+				ans.add(str(tmp, ""));
+			return;
+		}
+		for (int i = n; i < C; i++) {
+			tmp[idx] = arr[i];
+			comb(idx + 1, i + 1);
+		}
+	}
+
+	private static String str(char[] t, String s) {
+		for (char c : t)
+			s += c;
+		return s;
+	}
+
+	private static boolean check(int vo, int co) {
+		for (char c : tmp) {
+			if ("aeiou".contains(c + ""))
+				vo++;
+			else
+				co++;
+			if (vo > 0 && co > 1)
+				return true;
+		}
+		return false;
+	}
+
+	private static String toString(List<String> a) {
+		StringBuilder tt = new StringBuilder();
+		for (String s : a)
+			tt.append(s + "\n");
+		return tt.toString();
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(C(C,L) \* L) — C개 중 L개를 뽑는 조합 수에 각 조합 검사 비용
+- 공간: O(L) — 재귀 깊이 및 임시 조합 배열

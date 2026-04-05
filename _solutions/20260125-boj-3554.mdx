@@ -1,0 +1,119 @@
+---
+title: "BOJ 3554 - Enigmatic Device"
+date: "2026-01-25"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "3554"
+problem_url: "https://www.acmicpc.net/problem/3554"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3554 - Enigmatic Device](https://www.acmicpc.net/problem/3554)
+
+수열 `a`와 변환 규칙이 있는 장치가 있다. 변환 규칙은 `s[i] = (i * i) % 2010`으로 정의된다. 두 종류의 쿼리를 처리한다. 쿼리 1은 구간 `[b, e]`의 각 원소 `a[j]`를 `s[a[j]]`로 교체하고, 쿼리 2는 구간 `[b, e]`의 합을 출력한다.
+
+### 입력
+
+첫째 줄에 수열 크기 `N`이 주어진다. 둘째 줄에 `N`개의 정수가 주어진다. 셋째 줄에 쿼리 수 `M`이 주어진다. 이후 `M`줄에 걸쳐 `q b e` 형식의 쿼리가 주어진다 (`q`는 1 또는 2).
+
+### 출력
+
+쿼리 2에 대해 해당 구간의 합을 한 줄씩 출력한다.
+
+### 예제
+
+| 입력                            | 출력 |
+| ------------------------------- | ---- |
+| `3` `1 2 3` `2` `1 1 3` `2 1 3` | `9`  |
+
+## 풀이
+
+변환 테이블을 미리 계산한 뒤 쿼리에 따라 구간 업데이트 또는 구간 합을 처리한다.
+
+1. `s[i] = (i * i) % 2010` 변환 배열을 인덱스 0~2019에 대해 미리 계산한다.
+2. 쿼리 1이면 구간 `[b-1, e-1]`의 각 원소 `a[j]`를 `s[a[j]]`로 교체한다.
+3. 쿼리 2이면 구간 `[b-1, e-1]`의 원소 합을 계산하여 출력한다.
+
+**핵심 아이디어:** 원소 값의 범위가 0~2009이므로, 변환을 반복 적용하면 값이 점점 작아져 빠르게 수렴한다. 입력이 없을 때(`cin >> N` 실패 시) 조기 종료 처리를 한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <array>
+#include <unordered_set>
+
+using namespace std;
+using ll = long long;
+using ull = uint64_t;
+using ld = long double;
+
+#pragma GCC target("avx2")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
+int s[2020];
+int a[50000];
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  for (int i = 0; i < 2020; i++)
+  {
+    s[i] = (i * i) % 2010;
+  }
+
+  int N, M;
+  if (!(cin >> N))
+    return 0;
+
+  for (int i = 0; i < N; i++)
+  {
+    cin >> a[i];
+  }
+
+  if (!(cin >> M))
+    return 0;
+
+  int q, b, e;
+  for (int i = 0; i < M; i++)
+  {
+    cin >> q >> b >> e;
+
+    if (q == 1)
+    {
+      // 업데이트 쿼리
+      for (int j = b - 1; j < e; j++)
+      {
+        a[j] = s[a[j]];
+      }
+    }
+    else
+    {
+      // 구간 합 쿼리
+      int ans = 0;
+      for (int j = b - 1; j < e; j++)
+      {
+        ans += a[j];
+      }
+      cout << ans << '\n';
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N + M \* K) — 각 쿼리마다 구간 길이 K에 비례하는 선형 탐색
+- 공간: O(N) — 수열 및 변환 테이블 저장

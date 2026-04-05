@@ -1,0 +1,75 @@
+---
+title: "BOJ 15829 - Hashing"
+date: "2024-11-05"
+description: "문자열 해시 값을 계산하는 구현 문제"
+tags: ["구현", "문자열", "해싱"]
+platform: "boj"
+problem_number: "15829"
+problem_url: "https://www.acmicpc.net/problem/15829"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 15829 - Hashing](https://www.acmicpc.net/problem/15829)
+
+문자열이 주어질 때, 다항식 해시 함수 `H = sum((문자값) * r^i) mod M`을 계산하라. r=31, M=1234567891이다.
+
+### 입력
+
+문자열 길이 L과 소문자 문자열이 주어진다.
+
+### 출력
+
+해시 값을 출력한다.
+
+### 예제
+
+| 입력        | 출력      |
+| ----------- | --------- |
+| `5` `abcde` | `4739715` |
+
+## 풀이
+
+r의 거듭제곱을 누적하며 해시 값을 계산한다.
+
+1. R=1(r^0)로 시작하여 각 문자마다 `(문자값) * R`을 누적한다
+2. 매 단계마다 M으로 나머지를 취해 오버플로를 방지한다
+3. R을 r=31로 곱하고 다시 M으로 나머지를 취한다
+
+**핵심 아이디어**: 다항식 해싱에서 매 단계 모듈러를 취하면 `long long` 범위 내에서 안전하게 계산할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#define r 31
+#define M 1234567891
+
+using namespace std;
+
+int main()
+{
+  int l, i;
+  long long hash = 0, R = 1;
+  string str;
+
+  cin >> l >> str;
+
+  for (i = 0; i < str.length(); i++)
+  {
+    hash += ((str[i] - 'a' + 1) * R) % M;
+    hash %= M;
+    R = (R * r) % M;
+  }
+  cout << hash;
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 문자열 길이)
+- 공간: O(L)

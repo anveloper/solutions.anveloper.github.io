@@ -1,0 +1,67 @@
+---
+title: "BOJ 2121 - 넷이 놀기"
+date: "2025-03-24"
+description: "자료 구조, 기하학, 집합과 맵 문제"
+tags: ["자료 구조", "기하학", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "2121"
+problem_url: "https://www.acmicpc.net/problem/2121"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2121 - 넷이 놀기](https://www.acmicpc.net/problem/2121)
+
+2차원 평면에 N개의 점이 주어질 때, 가로 A, 세로 B인 축에 평행한 직사각형의 개수를 구하라.
+
+### 입력
+
+첫째 줄에 점의 수 N, 둘째 줄에 A와 B, 이후 N줄에 점의 좌표가 주어진다.
+
+### 출력
+
+가로 A, 세로 B인 직사각형의 개수를 출력한다.
+
+### 예제
+
+| 입력                                    | 출력 |
+| --------------------------------------- | ---- |
+| `5` `3 2` `0 0` `3 0` `0 2` `3 2` `1 1` | `1`  |
+
+## 풀이
+
+각 점을 좌하단 꼭짓점으로 가정하고, 나머지 3개 꼭짓점이 점 집합에 존재하는지 확인한다.
+
+1. 모든 점을 Set에 저장한다
+2. 각 점 (x, y)에 대해 (x+A, y), (x, y+B), (x+A, y+B) 세 점이 모두 Set에 있는지 확인한다
+3. 모두 존재하면 직사각형 카운트를 증가시킨다
+
+**핵심 아이디어**: Set의 O(1) 조회를 활용하여, 각 점에서 3번의 존재 확인만으로 직사각형을 판별한다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+N = int(input())
+A, B = map(int, input().split())
+xy_set = set(tuple(map(int, input().split())) for _ in range(N))
+
+cnt = 0
+for x, y in xy_set:
+    if ((x + A, y) in xy_set) and ((x, y + B) in xy_set) and ((x + A, y + B) in xy_set):
+
+        cnt += 1
+
+print(cnt)
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

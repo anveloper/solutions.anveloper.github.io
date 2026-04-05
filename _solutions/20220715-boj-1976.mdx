@@ -1,0 +1,121 @@
+---
+title: "BOJ 1976 - 여행 가자"
+date: "2022-07-15"
+description: "자료 구조, 그래프 이론, 그래프 탐색 문제"
+tags: ["자료 구조", "그래프 이론", "그래프 탐색", "분리 집합"]
+platform: "boj"
+problem_number: "1976"
+problem_url: "https://www.acmicpc.net/problem/1976"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1976 - 여행 가자](https://www.acmicpc.net/problem/1976)
+
+N개의 도시와 도시 간의 연결 정보가 주어진다. M개의 여행 도시 목록이 주어질 때, 해당 순서대로 여행이 가능한지(연속된 두 도시가 서로 연결되어 있거나 같아야 함) 확인하라.
+
+### 입력
+
+첫째 줄에 N이 주어진다. (1 ≤ N ≤ 200)
+둘째 줄에 M이 주어진다. (1 ≤ M ≤ 1000)
+이후 N×N 인접 행렬이 주어진다. 값이 1이면 연결, 0이면 미연결이다.
+마지막 줄에 M개의 여행 도시 번호가 주어진다.
+
+### 출력
+
+여행 경로가 가능하면 YES, 불가능하면 NO를 출력한다.
+
+### 예제
+
+| 입력                                    | 출력  |
+| --------------------------------------- | ----- |
+| `3` `3` `0 1 0` `1 0 1` `0 1 0` `1 2 3` | `YES` |
+
+## 풀이
+
+Union-Find로 도시들의 연결 여부를 집합으로 관리한다.
+
+1. N개의 도시를 각자 자신을 부모로 초기화한다
+2. 인접 행렬을 읽으면서 연결된 도시들을 union 연산으로 같은 집합으로 합친다
+3. 여행 도시 목록을 순서대로 읽으며, 인접한 두 도시의 find 결과가 다르면 불가능
+4. 모든 인접 쌍이 같은 집합에 속하면 YES, 아니면 NO 출력
+5. union 시 작은 번호를 부모로 설정하여 일관성 유지
+
+**핵심 아이디어**: 연결 그래프에서 임의 두 노드 간 이동 가능 여부는 같은 연결 성분에 속하는지로 판단할 수 있으며, Union-Find로 O(α(N)) 시간에 확인한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day158BOJ1976서로소집합확인 {
+	static int N, M, from, to;
+	static int[] p = new int[201];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+		M = Integer.parseInt(br.readLine());
+
+		for (int i = 1; i <= N; i++)
+			p[i] = i;
+
+		for (int i = 1; i <= N; i++) {
+			String str = br.readLine();
+			for (int j = 1; j <= N; j++) {
+				if (str.charAt(2 * (j - 1)) == '1')
+					union(i, j);
+			}
+		}
+
+		st = new StringTokenizer(br.readLine());
+		boolean isPossible = true;
+
+		if (st.hasMoreTokens())
+			to = Integer.parseInt(st.nextToken());
+
+		while (--M > 0) {
+			from = to;
+			to = Integer.parseInt(st.nextToken());
+
+			if (find(from) != find(to)) {
+				isPossible = false;
+				break;
+			}
+		}
+
+		System.out.println(isPossible ? "YES" : "NO");
+	}
+
+	static int find(int x) {
+		if (x == p[x])
+			return x;
+
+		return p[x] = find(p[x]);
+	}
+
+	static void union(int a, int b) {
+		a = find(a);
+		b = find(b);
+
+		if (a == b)
+			return;
+
+		p[a] = p[b] = Math.min(a, b);
+	}
+
+}
+```
+
+## 복잡도
+
+- 시간: O(N² × α(N)) (인접 행렬 union + 여행 경로 확인)
+- 공간: O(N)

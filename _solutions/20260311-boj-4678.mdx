@@ -1,0 +1,58 @@
+---
+title: "BOJ 4678 - Skew Binary"
+date: "2026-03-11"
+description: "Skew Binary 표현을 10진수로 변환하는 수학 문제"
+tags: ["수학", "구현", "문자열"]
+platform: "boj"
+problem_number: "4678"
+problem_url: "https://www.acmicpc.net/problem/4678"
+difficulty: "브론즈 IV"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4678 - Skew Binary](https://www.acmicpc.net/problem/4678)
+
+> Skew Binary 수 체계로 표현된 수를 10진수로 변환하는 문제
+
+## 풀이
+
+Skew Binary에서 k번째 자릿수(오른쪽부터 1-indexed)의 가중치는 `2^k - 1`이다. 문자열을 왼쪽부터 순회하며 각 자릿수에 해당 가중치를 곱해 누적한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  string skew;
+  while (cin >> skew && skew != "0") {
+    long long decimal = 0;
+    int n = skew.length();
+
+    for (int i = 0; i < n; i++) {
+      int k = n - i;
+      int digit = skew[i] - '0';
+
+      decimal += (long long)digit * ((1LL << k) - 1);
+    }
+    cout << decimal << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n) (n: 문자열 길이)
+- 공간: O(1)

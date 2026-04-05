@@ -1,0 +1,114 @@
+---
+title: "BOJ 2816 - 디지털 티비"
+date: "2023-06-29"
+description: "구현, 해 구성하기 문제"
+tags: ["구현", "해 구성하기"]
+platform: "boj"
+problem_number: "2816"
+problem_url: "https://www.acmicpc.net/problem/2816"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2816 - 디지털 티비](https://www.acmicpc.net/problem/2816)
+
+채널 리스트에서 리모콘 버튼(1: 아래 이동, 4: 위로 교환)을 사용하여 KBS1을 1번, KBS2를 2번 위치로 옮기는 버튼 조작 순서를 출력한다.
+
+### 입력
+
+첫째 줄에 채널 수 N이 주어진다 (2 이상 100 이하). 다음 N줄에 채널명이 주어진다.
+
+### 출력
+
+KBS1을 1번, KBS2를 2번으로 옮기기 위한 리모콘 버튼 조작 순서를 출력한다.
+
+### 예제
+
+| 입력                          | 출력       |
+| ----------------------------- | ---------- |
+| `4` `MBC` `KBS2` `KBS1` `SBS` | `11441144` |
+
+## 풀이
+
+KBS1을 먼저 맨 앞으로 이동시킨 후, KBS2를 두 번째 위치로 이동시킨다.
+
+1. 채널 리스트에서 KBS1의 위치를 찾고, 그 위치까지 화살표를 내린다 (버튼 1)
+2. KBS1이 0번 위치에 올 때까지 인접 채널과 교환하며 위로 올린다 (버튼 4)
+3. 다시 KBS2의 위치를 찾고, 그 위치까지 화살표를 내린다 (버튼 1)
+4. KBS2가 1번 위치에 올 때까지 인접 채널과 교환하며 위로 올린다 (버튼 4)
+
+**핵심 아이디어**: 그리디하게 KBS1을 먼저 처리하면 이후 KBS2는 독립적으로 처리할 수 있다. Special Judge 문제이므로 여러 정답이 가능하다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+
+public class Day508BOJ2816디지털티비 {
+  static int N, arrow;
+  static String[] channels;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    N = Integer.parseInt(br.readLine());
+
+    channels = new String[N];
+
+    for (int i = 0; i < N; i++) {
+      channels[i] = br.readLine();
+    }
+
+    arrow = 0;
+    for (int i = 0; i < N; i++) {
+      if (channels[i].equals("KBS1")) {
+        break;
+      } else {
+        arrow++;
+        bw.append("1");
+      }
+    }
+
+    while (!channels[0].equals("KBS1")) {
+      swap(arrow, arrow - 1);
+      bw.append("4");
+    }
+
+    for (int i = 0; i < N; i++) {
+      if (channels[i].equals("KBS2")) {
+        break;
+      } else {
+        arrow++;
+        bw.append("1");
+      }
+    }
+
+    while (!channels[1].equals("KBS2")) {
+      swap(arrow, arrow - 1);
+      bw.append("4");
+    }
+
+    bw.toString();
+    bw.flush();
+    bw.close();
+  }
+
+  private static void swap(int a, int b) {
+    String tmp = channels[a];
+    channels[a] = channels[b];
+    channels[b] = tmp;
+    arrow = b;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2) — 최악의 경우 각 채널을 N번 교환
+- 공간: O(N)

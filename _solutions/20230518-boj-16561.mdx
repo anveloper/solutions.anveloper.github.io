@@ -1,0 +1,68 @@
+---
+title: "BOJ 16561 - 3의 배수"
+date: "2023-05-18"
+description: "수학, 브루트포스 알고리즘, 조합론 문제"
+tags: ["수학", "브루트포스 알고리즘", "조합론"]
+platform: "boj"
+problem_number: "16561"
+problem_url: "https://www.acmicpc.net/problem/16561"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16561 - 3의 배수](https://www.acmicpc.net/problem/16561)
+
+3의 배수 N을 3개의 3의 배수의 합으로 나타내는 방법의 수를 구하라 (순서 구분).
+
+### 입력
+
+3의 배수 N이 주어진다 (9 이상).
+
+### 출력
+
+방법의 수를 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `9`  | `1`  |
+
+## 풀이
+
+N/3을 3개의 양의 정수의 합으로 나타내는 조합 수를 구한다.
+
+1. N/3 = k로 변환하면 k를 3개의 양의 정수로 분할하는 문제이다
+2. 이는 C(k-1, 2) = (k-1)(k-2)/2이다
+3. 코드는 N=9부터 3씩 증가하며 누적 합을 계산한다
+
+**핵심 아이디어**: 3의 배수 조건을 제거하면 n을 3개의 양의 정수로 나누는 조합 문제(중복 조합)가 된다.
+
+## 코드
+
+```java
+package day499;
+
+import java.util.Scanner;
+
+public class Day466BOJ16561삼의배수 {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int N = sc.nextInt(), sum = 1, cnt = 2;
+    for (int i = 9; i < N; i += 3) {
+      sum += cnt;
+      cnt++;
+    }
+    System.out.println(sum);
+    sc.close();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

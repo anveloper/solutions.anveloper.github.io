@@ -1,0 +1,122 @@
+---
+title: "BOJ 17281 - ⚾"
+date: "2022-06-12"
+description: "구현, 브루트포스 알고리즘 문제"
+tags: ["구현", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "17281"
+problem_url: "https://www.acmicpc.net/problem/17281"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17281 - ⚾](https://www.acmicpc.net/problem/17281)
+
+N이닝 동안 9명의 선수가 각 이닝에서 얻는 결과가 주어질 때, 1번 선수를 4번 타자로 고정한 상태에서 나머지 타순을 정해 얻을 수 있는 최대 득점을 구하라.
+
+### 입력
+
+첫째 줄에 이닝 수 N(2 ≤ N ≤ 50), 이후 N줄에 9명의 선수별 결과가 주어진다. 결과는 0(아웃), 1(안타), 2(2루타), 3(3루타), 4(홈런).
+
+### 출력
+
+가장 많은 득점을 하는 타순일 때의 득점을 출력한다.
+
+### 예제
+
+| 입력                                        | 출력 |
+| ------------------------------------------- | ---- |
+| `2` `4 0 0 0 0 0 0 0 0` `4 0 0 0 0 0 0 0 0` | `2`  |
+
+## 풀이
+
+1번 선수를 4번 타자로 고정한 후 나머지 8명의 순열을 생성하여 시뮬레이션하고 최대 득점을 구한다.
+
+1. 1번 선수를 4번 타석(`ord[4]=1`)에 고정하고, 2~9번 선수의 순열을 생성한다
+2. 각 순열에 대해 야구 게임을 시뮬레이션한다
+3. 주자 상태를 비트마스크로 관리한다: `base = (base + 1) << player`로 주자 전진 표현
+4. `base / 16`의 비트 수가 홈을 밟은 주자(득점)이다 (4비트 이상 = 홈 통과)
+5. 모든 순열의 득점 중 최댓값을 출력한다
+
+**핵심 아이디어**: 8! = 40,320가지 순열에 대해 시뮬레이션을 수행한다. 비트마스크로 1루(1), 2루(2), 3루(4), 홈(8 이상)을 표현하여 주자 진루를 시프트 연산으로 처리한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day125BOJ17281완탐연습 {
+	static int N, ans;
+	static int[] ord;
+	static int[][] rec;
+	static boolean[] visited;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		N = Integer.parseInt(br.readLine());
+
+		rec = new int[N][10];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 1; j < 10; j++)
+				rec[i][j] = Integer.parseInt(st.nextToken());
+		}
+		ans = 0;
+		visited = new boolean[10];
+		ord = new int[10];
+		visited[4] = true;
+		ord[4] = 1;
+		perm(2);
+		System.out.println(ans);
+		br.close();
+	}
+
+	static void perm(int d) {
+		if (d == 10) {
+			play();
+			return;
+		}
+		for (int i = 1; i <= 9; i++) {
+			if (!visited[i]) {
+				visited[i] = true;
+				ord[i] = d;
+				perm(d + 1);
+				visited[i] = false;
+			}
+		}
+	}
+
+	static void play() {
+		int rst = 0, bat = 1;
+		for (int i = 0; i < N; i++) {
+			int out = 0;
+			int base = 0;
+			while (out < 3) {
+				int player = rec[i][ord[bat]];
+				if (player == 0)
+					out++;
+				else {
+					base = (base + 1) << player;
+					rst += Integer.bitCount(base / 16);
+					base %= 16;
+				}
+				bat = bat + 1 == 10 ? 1 : bat + 1;
+			}
+		}
+		ans = Math.max(ans, rst);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(8! \* N)
+- 공간: O(N)

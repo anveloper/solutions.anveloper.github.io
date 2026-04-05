@@ -1,0 +1,60 @@
+---
+title: "BOJ 3765 - Celebrity jeopardy"
+date: "2025-06-11"
+description: "구현, 문자열, 애드 혹 문제"
+tags: ["구현", "문자열", "애드 혹"]
+platform: "boj"
+problem_number: "3765"
+problem_url: "https://www.acmicpc.net/problem/3765"
+difficulty: "브론즈 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3765 - Celebrity jeopardy](https://www.acmicpc.net/problem/3765)
+
+입력으로 주어진 모든 줄을 그대로 출력하는 문제이다.
+입력의 끝(EOF)까지 읽어서 각 줄을 그대로 출력하면 된다.
+별도의 연산 없이 입출력 자체가 핵심인 전형적인 애드 혹 문제이다.
+
+### 입력
+
+여러 줄의 텍스트가 주어진다. 입력의 끝은 EOF로 표시된다.
+
+### 출력
+
+입력받은 각 줄을 그대로 출력한다.
+
+### 예제
+
+| 입력          | 출력          |
+| ------------- | ------------- |
+| `Hello World` | `Hello World` |
+
+## 풀이
+
+EOF까지 `input()`을 반복 호출하여 각 줄을 그대로 출력한다.
+EOF에 도달하면 예외가 발생하므로 `try/except`로 종료를 처리한다.
+
+1. `while True` 루프를 시작한다.
+2. `input()`으로 한 줄을 읽어 그대로 `print()`한다.
+3. EOF에 도달하면 `EOFError`가 발생하며 `except` 블록에서 `exit(0)`으로 종료한다.
+
+**핵심 아이디어**: Python에서 EOF 처리는 `try/except`로 `input()` 예외를 잡는 방식이 가장 간결하다.
+
+## 코드
+
+```python
+try:
+    while True:
+        print(input())
+except:
+    exit(0)
+```
+
+## 복잡도
+
+- 시간: O(N) — 입력 줄 수 N에 대해 선형
+- 공간: O(1) — 한 줄씩 처리

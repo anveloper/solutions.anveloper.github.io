@@ -1,0 +1,73 @@
+---
+title: "BOJ 10995 - 별 찍기 - 20"
+date: "2024-10-11"
+description: "홀수 줄과 짝수 줄을 번갈아 들여쓰기하며 별을 출력하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10995"
+problem_url: "https://www.acmicpc.net/problem/10995"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10995 - 별 찍기 - 20](https://www.acmicpc.net/problem/10995)
+
+N줄에 걸쳐 별을 출력하되, 짝수 번째 줄은 공백 하나를 앞에 추가하여 지그재그 패턴을 만들어라.
+
+### 입력
+
+정수 N이 주어진다 (1 이상 100 이하).
+
+### 출력
+
+N줄에 걸쳐 지그재그 별 패턴을 출력한다.
+
+### 예제
+
+| 입력 | 출력                     |
+| ---- | ------------------------ |
+| `3`  | `* * *` ` * * *` `* * *` |
+
+## 풀이
+
+줄 번호의 홀짝에 따라 들여쓰기를 적용한다.
+
+1. N줄을 반복한다
+2. 0-indexed 기준 홀수 번째 줄은 앞에 공백 하나를 출력한다
+3. 각 줄에 `"* "`를 N번 반복 출력한다
+
+**핵심 아이디어**: 홀수 줄에만 공백 하나를 추가하면 지그재그 패턴이 만들어진다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  int N;
+  cin >> N;
+
+  for (int i = 0; i < N; i++)
+  {
+    if (i % 2 == 1)
+      cout << " ";
+
+    for (int j = 0; j < N; j++)
+    {
+      cout << "* ";
+    }
+    cout << endl;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2)
+- 공간: O(1)

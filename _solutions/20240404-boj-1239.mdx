@@ -1,0 +1,92 @@
+---
+title: "BOJ 1239 - 차트"
+date: "2024-04-04"
+description: "원형 차트에서 지름을 지나는 경계선의 최대 개수를 구하는 문제"
+tags: ["브루트포스"]
+platform: "boj"
+problem_number: "1239"
+problem_url: "https://www.acmicpc.net/problem/1239"
+difficulty: "골드 V"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1239 - 차트](https://www.acmicpc.net/problem/1239)
+
+N개의 백분율 데이터로 원형 차트를 그릴 때, 원의 지름 위에 놓이는 경계선의 최대 개수를 구하라.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 N개의 백분율(합 100)이 주어진다.
+
+### 출력
+
+지름 위에 놓이는 경계선의 최대 개수를 출력한다.
+
+### 예제
+
+| 입력              | 출력 |
+| ----------------- | ---- |
+| `4` `25 25 25 25` | `4`  |
+
+## 풀이
+
+N이 최대 8이므로 전체 순열을 탐색하여 지름 위 경계선 수를 최대화한다.
+
+1. N!가지 순열을 생성한다
+2. 각 순열에서 누적 합 배열을 구한다
+3. 누적 합에서 차이가 정확히 50인 쌍의 개수를 센다 (지름의 양 끝)
+4. 모든 순열에서 최대값을 갱신한다
+
+**핵심 아이디어**: 경계선이 지름 위에 놓이려면 두 경계점의 누적 백분율 차이가 정확히 50이어야 하며, N이 최대 8이므로 8! = 40,320가지 순열 탐색이 가능하다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = +input[0],
+    list = input[1].split(" ").map((e) => +e);
+
+  let res = 0;
+  const getNumber = (arr) => {
+    let a = 0;
+    for (let i = 0; i < N; i++) {
+      if (arr.includes(arr[i] + 50)) a++;
+    }
+    return a;
+  };
+
+  const getAcc = (arr) => {
+    const res = [list[arr[0]]];
+    for (let i = 1; i < N; i++) {
+      res[i] = res[i - 1] + list[arr[i]];
+    }
+    return res;
+  };
+
+  const recur = (arr = []) => {
+    if (arr.length === N) {
+      return (res = Math.max(res, getNumber(getAcc(arr))));
+    }
+    for (let i = 0; i < N; i++) {
+      if (arr.includes(i)) continue;
+      arr.push(i);
+      recur(arr);
+      arr.pop();
+    }
+  };
+  recur();
+  return res;
+};
+
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N! × N)
+- 공간: O(N)

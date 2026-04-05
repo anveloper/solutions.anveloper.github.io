@@ -1,0 +1,78 @@
+---
+title: "BOJ 1662 - 압축"
+date: "2023-06-04"
+description: "자료 구조, 스택, 재귀 문제"
+tags: ["자료 구조", "스택", "재귀"]
+platform: "boj"
+problem_number: "1662"
+problem_url: "https://www.acmicpc.net/problem/1662"
+difficulty: "골드 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1662 - 압축](https://www.acmicpc.net/problem/1662)
+
+`K(Q)` 형태로 압축된 문자열이 주어질 때, 압축을 풀었을 때의 문자열 길이를 구하라. `K(Q)`는 Q를 K번 반복한다는 의미이다.
+
+### 입력
+
+압축된 문자열이 주어진다.
+
+### 출력
+
+압축을 풀었을 때의 문자열 길이를 출력한다.
+
+### 예제
+
+| 입력             | 출력 |
+| ---------------- | ---- |
+| `33(562(71(9)))` | `19` |
+
+## 풀이
+
+스택으로 괄호 깊이별 길이를 추적하며 압축 해제 후 길이를 계산한다.
+
+1. 문자를 순회하며 스택에 push한다
+2. `)`를 만나면 `(`까지의 문자 수를 현재 깊이 카운터에 센다
+3. `(`를 제거하고, 직전 숫자(K)를 pop하여 카운트 \* K를 상위 깊이에 더한다
+4. 최종적으로 깊이 0의 카운트 + 스택에 남은 문자 수가 답이다
+
+**핵심 아이디어**: 실제 문자열을 생성하지 않고, 깊이별 길이 배열(`sh`)로 각 괄호 레벨의 길이만 추적하여 메모리 효율적으로 해결한다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day483BOJ1662압축 {
+  public static void main(String[] args) throws Exception {
+    String str = new BufferedReader(new InputStreamReader(System.in)).readLine();
+    int cnt = 0;
+    int[] sh = new int[26];
+    Stack<Character> stc = new Stack<>();
+    for (int i = 0; i < str.length(); i++) {
+      stc.push(str.charAt(i));
+      if (stc.peek() == ')') {
+        stc.pop();
+        while (stc.pop() != '(')
+          sh[cnt]++;
+        sh[cnt - 1] += sh[cnt] * (stc.pop() - '0');
+        sh[cnt--] = 0;
+      } else if (stc.peek() == '(')
+        cnt++;
+    }
+    System.out.println(sh[0] + stc.size());
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

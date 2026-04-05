@@ -1,0 +1,77 @@
+---
+title: "BOJ 2720 - 세탁소 사장 동혁"
+date: "2023-11-17"
+description: "수학, 그리디 알고리즘, 사칙연산 문제"
+tags: ["수학", "그리디 알고리즘", "사칙연산"]
+platform: "boj"
+problem_number: "2720"
+problem_url: "https://www.acmicpc.net/problem/2720"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2720 - 세탁소 사장 동혁](https://www.acmicpc.net/problem/2720)
+
+거스름돈(센트)이 주어질 때, Quarter(25), Dime(10), Nickel(5), Penny(1)의 각 개수를 구하라.
+
+### 입력
+
+첫째 줄에 T, 이후 T줄에 거스름돈(센트)이 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 Quarter, Dime, Nickel, Penny 개수를 출력한다.
+
+### 예제
+
+| 입력                 | 출력                          |
+| -------------------- | ----------------------------- |
+| `3` `124` `25` `194` | `4 2 0 4` `1 0 0 0` `7 1 1 4` |
+
+## 풀이
+
+큰 동전부터 차례로 나누어 각 동전의 개수를 구한다.
+
+1. 거스름돈을 25로 나누어 Quarter 개수를 구하고 나머지를 갱신한다
+2. 나머지를 10, 5, 1 순서로 반복한다
+
+**핵심 아이디어**: 각 동전 단위가 작은 단위의 배수이므로 큰 것부터 그리디하게 선택하면 최적이다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day650BOJ2720세탁소 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int t = Integer.parseInt(br.readLine());
+    int quarter = 25;
+    int dime = 10;
+    int nickel = 5;
+    int penny = 1;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < t; i++) {
+      int c = Integer.parseInt(br.readLine());
+      sb.append(c / quarter + " ");
+      c %= quarter;
+      sb.append(c / dime + " ");
+      c %= dime;
+      sb.append(c / nickel + " ");
+      c %= nickel;
+      sb.append(c / penny + "\n");
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T)
+- 공간: O(1)

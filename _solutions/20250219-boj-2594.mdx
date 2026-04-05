@@ -1,0 +1,75 @@
+---
+title: "BOJ 2594 - 놀이공원"
+date: "2025-02-19"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2594"
+problem_url: "https://www.acmicpc.net/problem/2594"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2594 - 놀이공원](https://www.acmicpc.net/problem/2594)
+
+놀이공원이 10:00~22:00에 운영된다. N개의 쇼가 주어지고, 각 쇼 전후 10분씩 이동 시간이 필요하다. 가장 긴 자유 시간을 구하라.
+
+### 입력
+
+쇼의 수 N과 각 쇼의 시작/종료 시간 (HHMM 형식)이 주어진다.
+
+### 출력
+
+가장 긴 자유 시간(분)을 출력한다.
+
+### 예제
+
+| 입력                                    | 출력  |
+| --------------------------------------- | ----- |
+| `3` `1030 1200` `1400 1530` `0900 0930` | `100` |
+
+## 풀이
+
+쇼 시간을 정렬한 뒤, 연속된 쇼 사이의 빈 구간 중 최대를 구한다.
+
+1. 각 쇼의 시작 시간에서 10분을 빼고, 종료 시간에 10분을 더한다
+2. 개장 시간(600분)과 폐장 시간(1320분)을 경계로 추가한다
+3. 시간순으로 정렬한 뒤, 이전 종료 시점과 현재 시작 시점의 차이를 비교한다
+4. 종료 시점은 이전까지의 최대 종료 시점으로 갱신한다
+
+**핵심 아이디어**: 개장/폐장을 쇼 리스트에 포함시키면 경계 처리 없이 일관된 스캔으로 최대 빈 구간을 찾을 수 있다.
+
+## 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+
+N = int(input())
+timetable = [[600, 600], [1320, 1320]]
+
+for _ in range(N):
+    start, end = input().split()
+    s_time = (int(start[:2]) * 60) + int(start[2:]) - 10
+    e_time = (int(end[:2]) * 60) + int(end[2:]) + 10
+    timetable.append([s_time, e_time])
+
+timetable.sort()
+
+result = 0
+flag = 600
+for s, e in timetable:
+    result = max(result, s - flag)
+    flag = max(flag, e)
+
+print(result)
+```
+
+## 복잡도
+
+- 시간: O(N log N) — 정렬
+- 공간: O(N) — 시간표 리스트

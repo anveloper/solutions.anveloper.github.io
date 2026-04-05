@@ -1,0 +1,72 @@
+---
+title: "BOJ 4884 - FIFA 월드컵"
+date: "2025-05-10"
+description: "수학, 사칙연산 문제"
+tags: ["수학", "사칙연산"]
+platform: "boj"
+problem_number: "4884"
+problem_url: "https://www.acmicpc.net/problem/4884"
+difficulty: "실버 V"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4884 - FIFA 월드컵](https://www.acmicpc.net/problem/4884)
+
+월드컵 조별 리그와 토너먼트의 경기 수를 계산하라. 조별 리그는 조당 t팀이 g경기씩 리그전을 하고, 토너먼트는 g\*a+d팀이 참가한다.
+
+### 입력
+
+조당 경기 수 g, 조당 팀 수 t, 진출 팀 수 a, 와일드카드 d가 주어진다. 모두 -1이면 종료.
+
+### 출력
+
+`g*a/t+d=x+y` 형식으로 조별 리그 경기 수 x와 토너먼트 잔여 용량 y를 출력한다.
+
+### 예제
+
+| 입력      | 출력            |
+| --------- | --------------- |
+| `6 4 2 0` | `6*2/4+0=36+28` |
+
+## 풀이
+
+조별 리그와 토너먼트 경기 수를 공식으로 계산한다.
+
+1. 조별 리그 경기 수: `t*(t-1)/2 * g` (각 조에서 리그전)
+2. 토너먼트 참가 팀: `g*a + d`
+3. 토너먼트에 필요한 최소 2의 거듭제곱 크기를 찾아, 실제 경기 수와 빈 슬롯을 계산한다
+
+**핵심 아이디어**: 토너먼트는 2의 거듭제곱 크기 대진표가 필요하므로, 실제 팀 수와의 차이가 부전승(빈 슬롯)이 된다.
+
+## 코드
+
+```python
+import sys
+
+while True:
+    g, t, a, d = map(int, sys.stdin.readline().split())
+    if g == -1:
+        break
+
+    pre = t * (t - 1) // 2 * g
+    knockout = g * a + d
+
+    x, y = 0, 0
+    temp = 1
+    while knockout > temp:
+        x += temp
+        temp *= 2
+
+    y += temp - knockout
+    x += pre
+
+    print(f"{g}*{a}/{t}+{d}={x}+{y}")
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

@@ -1,0 +1,101 @@
+---
+title: "BOJ 11383 - 뚊"
+date: "2024-10-13"
+description: "각 문자를 두 번 반복한 결과와 비교하여 일치 여부를 판별하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "11383"
+problem_url: "https://www.acmicpc.net/problem/11383"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11383 - 뚊](https://www.acmicpc.net/problem/11383)
+
+N x M 크기의 그림과 N x 2M 크기의 그림이 주어질 때, 원본의 각 문자를 두 번 반복한 결과가 두 번째 그림과 같은지 확인하라.
+
+### 입력
+
+N, M이 주어지고, N줄의 원본과 N줄의 비교 대상이 주어진다.
+
+### 출력
+
+같으면 "Eyfa", 다르면 "Not Eyfa"를 출력한다.
+
+### 예제
+
+| 입력                                | 출력   |
+| ----------------------------------- | ------ |
+| `2 3` `abc` `def` `aabbcc` `ddeeff` | `Eyfa` |
+
+## 풀이
+
+원본의 각 문자를 두 번 반복한 문자열을 만들어 비교한다.
+
+1. N줄의 원본을 읽으며 각 문자를 두 번 반복한 문자열을 벡터에 저장한다
+2. N줄의 비교 대상을 읽으며 벡터의 각 원소와 비교한다
+3. 하나라도 다르면 "Not Eyfa", 모두 같으면 "Eyfa"를 출력한다
+
+**핵심 아이디어**: 원본의 각 문자를 두 배로 확장하여 비교하면 O(N\*M)에 해결된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+  int n, m;
+  cin >> n >> m;
+  string word;
+  vector<string> words;
+  for (int i = 0; i < n; i++)
+  {
+    cin >> word;
+
+    string c = "";
+    for (int j = 0; j < m; j++)
+    {
+      c += word[j];
+      c += word[j];
+    }
+
+    words.push_back(c);
+  }
+
+  bool flag = 0;
+  string compare;
+  for (auto &ele : words)
+  {
+    cin >> compare;
+    if (ele != compare)
+    {
+      flag = 1;
+      break;
+    }
+  }
+
+  if (flag)
+  {
+    cout << "Not Eyfa";
+  }
+  else
+  {
+    cout << "Eyfa";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* M)
+- 공간: O(N \* M)

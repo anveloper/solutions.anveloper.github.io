@@ -1,0 +1,85 @@
+---
+title: "BOJ 1251 - 단어 나누기"
+date: "2023-05-02"
+description: "구현, 문자열, 브루트포스 알고리즘 문제"
+tags: ["구현", "문자열", "브루트포스 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "1251"
+problem_url: "https://www.acmicpc.net/problem/1251"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1251 - 단어 나누기](https://www.acmicpc.net/problem/1251)
+
+단어를 세 부분으로 나눈 뒤 각 부분을 뒤집고 이어 붙인 결과 중 사전순으로 가장 앞선 것을 구하라.
+
+### 입력
+
+영어 소문자로 이루어진 단어가 주어진다 (길이 3 이상).
+
+### 출력
+
+사전순으로 가장 앞서는 결과를 출력한다.
+
+### 예제
+
+| 입력      | 출력      |
+| --------- | --------- |
+| `mobitel` | `bometil` |
+
+## 풀이
+
+모든 분할 지점 쌍을 브루트포스로 시도하여 사전순 최솟값을 구한다.
+
+1. 분할점 i, j (1 이상 i 미만 j 미만 N)의 모든 조합을 탐색한다
+2. 각 조합에서 세 부분을 각각 뒤집어 이어 붙인다
+3. 모든 결과를 정렬하여 첫 번째(사전순 최솟값)를 출력한다
+
+**핵심 아이디어**: 분할점은 O(N²)개이고 각 문자열 생성은 O(N)이므로 전체 O(N³)이다.
+
+## 코드
+
+```java
+package day499;
+
+import java.io.*;
+import java.util.*;
+
+public class Day450BOJ1251단어나누기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    String str = st.nextToken();
+    int N = str.length();
+    ArrayList<String> list = new ArrayList<>();
+    for (int i = 1; i < N - 1; i++) {
+      for (int j = i + 1; j < N; j++) {
+        String res = new String();
+        res += reverse(0, i, str);
+        res += reverse(i, j, str);
+        res += reverse(j, N, str);
+        list.add(res);
+      }
+    }
+    Collections.sort(list);
+    System.out.println(list.get(0));
+  }
+
+  static String reverse(int st, int end, String ss) {
+    String s = new String();
+    for (int i = end - 1; i >= st; i--) {
+      s += ss.charAt(i);
+    }
+    return s;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N³) - 분할점 O(N²) × 문자열 생성 O(N)
+- 공간: O(N²) - 모든 결과 저장

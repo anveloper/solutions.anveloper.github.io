@@ -1,0 +1,150 @@
+---
+title: "BOJ 17471 - 게리맨더링"
+date: "2023-04-19"
+description: "수학, 그래프 이론, 브루트포스 알고리즘 문제"
+tags:
+  [
+    "수학",
+    "그래프 이론",
+    "브루트포스 알고리즘",
+    "그래프 탐색",
+    "조합론",
+    "너비 우선 탐색",
+    "비트마스킹",
+    "깊이 우선 탐색",
+  ]
+platform: "boj"
+problem_number: "17471"
+problem_url: "https://www.acmicpc.net/problem/17471"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 17471 - 게리맨더링](https://www.acmicpc.net/problem/17471)
+
+N개의 구역을 두 선거구로 나눌 때, 각 선거구가 연결되어 있으면서 두 선거구의 인구 차이가 최소인 분할을 구하라. 불가능하면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N, 둘째 줄에 인구, 이후 N줄에 인접 정보가 주어진다.
+
+### 출력
+
+최소 인구 차이를 출력한다.
+
+### 예제
+
+| 입력                                                                      | 출력 |
+| ------------------------------------------------------------------------- | ---- |
+| `6` `5 2 3 4 1 2` `2 2 4` `4 1 3 5 6` `2 2 4` `4 1 2 3 5` `2 4 6` `2 2 5` | `1`  |
+
+## 풀이
+
+조합으로 구역을 두 그룹으로 나누고, 각 그룹의 연결성을 BFS로 검증하여 최소 인구 차이를 구한다.
+
+1. DFS로 N/2개 이하의 구역을 선택하는 모든 조합을 생성한다
+2. 각 조합에서 선택/비선택 그룹이 각각 연결되어 있는지 BFS로 확인한다
+3. 두 그룹 모두 연결되면 인구 차이를 계산하여 최솟값을 갱신한다
+4. 유효한 분할이 없으면 -1을 출력한다
+
+**핵심 아이디어**: N이 최대 10이므로 모든 부분집합(2^10 = 1024)을 확인해도 시간 내에 가능하다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day437BOJ17471게리맨더링 {
+  static final int INF = 999_999_999;
+  static int N, ans = INF, tot = 0;
+  static int[] arr;
+  static int[][] map;
+  static boolean[] selected;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = null;
+
+    N = Integer.parseInt(br.readLine());
+    arr = new int[N];
+    selected = new boolean[N];
+    map = new int[N][N];
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++) {
+      arr[i] = Integer.parseInt(st.nextToken());
+      tot += arr[i];
+    }
+
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(br.readLine());
+      int cnt = Integer.parseInt(st.nextToken());
+      for (int j = 0; j < cnt; j++) {
+        map[i][Integer.parseInt(st.nextToken()) - 1] = 1;
+      }
+    }
+
+    dfs(0, 0, 0);
+    System.out.println(ans == INF ? -1 : ans);
+    br.close();
+  }
+
+  public static void dfs(int st, int cnt, int sum) {
+    if (1 <= cnt && cnt <= N / 2) {
+      int diff = Math.abs(sum - (tot - sum));
+      if (ans > diff) {
+        if (bfs(true, cnt) && bfs(false, N - cnt)) {
+          ans = diff;
+        }
+      }
+      if (cnt == N / 2)
+        return;
+    }
+
+    for (int i = st; i < N; i++) {
+      selected[i] = true;
+      dfs(i + 1, cnt + 1, sum + arr[i]);
+      selected[i] = false;
+    }
+  }
+
+  public static boolean bfs(boolean b, int cnt) {
+    if (cnt == 1)
+      return true;
+
+    Queue<Integer> q = new LinkedList<>();
+    boolean[] visited = new boolean[N];
+    for (int i = 0; i < N; i++) {
+      if (selected[i] == b) {
+        visited[i] = true;
+        q.offer(i);
+        break;
+      }
+    }
+    cnt--;
+
+    while (!q.isEmpty()) {
+      int n = q.poll();
+      for (int i = 0; i < N; i++) {
+        if (selected[i] == b && map[n][i] == 1 && !visited[i]) {
+          visited[i] = true;
+          cnt--;
+          q.offer(i);
+        }
+      }
+    }
+
+    return cnt == 0;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(2^N \* N²) - 조합 × BFS 검증
+- 공간: O(N²)

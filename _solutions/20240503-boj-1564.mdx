@@ -1,0 +1,66 @@
+---
+title: "BOJ 1564 - 팩토리얼5"
+date: "2024-05-03"
+description: "N!의 0이 아닌 마지막 5자리를 구하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1564"
+problem_url: "https://www.acmicpc.net/problem/1564"
+difficulty: "실버 I"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1564 - 팩토리얼5](https://www.acmicpc.net/problem/1564)
+
+N!을 계산했을 때, 뒤에서부터 0이 아닌 숫자가 나오는 위치부터 5자리를 출력하라.
+
+### 입력
+
+첫째 줄에 N이 주어진다 (`10 <= N <= 20000`).
+
+### 출력
+
+N!의 뒤의 0을 모두 제거한 후, 마지막 5자리를 출력한다.
+
+### 예제
+
+| 입력 | 출력    |
+| ---- | ------- |
+| `10` | `28800` |
+
+## 풀이
+
+팩토리얼을 1부터 N까지 순차적으로 곱하면서, 매번 뒤의 0을 제거하고 하위 12자리만 유지하여 오버플로를 방지한다.
+
+1. ans를 1로 초기화하고 2부터 N까지 순차적으로 곱한다
+2. 곱한 후 `ans % 10 === 0`인 동안 10으로 나누어 뒤의 0을 제거한다
+3. 10^12으로 나머지를 취해 하위 12자리만 유지한다 (정밀도 보존)
+4. 최종 결과에서 10^5으로 나머지를 취해 5자리로 자르고, 앞을 0으로 패딩한다
+
+**핵심 아이디어**: 뒤의 0은 2와 5의 곱에서 발생하므로 매 곱셈마다 제거하면 유효 숫자만 남는다. 12자리를 유지하면 중간 곱셈에서 정밀도가 손실되지 않는다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  const N = Number(input);
+  let ans = 1;
+  for (let i = 2; i <= N; i++) {
+    ans *= i;
+    while (ans % 10 === 0) ans /= 10;
+    ans %= 1000000000000;
+  }
+  return (ans % 100000).toString().padStart(5, "0");
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(1)

@@ -1,0 +1,82 @@
+---
+title: "BOJ 11966 - 2의 제곱인가?"
+date: "2024-11-24"
+description: "주어진 수가 2의 거듭제곱인지 판별하는 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "11966"
+problem_url: "https://www.acmicpc.net/problem/11966"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11966 - 2의 제곱인가?](https://www.acmicpc.net/problem/11966)
+
+정수 N이 2의 거듭제곱이면 1, 아니면 0을 출력하라.
+
+### 입력
+
+정수 N이 주어진다 (1 이상 2^30 이하).
+
+### 출력
+
+N이 2의 거듭제곱이면 1, 아니면 0을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `8`  | `1`  |
+
+## 풀이
+
+1부터 시작하여 2를 반복적으로 곱하면서 N과 일치하는지 확인한다.
+
+1. N이 1이면 2^0이므로 1을 출력한다
+2. 1부터 시작하여 2를 곱해가며 2^1, 2^2, ..., 2^30까지 N과 비교한다
+3. 일치하면 1, 끝까지 일치하지 않으면 0을 출력한다
+
+**핵심 아이디어**: 2^30이 약 10억이므로 최대 30번 반복으로 `int` 범위의 모든 2의 거듭제곱을 검사할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  int N;
+  cin >> N;
+
+  if (N == 1)
+  {
+    cout << 1 << endl;
+    return 0;
+  }
+
+  int squareNum = 1;
+  for (int i = 0; i < 30; i++)
+  {
+    squareNum *= 2;
+
+    if (N == squareNum)
+    {
+      cout << 1 << endl;
+      return 0;
+    }
+  }
+
+  cout << 0 << endl;
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

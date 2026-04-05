@@ -1,0 +1,73 @@
+---
+title: "BOJ 4458 - 첫 글자를 대문자로"
+date: "2023-12-19"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4458"
+problem_url: "https://www.acmicpc.net/problem/4458"
+difficulty: "브론즈 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4458 - 첫 글자를 대문자로](https://www.acmicpc.net/problem/4458)
+
+N개의 문자열이 주어질 때, 각 문자열의 첫 글자를 대문자로 바꿔 출력하라.
+
+### 입력
+
+첫째 줄에 N, 이후 N개의 줄에 문자열이 주어진다.
+
+### 출력
+
+각 문자열의 첫 글자를 대문자로 변환하여 출력한다.
+
+### 예제
+
+| 입력              | 출력          |
+| ----------------- | ------------- |
+| `1` `hello world` | `Hello world` |
+
+## 풀이
+
+각 문자열의 첫 글자가 소문자이면 대문자로 변환하고, 나머지는 그대로 이어 붙인다.
+
+1. N을 입력받고 N개의 문자열을 순회한다
+2. 첫 글자가 소문자(a~z)이면 ASCII 변환으로 대문자로 바꾼다
+3. 나머지 문자열은 `substring(1)`로 그대로 연결한다
+4. 첫 글자가 이미 대문자면 문자열을 그대로 출력한다
+
+**핵심 아이디어**: ASCII 코드에서 소문자와 대문자의 차이(32)를 이용한 변환이다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+
+public class Day682BOJ4458대문자 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    int n = Integer.parseInt(br.readLine());
+    while (n-- > 0) {
+      String input = br.readLine();
+      char c = input.charAt(0);
+      if ('a' <= c && c <= 'z')
+        sb.append((char) (c - 'a' + 'A')).append(input.substring(1)).append('\n');
+      else
+        sb.append(input).append('\n');
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

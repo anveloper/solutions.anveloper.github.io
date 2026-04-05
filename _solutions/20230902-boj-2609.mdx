@@ -1,0 +1,80 @@
+---
+title: "BOJ 2609 - 최대공약수와 최소공배수"
+date: "2023-09-02"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "2609"
+problem_url: "https://www.acmicpc.net/problem/2609"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2609 - 최대공약수와 최소공배수](https://www.acmicpc.net/problem/2609)
+
+두 자연수의 최대공약수와 최소공배수를 구하라.
+
+### 입력
+
+두 자연수가 주어진다.
+
+### 출력
+
+첫째 줄에 최대공약수, 둘째 줄에 최소공배수를 출력한다.
+
+### 예제
+
+| 입력    | 출력     |
+| ------- | -------- |
+| `24 18` | `6` `72` |
+
+## 풀이
+
+유클리드 호제법으로 GCD를 구하고, LCM = a\*b/GCD로 계산한다.
+
+1. `gcd(a, b)` = `gcd(b, a%b)`를 재귀로 구한다
+2. LCM = `a * b / gcd`
+
+**핵심 아이디어**: 유클리드 호제법은 O(log min(a,b))에 GCD를 구하며, LCM = a\*b/GCD 관계를 이용한다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day575BOJ2609최대공약수최소공배수 {
+
+  public static void main(String[] args) throws Exception {
+
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+    int a = Integer.parseInt(st.nextToken());
+    int b = Integer.parseInt(st.nextToken());
+
+    int d = gcd(a, b);
+
+    System.out.println(d);
+    System.out.println(a * b / d);
+
+  }
+
+  public static int gcd(int a, int b) {
+    if (b == 0)
+      return a;
+    return gcd(b, a % b);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log N)
+- 공간: O(1)

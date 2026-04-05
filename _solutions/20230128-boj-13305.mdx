@@ -1,0 +1,108 @@
+---
+title: "BOJ 13305 - 주유소"
+date: "2023-01-28"
+description: "그리디 알고리즘 문제"
+tags: ["그리디 알고리즘"]
+platform: "boj"
+problem_number: "13305"
+problem_url: "https://www.acmicpc.net/problem/13305"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13305 - 주유소](https://www.acmicpc.net/problem/13305)
+
+어떤 나라에 N개의 도시가 있다. 이 도시들은 일직선 도로 위에 있고, 1번 도시에서 N번 도시까지 이동하려 한다. 각 도시 사이의 거리는 주어져 있고, 각 도시에는 주유소가 있어 리터당 가격이 다르다. 차는 1리터로 1킬로미터를 갈 수 있다. 1번 도시에서 출발하여 N번 도시까지 이동하는데 필요한 최소 비용을 구하는 프로그램을 작성하시오.
+
+### 입력
+
+첫째 줄에 도시의 수 N (2 ≤ N ≤ 100,000)이 주어진다.
+
+둘째 줄에 인접한 두 도시 사이의 거리 N-1개가 공백으로 구분되어 주어진다. (1 ≤ 거리 ≤ 1,000,000,000)
+
+셋째 줄에 각 도시의 주유소 리터당 가격 N개가 공백으로 구분되어 주어진다. (1 ≤ 가격 ≤ 1,000,000,000)
+
+### 출력
+
+1번 도시에서 N번 도시로 가는 최소 비용을 출력한다.
+
+### 예제
+
+**입력 1**
+
+```
+4
+2 3 1
+5 2 4 1
+```
+
+**출력 1**
+
+```
+18
+```
+
+## 풀이
+
+**핵심 아이디어**: 현재까지 만난 최솟값 주유 가격을 추적하면서, 각 구간을 이동할 때 그 최솟값으로 연료를 구매한다. 더 싼 주유소가 나타나면 그 이후부터 새로운 최솟값을 적용한다.
+
+1. 각 도시 i에서 i+1 도시로 이동할 때 필요한 비용 = `minCost × dist[i]`
+2. `minCost`는 0번 도시부터 i번 도시까지의 주유 가격 중 최솟값이다.
+3. 도시를 순서대로 순회하면서:
+   - 현재 도시의 주유 가격이 `minCost`보다 작으면 `minCost` 업데이트
+   - 현재 구간 비용 `minCost × dist[i]`를 총 비용에 더함
+4. N-1번째 도시까지(마지막 도시에는 주유소 가격 불필요) 반복한다.
+
+주유소 가격이 클수록 후에 더 싼 주유소에서 충분히 넣을 예정이고, 더 싼 주유소가 나오면 그 이후 구간은 그 가격으로 계산하면 된다.
+
+## 코드
+
+```java
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day355BOJ13305주유소 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int N = Integer.parseInt(br.readLine());
+
+        long[] dist = new long[N - 1];
+        long[] cost = new long[N];
+
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        for (int i = 0; i < N - 1; i++) {
+            dist[i] = Long.parseLong(st.nextToken());
+        }
+
+        st = new StringTokenizer(br.readLine(), " ");
+        for (int i = 0; i < N; i++) {
+            cost[i] = Long.parseLong(st.nextToken());
+        }
+
+        long sum = 0;
+        long minCost = cost[0];
+
+        for (int i = 0; i < N - 1; i++) {
+            if (cost[i] < minCost) {
+                minCost = cost[i];
+            }
+
+            sum += (minCost * dist[i]);
+        }
+
+        System.out.println(sum);
+
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 도시를 한 번 순회하며 최솟값 갱신 및 비용 누적
+- 공간: O(N) — 거리 배열과 주유 가격 배열 저장

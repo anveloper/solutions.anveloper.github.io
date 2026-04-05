@@ -1,0 +1,75 @@
+---
+title: "BOJ 4659 - 비밀번호 발음하기"
+date: "2024-02-16"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4659"
+problem_url: "https://www.acmicpc.net/problem/4659"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4659 - 비밀번호 발음하기](https://www.acmicpc.net/problem/4659)
+
+비밀번호가 발음 가능한지 검사하라. 조건: 모음 1개 이상 포함, 모음/자음 3연속 금지, 같은 글자 2연속 금지(e, o 제외). "end"가 입력되면 종료한다.
+
+### 입력
+
+여러 줄에 비밀번호가 주어지며, "end"이면 종료한다.
+
+### 출력
+
+각 비밀번호에 대해 `<password> is acceptable.` 또는 `<password> is not acceptable.`을 출력한다.
+
+### 예제
+
+| 입력           | 출력                                                           |
+| -------------- | -------------------------------------------------------------- |
+| `a` `tv` `end` | `` `<a>` `` `is acceptable.` `` `<tv>` `` `is not acceptable.` |
+
+## 풀이
+
+정규식으로 4가지 위반 조건을 한 번에 검사한다.
+
+1. 모음이 없는 경우: `[^aeiou]+` 전체 매칭
+2. 모음 3연속: `[aeiou]{3,}`
+3. 자음 3연속: `[^aeiou]{3,}`
+4. e, o를 제외한 같은 글자 연속: `([^eo])\1+`
+
+위 4가지 패턴을 OR로 결합한 정규식을 적용하여 매칭되면 not acceptable이다.
+
+**핵심 아이디어**: 복잡한 조건 분기를 단일 정규식으로 통합하여 간결하게 처리한다.
+
+## 코드
+
+```java
+package day749;
+
+import java.io.*;
+import java.util.regex.Pattern;
+
+public class Day745BOJ4659비밀번호발음하기 {
+  static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+  static StringBuilder sb = new StringBuilder();
+
+  public static void main(String[] args) throws Exception {
+    String input;
+    Pattern p = Pattern.compile("^[^aeiou]+$|[aeiou]{3,}|[^aeiou]{3,}|([^eo])\\1+");
+    while (!"end".equals(input = br.readLine())) {
+      sb.append(String.format("<%s> is%s acceptable.\n", input, p.matcher(input).find() ? " not" : ""));
+    }
+    bw.write(sb.toString());
+    bw.flush();
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

@@ -1,0 +1,65 @@
+---
+title: "BOJ 1500 - 최대 곱"
+date: "2024-06-02"
+description: "합이 S이고 M개의 자연수로 나눌 때 곱이 최대가 되는 값을 구하는 문제"
+tags: ["수학"]
+platform: "boj"
+problem_number: "1500"
+problem_url: "https://www.acmicpc.net/problem/1500"
+difficulty: "실버 II"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1500 - 최대 곱](https://www.acmicpc.net/problem/1500)
+
+합이 S인 M개의 자연수를 정해서 그 곱을 최대로 만드는 값을 구하라.
+
+### 입력
+
+첫째 줄에 S와 M이 공백으로 구분되어 주어진다.
+
+### 출력
+
+최대 곱을 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `7 3` | `18` |
+
+## 풀이
+
+S를 M으로 나눈 몫과 나머지를 이용하여 수들의 차이를 최소화하면 곱이 최대가 된다.
+
+1. p = S // M (몫), q = S % M (나머지)를 구한다
+2. q개의 수는 (p+1), 나머지 (M-q)개는 p로 설정한다
+3. 이들의 곱을 계산하여 출력한다
+
+**핵심 아이디어**: AM-GM 부등식에 의해 합이 고정일 때 곱은 수들이 균등할 때 최대이다. 정수 제약 하에서는 몫과 몫+1로 나누는 것이 최적이다.
+
+## 코드
+
+```python
+import sys
+
+n, m = map(int, sys.stdin.readline().split(" "))
+p = n // m
+q = n % m
+ans = 1
+for _ in range(m):
+    if q > 0:
+        ans *= p + 1
+        q -= 1
+    else:
+        ans *= p
+print(ans)
+```
+
+## 복잡도
+
+- 시간: O(M)
+- 공간: O(1)

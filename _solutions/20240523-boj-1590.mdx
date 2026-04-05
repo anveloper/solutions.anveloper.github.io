@@ -1,0 +1,78 @@
+---
+title: "BOJ 1590 - 캠프가는 영식"
+date: "2024-05-23"
+description: "각 버스 노선에서 T 이후 가장 빠른 출발 시간을 이분 탐색으로 찾는 문제"
+tags: ["수학", "브루트포스", "이분 탐색"]
+platform: "boj"
+problem_number: "1590"
+problem_url: "https://www.acmicpc.net/problem/1590"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1590 - 캠프가는 영식](https://www.acmicpc.net/problem/1590)
+
+N개의 버스 노선이 각각 시작 시간 S, 간격 I, 운행 횟수 C로 주어질 때, 시각 T 이후 가장 빨리 탈 수 있는 버스까지의 대기 시간을 구하라.
+
+### 입력
+
+첫째 줄에 N과 T, 이후 N줄에 각 노선의 S, I, C가 주어진다.
+
+### 출력
+
+최소 대기 시간을 출력한다. 탈 수 있는 버스가 없으면 -1을 출력한다.
+
+### 예제
+
+| 입력                   | 출력 |
+| ---------------------- | ---- |
+| `2 10` `5 5 3` `8 2 4` | `2`  |
+
+## 풀이
+
+각 노선의 출발 시간 목록을 생성하고, 이분 탐색으로 T 이상인 가장 빠른 출발 시간을 찾아 대기 시간의 최솟값을 구한다.
+
+1. 각 노선별 출발 시간 배열을 생성한다 (S, S+I, S+2I, ..., S+(C-1)\*I)
+2. 마지막 출발 시간이 T보다 작으면 해당 노선은 건너뛴다
+3. 이분 탐색으로 T 이상인 가장 빠른 출발 시간을 찾는다
+4. 모든 노선에서 구한 대기 시간 중 최솟값을 반환한다
+
+**핵심 아이디어**: 각 노선의 출발 시간이 등차수열이므로, 이분 탐색으로 O(log C)에 최적 시간을 찾을 수 있다.
+
+## 코드
+
+```python
+N, T = map(int, input().split())
+result = []
+for _ in range(N):
+    S, I, C = map(int, input().split())
+    time = [S + (I * c) for c in range(C)]
+    if time[-1] < T:
+        continue
+
+    start = 0
+    end = C - 1
+    answer = 0
+    while start <= end:
+        mid = (start + end) // 2
+        if time[mid] >= T:
+            answer = mid
+            end = mid - 1
+        else:
+            start = mid + 1
+
+    result.append(time[answer] - T)
+
+if result:
+    print(min(result))
+else:
+    print(-1)
+```
+
+## 복잡도
+
+- 시간: O(N \* log C)
+- 공간: O(C)

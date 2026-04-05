@@ -1,0 +1,78 @@
+---
+title: "BOJ 2083 - 럭비 클럽"
+date: "2024-07-24"
+description: "나이와 몸무게로 Senior/Junior를 판별하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2083"
+problem_url: "https://www.acmicpc.net/problem/2083"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2083 - 럭비 클럽](https://www.acmicpc.net/problem/2083)
+
+이름, 나이, 몸무게가 주어질 때, 나이가 17 초과이거나 몸무게가 80 이상이면 Senior, 아니면 Junior로 분류하라.
+
+### 입력
+
+여러 줄에 이름, 나이, 몸무게가 주어진다. 입력 끝은 "#"이다.
+
+### 출력
+
+각 사람에 대해 "이름 Senior" 또는 "이름 Junior"를 출력한다.
+
+### 예제
+
+| 입력                              | 출력                        |
+| --------------------------------- | --------------------------- |
+| `Joe 16 83` `Billy 18 65` `# 0 0` | `Joe Senior` `Billy Senior` |
+
+## 풀이
+
+각 입력에 대해 나이와 몸무게 조건을 확인하여 분류한다.
+
+1. 이름이 "#"이고 나이 0, 몸무게 0이면 종료한다
+2. 나이가 17 초과이거나 몸무게가 80 이상이면 Senior를 출력한다
+3. 그 외에는 Junior를 출력한다
+
+**핵심 아이디어**: 두 조건 중 하나만 만족하면 Senior이므로 OR 조건으로 간단히 판별한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+string name;
+int age, weight;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+
+  while (true)
+  {
+    cin >> name >> age >> weight;
+    if (name == "#" && age == 0 && weight == 0)
+      break;
+    if (age > 17 || weight >= 80)
+      cout << name << " Senior" << '\n';
+    else
+      cout << name << " Junior" << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N) (N: 입력 수)
+- 공간: O(1)

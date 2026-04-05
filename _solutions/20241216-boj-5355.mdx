@@ -1,0 +1,90 @@
+---
+title: "BOJ 5355 - 화성 수학"
+date: "2024-12-16"
+description: "화성의 특수 연산자를 적용하여 결과를 계산하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "5355"
+problem_url: "https://www.acmicpc.net/problem/5355"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5355 - 화성 수학](https://www.acmicpc.net/problem/5355)
+
+초기 숫자에 화성의 특수 연산자 `@`(x3), `%`(+5), `#`(-7)을 순서대로 적용한 결과를 출력하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 초기 숫자와 연산자 기호들이 한 줄로 주어진다.
+
+### 출력
+
+각 케이스마다 결과를 소수점 둘째 자리까지 출력한다.
+
+### 예제
+
+| 입력          | 출력    |
+| ------------- | ------- |
+| `1` `3.0 @ %` | `14.00` |
+
+## 풀이
+
+초기 값에 연산자를 순서대로 적용한다.
+
+1. 초기 실수 값을 입력받는다
+2. 줄 끝까지 문자를 하나씩 읽으며 `@`이면 x3, `%`이면 +5, `#`이면 -7을 적용한다
+3. 결과를 소수점 둘째 자리까지 `fixed`와 `precision(2)`로 출력한다
+
+**핵심 아이디어**: `cin.get`으로 문자 단위로 읽으며 개행 문자를 만나면 해당 케이스를 종료한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <iomanip>
+using namespace std;
+int main()
+{
+  int test;
+  cin >> test;
+  double n;
+  char ch;
+  for (int i = 0; i < test; i++)
+  {
+    cin >> n;
+    while (1)
+    {
+      cin.get(ch);
+      if (ch == '\n')
+      {
+        break;
+      }
+      if (ch == '@')
+      {
+        n *= 3;
+      }
+      if (ch == '%')
+      {
+        n += 5;
+      }
+      if (ch == '#')
+      {
+        n -= 7;
+      }
+    }
+    cout << fixed;
+    cout.precision(2);
+    cout << n << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T × L) (L: 각 줄의 연산자 수)
+- 공간: O(1)

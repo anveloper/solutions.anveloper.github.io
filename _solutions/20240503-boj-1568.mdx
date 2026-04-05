@@ -1,0 +1,67 @@
+---
+title: "BOJ 1568 - 새"
+date: "2024-05-03"
+description: "N마리 새가 1, 2, 3, ... 순서로 날아가다 부족하면 1부터 반복할 때 총 시간"
+tags: ["수학", "시뮬레이션"]
+platform: "boj"
+problem_number: "1568"
+problem_url: "https://www.acmicpc.net/problem/1568"
+difficulty: "브론즈 II"
+language: "javascript"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1568 - 새](https://www.acmicpc.net/problem/1568)
+
+N마리의 새가 전깃줄에 앉아 있다. 매 초마다 1, 2, 3, ... 마리씩 날아가며, 남은 새보다 많은 수를 불러야 할 때 1부터 다시 시작한다. 모든 새가 날아가는 데 걸리는 시간(초)을 구하라.
+
+### 입력
+
+첫째 줄에 새의 수 N이 주어진다 (`1 <= N <= 10^9`).
+
+### 출력
+
+모든 새가 날아가는 데 걸리는 시간을 출력한다.
+
+### 예제
+
+| 입력 | 출력 |
+| ---- | ---- |
+| `14` | `5`  |
+
+## 풀이
+
+카운터를 1부터 증가시키며 남은 새에서 빼고, 남은 새보다 카운터가 크면 1로 리셋하는 시뮬레이션이다.
+
+1. sec을 1, cnt를 0으로 초기화한다
+2. N에서 sec을 빼고 sec을 1 증가, cnt를 1 증가시킨다
+3. sec이 N보다 크면 sec을 1로 리셋한다
+4. N이 0이 될 때까지 반복하고 cnt를 반환한다
+
+**핵심 아이디어**: 1+2+...+k = k(k+1)/2이므로 한 사이클에서 약 sqrt(2N)마리가 날아가고, 전체 시간은 O(sqrt(N)) 수준이다.
+
+## 코드
+
+```javascript
+const solution = (input) => {
+  let N = Number(input[0]),
+    sec = 1,
+    cnt = 0;
+  while (N) {
+    N -= sec++;
+    cnt++;
+    if (sec > N) sec = 1;
+  }
+  return cnt;
+};
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+console.log(solution(input));
+```
+
+## 복잡도
+
+- 시간: O(sqrt(N))
+- 공간: O(1)

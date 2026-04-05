@@ -1,0 +1,102 @@
+---
+title: "BOJ 1644 - 소수의 연속합"
+date: "2022-12-21"
+description: "수학, 정수론, 두 포인터 문제"
+tags: ["수학", "정수론", "두 포인터", "소수 판정", "에라토스테네스의 체"]
+platform: "boj"
+problem_number: "1644"
+problem_url: "https://www.acmicpc.net/problem/1644"
+difficulty: "골드 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1644 - 소수의 연속합](https://www.acmicpc.net/problem/1644)
+
+자연수 N이 주어졌을 때, 연속된 소수의 합으로 N을 나타내는 경우의 수를 구하라. 하나의 소수만으로 이루어진 경우도 포함한다.
+
+### 입력
+
+첫 번째 줄에 자연수 N이 주어진다. (1 ≤ N ≤ 4,000,000)
+
+### 출력
+
+연속된 소수의 합으로 N을 나타내는 경우의 수를 출력한다.
+
+### 예제
+
+```
+41
+```
+
+출력:
+
+```
+3
+```
+
+(2+3+5+7+11+13 = 41, 11+13+17 = 41, 41 = 41)
+
+## 풀이
+
+**핵심 아이디어**: 에라토스테네스의 체로 N 이하의 소수를 모두 구한 뒤, 투 포인터(슬라이딩 윈도우)로 연속 소수의 합이 N이 되는 경우를 센다. 소수 배열을 오름차순으로 관리하면서 left, right 포인터를 이동시킨다.
+
+1. 에라토스테네스의 체로 2부터 N까지의 소수를 `ArrayList`에 저장한다.
+2. 투 포인터 `l=0, r=0, sum=0`으로 초기화한다.
+3. `sum >= N`이면 `sum -= primes[l++]`로 왼쪽 포인터를 이동한다.
+4. `r == primes.size()`이면 더 이상 추가할 소수가 없으므로 종료한다.
+5. 위 두 조건에 해당하지 않으면 `sum += primes[r++]`로 오른쪽 포인터를 확장한다.
+6. `sum == N`이면 카운트를 증가시킨다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+public class Day317BOJ1644소수의연속합 {
+    static boolean prime[];
+    static ArrayList<Integer> primes = new ArrayList<>();
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+
+        prime = new boolean[N + 1];
+        prime[0] = prime[1] = true;
+        for (int i = 2; i * i <= N; i++) {
+            if (!prime[i])
+                for (int j = i * i; j <= N; j += i)
+                    prime[j] = true;
+        }
+        for (int i = 1; i <= N; i++) {
+            if (!prime[i])
+                primes.add(i);
+        }
+
+        int l = 0, r = 0, sum = 0, cnt = 0;
+        while (true) {
+            if (sum >= N)
+                sum -= primes.get(l++);
+            else if (r == primes.size())
+                break;
+            else
+                sum += primes.get(r++);
+            if (N == sum)
+                cnt++;
+        }
+        System.out.println(cnt);
+        br.close();
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log log N) — 에라토스테네스의 체 O(N log log N) + 투 포인터 O(N)
+- 공간: O(N) — 소수 목록과 체 배열

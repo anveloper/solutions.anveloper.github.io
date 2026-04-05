@@ -1,0 +1,83 @@
+---
+title: "BOJ 1115 - 순열"
+date: "2022-08-01"
+description: "그래프 이론 문제"
+tags: ["그래프 이론"]
+platform: "boj"
+problem_number: "1115"
+problem_url: "https://www.acmicpc.net/problem/1115"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1115 - 순열](https://www.acmicpc.net/problem/1115)
+
+순열 P가 주어질 때, P와 차이가 가장 작은 "완벽한 순열" Q를 찾아 그 차이를 출력하라. 완벽한 순열이란 자식 배열 B[0]=0, B[i]=A[B[i-1]]이 순열을 이루는 순열 A를 말한다.
+
+### 입력
+
+첫째 줄에 N (1 ≤ N ≤ 50), 둘째 줄에 순열 P가 주어진다.
+
+### 출력
+
+P와 가장 가까운 완벽한 순열과의 차이(서로 다른 위치의 수)를 출력한다.
+
+### 예제
+
+| 입력        | 출력 |
+| ----------- | ---- |
+| `3` `1 2 0` | `0`  |
+
+## 풀이
+
+순열을 함수적 그래프로 보고 사이클 분해하여, 사이클이 하나면 이미 완벽한 순열이고, 아니면 사이클 수만큼의 변경이 필요하다.
+
+1. 방문 배열로 순열의 사이클을 분해한다
+2. 각 원소에서 시작하여 `arr[s]`를 따라가며 한 사이클을 순회한다
+3. 사이클 개수를 센다
+4. 사이클이 1개면 완벽한 순열이므로 0, 아니면 사이클 개수를 출력한다
+
+**핵심 아이디어**: 완벽한 순열은 하나의 사이클로 구성된 순열과 동치이다. 여러 사이클을 하나로 합치려면 각 사이클에서 한 원소씩 교환하면 되므로, 최소 변경 수는 사이클 개수와 같다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day175BOJ1115순열 {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1 << 16);
+		int n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++)
+			arr[i] = Integer.parseInt(st.nextToken());
+		boolean[] v = new boolean[n];
+		int cnt = 0;
+		for (int i = 0; i < n; i++) {
+			if (v[i])
+				continue;
+			cnt++;
+			int s = i;
+			while (!v[s]) {
+				v[s] = true;
+				s = arr[s];
+			}
+		}
+		System.out.println(cnt == 1 ? 0 : cnt);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

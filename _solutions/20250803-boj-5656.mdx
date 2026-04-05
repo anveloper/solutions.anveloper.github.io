@@ -1,0 +1,85 @@
+---
+title: "BOJ 5656 - 비교 연산자"
+date: "2025-08-03"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "5656"
+problem_url: "https://www.acmicpc.net/problem/5656"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5656 - 비교 연산자](https://www.acmicpc.net/problem/5656)
+
+두 정수 A와 연산자, 정수 B가 주어질 때 비교 연산자를 평가하여 `true` 또는 `false`를 출력하는 문제다. 연산자는 `>`, `>=`, `<`, `<=`, `==`, `!=` 이며, `E`가 입력되면 종료한다.
+
+### 입력
+
+- 각 줄에 `A 연산자 B` 형식으로 입력된다.
+- 연산자가 `E`이면 입력을 종료한다.
+
+### 출력
+
+- 각 케이스마다 `Case N: true` 또는 `Case N: false` 형식으로 출력한다.
+
+### 예제
+
+| 입력     | 출력            |
+| -------- | --------------- |
+| `3 > 2`  | `Case 1: true`  |
+| `5 == 5` | `Case 2: true`  |
+| `1 != 1` | `Case 3: false` |
+| `0 E 0`  | (종료)          |
+
+## 풀이
+
+입력된 연산자 문자열을 분기하여 두 정수를 비교하고 결과를 출력한다.
+
+1. `A 연산자 B`를 순서대로 읽되, 연산자가 `E`이면 루프 종료
+2. 연산자 문자열에 따라 조건 분기하여 `a`와 `b`를 비교
+3. 비교 결과를 `isValid`에 저장
+4. `Case N: true/false` 형식으로 출력하고 케이스 번호 증가
+
+**핵심 아이디어**: 연산자를 문자열로 읽으면 `>=`, `<=`, `==`, `!=`처럼 두 글자 연산자도 자연스럽게 처리된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+int main()
+{
+  int a, b, caseN = 1;
+  std::string oper = "";
+  bool isValid = false;
+
+  while (std::cin >> a >> oper && oper != "E")
+  {
+    std::cin >> b;
+    if (oper == ">")
+      isValid = a > b;
+    else if (oper == ">=")
+      isValid = a >= b;
+    else if (oper == "<")
+      isValid = a < b;
+    else if (oper == "<=")
+      isValid = a <= b;
+    else if (oper == "==")
+      isValid = a == b;
+    else if (oper == "!=")
+      isValid = a != b;
+    std::cout << "Case " << caseN++ << ": " << (isValid ? "true" : "false") << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 테스트 케이스 수 N에 비례
+- 공간: O(1) — 상수 개의 변수만 사용

@@ -1,0 +1,137 @@
+---
+title: "BOJ 1969 - DNA"
+date: "2022-11-11"
+description: "구현, 그리디 알고리즘, 문자열 문제"
+tags: ["구현", "그리디 알고리즘", "문자열", "브루트포스 알고리즘"]
+platform: "boj"
+problem_number: "1969"
+problem_url: "https://www.acmicpc.net/problem/1969"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1969 - DNA](https://www.acmicpc.net/problem/1969)
+
+N개의 DNA 문자열이 주어졌을 때, 모든 문자열과의 해밍 거리 합이 최소인 DNA 문자열을 구하라. 답이 여러 개면 사전순으로 앞서는 것을 출력한다.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다. 둘째 줄부터 N개의 줄에 길이 M인 DNA 문자열이 주어진다.
+
+### 출력
+
+첫째 줄에 해밍 거리 합이 최소인 DNA 문자열, 둘째 줄에 해밍 거리 합을 출력한다.
+
+### 예제
+
+| 입력                                                         | 출력           |
+| ------------------------------------------------------------ | -------------- |
+| `5 8` `TATGATAC` `TAAGCTAC` `AAAGATCC` `TGAGATAC` `TAAGATGT` | `TAAGATAC` `7` |
+
+## 풀이
+
+각 위치별로 가장 많이 등장하는 문자를 선택하여 해밍 거리를 최소화한다.
+
+1. 각 위치(0~M-1)에서 A, C, G, T의 등장 횟수를 센다
+2. 가장 많이 등장한 문자를 선택한다 (동률이면 사전순으로 앞선 문자)
+3. 해밍 거리 합은 `N - 최다 등장 횟수`를 각 위치마다 누적한다
+4. 선택된 문자열과 해밍 거리 합을 출력한다
+
+**핵심 아이디어**: 각 위치는 독립적이므로, 위치별로 과반수 문자를 선택하면 전체 해밍 거리가 최소가 된다.
+
+## 코드
+
+```java
+package ASP_study.day299;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+public class Day277BOJ1969DNA {
+	static int N, M;
+	static String[] DNA;
+	static int hd;
+
+	public static void main(String[] args) throws Exception {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+		String[] sarr = br.readLine().split(" ");
+		N = Integer.parseInt(sarr[0]);
+		M = Integer.parseInt(sarr[1]);
+
+		DNA = new String[N];
+
+		for (int i = 0; i < N; i++) {
+			DNA[i] = br.readLine();
+		}
+
+		StringBuffer buf = new StringBuffer();
+
+		for (int i = 0; i < M; i++) {
+			int[] cnt = new int[4]; // A C G T
+			for (int j = 0; j < N; j++) {
+				char ch = DNA[j].charAt(i);
+
+				switch (ch) {
+				case 'A':
+					cnt[0]++;
+					break;
+				case 'C':
+					cnt[1]++;
+					break;
+				case 'G':
+					cnt[2]++;
+					break;
+				case 'T':
+					cnt[3]++;
+					break;
+				}
+
+			}
+
+			int idx = 0;
+			int max = 0;
+			for (int k = 0; k < 4; k++) {
+				if (cnt[k] > max || (cnt[k] == max && k < idx)) {
+					max = cnt[k];
+					idx = k;
+				}
+			}
+
+			switch (idx) {
+			case 0:
+				buf.append('A');
+				break;
+			case 1:
+				buf.append('C');
+				break;
+			case 2:
+				buf.append('G');
+				break;
+			case 3:
+				buf.append('T');
+				break;
+			}
+			hd += N - max;
+
+		}
+
+		bw.write(buf.toString() + "\n");
+		bw.write(hd + "\n");
+		bw.flush();
+
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* M) - 모든 문자열의 모든 위치 순회
+- 공간: O(N \* M) - DNA 문자열 저장

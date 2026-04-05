@@ -1,0 +1,119 @@
+---
+title: "BOJ 1935 - 후위 표기식2"
+date: "2022-12-17"
+description: "자료 구조, 스택 문제"
+tags: ["자료 구조", "스택"]
+platform: "boj"
+problem_number: "1935"
+problem_url: "https://www.acmicpc.net/problem/1935"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1935 - 후위 표기식2](https://www.acmicpc.net/problem/1935)
+
+후위 표기식(postfix notation)이 주어진다. 알파벳 대문자로 이루어진 피연산자와 `+`, `-`, `*`, `/` 연산자로 구성된다. 각 피연산자(A, B, C, ...)에 대응하는 실수 값이 주어질 때, 후위 표기식을 계산한 결과를 소수점 둘째 자리까지 출력하라.
+
+### 입력
+
+첫 번째 줄에 피연산자 개수 N이 주어진다. (1 ≤ N ≤ 26)
+
+두 번째 줄에 후위 표기식이 주어진다.
+
+이후 N줄에 걸쳐 A, B, C, ... 순서로 각 피연산자의 값(정수)이 주어진다.
+
+### 출력
+
+후위 표기식을 계산한 결과를 소수점 둘째 자리까지 출력한다.
+
+### 예제
+
+```
+5
+ABC*+DE/-
+1
+2
+3
+4
+5
+```
+
+출력:
+
+```
+6.20
+```
+
+## 풀이
+
+**핵심 아이디어**: 후위 표기식은 스택을 이용해 왼쪽부터 순서대로 처리하면 된다. 피연산자를 만나면 스택에 push하고, 연산자를 만나면 스택에서 두 값을 pop하여 계산 후 결과를 다시 push한다. 주의할 점은 pop 순서다. 첫 번째 pop이 오른쪽 피연산자, 두 번째 pop이 왼쪽 피연산자이므로 `num2 op num1` 형태로 계산해야 한다.
+
+1. 피연산자 A~Z의 값을 맵에 저장한다.
+2. 후위 표기식을 한 글자씩 순회한다.
+3. 알파벳이면 해당 값을 `double`로 스택에 push한다.
+4. 연산자이면 스택에서 두 값을 꺼내 연산 후 결과를 push한다.
+5. 최종적으로 스택에 남은 값이 결과이며, `"%.2f"` 형식으로 출력한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+
+public class Day313BOJ1935후위표기2스택 {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int n = Integer.parseInt(br.readLine());
+        String[] line = br.readLine().split("");
+
+        Map<Character, Double> numMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int num = Integer.parseInt(br.readLine());
+            numMap.put((char) (65 + i), (double) num);
+        }
+
+        Stack<Double> st = new Stack<>();
+        for (int i = 0; i < line.length; i++) {
+            char c = line[i].charAt(0);
+            if (numMap.containsKey(c)) {
+                st.push((double) numMap.get(c));
+            } else {
+                if (st.size() < 2)
+                    continue;
+                double res = operator(c, st.pop(), st.pop());
+                st.push(res);
+            }
+
+        }
+        System.out.println(String.format("%.2f", st.pop()));
+    }
+
+    static double operator(char op, double num1, double num2) {
+        double res = 0;
+        if (op == '*') {
+            res = num2 * num1;
+        } else if (op == '/') {
+            res = num2 / num1;
+        } else if (op == '+') {
+            res = num2 + num1;
+        } else {
+            res = num2 - num1;
+        }
+        return Math.round(res * 100) / 100.0;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

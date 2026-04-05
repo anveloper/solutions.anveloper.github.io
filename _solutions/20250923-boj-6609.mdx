@@ -1,0 +1,79 @@
+---
+title: "BOJ 6609 - 모기곱셈"
+date: "2025-09-23"
+description: "수학, 구현, 사칙연산 문제"
+tags: ["수학", "구현", "사칙연산", "시뮬레이션"]
+platform: "boj"
+problem_number: "6609"
+problem_url: "https://www.acmicpc.net/problem/6609"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6609 - 모기곱셈](https://www.acmicpc.net/problem/6609)
+
+모기의 한 세대는 세 개의 그룹(m, p, l)으로 이루어지며, 다음 세대는 아래 규칙에 따라 계산된다.
+
+- 새로운 m = p / s (정수 나눗셈)
+- 새로운 p = l / r (정수 나눗셈)
+- 새로운 l = m \* e
+
+초기값 m, p, l, e, r, s와 세대 수 n이 주어질 때, n세대 후의 m 값을 출력한다. 입력이 끝날 때까지 반복한다.
+
+### 입력
+
+각 줄에 정수 m, p, l, e, r, s, n이 주어진다. 입력이 끝날 때까지 반복한다.
+
+### 출력
+
+각 테스트 케이스마다 n세대 후의 m 값을 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `2 3 4 5 6 7 3` | `0`  |
+
+## 풀이
+
+세대 전이 규칙을 n번 반복 적용하는 시뮬레이션 문제다.
+
+1. 7개의 정수(m, p, l, e, r, s, n)를 `scanf`로 읽는다. `scanf`의 반환값이 7이 아니면 입력 종료로 판단한다.
+2. 루프를 n번 반복하면서 다음 세대 값을 동시에 계산한다.
+3. 세 변수가 서로 의존하므로 임시 변수(`new_m`, `new_p`, `new_l`)에 먼저 저장한 뒤 한꺼번에 갱신한다.
+4. n번 반복 후 m 값을 출력한다.
+
+**핵심 아이디어**: 세 값이 동시에 갱신되므로 이전 값을 임시 변수에 저장해 덮어쓰기 문제를 방지한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  int m, p, l, e, r, s, n;
+
+  while (scanf("%d %d %d %d %d %d %d", &m, &p, &l, &e, &r, &s, &n) == 7)
+  {
+    int i;
+    for (i = 0; i < n; i++)
+    {
+      int new_m = p / s, new_p = l / r, new_l = m * e;
+      m = new_m;
+      p = new_p;
+      l = new_l;
+    }
+    printf("%d\n", m);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* N) — 테스트 케이스 수 T, 세대 수 N
+- 공간: O(1) — 고정된 변수만 사용

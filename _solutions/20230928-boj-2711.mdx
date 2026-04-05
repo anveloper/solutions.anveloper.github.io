@@ -1,0 +1,71 @@
+---
+title: "BOJ 2711 - 오타맨 고창영"
+date: "2023-09-28"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "2711"
+problem_url: "https://www.acmicpc.net/problem/2711"
+difficulty: "브론즈 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2711 - 오타맨 고창영](https://www.acmicpc.net/problem/2711)
+
+문자열에서 특정 위치의 문자를 제거한 결과를 출력한다.
+
+### 입력
+
+첫째 줄에 테스트 케이스 수 T가 주어진다. 각 줄에 제거할 위치와 문자열이 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 해당 위치의 문자를 제거한 결과를 출력한다.
+
+### 예제
+
+| 입력                             | 출력                   |
+| -------------------------------- | ---------------------- |
+| `2` `4 MISSPELL` `1 PROGRAMMING` | `MISSPLL` `ROGRAMMING` |
+
+## 풀이
+
+StringBuilder의 append(CharSequence, start, end)를 사용하여 지정 위치를 건너뛴 문자열을 만든다.
+
+1. 제거할 위치 idx(1-based → 0-based)와 문자열 str을 읽는다
+2. str의 0~idx 부분과 idx+1~끝 부분을 이어 붙인다
+3. 결과를 출력한다
+
+**핵심 아이디어**: 문자열 슬라이싱으로 특정 위치를 제외한 부분 문자열을 결합한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day663BOJ2711오타맨 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < N; ++i) {
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      int idx = Integer.parseInt(st.nextToken()) - 1;
+      String str = st.nextToken();
+      sb.append(str, 0, idx).append(str, idx + 1, str.length()).append("\n");
+    }
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* L) — T는 테스트 케이스, L은 문자열 길이
+- 공간: O(L)

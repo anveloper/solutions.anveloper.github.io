@@ -1,0 +1,68 @@
+---
+title: "BOJ 10926 - ??!"
+date: "2024-10-06"
+description: "아이디 뒤에 ??!를 붙여 출력하는 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "10926"
+problem_url: "https://www.acmicpc.net/problem/10926"
+difficulty: "브론즈 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10926 - ??!](https://www.acmicpc.net/problem/10926)
+
+아이디를 입력받아 뒤에 "??!"를 붙여 출력하라.
+
+### 입력
+
+아이디 문자열이 주어진다 (소문자, 최대 50자).
+
+### 출력
+
+아이디 뒤에 "??!"를 붙여 출력한다.
+
+### 예제
+
+| 입력     | 출력        |
+| -------- | ----------- |
+| `joonas` | `joonas??!` |
+
+## 풀이
+
+문자열 뒤에 "??!"를 이어붙여 출력한다.
+
+1. 문자열을 입력받는다
+2. `+= "??!"`로 이어붙인다
+3. 결과를 출력한다
+
+**핵심 아이디어**: 단순 문자열 연결 문제이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main(int argc, char const *argv[])
+{
+
+  string id;
+  cin >> id;
+
+  id += "??!";
+  cout << id;
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(N) (N: 아이디 길이)

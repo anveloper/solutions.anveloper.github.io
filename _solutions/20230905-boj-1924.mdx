@@ -1,0 +1,75 @@
+---
+title: "BOJ 1924 - 2007년"
+date: "2023-09-05"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "1924"
+problem_url: "https://www.acmicpc.net/problem/1924"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1924 - 2007년](https://www.acmicpc.net/problem/1924)
+
+2007년의 월과 일이 주어질 때, 해당 날짜의 요일을 출력한다. 2007년 1월 1일은 월요일이다.
+
+### 입력
+
+첫째 줄에 월 x와 일 y가 주어진다.
+
+### 출력
+
+해당 요일을 영문 약어로 출력한다 (MON, TUE, WED, THU, FRI, SAT, SUN).
+
+### 예제
+
+| 입력   | 출력  |
+| ------ | ----- |
+| `1 1`  | `MON` |
+| `3 14` | `WED` |
+
+## 풀이
+
+1월 1일부터의 경과 일수를 계산하여 7로 나눈 나머지로 요일을 결정한다.
+
+1. 각 월의 일수 배열과 요일 문자열 배열을 준비한다
+2. 1월부터 (m-1)월까지의 일수를 합산한다
+3. d-1을 더하여 1월 1일 기준 경과 일수를 구한다
+4. 경과 일수 % 7로 요일 인덱스를 구한다 (0=MON)
+
+**핵심 아이디어**: 2007년 1월 1일이 월요일이므로, 총 경과 일수를 7로 나눈 나머지가 요일 인덱스가 된다.
+
+## 코드
+
+```java
+package day599;
+
+import java.io.*;
+import java.util.*;
+
+public class Day578BOJ1924A2007 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int m = Integer.parseInt(st.nextToken());
+    int d = Integer.parseInt(st.nextToken());
+    String[] days = { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" };
+    int[] months = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    int n = 0;
+    for (int i = 0; i < m; i++) {
+      n += months[i];
+    }
+    n += d - 1;
+    System.out.print(days[n % 7]);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 최대 12번 반복
+- 공간: O(1)

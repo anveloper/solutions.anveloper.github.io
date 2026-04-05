@@ -1,0 +1,119 @@
+---
+title: "BOJ 7453 - 합이 0인 네 정수"
+date: "2023-01-22"
+description: "정렬, 이분 탐색, 두 포인터 문제"
+tags: ["정렬", "이분 탐색", "두 포인터", "중간에서 만나기"]
+platform: "boj"
+problem_number: "7453"
+problem_url: "https://www.acmicpc.net/problem/7453"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 7453 - 합이 0인 네 정수](https://www.acmicpc.net/problem/7453)
+
+A, B, C, D 네 배열에서 각각 하나씩 골라 합이 0이 되는 경우의 수를 구하라.
+
+### 입력
+
+첫째 줄에 N (1 이상 4,000 이하), 이후 N줄에 네 배열의 원소가 주어진다.
+
+### 출력
+
+합이 0인 경우의 수를 출력한다.
+
+### 예제
+
+| 입력                                                                                                 | 출력 |
+| ---------------------------------------------------------------------------------------------------- | ---- |
+| `6` `-45 22 42 -16` `-41 -27 56 30` `-36 53 -37 77` `-36 30 -75 -46` `26 -38 -10 62` `-32 -54 -6 45` | `5`  |
+
+## 풀이
+
+두 배열씩 쌍합을 구한 뒤, 투 포인터로 합이 0인 쌍을 카운트한다 (Meet in the Middle).
+
+1. A+B의 모든 쌍합과 C+D의 모든 쌍합을 각각 N^2 크기 배열에 저장한다
+2. 두 배열을 각각 정렬한다
+3. 왼쪽 포인터 l은 A+B의 시작, 오른쪽 포인터 r은 C+D의 끝에서 시작한다
+4. 합이 0이면 양쪽의 같은 값 개수를 세어 곱한 뒤 ans에 더한다
+5. 합이 음수면 l을 증가, 양수면 r을 감소시킨다
+
+**핵심 아이디어**: 4중 루프 O(N^4)를 2개씩 묶어 O(N^2) 배열 두 개로 줄이고, 정렬 + 투 포인터로 O(N^2 log N)에 해결한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.*;
+
+public class Day349BOJ7453합이0네정수 {
+
+    static int N;
+    static long ans = 0;
+    static int[][] data;
+    static int preSum[][];
+    static StringTokenizer st;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        N = Integer.parseInt(br.readLine());
+        data = new int[N][4];
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            data[i][0] = Integer.parseInt(st.nextToken());
+            data[i][1] = Integer.parseInt(st.nextToken());
+            data[i][2] = Integer.parseInt(st.nextToken());
+            data[i][3] = Integer.parseInt(st.nextToken());
+        }
+
+        preSum = new int[2][N * N];
+        int count = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                preSum[0][count] = data[i][0] + data[j][1];
+                preSum[1][count++] = data[i][2] + data[j][3];
+            }
+        }
+        Arrays.sort(preSum[0]);
+        Arrays.sort(preSum[1]);
+        int l = 0;
+        int r = preSum[0].length - 1;
+
+        int end = N * N;
+        while (l < end && 0 <= r) {
+            int sum = preSum[0][l] + preSum[1][r];
+            int firstCnt = 1;
+            int secondCnt = 1;
+            if (sum == 0) {
+                while (l <= end - 2 && preSum[0][l] == preSum[0][l + 1]) {
+                    firstCnt++;
+                    l++;
+                }
+                while (0 < r && preSum[1][r] == preSum[1][r - 1]) {
+                    secondCnt++;
+                    r--;
+                }
+                ans += (long) firstCnt * secondCnt;
+            }
+
+            if (sum < 0) {
+                l++;
+            } else {
+                r--;
+            }
+        }
+        System.out.println(ans);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2 log N) - 쌍합 생성 O(N^2) + 정렬 O(N^2 log N) + 투 포인터 O(N^2)
+- 공간: O(N^2) - 쌍합 배열

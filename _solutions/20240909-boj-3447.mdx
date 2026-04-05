@@ -1,0 +1,72 @@
+---
+title: "BOJ 3447 - 버그왕"
+date: "2024-09-09"
+description: "문자열에서 BUG를 반복 제거하는 파싱 문제"
+tags: ["문자열", "파싱"]
+platform: "boj"
+problem_number: "3447"
+problem_url: "https://www.acmicpc.net/problem/3447"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3447 - 버그왕](https://www.acmicpc.net/problem/3447)
+
+문자열이 주어질 때, "BUG"라는 부분 문자열을 더 이상 없을 때까지 반복적으로 제거한 결과를 출력하라.
+
+### 입력
+
+여러 줄의 문자열이 EOF까지 주어진다.
+
+### 출력
+
+각 줄에서 "BUG"를 반복 제거한 결과를 출력한다.
+
+### 예제
+
+| 입력           | 출력   |
+| -------------- | ------ |
+| `ABUGC`        | `AC`   |
+| `ABABUGBUGGCC` | `ABCC` |
+
+## 풀이
+
+각 줄에 대해 "BUG" 문자열을 정규식으로 치환하며 반복 제거한다.
+
+1. `getline`으로 EOF까지 한 줄씩 입력받는다
+2. `find("BUG")`로 "BUG"가 존재하는지 확인한다
+3. 존재하면 `regex_replace`로 모든 "BUG"를 빈 문자열로 치환한다
+4. 제거 후 새로운 "BUG"가 생길 수 있으므로 없을 때까지 반복한다
+
+**핵심 아이디어**: "ABBUGUgc"처럼 "BUG" 제거 후 남은 문자가 합쳐져 새로운 "BUG"가 되므로, 한 번의 치환이 아닌 반복 치환이 필요하다.
+
+## 코드
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+string s;
+
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  while (getline(cin, s))
+  {
+    while (s.find("BUG") != -1)
+    {
+      s = regex_replace(s, regex("BUG"), "");
+    }
+    cout << s << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N^2 / 3) (최악의 경우 중첩된 BUG 반복 제거)
+- 공간: O(N) (N: 문자열 길이)

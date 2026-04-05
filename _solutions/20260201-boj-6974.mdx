@@ -1,0 +1,146 @@
+---
+title: "BOJ 6974 - Long Division"
+date: "2026-02-01"
+description: "수학, 사칙연산, 임의 정밀도 / 큰 수 연산 문제"
+tags: ["수학", "사칙연산", "임의 정밀도 / 큰 수 연산"]
+platform: "boj"
+problem_number: "6974"
+problem_url: "https://www.acmicpc.net/problem/6974"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6974 - Long Division](https://www.acmicpc.net/problem/6974)
+
+큰 수의 나눗셈을 수행하여 몫과 나머지를 구하라. 수가 매우 클 수 있다.
+
+### 입력
+
+테스트 케이스 수 N과 각 케이스마다 피제수와 제수(문자열)가 주어진다.
+
+### 출력
+
+각 케이스마다 몫과 나머지를 출력한다.
+
+### 예제
+
+| 입력          | 출력     |
+| ------------- | -------- |
+| `1` `1234 56` | `22` `2` |
+
+## 풀이
+
+문자열 기반 큰 수 나눗셈(long division)을 구현한다.
+
+1. 피제수의 각 자릿수를 앞에서부터 하나씩 나머지에 추가한다
+2. 나머지가 제수 이상이 되면 반복적으로 빼며 몫의 자릿수를 결정한다
+3. 모든 자릿수를 처리하면 몫과 나머지가 완성된다
+4. 앞자리 0을 제거하여 출력한다
+
+**핵심 아이디어**: 초등학교 나눗셈 알고리즘을 문자열로 구현하여 임의 정밀도 나눗셈을 수행한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool isGreaterOrEqual(string s1, string s2)
+{
+  if (s1.length() != s2.length())
+    return s1.length() > s2.length();
+  return s1 >= s2;
+}
+
+string subtract(string s1, string s2)
+{
+  string res = "";
+  int n1 = s1.length(), n2 = s2.length();
+  reverse(s1.begin(), s1.end());
+  reverse(s2.begin(), s2.end());
+
+  int borrow = 0;
+  for (int i = 0; i < n1; i++)
+  {
+    int sub = (s1[i] - '0') - (i < n2 ? (s2[i] - '0') : 0) - borrow;
+    if (sub < 0)
+    {
+      sub += 10;
+      borrow = 1;
+    }
+    else
+    {
+      borrow = 0;
+    }
+    res += to_string(sub);
+  }
+  while (res.length() > 1 && res.back() == '0')
+    res.pop_back();
+  reverse(res.begin(), res.end());
+  return res;
+}
+
+void solve()
+{
+  string dividend, divisor;
+  cin >> dividend >> divisor;
+
+  if (!isGreaterOrEqual(dividend, divisor))
+  {
+    cout << "0\n"
+         << dividend << "\n";
+    return;
+  }
+
+  string quotient = "";
+  string remainder = "";
+
+  for (int i = 0; i < dividend.length(); i++)
+  {
+    remainder += dividend[i];
+    // 앞의 0 제거
+    while (remainder.length() > 1 && remainder[0] == '0')
+      remainder.erase(0, 1);
+
+    int count = 0;
+    while (isGreaterOrEqual(remainder, divisor))
+    {
+      remainder = subtract(remainder, divisor);
+      count++;
+    }
+    quotient += to_string(count);
+  }
+
+  // 몫의 앞자리 0 제거
+  while (quotient.length() > 1 && quotient[0] == '0')
+    quotient.erase(0, 1);
+
+  cout << quotient << "\n"
+       << remainder << "\n";
+}
+
+int main()
+{
+  int n;
+  cin >> n;
+  while (n--)
+  {
+    solve();
+    if (n > 0)
+      cout << "\n";
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(D \* Q) (D: 피제수 자릿수, Q: 몫의 최대 자릿수값)
+- 공간: O(D)

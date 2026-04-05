@@ -1,0 +1,72 @@
+---
+title: "BOJ 13235 - 팰린드롬"
+date: "2024-12-08"
+description: "문자열이 팰린드롬인지 판별하는 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "13235"
+problem_url: "https://www.acmicpc.net/problem/13235"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 13235 - 팰린드롬](https://www.acmicpc.net/problem/13235)
+
+주어진 문자열이 팰린드롬인지 판별하라.
+
+### 입력
+
+소문자로 이루어진 문자열이 주어진다.
+
+### 출력
+
+팰린드롬이면 "true", 아니면 "false"를 출력한다.
+
+### 예제
+
+| 입력    | 출력   |
+| ------- | ------ |
+| `level` | `true` |
+
+## 풀이
+
+문자열을 뒤집어 원본과 비교한다.
+
+1. 입력 문자열을 복사한 뒤 `reverse`로 뒤집는다
+2. 원본과 뒤집은 문자열이 같으면 "true", 다르면 "false"를 출력한다
+
+**핵심 아이디어**: STL의 `reverse` 함수로 간단히 팰린드롬을 판별할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+string s1, s2;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  cin >> s1;
+  s2 = s1;
+  reverse(s2.begin(), s2.end());
+
+  if (s1 == s2)
+    cout << "true";
+  else
+    cout << "false";
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

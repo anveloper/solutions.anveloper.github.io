@@ -1,0 +1,83 @@
+---
+title: "BOJ 10211 - Maximum Subarray"
+date: "2023-04-27"
+description: "다이나믹 프로그래밍, 브루트포스 알고리즘, 누적 합 문제"
+tags: ["다이나믹 프로그래밍", "브루트포스 알고리즘", "누적 합", "최대 부분 배열"]
+platform: "boj"
+problem_number: "10211"
+problem_url: "https://www.acmicpc.net/problem/10211"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 10211 - Maximum Subarray](https://www.acmicpc.net/problem/10211)
+
+N개의 정수로 이루어진 배열에서 연속 부분 배열의 최대 합을 구하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스마다 N과 배열이 주어진다.
+
+### 출력
+
+각 케이스에 대해 최대 부분 배열 합을 출력한다.
+
+### 예제
+
+| 입력                                     | 출력      |
+| ---------------------------------------- | --------- |
+| `2` `5` `1 2 3 4 5` `5` `-1 -2 -3 -4 -5` | `15` `-1` |
+
+## 풀이
+
+누적합을 구한 뒤 모든 구간 합을 확인하여 최댓값을 구한다.
+
+1. 누적합 배열 `dp[i] = arr[1] + ... + arr[i]`를 구한다
+2. 단일 원소와 누적합 중 최댓값을 초기화한다
+3. 모든 (i, j) 쌍에 대해 `dp[j] - dp[i]`의 최댓값을 구한다
+
+**핵심 아이디어**: 누적합의 차이가 구간 합이므로 모든 쌍을 확인한다. N이 작아 O(N²)으로 충분하다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+import java.util.*;
+
+public class Day445BOJ10211MaximunSubarray {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int t = Integer.parseInt(br.readLine());
+    StringBuilder sb = new StringBuilder();
+    for (int c = 0; c < t; c++) {
+      int n = Integer.parseInt(br.readLine());
+      int[] arr = new int[n + 1];
+      int[] dp = new int[n + 1];
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      int max = Integer.MIN_VALUE;
+      for (int i = 1; i <= n; i++) {
+        arr[i] = Integer.parseInt(st.nextToken());
+        dp[i] = dp[i - 1] + arr[i];
+        max = Math.max(max, Math.max(arr[i], dp[i]));
+      }
+      for (int i = 1; i <= n; i++) {
+        for (int j = n; j > i; j--) {
+          max = Math.max(max, dp[j] - dp[i]);
+        }
+      }
+      sb.append(max + "\n");
+    }
+    System.out.print(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N)

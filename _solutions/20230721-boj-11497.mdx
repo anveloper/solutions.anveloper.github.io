@@ -1,0 +1,101 @@
+---
+title: "BOJ 11497 - 통나무 건너뛰기"
+date: "2023-07-21"
+description: "그리디 알고리즘, 정렬 문제"
+tags: ["그리디 알고리즘", "정렬"]
+platform: "boj"
+problem_number: "11497"
+problem_url: "https://www.acmicpc.net/problem/11497"
+difficulty: "실버 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 11497 - 통나무 건너뛰기](https://www.acmicpc.net/problem/11497)
+
+N개의 통나무를 원형으로 배치할 때, 인접한 통나무 높이 차의 최댓값을 최소화하라.
+
+### 입력
+
+테스트 케이스 수 T, 각 케이스에 N과 통나무 높이들이 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 인접 높이 차의 최댓값의 최솟값을 출력한다.
+
+### 예제
+
+| 입력                           | 출력 |
+| ------------------------------ | ---- |
+| `1` `7` `13 10 12 11 10 11 12` | `2`  |
+
+## 풀이
+
+정렬 후 홀수/짝수 인덱스로 번갈아 배치하여 인접 차이를 최소화한다.
+
+1. 통나무를 오름차순 정렬한다
+2. 작은 값부터 교대로 양쪽 끝에서 채워넣는다 (홀수 인덱스는 왼쪽, 짝수는 오른쪽)
+3. 결과 배열에서 인접 원소 차이의 최댓값을 구한다
+
+**핵심 아이디어**: 정렬 후 교대 배치하면 인접한 원소 간 차이가 최대 2칸 건너뛴 값이 되어, 가능한 최소 차이를 달성한다.
+
+## 코드
+
+```java
+package day549;
+
+import java.io.*;
+import java.util.*;
+
+public class Day530BOJ11497통나무건너뛰기 {
+  static int t, n;
+  static int arr[];
+  static StringBuilder sb = new StringBuilder();
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    t = Integer.parseInt(br.readLine());
+
+    while (t > 0) {
+      t--;
+      n = Integer.parseInt(br.readLine());
+      int min = Integer.MAX_VALUE;
+      arr = new int[n];
+      String[] t = br.readLine().split(" ");
+      for (int i = 0; i < n; i++) {
+        arr[i] = Integer.parseInt(t[i]);
+      }
+
+      int ans[] = new int[n];
+      int left = 0;
+      int right = n - 1;
+
+      Arrays.sort(arr);
+
+      for (int i = 0; i < n; i++) {
+        if (i % 2 != 0) {
+          ans[left] = arr[i];
+          left += 1;
+        } else {
+          ans[right] = arr[i];
+          right -= 1;
+        }
+      }
+      min = Math.abs(ans[0] - ans[n - 1]);
+      for (int i = 1; i < n; i++) {
+        min = Math.max(min, Math.abs(ans[i] - ans[i - 1]));
+      }
+      System.out.println(min);
+    }
+
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

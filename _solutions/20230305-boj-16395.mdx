@@ -1,0 +1,76 @@
+---
+title: "BOJ 16395 - 파스칼의 삼각형"
+date: "2023-03-05"
+description: "수학, 다이나믹 프로그래밍, 조합론 문제"
+tags: ["수학", "다이나믹 프로그래밍", "조합론"]
+platform: "boj"
+problem_number: "16395"
+problem_url: "https://www.acmicpc.net/problem/16395"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 16395 - 파스칼의 삼각형](https://www.acmicpc.net/problem/16395)
+
+파스칼의 삼각형에서 N번째 행의 K번째 수를 구하라.
+
+### 입력
+
+한 줄에 N, K가 주어진다 (1 이상 30 이하).
+
+### 출력
+
+파스칼의 삼각형 N행 K열의 값을 출력한다.
+
+### 예제
+
+| 입력  | 출력 |
+| ----- | ---- |
+| `5 3` | `6`  |
+
+## 풀이
+
+파스칼의 삼각형을 2D 배열로 구성한 뒤 해당 위치 값을 출력한다.
+
+1. `dp[1][1] = 1`로 초기화한다
+2. 2행부터 N행까지, `dp[i][j] = dp[i-1][j-1] + dp[i-1][j]`로 채운다
+3. `dp[N][K]`를 출력한다
+
+**핵심 아이디어**: 파스칼의 삼각형은 이항 계수 `C(N-1, K-1)`과 같다. DP로 구성하면 오버플로우 없이 정확하게 계산할 수 있다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day392BOJ16395파스칼삼각형 {
+  static int N, K;
+  static int[][] dp;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    K = Integer.parseInt(st.nextToken());
+    dp = new int[N + 1][N + 1];
+    dp[1][1] = 1;
+    for (int i = 2; i <= N; i++) {
+      for (int j = 1; j <= i; j++) {
+        dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+      }
+    }
+    System.out.print(dp[N][K]);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N²)
+- 공간: O(N²)

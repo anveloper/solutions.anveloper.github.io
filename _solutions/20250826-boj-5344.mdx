@@ -1,0 +1,78 @@
+---
+title: "BOJ 5344 - GCD"
+date: "2025-08-26"
+description: "수학, 정수론, 유클리드 호제법 문제"
+tags: ["수학", "정수론", "유클리드 호제법"]
+platform: "boj"
+problem_number: "5344"
+problem_url: "https://www.acmicpc.net/problem/5344"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5344 - GCD](https://www.acmicpc.net/problem/5344)
+
+두 자연수의 최대공약수(GCD)를 구하라.
+
+### 입력
+
+테스트 케이스 수 T와 각 케이스마다 두 정수 x, y가 주어진다.
+
+### 출력
+
+각 케이스마다 GCD를 출력한다.
+
+### 예제
+
+| 입력                | 출력     |
+| ------------------- | -------- |
+| `2` `12 8` `100 25` | `4` `25` |
+
+## 풀이
+
+유클리드 호제법으로 두 수의 최대공약수를 재귀적으로 구한다.
+
+1. `gcd(x, y)`에서 y가 0이면 x를 반환한다
+2. 그렇지 않으면 `gcd(y, x % y)`를 재귀 호출한다
+3. 각 테스트 케이스에 대해 결과를 출력한다
+
+**핵심 아이디어**: 유클리드 호제법은 `gcd(a, b) = gcd(b, a mod b)`를 이용하여 O(log min(x, y)) 시간에 GCD를 구한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+typedef long long ll;
+
+ll gcd(ll x, ll y)
+{
+  if (y == 0)
+    return x;
+  return gcd(y, x % y);
+}
+
+int T;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  cin >> T;
+  while (T--)
+  {
+    ll x, y;
+    cin >> x >> y;
+    cout << gcd(x, y) << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T \* log min(x, y))
+- 공간: O(log min(x, y)) (재귀 스택)

@@ -1,0 +1,79 @@
+---
+title: "BOJ 5939 - Race Results"
+date: "2025-11-06"
+description: "구현, 정렬 문제"
+tags: ["구현", "정렬"]
+platform: "boj"
+problem_number: "5939"
+problem_url: "https://www.acmicpc.net/problem/5939"
+difficulty: "실버 V"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5939 - Race Results](https://www.acmicpc.net/problem/5939)
+
+N명의 경주 기록(시:분:초)이 주어질 때, 기록 순서대로 정렬하여 출력하라.
+
+### 입력
+
+참가자 수 N과 각 참가자의 시간, 분, 초가 주어진다.
+
+### 출력
+
+기록이 빠른 순서대로 출력한다.
+
+### 예제
+
+| 입력                              | 출력                          |
+| --------------------------------- | ----------------------------- |
+| `3` `1 20 30` `0 59 59` `1 20 29` | `0 59 59` `1 20 29` `1 20 30` |
+
+## 풀이
+
+시간을 하나의 정수로 변환하여 정렬한 뒤 원래 형식으로 복원한다.
+
+1. 시:분:초를 `시*10000 + 분*100 + 초`로 변환하여 배열에 저장한다
+2. 배열을 오름차순 정렬한다
+3. 정렬된 값을 역산하여 시:분:초 형식으로 출력한다
+
+**핵심 아이디어**: 시간 구성 요소를 자릿수 위치로 인코딩하면 단일 정수 비교만으로 시간순 정렬이 가능하다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int N;
+int arr[5000];
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  cin >> N;
+  for (int i = 0; i < N; i++)
+  {
+    int a, b, c;
+    cin >> a >> b >> c;
+    arr[i] = a * 10000 + b * 100 + c;
+  }
+
+  sort(arr, arr + N);
+
+  for (int i = 0; i < N; i++)
+  {
+    cout << arr[i] / 10000 << ' ' << (arr[i] % 10000) / 100 << ' ' << arr[i] % 100 << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

@@ -1,0 +1,62 @@
+---
+title: "BOJ 4999 - 아!"
+date: "2023-10-20"
+description: "구현, 문자열 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4999"
+problem_url: "https://www.acmicpc.net/problem/4999"
+difficulty: "브론즈 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4999 - 아!](https://www.acmicpc.net/problem/4999)
+
+환자가 말한 "아"의 길이가 의사가 요구한 길이 이상이면 "go", 아니면 "no"를 출력한다.
+
+### 입력
+
+첫째 줄에 환자가 말한 문자열, 둘째 줄에 의사가 요구한 문자열이 주어진다 (모두 'a'로만 구성).
+
+### 출력
+
+환자가 말한 문자열의 길이가 의사가 요구한 길이 이상이면 "go", 아니면 "no"를 출력한다.
+
+### 예제
+
+| 입력            | 출력 |
+| --------------- | ---- |
+| `aaah` `aaaaah` | `no` |
+
+## 풀이
+
+두 문자열의 길이를 비교하여 결과를 출력한다.
+
+1. 환자가 말한 문자열과 의사가 요구한 문자열을 각각 읽는다
+2. 환자의 문자열 길이가 의사의 문자열 길이 이상이면 "go"를 출력한다
+3. 그렇지 않으면 "no"를 출력한다
+
+**핵심 아이디어**: 삼항 연산자로 두 문자열의 length()를 비교하여 한 줄로 처리한다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day644BOJ4999아 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    System.out.println((br.readLine().length() >= br.readLine().length()) ? "go" : "no");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(N) — 문자열 저장

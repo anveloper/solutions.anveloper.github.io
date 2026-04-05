@@ -1,0 +1,93 @@
+---
+title: "BOJ 4144 - Alien Communicating Machines"
+date: "2026-02-14"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "4144"
+problem_url: "https://www.acmicpc.net/problem/4144"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4144 - Alien Communicating Machines](https://www.acmicpc.net/problem/4144)
+
+두 외계 문명의 컴퓨터는 서로 다른 진법을 사용한다. X진법 수를 Y진법으로 변환하는 프로그램을 작성한다. 숫자는 `0`~`9`, `A`~`Z`로 표현되며 최대 36진법까지 지원한다.
+
+### 입력
+
+- 첫 줄: 테스트 케이스 수 T
+- 각 테스트 케이스: X Y Z (X진법 밑수, Y진법 밑수, X진법으로 표현된 수 Z)
+- 2 이상 36 이하의 정수 X, Y
+- Z는 X진법 숫자 문자열 (`0`~`9`, `A`~`Z`)
+
+### 출력
+
+각 테스트 케이스마다 Z를 Y진법으로 변환한 결과를 출력한다.
+
+### 예제
+
+| 입력                                   | 출력            |
+| -------------------------------------- | --------------- |
+| `3` `2 10 1010` `16 10 FF` `10 16 255` | `10` `255` `FF` |
+
+## 풀이
+
+X진법 수 문자열을 10진법 정수로 변환한 뒤, 그 값을 Y진법 문자열로 다시 변환하는 2단계 진법 변환 문제다.
+
+1. 테스트 케이스 수 T를 입력받는다.
+2. 각 케이스에서 X, Y, Z(문자열)를 읽는다.
+3. Z의 각 문자를 `c2i()`로 숫자로 변환하며, `val = val * X + digit` 방식으로 10진법 정수 `val`을 계산한다.
+4. `val`이 0이면 `"0"`을 반환한다.
+5. `val`이 0보다 크면, `val % Y`를 `i2c()`로 문자 변환하여 앞에 붙이고 `val /= Y`를 반복한다.
+6. 결과 문자열을 출력한다.
+
+**핵심 아이디어**: 임의 진법 간 변환은 10진법을 중간 매개로 사용한다. X진법 → 10진법(정수) → Y진법의 2단계 변환으로 처리하며, 0~9는 `'0'`~`'9'`, 10~35는 `'A'`~`'Z'`로 인코딩한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+inline int c2i(char c) {
+  return ('0' <= c && c <= '9') ? c-'0' : c-'A'+10;
+}
+
+inline char i2c(int i) {
+  return i < 10 ? '0'+i : 'A'+i-10;
+}
+
+string solve(void) {
+  int x, y; string z; cin >> x >> y >> z;
+
+  long long val = 0;
+  for (char c : z) val = val * x + c2i(c);
+  if (val == 0) return "0";
+
+  string ans = "";
+  while (val) {
+    ans = i2c(val % y) + ans;
+    val /= y;
+  }
+  return ans;
+}
+
+int main(void) {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int t; cin >> t;
+  while (t--) cout << solve() << "\n";
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N) — 입력 수의 자릿수 N에 선형 비례 (X진법 파싱 O(N) + Y진법 변환 O(log_Y(val)))
+- 공간: O(N) — 결과 문자열 저장

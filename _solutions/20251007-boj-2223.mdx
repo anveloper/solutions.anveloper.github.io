@@ -1,0 +1,90 @@
+---
+title: "BOJ 2223 - 금화"
+date: "2025-10-07"
+description: "수학, 구현, 그리디 알고리즘 문제"
+tags: ["수학", "구현", "그리디 알고리즘", "시뮬레이션"]
+platform: "boj"
+problem_number: "2223"
+problem_url: "https://www.acmicpc.net/problem/2223"
+difficulty: "실버 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2223 - 금화](https://www.acmicpc.net/problem/2223)
+
+매일 x개의 금화를 채굴하지만, M개의 도적이 각각 d일째 속도 s로 접근한다. 도적이 도착하면 금화를 빼앗기므로, T일 동안 최대 금화 수를 구하라.
+
+### 입력
+
+시간 T, 금화 생산량 x, 도적 수 M, 이후 M개의 도적 정보(거리 d, 속도 s)가 주어진다.
+
+### 출력
+
+T일 동안 모을 수 있는 최대 금화 수를 출력한다.
+
+### 예제
+
+| 입력           | 출력 |
+| -------------- | ---- |
+| `10 5 1` `6 2` | `35` |
+
+## 풀이
+
+가장 먼저 도착하는 도적의 시점을 기준으로 금화를 계산한다.
+
+1. 각 도적의 도착 시점 `(d-1) / s`를 계산하여 최솟값 minV를 구한다
+2. T가 minV 미만이면 방해 없이 `x * T`를 모은다
+3. T가 minV 이상이면 minV일까지 정상 생산하고, 이후에는 2일에 1번만 생산한다
+4. minV가 0이면 처음부터 도적이 있으므로 금화는 0이다
+
+**핵심 아이디어**: 가장 빨리 도착하는 도적 시점이 안전 기간의 상한이 되며, 이후에는 생산 효율이 절반으로 감소한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main()
+{
+  int t, x, m;
+  int answer = 0;
+  cin >> t >> x >> m;
+
+  int d, s;
+  int minV = 10000000;
+  for (int i = 0; i < m; i++)
+  {
+    cin >> d >> s;
+    minV = min(minV, (d - 1) / s);
+  }
+
+  if (t >= minV)
+  {
+    answer = x * (minV + (t - minV) / 2);
+  }
+  if (t < minV)
+  {
+    answer = x * t;
+  }
+  if (minV == 0)
+  {
+    answer = 0;
+  }
+  if (m == 0)
+  {
+    answer = x * t;
+  }
+
+  cout << answer;
+}
+```
+
+## 복잡도
+
+- 시간: O(M)
+- 공간: O(1)

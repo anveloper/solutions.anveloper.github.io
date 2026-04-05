@@ -1,0 +1,92 @@
+---
+title: "BOJ 5751 - Head or Tail"
+date: "2025-09-16"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5751"
+problem_url: "https://www.acmicpc.net/problem/5751"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5751 - Head or Tail](https://www.acmicpc.net/problem/5751)
+
+John과 Mary가 동전 던지기 게임을 한다. 동전의 앞면(1)이 나오면 John이 이기고, 뒷면(0)이 나오면 Mary가 이긴다. n번의 결과가 주어졌을 때 각각 몇 번 이겼는지 출력한다. n이 0이면 종료한다.
+
+### 입력
+
+여러 테스트 케이스가 주어진다. 각 케이스의 첫 줄에 던진 횟수 `n`이 주어지고, 이후 n개의 결과(0 또는 1)가 주어진다. `n`이 0이면 종료한다.
+
+```
+3
+1 0 1
+2
+0 0
+0
+```
+
+### 출력
+
+각 테스트 케이스마다 `Mary won X times and John won Y times` 형식으로 출력한다.
+
+```
+Mary won 1 times and John won 2 times
+Mary won 2 times and John won 0 times
+```
+
+### 예제
+
+| 입력        | 출력                                    |
+| ----------- | --------------------------------------- |
+| `3` `1 0 1` | `Mary won 1 times and John won 2 times` |
+| `2` `0 0`   | `Mary won 2 times and John won 0 times` |
+| `0`         | (종료)                                  |
+
+## 풀이
+
+n번의 결과를 읽으며 0이면 Mary 승리 횟수, 1이면 John 승리 횟수를 카운트한 뒤 출력한다.
+
+1. `n`을 읽는다. `n == 0`이면 종료한다.
+2. n개의 결과를 순회하며 0이면 `maryWin++`, 1이면 `johnWin++`한다.
+3. 지정된 형식 `"Mary won X times and John won Y times\n"`으로 출력한다.
+4. 다음 테스트 케이스로 돌아간다.
+
+**핵심 아이디어**: 0/1 이진 값을 직접 분기하여 카운터를 증가시키면 O(n)으로 단순하게 해결된다. 출력 형식에 정확히 맞춰야 정답으로 인정되므로 `printf` 포맷 문자열을 그대로 사용한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int n;
+int main()
+{
+  while (1)
+  {
+    int johnWin = 0, maryWin = 0;
+    cin >> n;
+    if (!n)
+      break;
+    for (int i = 0, x; i < n; i++)
+    {
+      cin >> x;
+      if (!x)
+        maryWin++;
+      else
+        johnWin++;
+    }
+    printf("Mary won %d times and John won %d times\n", maryWin, johnWin);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(sum of n) — 모든 테스트 케이스의 n 합산에 비례
+- 공간: O(1) — 카운터 변수 2개만 사용

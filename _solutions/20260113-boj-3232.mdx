@@ -1,0 +1,110 @@
+---
+title: "BOJ 3232 - Multiply"
+date: "2026-01-13"
+description: "수학, 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "3232"
+problem_url: "https://www.acmicpc.net/problem/3232"
+difficulty: "브론즈 I"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3232 - Multiply](https://www.acmicpc.net/problem/3232)
+
+세 정수 p, q, r이 주어질 때, `p * q = r`이 성립하는 진법 B (2 이상 16 이하)를 찾는 문제이다.
+
+세 수를 모두 진법 B의 숫자로 해석했을 때 곱셈이 성립하는 최소 진법을 출력한다. 성립하는 진법이 없으면 0을 출력한다.
+
+### 입력
+
+- 첫 번째 줄에 테스트케이스 수 T가 주어진다.
+- 각 테스트케이스에서 세 정수 p, q, r이 주어진다. (각 수의 각 자릿수는 0~9 범위)
+
+### 출력
+
+각 테스트케이스마다 조건을 만족하는 최소 진법 B를 출력한다. 없으면 0을 출력한다.
+
+### 예제
+
+| 입력                    | 출력    |
+| ----------------------- | ------- |
+| `2` `12 3 36` `12 3 40` | `4` `0` |
+
+## 풀이
+
+2진법부터 16진법까지 순서대로 시도하여 `p * q = r`이 성립하는 최소 진법을 찾는 브루트포스 문제이다.
+
+1. T개의 테스트케이스를 처리한다.
+2. 진법 B를 2부터 16까지 순서대로 시도한다.
+3. `isLarge(num, B)`: num의 모든 자릿수가 B 미만인지 확인한다 (유효한 B진수 여부 검증).
+4. `multiply(num, B)`: num을 B진수로 해석하여 10진수 값을 반환한다.
+5. p, q, r이 모두 유효한 B진수이고 `multiply(p, B) * multiply(q, B) == multiply(r, B)`이면 B를 출력한다.
+6. B = 16까지 찾지 못하면 0을 출력한다.
+
+**핵심 아이디어**: 입력된 수는 10진수 형태이지만 각 자릿수를 B진법으로 재해석한다. `isLarge` 함수로 해당 진법에서 유효한 수인지 먼저 검증한 뒤 진법 변환 후 곱셈을 확인한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+int multiply(int num, int x)
+{
+  int sum = 0;
+  int power = 1;
+  string number = to_string(num);
+  for (int j = number.length() - 1; j >= 0; j--)
+  {
+    sum += (number[j] - '0') * power;
+    power *= x;
+  }
+  return sum;
+}
+
+bool isLarge(int num, int x)
+{
+  string str = to_string(num);
+  for (auto c : str)
+  {
+    if (c - '0' >= x)
+      return false;
+  }
+  return true;
+}
+int main()
+{
+  int T;
+  cin >> T;
+  for (int i = 0; i < T; i++)
+  {
+    int p, q, r;
+    cin >> p >> q >> r;
+    for (int B = 2; B < 17; B++)
+    {
+      if (!isLarge(p, B) || !isLarge(q, B) || !isLarge(r, B))
+        continue;
+
+      if (multiply(p, B) * multiply(q, B) == multiply(r, B))
+      {
+        cout << B << "\n";
+        break;
+      }
+      else if (B == 16)
+        cout << "0" << "\n";
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(T _ 15 _ D) - T: 테스트케이스 수, D: 각 수의 자릿수, 진법은 최대 15가지
+- 공간: O(D) - 문자열 변환에 자릿수 D에 비례하는 공간 사용

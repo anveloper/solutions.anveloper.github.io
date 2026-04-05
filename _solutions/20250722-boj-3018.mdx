@@ -1,0 +1,116 @@
+---
+title: "BOJ 3018 - 캠프파이어"
+date: "2025-07-22"
+description: "구현, 자료 구조, 집합과 맵 문제"
+tags: ["구현", "자료 구조", "집합과 맵", "해시를 사용한 집합과 맵"]
+platform: "boj"
+problem_number: "3018"
+problem_url: "https://www.acmicpc.net/problem/3018"
+difficulty: "실버 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3018 - 캠프파이어](https://www.acmicpc.net/problem/3018)
+
+N명의 음유시인(bard)이 있고, E개의 이벤트가 주어진다.
+각 이벤트는 K명으로 구성되며, 그 중 번호가 2 미만인 사람이 포함된 경우에만 "bard 이벤트"로 처리된다.
+bard 이벤트는 새로운 음유시인 집합에 번호를 할당하고, bard가 아닌 이벤트는 참가자들의 bard 집합을 병합한다.
+모든 이벤트에 참여한 음유시인 번호를 출력하는 문제이다.
+
+### 입력
+
+첫째 줄에 N(음유시인 수)과 E(이벤트 수)가 주어진다.
+이후 E줄에 걸쳐 각 이벤트의 참가자 수 K와 K명의 번호가 주어진다.
+
+### 출력
+
+모든 bard 이벤트에 참여한 음유시인 번호를 오름차순으로 출력한다.
+
+### 예제
+
+| 입력                          | 출력    |
+| ----------------------------- | ------- |
+| `3 3` `2 0 1` `2 1 2` `2 0 2` | `1` `2` |
+
+## 풀이
+
+각 음유시인이 참여한 bard 이벤트 번호를 집합(`set`)으로 관리하고, 비-bard 이벤트 시 참가자들의 집합을 병합하는 구현 문제이다.
+
+1. `st[i]`: i번 음유시인이 참여한 bard 이벤트 번호들의 집합을 저장한다.
+2. `num`: 지금까지 발생한 bard 이벤트 총 수를 카운트한다.
+3. 이벤트 처리 시, 참가자 중 번호 `< 2`인 사람이 있으면 bard 이벤트로 간주하여 `num`을 증가시키고 모든 참가자의 집합에 `num`을 추가한다.
+4. bard가 아닌 이벤트이면, 참가자 전체의 기존 bard 집합을 합쳐(`tmp`) 모든 참가자의 집합에 삽입하여 전파한다.
+5. 최종적으로 `st[i].size() == num`인 음유시인 번호를 출력한다.
+
+**핵심 아이디어**: 각 음유시인의 bard 이벤트 참여 집합을 관리하고, 비-bard 이벤트에서 참가자들의 집합을 병합 전파함으로써 간접 참여도 추적한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <set>
+using namespace std;
+
+int N, E;
+set<int> st[101];
+int num;
+
+int main()
+{
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+
+  cin >> N >> E;
+  while (E--)
+  {
+    int K;
+    cin >> K;
+    vector<int> vec;
+    set<int> tmp;
+    bool is_bard = 0;
+    while (K--)
+    {
+      int x;
+      cin >> x;
+      vec.emplace_back(x);
+      if (x < 2)
+        is_bard = 1;
+    }
+    if (is_bard)
+    {
+      num++;
+      for (auto &x : vec)
+        st[x].insert(num);
+    }
+    else
+    {
+      for (auto &x : vec)
+      {
+        for (auto &xx : st[x])
+          tmp.insert(xx);
+      }
+
+      for (auto &x : vec)
+      {
+        for (auto &xx : tmp)
+          st[x].insert(xx);
+      }
+    }
+  }
+
+  for (int i = 1; i <= N; i++)
+  {
+    if (st[i].size() == num)
+      cout << i << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(E _ K _ num) (이벤트마다 집합 병합)
+- 공간: O(N \* E)

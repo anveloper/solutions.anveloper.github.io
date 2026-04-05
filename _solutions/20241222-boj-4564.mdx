@@ -1,0 +1,82 @@
+---
+title: "BOJ 4564 - 숫자 카드놀이"
+date: "2024-12-22"
+description: "숫자의 각 자릿수를 곱하여 한 자리가 될 때까지 반복하는 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "4564"
+problem_url: "https://www.acmicpc.net/problem/4564"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 4564 - 숫자 카드놀이](https://www.acmicpc.net/problem/4564)
+
+양의 정수가 주어지면 각 자릿수를 모두 곱하는 과정을 한 자리 수가 될 때까지 반복하여 출력하라.
+
+### 입력
+
+여러 줄에 양의 정수가 주어지며, 0이 입력되면 종료한다.
+
+### 출력
+
+각 수에 대해 중간 과정과 최종 한 자리 수를 공백으로 구분하여 출력한다.
+
+### 예제
+
+| 입력   | 출력   |
+| ------ | ------ |
+| `24 0` | `24 8` |
+
+## 풀이
+
+자릿수 곱셈을 한 자리가 될 때까지 반복한다.
+
+1. 현재 수가 두 자리 이상이면 출력하고 각 자릿수를 곱한다
+2. 곱한 결과를 새로운 수로 설정한다
+3. 한 자리가 되면 최종 결과를 출력한다
+
+**핵심 아이디어**: 자릿수 곱은 매 단계 급격히 줄어들므로 빠르게 한 자리에 수렴한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+  int t;
+  while (1)
+  {
+    cin >> t;
+    if (t == 0)
+      break;
+
+    int temp = 1;
+    while (to_string(t).length() != 1)
+    {
+      cout << t << " ";
+      for (int i = 0; i < to_string(t).length(); i++)
+      {
+        temp *= (int)to_string(t)[i] - '0';
+      }
+      t = temp;
+      temp = 1;
+    }
+    cout << t << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(T × log(N)) (N: 입력 수의 크기)
+- 공간: O(D) (D: 자릿수)

@@ -1,0 +1,91 @@
+---
+title: "BOJ 2567 - 색종이 - 2"
+date: "2022-03-13"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "2567"
+problem_url: "https://www.acmicpc.net/problem/2567"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2567 - 색종이 - 2](https://www.acmicpc.net/problem/2567)
+
+100×100 흰 도화지 위에 10×10 검은 색종이 N장을 붙였을 때, 검은 영역의 둘레 길이를 구하라.
+
+### 입력
+
+첫째 줄에 색종이 수 N (100 이하)이 주어진다. 이후 N줄에 각 색종이의 왼쪽 아래 꼭짓점 좌표가 주어진다.
+
+### 출력
+
+검은 영역의 둘레 길이를 출력한다.
+
+### 예제
+
+| 입력                           | 출력 |
+| ------------------------------ | ---- |
+| `4` `3 7` `5 2` `15 7` `13 14` | `96` |
+
+## 풀이
+
+배열에 색종이 영역을 마킹한 뒤, 인접 칸과 값이 다른 경계의 수를 세어 둘레를 구한다.
+
+1. 101×101 배열에 각 색종이의 10×10 영역을 1로 마킹한다
+2. 가로 방향으로 인접한 두 칸의 값이 다르면 둘레 +1
+3. 세로 방향으로 인접한 두 칸의 값이 다르면 둘레 +1
+4. 모든 경계를 합산하여 출력한다
+
+**핵심 아이디어**: 검은 영역과 흰 영역(또는 배열 밖)의 경계가 곧 둘레이다. 가로/세로 방향으로 인접 칸의 값 변화를 감지하면 겹치는 색종이도 올바르게 처리된다.
+
+## 코드
+
+```java
+package com.ssafy.an.day049;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day12BOJ2567색종이2 { // 2567
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		int[][] map = new int[101][101];
+
+		int N = Integer.parseInt(br.readLine());
+
+		for (int n = 0; n < N; n++) {
+			st = new StringTokenizer(br.readLine());
+			int r = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+			for (int i = r; i < r + 10; i++) {
+				for (int j = c; j < c + 10; j++) {
+					map[i][j] = 1;
+				}
+			}
+		}
+
+		int cnt = 0; // 한 칸, 한 변의 길이 1
+		for (int i = 0; i < 100; i++) { // i+1값 탐색 고려
+			for (int j = 0; j < 101; j++) { // 고정값
+				if (map[i][j] != map[i + 1][j])
+					cnt++;
+				if (map[j][i] != map[j][i + 1])
+					cnt++;
+			}
+		}
+
+		System.out.println(cnt);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* 100 + 100^2) — 색종이 마킹 + 경계 검사
+- 공간: O(100^2) — 101×101 고정 크기 배열

@@ -1,0 +1,96 @@
+---
+title: "BOJ 1010 - 다리 놓기"
+date: "2022-07-14"
+description: "수학, 다이나믹 프로그래밍, 조합론 문제"
+tags: ["수학", "다이나믹 프로그래밍", "조합론"]
+platform: "boj"
+problem_number: "1010"
+problem_url: "https://www.acmicpc.net/problem/1010"
+difficulty: "실버 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1010 - 다리 놓기](https://www.acmicpc.net/problem/1010)
+
+강의 서쪽에 N개, 동쪽에 M개의 사이트가 있다. 서쪽 사이트와 동쪽 사이트를 다리로 연결하되, 각 사이트는 최대 한 개의 다리만 연결할 수 있고 다리끼리는 서로 겹치지 않아야 한다. N개의 서쪽 사이트 모두에 다리를 놓는 경우의 수를 구하라.
+
+### 입력
+
+첫째 줄에 테스트 케이스의 개수 T가 주어진다. 각 테스트 케이스는 N과 M이 주어진다. (0 ≤ N ≤ M ≤ 29)
+
+### 출력
+
+각 테스트 케이스마다 경우의 수를 출력한다.
+
+### 예제
+
+| 입력                    | 출력               |
+| ----------------------- | ------------------ |
+| `3` `2 2` `1 5` `13 29` | `1` `5` `67863915` |
+
+## 풀이
+
+N개의 서쪽 사이트를 M개의 동쪽 사이트에 연결하는 경우의 수는 M개 중 N개를 고르는 조합 C(M, N)과 같다. 다리가 겹치지 않으려면 서쪽의 순서와 동쪽에서 선택된 위치의 순서가 동일하게 매칭되어야 하기 때문이다.
+
+1. 재귀적 메모이제이션으로 `combi(n, r)`을 계산한다
+2. 파스칼의 삼각형 점화식 적용: `C(n, r) = C(n-1, r-1) + C(n-1, r)`
+3. 기저 조건: `n == r` 또는 `r == 0`이면 1
+4. dp 배열에 이미 계산된 값이 있으면 바로 반환
+5. 각 테스트 케이스에서 `combi(M, N)` 호출
+
+**핵심 아이디어**: 서쪽 N개를 동쪽 M개에 순서를 유지하며 연결하는 경우의 수는 C(M, N)으로, 파스칼의 삼각형 점화식으로 DP 계산한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day157BOJ1010다리놓기DP {
+	static int[][] dp = new int[30][30];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int T = Integer.parseInt(br.readLine());
+
+		StringTokenizer st;
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < T; i++) {
+
+			st = new StringTokenizer(br.readLine(), " ");
+
+			int N = Integer.parseInt(st.nextToken());
+			int M = Integer.parseInt(st.nextToken());
+
+			sb.append(combi(M, N)).append('\n');
+		}
+
+		System.out.println(sb);
+
+	}
+
+	static int combi(int n, int r) {
+		if (dp[n][r] > 0) {
+			return dp[n][r];
+		}
+
+		if (n == r || r == 0) {
+			return dp[n][r] = 1;
+		}
+
+		return dp[n][r] = combi(n - 1, r - 1) + combi(n - 1, r);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(M²) (M ≤ 29이므로 상수에 가까움)
+- 공간: O(M²)

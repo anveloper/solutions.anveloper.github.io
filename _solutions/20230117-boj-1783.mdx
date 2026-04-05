@@ -1,0 +1,82 @@
+---
+title: "BOJ 1783 - 병든 나이트"
+date: "2023-01-17"
+description: "구현, 그리디 알고리즘, 많은 조건 분기 문제"
+tags: ["구현", "그리디 알고리즘", "많은 조건 분기"]
+platform: "boj"
+problem_number: "1783"
+problem_url: "https://www.acmicpc.net/problem/1783"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1783 - 병든 나이트](https://www.acmicpc.net/problem/1783)
+
+N×M 체스판에서 병든 나이트는 4가지 이동만 가능하다 (2칸 위+1칸 오른쪽, 1칸 위+2칸 오른쪽, 1칸 아래+2칸 오른쪽, 2칸 아래+1칸 오른쪽). 4번 이상 이동하려면 4가지를 모두 한 번씩 사용해야 한다. 방문 가능한 최대 칸 수를 구하라.
+
+### 입력
+
+첫째 줄에 N과 M이 주어진다 (1 이상 2,000,000,000 이하).
+
+### 출력
+
+방문할 수 있는 최대 칸 수를 출력한다.
+
+### 예제
+
+| 입력     | 출력 |
+| -------- | ---- |
+| `100 50` | `48` |
+
+## 풀이
+
+N과 M의 크기에 따른 경우 분류로 해결한다.
+
+1. N = 1이면 이동 불가, 1을 출력한다
+2. N = 2이면 세로 1칸 이동만 가능하므로 `min((M+1)/2, 4)`이다
+3. N ≥ 3이고 M이 7 미만이면 가로 1칸씩만 이동 가능하므로 `min(M, 4)`이다
+4. N ≥ 3이고 M ≥ 7이면 4가지 이동을 모두 사용한 뒤 가로 1칸 이동으로 확장하므로 `M - 2`이다
+
+**핵심 아이디어**: 4번 이상 이동 시 4가지 이동을 모두 써야 하는 제약이 핵심이다. N ≥ 3, M ≥ 7이면 4가지 이동에 가로 4칸을 소모한 뒤, 나머지는 가로 1칸 이동으로 채운다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.*;
+import java.util.*;
+
+public class Day344BOJ1783병든나이트 {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+
+        int result = 0;
+
+        if (N == 1) {
+            result = 1;
+        } else if (N == 2) {
+            result = Math.min((M + 1) / 2, 4);
+        } else if (N >= 3) {
+            if (M < 7) {
+                result = Math.min(M, 4);
+            } else {
+                result = M - 2;
+            }
+        }
+        System.out.println(result);
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(1)
+- 공간: O(1)

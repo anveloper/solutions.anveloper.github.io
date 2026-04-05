@@ -1,0 +1,84 @@
+---
+title: "BOJ 5949 - Adding Commas"
+date: "2025-10-20"
+description: "문자열 문제"
+tags: ["문자열"]
+platform: "boj"
+problem_number: "5949"
+problem_url: "https://www.acmicpc.net/problem/5949"
+difficulty: "브론즈 III"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5949 - Adding Commas](https://www.acmicpc.net/problem/5949)
+
+숫자 문자열에 3자리마다 쉼표를 삽입하여 출력하라.
+
+### 입력
+
+하나의 양의 정수가 주어진다.
+
+### 출력
+
+3자리마다 쉼표가 삽입된 형태로 출력한다.
+
+### 예제
+
+| 입력      | 출력        |
+| --------- | ----------- |
+| `1234567` | `1,234,567` |
+
+## 풀이
+
+오른쪽부터 3자리마다 쉼표를 삽입한 뒤 역순으로 출력한다.
+
+1. 문자열을 뒤에서부터 스택에 넣으며 3자리마다 쉼표를 삽입한다
+2. 맨 앞자리에는 쉼표를 붙이지 않는다
+3. 스택에서 꺼내며 순서대로 출력한다
+
+**핵심 아이디어**: 스택을 이용하여 역순 처리 후 정순으로 출력하면 쉼표 위치를 올바르게 삽입할 수 있다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <stack>
+using namespace std;
+
+int main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+
+  string num;
+  cin >> num;
+  stack<char> stk;
+  int count = 0;
+  for (int i = num.size() - 1; i >= 0; i--)
+  {
+    stk.push(num[i]);
+    count++;
+    if (count == 3 && i != 0)
+    {
+      stk.push(',');
+      count = 0;
+    }
+  }
+  while (!stk.empty())
+  {
+    cout << stk.top();
+    stk.pop();
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

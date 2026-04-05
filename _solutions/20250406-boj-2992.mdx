@@ -1,0 +1,71 @@
+---
+title: "BOJ 2992 - 크면서 작은 수"
+date: "2025-04-06"
+description: "브루트포스 알고리즘, 백트래킹 문제"
+tags: ["브루트포스 알고리즘", "백트래킹"]
+platform: "boj"
+problem_number: "2992"
+problem_url: "https://www.acmicpc.net/problem/2992"
+difficulty: "실버 III"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2992 - 크면서 작은 수](https://www.acmicpc.net/problem/2992)
+
+주어진 수의 각 자릿수를 재배열하여 원래 수보다 크면서 가장 작은 수를 구하라. 없으면 0을 출력한다.
+
+### 입력
+
+자릿수로 이루어진 수가 주어진다 (최대 6자리).
+
+### 출력
+
+조건을 만족하는 수를 출력하거나, 없으면 0을 출력한다.
+
+### 예제
+
+| 입력  | 출력  |
+| ----- | ----- |
+| `123` | `132` |
+
+## 풀이
+
+모든 순열을 생성하여 정렬한 뒤, 현재 수의 바로 다음 순열을 찾는다.
+
+1. 입력 문자열의 모든 자릿수 순열을 생성한다
+2. 중복을 제거하고 사전순으로 정렬한다
+3. 현재 수의 인덱스를 찾아 다음 인덱스의 수를 출력한다
+4. 다음이 없으면 0을 출력한다
+
+**핵심 아이디어**: 자릿수가 최대 6자리이므로 최대 `6! = 720`개의 순열만 생성하면 되어 브루트포스로 충분하다.
+
+## 코드
+
+```python
+from itertools import permutations
+
+
+def combinations(string):
+    number_str = string
+    perm = permutations(number_str)
+    result = list(set([("".join(p)) for p in perm]))
+
+    return sorted(result)
+
+
+string = input()
+comb = combinations(string)
+index = comb.index(string) + 1
+if index < len(comb):
+    print(comb[index])
+else:
+    print(0)
+```
+
+## 복잡도
+
+- 시간: O(N!)
+- 공간: O(N)

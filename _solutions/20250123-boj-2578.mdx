@@ -1,0 +1,83 @@
+---
+title: "BOJ 2578 - 빙고"
+date: "2025-01-23"
+description: "구현, 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "2578"
+problem_url: "https://www.acmicpc.net/problem/2578"
+difficulty: "실버 IV"
+language: "python"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 2578 - 빙고](https://www.acmicpc.net/problem/2578)
+
+5×5 빙고판이 주어지고 사회자가 부르는 25개의 수가 순서대로 주어진다. 빙고(행/열/대각선 완성)가 3개 이상이 되는 순간이 몇 번째 수인지 구하라.
+
+### 입력
+
+5줄에 빙고판, 5줄에 사회자가 부르는 수가 주어진다.
+
+### 출력
+
+빙고가 3개 이상이 되는 순간의 번째 수를 출력한다.
+
+### 예제
+
+| 입력                                                                                                                                                    | 출력 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| `11 12 2 24 10` `16 1 13 3 25` `6 20 5 21 17` `19 4 8 14 9` `22 15 7 23 18` `5 10 7 16 2` `4 22 8 17 13` `3 18 1 6 25` `12 19 23 14 21` `11 24 9 20 15` | `15` |
+
+## 풀이
+
+수를 하나씩 지우며 빙고판의 행, 열, 대각선 완성 여부를 확인한다.
+
+1. 사회자가 부르는 수에 해당하는 칸을 0으로 표시한다
+2. 12번째 수부터 빙고 검사를 시작한다 (최소 5개 지워야 1줄 가능)
+3. 5행, 5열, 2대각선 총 12줄의 완성 여부를 확인한다
+4. 완성된 줄이 3개 이상이면 현재 번째 수를 출력하고 종료한다
+
+**핵심 아이디어**: 5×5 고정 크기이므로 매번 12줄 전체를 검사해도 O(1)이며, 12번째 수부터만 검사하여 불필요한 확인을 줄인다.
+
+## 코드
+
+```python
+def check(tmp):
+    for i in range(5):
+        if bingo[i] == [0] * 5:
+            tmp += 1
+    for i in range(5):
+        if all(bingo[j][i] == 0 for j in range(5)):
+            tmp += 1
+    if all(bingo[i][i] == 0 for i in range(5)):
+        tmp += 1
+    if all(bingo[i][4 - i] == 0 for i in range(5)):
+        tmp += 1
+    return tmp
+
+bingo = [list(map(int, input().split())) for _ in range(5)]
+speak = []
+for _ in range(5):
+    speak += list(map(int, input().split()))
+cnt = 0
+tmp = 0
+for i in range(25):
+    for x in range(5):
+        for y in range(5):
+            if speak[i] == bingo[x][y]:
+                bingo[x][y] = 0
+                cnt += 1
+    if cnt >= 12:
+        result = check(tmp)
+        if result >= 3:
+            print(i + 1)
+            break
+```
+
+## 복잡도
+
+- 시간: O(25 \* 25) — 매 수마다 보드 탐색 + 빙고 검사
+- 공간: O(25) — 5×5 고정 크기 보드

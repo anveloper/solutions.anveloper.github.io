@@ -1,0 +1,76 @@
+---
+title: "BOJ 6764 - Sounds fishy!"
+date: "2025-11-11"
+description: "구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "6764"
+problem_url: "https://www.acmicpc.net/problem/6764"
+difficulty: "브론즈 IV"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 6764 - Sounds fishy!](https://www.acmicpc.net/problem/6764)
+
+물고기가 4개의 연속된 깊이 측정값에 따라 어떤 방향으로 이동하는지 판별하는 문제다. 4개의 정수가 주어졌을 때, 수열이 순수 감소이면 `Fish Diving`, 순수 증가이면 `Fish Rising`, 모두 같으면 `Fish At Constant Depth`, 그 외에는 `No Fish`를 출력한다.
+
+### 입력
+
+공백으로 구분된 4개의 정수 `a`, `b`, `c`, `d`가 주어진다.
+
+### 출력
+
+- 4개의 값이 순수 감소(`a > b > c > d`)이면 `Fish Diving`
+- 4개의 값이 순수 증가(`a < b < c < d`)이면 `Fish Rising`
+- 4개의 값이 모두 같으면 `Fish At Constant Depth`
+- 위 세 경우에 해당하지 않으면 `No Fish`
+
+### 예제
+
+| 입력       | 출력                     |
+| ---------- | ------------------------ |
+| `10 8 5 3` | `Fish Diving`            |
+| `3 5 8 10` | `Fish Rising`            |
+| `5 5 5 5`  | `Fish At Constant Depth` |
+| `3 5 3 5`  | `No Fish`                |
+
+## 풀이
+
+입력받은 4개의 정수를 배열에 저장한 뒤, 인접한 원소 간의 관계를 조건문으로 판별한다.
+
+1. 배열 `a[4]`에 4개의 정수를 입력받는다.
+2. `a[0] > a[1] > a[2] > a[3]`이면 `Fish Diving` 출력
+3. `a[0] < a[1] < a[2] < a[3]`이면 `Fish Rising` 출력
+4. `a[0] == a[1] == a[2] == a[3]`이면 `Fish At Constant Depth` 출력
+5. 세 조건 모두 해당하지 않으면 `No Fish` 출력
+
+**핵심 아이디어:** 4개의 수가 항상 고정이므로 반복문 없이 단순 조건 분기만으로 해결할 수 있다. 입력 크기가 상수이므로 시간복잡도는 O(1)이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int a[4];
+int main()
+{
+  for (int i = 0; i < 4; i++)
+    cin >> a[i];
+  if (a[0] > a[1] && a[1] > a[2] && a[2] > a[3])
+    cout << "Fish Diving";
+  else if (a[0] < a[1] && a[1] < a[2] && a[2] < a[3])
+    cout << "Fish Rising";
+  else if (a[0] == a[1] && a[1] == a[2] && a[2] == a[3])
+    cout << "Fish At Constant Depth";
+  else
+    cout << "No Fish";
+}
+```
+
+## 복잡도
+
+- 시간: O(1) — 입력 크기가 항상 4개로 고정
+- 공간: O(1) — 크기 4의 배열만 사용

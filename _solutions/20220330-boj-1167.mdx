@@ -1,0 +1,113 @@
+---
+title: "BOJ 1167 - 트리의 지름"
+date: "2022-03-30"
+description: "그래프 이론, 그래프 탐색, 트리 문제"
+tags: ["그래프 이론", "그래프 탐색", "트리", "깊이 우선 탐색", "트리의 지름"]
+platform: "boj"
+problem_number: "1167"
+problem_url: "https://www.acmicpc.net/problem/1167"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1167 - 트리의 지름](https://www.acmicpc.net/problem/1167)
+
+가중치가 있는 트리에서 두 노드 사이의 거리 중 가장 긴 값(지름)을 구하는 문제이다. V개의 노드와 각 간선의 가중치가 주어지며, 트리의 지름을 출력한다.
+
+### 입력
+
+- 첫 번째 줄: 노드 수 V (2 이상 100,000 이하)
+- 이후 V줄: 노드 번호, 인접 노드 번호와 거리 쌍 (여러 개), -1로 끝남
+
+### 출력
+
+트리의 지름을 출력한다.
+
+### 예제
+
+| 입력                                                                   | 출력 |
+| ---------------------------------------------------------------------- | ---- |
+| `5` `1 3 2 -1` `2 3 4 -1` `3 1 2 2 4 3 4 -1` `4 3 3 5 6 -1` `5 4 6 -1` | `11` |
+
+## 풀이
+
+트리의 지름을 구하는 2-DFS 알고리즘을 적용한다. 임의의 노드에서 가장 먼 노드를 찾고, 그 노드에서 다시 DFS로 가장 먼 거리를 구하면 그것이 트리의 지름이다.
+
+1. 임의의 노드(1번)에서 DFS를 수행하여 가장 멀리 떨어진 노드 `node`를 찾는다.
+2. `visited` 배열을 초기화한 후, `node`에서 다시 DFS를 수행한다.
+3. 두 번째 DFS에서 최대 거리 `ans`가 트리의 지름이 된다.
+4. `dfs(x, len)`: 현재 노드 x에서 출발 기준 누적 거리 `len`을 추적하며, 최대값 갱신 시 `node`를 업데이트한다.
+
+**핵심 아이디어**: 트리에서 임의의 노드로부터 가장 먼 노드는 반드시 지름의 한 끝점이다. 이 성질을 이용해 DFS를 두 번 수행하면 O(V+E) 시간에 지름을 구할 수 있다. `System.exit()` 없이 `dfs` 함수 내 `len > ans` 조건으로 최대값과 해당 노드를 동시에 갱신한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day099;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Day51BOJ1167트리의지름거리합 {
+	static class Node {
+		int idx;
+		int d;
+
+		Node(int idx, int d) {
+			this.idx = idx;
+			this.d = d;
+		}
+	}
+
+	static List<Node>[] list;
+	static boolean[] visited;
+	static int node, ans = 0;
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+
+		int V = Integer.parseInt(br.readLine());
+		list = new ArrayList[V + 1];
+		for (int i = 1; i < V + 1; i++) {
+			list[i] = new ArrayList<>();
+		}
+		for (int v = 0; v < V; v++) {
+			st = new StringTokenizer(br.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			while (st.hasMoreTokens()) {
+				int idx = Integer.parseInt(st.nextToken());
+				if (idx == -1) break;
+				int d = Integer.parseInt(st.nextToken());
+				list[n].add(new Node(idx, d));
+			}
+		}
+		visited = new boolean[V + 1];
+		dfs(1, 0);
+		visited = new boolean[V + 1];
+		dfs(node, 0);
+		System.out.println(ans);
+		br.close();
+	}
+
+	private static void dfs(int x, int len) {
+		if (len > ans) {
+			ans = len;
+			node = x;
+		}
+		visited[x] = true;
+		for (Node n : list[x]) if (!visited[n.idx]) dfs(n.idx, n.d + len);
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(V + E) — DFS를 두 번 수행, 각 V개 노드와 E개 간선을 한 번씩 탐색
+- 공간: O(V + E) — 인접 리스트 및 재귀 스택

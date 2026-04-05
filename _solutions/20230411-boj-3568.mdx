@@ -1,0 +1,86 @@
+---
+title: "BOJ 3568 - iSharp"
+date: "2023-04-11"
+description: "문자열, 파싱 문제"
+tags: ["문자열", "파싱"]
+platform: "boj"
+problem_number: "3568"
+problem_url: "https://www.acmicpc.net/problem/3568"
+difficulty: "실버 III"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 3568 - iSharp](https://www.acmicpc.net/problem/3568)
+
+iSharp 언어의 변수 선언이 주어질 때, 각 변수를 개별 선언문으로 변환하라. 변수명 뒤의 타입 수식자(`*`, `&`, `[]`)를 기본 타입 뒤에 역순으로 붙여야 한다.
+
+### 입력
+
+한 줄에 기본 타입과 쉼표로 구분된 변수 선언이 주어진다.
+
+### 출력
+
+각 변수를 개별 선언문으로 출력한다.
+
+### 예제
+
+| 입력                | 출력                   |
+| ------------------- | ---------------------- |
+| `int& a*[], b ## ;` | `int&[]* a;` `int& b;` |
+
+## 풀이
+
+각 변수의 타입 수식자를 역순으로 뒤집어 기본 타입에 붙여 출력한다.
+
+1. 공백 기준으로 분리하여 첫 토큰을 기본 타입으로 저장한다
+2. 이후 각 변수 토큰에서 알파벳은 변수명, `*`/`&`/`[]`는 타입 수식자로 분류한다
+3. `[`와 `]`를 서로 뒤집고, 전체 수식자를 reverse한다
+4. 기본 타입 + 역순 수식자 + 변수명 형태로 출력한다
+
+**핵심 아이디어**: 변수명 뒤의 수식자를 역순으로 기본 타입에 결합하면 올바른 개별 선언이 된다.
+
+## 코드
+
+```java
+package day449;
+
+import java.io.*;
+
+public class Day429BOJ3568iSharp {
+  static StringBuilder sb = new StringBuilder();
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String in = br.readLine();
+    String[] data = in.split(" ");
+    for (int i = 1; i < data.length; i++)
+      getParam(data[0], data[i]);
+    System.out.println(sb);
+  }
+
+  public static void getParam(String type, String str) {
+    String out = "";
+    StringBuilder tmp = new StringBuilder();
+    for (int i = 0; i < str.length(); i++) {
+      char cur = str.charAt(i);
+      if (cur == '*' || cur == '&')
+        tmp.append(cur);
+      else if (cur == '[')
+        tmp.append(']');
+      else if (cur == ']')
+        tmp.append('[');
+      else if (('A' <= cur && cur <= 'Z') || ('a' <= cur && cur <= 'z'))
+        out += str.charAt(i);
+    }
+    sb.append(type + tmp.reverse() + " ").append(out + ";\n");
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

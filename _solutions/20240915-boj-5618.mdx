@@ -1,0 +1,83 @@
+---
+title: "BOJ 5618 - 공약수"
+date: "2024-09-15"
+description: "두 수 또는 세 수의 공약수를 모두 구하는 문제"
+tags: ["수학", "정수론"]
+platform: "boj"
+problem_number: "5618"
+problem_url: "https://www.acmicpc.net/problem/5618"
+difficulty: "브론즈 II"
+language: "cpp"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 5618 - 공약수](https://www.acmicpc.net/problem/5618)
+
+2개 또는 3개의 자연수가 주어질 때, 이들의 공약수를 오름차순으로 모두 출력하라.
+
+### 입력
+
+첫째 줄에 수의 개수 N(2 또는 3), 둘째 줄에 N개의 자연수가 주어진다.
+
+### 출력
+
+공약수를 한 줄에 하나씩 오름차순으로 출력한다.
+
+### 예제
+
+| 입력       | 출력        |
+| ---------- | ----------- |
+| `2` `12 8` | `1` `2` `4` |
+
+## 풀이
+
+유클리드 호제법으로 GCD를 구한 뒤, GCD의 약수를 나열한다.
+
+1. 유클리드 호제법으로 두 수의 GCD를 재귀적으로 구한다
+2. 3개의 수인 경우 `GCD(a, GCD(b, c))`로 전체 GCD를 구한다
+3. 1부터 GCD까지 순회하며 GCD를 나누어떨어지게 하는 수를 모두 출력한다
+
+**핵심 아이디어**: N개의 수의 공약수는 곧 N개의 수의 GCD의 약수와 동일하므로, GCD만 구하면 약수 나열로 해결된다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+int GCD(int a, int b)
+{
+  if (b == 0)
+  {
+    return a;
+  }
+  return GCD(b, a % b);
+}
+int main()
+{
+  int n, a, b, c, g;
+  cin >> n;
+  if (n == 2)
+  {
+    cin >> a >> b;
+    g = GCD(a, b);
+    for (int i = 1; i <= g; i++)
+      if (g % i == 0)
+        cout << i << '\n';
+  }
+  else
+  {
+    cin >> a >> b >> c;
+    g = GCD(a, GCD(b, c));
+    for (int i = 1; i <= g; i++)
+      if (g % i == 0)
+        cout << i << '\n';
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(GCD(a, b))
+- 공간: O(1)

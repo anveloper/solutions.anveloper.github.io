@@ -1,0 +1,85 @@
+---
+title: "BOJ 9527 - 1의 개수 세기"
+date: "2023-12-16"
+description: "수학, 누적 합, 비트마스킹 문제"
+tags: ["수학", "누적 합", "비트마스킹"]
+platform: "boj"
+problem_number: "9527"
+problem_url: "https://www.acmicpc.net/problem/9527"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 9527 - 1의 개수 세기](https://www.acmicpc.net/problem/9527)
+
+두 자연수 A, B가 주어질 때, A 이상 B 이하의 모든 수를 이진수로 표현했을 때 1의 개수의 합을 구하라.
+
+### 입력
+
+첫째 줄에 A, B가 주어진다 (1 이상 10^16 이하).
+
+### 출력
+
+A부터 B까지 이진수 표현에서 1의 개수의 총합을 출력한다.
+
+### 예제
+
+| 입력   | 출력 |
+| ------ | ---- |
+| `2 12` | `21` |
+
+## 풀이
+
+비트별 누적합을 사전 계산하고, `f(B) - f(A-1)` 형태로 구간 합을 구한다.
+
+1. `count[i]`에 0부터 2^i-1까지의 수에 포함된 1의 총 개수를 누적 계산한다
+2. 임의의 수 x에 대해 최상위 비트부터 순회하며 해당 비트가 켜져 있으면 그 아래 구간의 1 개수를 누적한다
+3. `getAnswer(B) - getAnswer(A-1)`로 구간 [A, B]의 답을 구한다
+
+**핵심 아이디어**: 0부터 x까지의 1 개수 합을 O(log x)에 계산하는 함수를 만들어, 누적합 원리(prefix sum)로 구간 답을 구한다.
+
+## 코드
+
+```java
+package day699;
+
+import java.io.*;
+import java.util.*;
+
+public class Day679BOJ9527일의개수세기 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    long A = Long.parseLong(st.nextToken());
+    long B = Long.parseLong(st.nextToken());
+    long[] count = new long[Long.toString(B, 2).length() + 1];
+    count[0] = 1;
+    for (int i = 1; i < count.length; i++)
+      count[i] = count[i - 1] * 2 + (1L << i);
+
+    long ans = getAnswer(B, count) - getAnswer(A - 1, count);
+
+    System.out.println(ans);
+  }
+
+  private static long getAnswer(long x, long[] count) {
+    long ans = x & 1;
+
+    for (int i = 54; i > 0; i--) {
+      if ((x & (1L << i)) > 0L) {
+        ans += count[i - 1] + (x - (1L << i) + 1);
+        x -= (1L << i);
+      }
+    }
+    return ans;
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(log B)
+- 공간: O(log B)

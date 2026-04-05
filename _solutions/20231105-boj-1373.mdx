@@ -1,0 +1,85 @@
+---
+title: "BOJ 1373 - 2진수 8진수"
+date: "2023-11-05"
+description: "수학, 문자열 문제"
+tags: ["수학", "문자열"]
+platform: "boj"
+problem_number: "1373"
+problem_url: "https://www.acmicpc.net/problem/1373"
+difficulty: "브론즈 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1373 - 2진수 8진수](https://www.acmicpc.net/problem/1373)
+
+2진수가 주어질 때, 8진수로 변환하여 출력하라.
+
+### 입력
+
+2진수 문자열이 주어진다 (최대 길이 333,334).
+
+### 출력
+
+8진수로 변환한 결과를 출력한다.
+
+### 예제
+
+| 입력       | 출력  |
+| ---------- | ----- |
+| `11001100` | `314` |
+
+## 풀이
+
+2진수를 뒤에서부터 3자리씩 묶어 각 묶음을 8진수 한 자리로 변환한다.
+
+1. 길이가 3의 배수가 아니면 앞에 0을 채운다
+2. 앞에서부터 3자리씩 잘라 각 비트의 가중치(4, 2, 1)를 더한다
+3. 결과를 이어붙여 8진수를 완성한다
+
+**핵심 아이디어**: 2진수 3자리 = 8진수 1자리 관계를 이용하면 BigInteger 없이 O(N)에 변환할 수 있다.
+
+## 코드
+
+```java
+package day649;
+
+import java.io.*;
+
+public class Day639BOJ1373이진수팔진수 {
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringBuilder sb = new StringBuilder();
+    StringBuilder binary = new StringBuilder(br.readLine());
+    if (binary.length() % 3 == 1) {
+      binary.insert(0, "00");
+    } else if (binary.length() % 3 == 2) {
+      binary.insert(0, "0");
+    }
+    int idx = 0;
+    int repeat = binary.length() / 3;
+    do {
+      int num = 0;
+      String threeDigit = binary.substring(idx, idx + 3);
+
+      if (threeDigit.charAt(0) == '1')
+        num += 4;
+      if (threeDigit.charAt(1) == '1')
+        num += 2;
+      if (threeDigit.charAt(2) == '1')
+        num += 1;
+
+      idx = idx + 3;
+      sb.append(num);
+    } while (--repeat > 0);
+    System.out.println(sb);
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

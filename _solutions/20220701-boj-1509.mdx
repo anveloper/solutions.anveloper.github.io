@@ -1,0 +1,119 @@
+---
+title: "BOJ 1509 - 팰린드롬 분할"
+date: "2022-07-01"
+description: "다이나믹 프로그래밍 문제"
+tags: ["다이나믹 프로그래밍"]
+platform: "boj"
+problem_number: "1509"
+problem_url: "https://www.acmicpc.net/problem/1509"
+difficulty: "골드 I"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1509 - 팰린드롬 분할](https://www.acmicpc.net/problem/1509)
+
+문자열 S가 주어질 때, S를 팰린드롬으로만 분할하는 경우 중 분할 횟수가 최소인 것을 구하는 문제이다. 분할한 모든 부분 문자열은 팰린드롬이어야 한다.
+
+### 입력
+
+첫째 줄에 문자열 S가 주어진다. S는 알파벳 대문자로만 이루어져 있으며 길이는 2,500을 넘지 않는다.
+
+### 출력
+
+팰린드롬 분할의 최솟값을 출력한다.
+
+### 예제
+
+| 입력      | 출력 |
+| --------- | ---- |
+| `ABACABA` | `1`  |
+| `ABABAB`  | `3`  |
+
+## 풀이
+
+팰린드롬 판별 DP와 최소 분할 수 DP를 두 단계로 적용하여 풀이한다.
+
+1. `palindromeCache[left][right]`를 통해 부분 문자열 `[left, right]`의 팰린드롬 여부를 메모이제이션(top-down DP)으로 계산한다. `text[left] == text[right]`이고 `[left+1, right-1]`이 팰린드롬이면 팰린드롬이다.
+2. `dp[i]`를 문자열의 첫 i자까지 팰린드롬 분할했을 때의 최소 횟수로 정의한다.
+3. `dp[i] = min(dp[left-1] + 1)` for all `left <= i` such that `[left, i]`는 팰린드롬이다.
+4. 최종 답은 `dp[len]`이다.
+
+**핵심 아이디어**: 팰린드롬 판별을 메모이제이션으로 O(N^2) 전처리하고, 분할 수 DP도 O(N^2)로 처리한다. 두 DP를 조합하여 전체 O(N^2)에 해결한다. 단일 문자는 항상 팰린드롬이므로 `dp[i] <= dp[i-1] + 1`이 기본값이다.
+
+## 코드
+
+```java
+package com.ssafy.an.day149;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Day144BOJ1509팰린드롬분할DP { // 1509 팰린드롬 분할
+	static final int MAX_LEN = 2500;
+	static final int CACHE_EMPTY = -1, FALSE = 0, TRUE = 1;
+	static final int INF = 1 << 30;
+
+	static int[][] palindromeCache = new int[MAX_LEN + 1][MAX_LEN + 1];
+	static char[] text = new char[MAX_LEN + 1];
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		initCache();
+
+		String s = br.readLine();
+		int len = s.length();
+
+		for (int i = 0; i < len; i++) {
+			text[i + 1] = s.charAt(i);
+		}
+
+		int[] dp = new int[len + 1];
+		Arrays.fill(dp, INF);
+		dp[0] = 0;
+
+		for (int right = 1; right <= len; right++) {
+			dp[right] = dp[right - 1] + 1;
+			for (int left = 1; left <= right; left++) {
+				if (isPalindrome(left, right) == TRUE) {
+					dp[right] = Math.min(dp[right], dp[left - 1] + 1);
+				}
+			}
+		}
+
+		System.out.println(dp[len]);
+		br.close();
+	}
+
+	public static void initCache() {
+		for (int i = 0; i < palindromeCache.length; i++) {
+			Arrays.fill(palindromeCache[i], CACHE_EMPTY);
+		}
+	}
+
+	public static int isPalindrome(int left, int right) {
+		if (left >= right) {
+			return TRUE;
+		}
+
+		if (palindromeCache[left][right] != CACHE_EMPTY) {
+			return palindromeCache[left][right];
+		}
+
+		if (text[left] == text[right] && isPalindrome(left + 1, right - 1) == TRUE) {
+			return palindromeCache[left][right] = TRUE;
+		} else {
+			return palindromeCache[left][right] = FALSE;
+		}
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N²) — 팰린드롬 판별 O(N²) + 분할 DP O(N²)
+- 공간: O(N²) — palindromeCache 2D 배열

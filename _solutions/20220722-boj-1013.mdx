@@ -1,0 +1,79 @@
+---
+title: "BOJ 1013 - Contact"
+date: "2022-07-22"
+description: "문자열, 정규 표현식 문제"
+tags: ["문자열", "정규 표현식"]
+platform: "boj"
+problem_number: "1013"
+problem_url: "https://www.acmicpc.net/problem/1013"
+difficulty: "골드 V"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1013 - Contact](https://www.acmicpc.net/problem/1013)
+
+0과 1로 이루어진 문자열이 패턴 `(100+1+|01)+`에 매칭되는지 확인하는 문제이다. 패턴에 완전히 매칭되면 YES, 아니면 NO를 출력한다.
+
+### 입력
+
+첫째 줄에 테스트 케이스의 개수 T가 주어진다. 이후 T개의 줄에 0과 1로만 이루어진 문자열이 주어진다.
+
+### 출력
+
+각 테스트 케이스마다 YES 또는 NO를 출력한다.
+
+### 예제
+
+| 입력                  | 출력             |
+| --------------------- | ---------------- |
+| `3` `100011` `01` `0` | `YES` `YES` `NO` |
+
+## 풀이
+
+정규 표현식을 사용하여 패턴 매칭으로 해결한다.
+
+1. 패턴 분석:
+   - `100+1+` : "10"으로 시작하고 0이 1개 이상, 그 뒤 1이 1개 이상
+   - `01` : "01" 그대로
+   - `(100+1+|01)+` : 위 두 패턴 중 하나가 1번 이상 반복
+2. Java의 `Pattern.compile("^(100+1+|01)+$")`로 패턴 컴파일
+3. 각 입력 문자열에 대해 `pattern.matcher(input).matches()`로 전체 매칭 확인
+4. 매칭되면 YES, 아니면 NO 출력
+
+**핵심 아이디어**: 복잡한 문자열 패턴 검사를 정규 표현식 한 줄로 처리할 수 있다. `^...$` 앵커로 전체 문자열이 패턴에 완전히 대응해야 한다.
+
+## 코드
+
+```java
+package com.ssafy.an.day199;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.regex.Pattern;
+
+public class Day165BOJ1013ContactRegex {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		int t = Integer.parseInt(br.readLine());
+		Pattern pattern = Pattern.compile("^(100+1+|01)+$");
+		for (int i = 0; i < t; i++) {
+			if (pattern.matcher(br.readLine()).matches()) {
+				sb.append("YES\n");
+			} else {
+				sb.append("NO\n");
+			}
+		}
+		System.out.print(sb);
+		br.close();
+	}
+}
+```
+
+## 복잡도
+
+- 시간: O(N)
+- 공간: O(N)

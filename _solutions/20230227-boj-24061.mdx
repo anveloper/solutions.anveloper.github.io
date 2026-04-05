@@ -1,0 +1,117 @@
+---
+title: "BOJ 24061 - 알고리즘 수업 - 병합 정렬 2"
+date: "2023-02-27"
+description: "구현, 정렬, 재귀 문제"
+tags: ["구현", "정렬", "재귀"]
+platform: "boj"
+problem_number: "24061"
+problem_url: "https://www.acmicpc.net/problem/24061"
+difficulty: "실버 IV"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 24061 - 알고리즘 수업 - 병합 정렬 2](https://www.acmicpc.net/problem/24061)
+
+N개의 수를 병합 정렬할 때, K번째 저장 연산 후의 배열 상태를 출력하라. K번 이내에 정렬이 완료되면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N, K, 둘째 줄에 N개의 수가 주어진다.
+
+### 출력
+
+K번째 저장 후 배열 상태를 출력한다. 불가능하면 -1을 출력한다.
+
+### 예제
+
+| 입력              | 출력        |
+| ----------------- | ----------- |
+| `5 7` `4 5 1 3 2` | `1 4 5 2 3` |
+
+## 풀이
+
+병합 정렬을 직접 구현하되, merge에서 배열에 쓸 때마다 K를 1씩 감소시켜 K번째 상태를 추적한다.
+
+1. 표준 병합 정렬의 분할-정복 구조를 그대로 따른다
+2. merge 함수에서 임시 배열을 원래 배열에 복사할 때 한 원소마다 K를 감소시킨다
+3. K가 0이 되면 정렬을 중단하고 현재 배열 상태를 출력한다
+4. 정렬 완료 후 K가 0보다 크면 -1을 출력한다
+
+**핵심 아이디어**: 병합 정렬의 merge 과정에서 원본 배열에 쓰는 연산을 카운트하여 K번째 상태를 캡처한다.
+
+## 코드
+
+```java
+package day399;
+
+import java.io.*;
+import java.util.*;
+
+public class Day385BOJ24061병합 {
+  static int N, K;
+  static long[] arr;
+
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    StringBuilder sb = new StringBuilder();
+
+    N = Integer.parseInt(st.nextToken());
+    K = Integer.parseInt(st.nextToken());
+
+    arr = new long[N];
+    st = new StringTokenizer(br.readLine());
+
+    for (int i = 0; i < N; i++)
+      arr[i] = Long.parseLong(st.nextToken());
+
+    mergeSort(0, N - 1);
+
+    if (K == 0) {
+      for (int i = 0; i < N; i++)
+        sb.append(arr[i] + " ");
+      System.out.println(sb);
+    } else
+      System.out.println(-1);
+    br.close();
+  }
+
+  private static void mergeSort(int p, int r) {
+    if (p < r && K > 0) {
+      int q = (p + r) / 2;
+      mergeSort(p, q);
+      mergeSort(q + 1, r);
+      merge(p, q, r);
+    }
+  }
+
+  private static void merge(int p, int q, int r) { // 주어진 의사코드
+    long[] tmp = new long[r - p + 2];
+    int i = p, j = q + 1, t = 0;
+    while (i <= q && j <= r) {
+      if (arr[i] <= arr[j])
+        tmp[t++] = arr[i++];
+      else
+        tmp[t++] = arr[j++];
+    }
+    while (i <= q)
+      tmp[t++] = arr[i++];
+    while (j <= r)
+      tmp[t++] = arr[j++];
+    i = p;
+    t = 0;
+    while (i <= r && K > 0) {
+      arr[i++] = tmp[t++];
+      K--;
+    }
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(N log N)
+- 공간: O(N)

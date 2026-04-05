@@ -1,0 +1,118 @@
+---
+title: "BOJ 1103 - 게임"
+date: "2023-01-17"
+description: "다이나믹 프로그래밍, 그래프 이론, 그래프 탐색 문제"
+tags: ["다이나믹 프로그래밍", "그래프 이론", "그래프 탐색", "깊이 우선 탐색"]
+platform: "boj"
+problem_number: "1103"
+problem_url: "https://www.acmicpc.net/problem/1103"
+difficulty: "골드 II"
+language: "java"
+enhanced: true
+---
+
+## 문제
+
+[BOJ 1103 - 게임](https://www.acmicpc.net/problem/1103)
+
+N×M 보드에 1~9 숫자 또는 구멍(H)이 있다. (1,1)에서 시작하여 현재 칸의 숫자만큼 상하좌우로 이동한다. 보드 밖이나 구멍에 빠지면 게임 종료. 최대 이동 횟수를 구하라. 무한 이동이 가능하면 -1을 출력한다.
+
+### 입력
+
+첫째 줄에 N, M (1 이상 50 이하), 둘째 줄부터 보드가 주어진다.
+
+### 출력
+
+최대 이동 횟수를 출력한다. 무한이면 -1.
+
+### 예제
+
+| 입력                                | 출력 |
+| ----------------------------------- | ---- |
+| `3 7` `3942178` `1234567` `9123532` | `5`  |
+
+## 풀이
+
+DFS + 메모이제이션으로 최대 이동 횟수를 구하고, 사이클 감지로 무한 루프를 판별한다.
+
+1. `dfs(x, y)`에서 현재 칸이 구멍이면 0을 반환한다
+2. `dp[x][y]`에 메모된 값이 있으면 바로 반환한다
+3. `visited[x][y]`로 현재 경로를 추적하여, 재방문하면 사이클이므로 -1을 출력하고 종료한다
+4. 4방향으로 칸의 숫자만큼 이동하여 재귀하고, 자식의 최댓값 + 1을 `dp[x][y]`에 저장한다
+5. 재귀 복귀 시 `visited`를 해제한다
+
+**핵심 아이디어**: 메모이제이션으로 중복 계산을 방지하고, 현재 DFS 경로의 방문 배열로 사이클(무한 이동)을 O(N\*M)에 감지한다.
+
+## 코드
+
+```java
+package day349;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Day344BOJ1103게임 {
+
+    static char[][] map;
+    static int[][] dp;
+    static int[] dx = { 1, -1, 0, 0 }, dy = { 0, 0, 1, -1 };
+    static boolean[][] visited;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        map = new char[n][m];
+        dp = new int[n][m];
+        visited = new boolean[n][m];
+        for (int i = 0; i < n; i++) {
+            String line = br.readLine();
+            for (int j = 0; j < m; j++)
+                map[i][j] = line.charAt(j);
+        }
+        System.out.println(dfs(new Point(0, 0)));
+    }
+
+    public static int dfs(Point cur) {
+        if (map[cur.x][cur.y] == 'H')
+            return 0;
+        else if (dp[cur.x][cur.y] > 0)
+            return dp[cur.x][cur.y];
+        visited[cur.x][cur.y] = true;
+        for (int i = 0, step = map[cur.x][cur.y] - '0'; i < dx.length; i++) {
+            int nextX = cur.x + dx[i] * step;
+            int nextY = cur.y + dy[i] * step;
+            try {
+                if (visited[nextX][nextY]) {
+                    System.out.println(-1);
+                    System.exit(0);
+                }
+                dp[cur.x][cur.y] = max(dp[cur.x][cur.y], dfs(new Point(nextX, nextY)));
+            } catch (Exception e) {
+            }
+        }
+        visited[cur.x][cur.y] = false;
+        return ++dp[cur.x][cur.y];
+    }
+
+    public static int max(int a, int b) {
+        return a > b ? a : b;
+    }
+}
+
+class Point {
+    int x, y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+```
+
+## 복잡도
+
+- 시간: O(N \* M) - 각 칸을 최대 한 번 계산
+- 공간: O(N \* M) - DP, 방문 배열
