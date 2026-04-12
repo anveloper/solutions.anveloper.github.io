@@ -1,0 +1,55 @@
+---
+title: "BOJ 5089 - Travelling Salesman"
+date: "2026-03-29"
+description: "방문한 도시 목록에서 중복을 제거한 서로 다른 도시 수를 출력하는 집합 문제"
+tags: ["자료구조", "해시", "문자열"]
+platform: "boj"
+problem_number: "5089"
+problem_url: "https://www.acmicpc.net/problem/5089"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5089 - Travelling Salesman](https://www.acmicpc.net/problem/5089)
+
+> 매 주 방문한 도시 이름 `n`개가 주어질 때, 중복을 제거한 서로 다른 도시 수를 `Week i 개수` 형식으로 출력한다. `n=0`이면 종료.
+
+## 풀이
+
+`set<string>`에 도시명을 삽입해 중복을 자동으로 제거한 뒤 크기를 출력한다. 도시명에 공백이 포함될 수 있어 `getline`으로 한 줄 단위로 읽고, 앞선 `cin` 이후에는 `cin.ignore()`로 개행을 버린다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <set>
+
+using namespace std;
+
+int main() {
+  int n, week = 1;
+
+  while (cin >> n && n != 0) {
+    cin.ignore();
+    set<string> cities;
+
+    for (int i = 0; i < n; i++) {
+      string cityName;
+      getline(cin, cityName);
+      cities.insert(cityName);
+    }
+
+    cout << "Week " << week++ << " " << cities.size() << endl;
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n log n) (n: 도시 수, set 삽입)
+- 공간: O(n)

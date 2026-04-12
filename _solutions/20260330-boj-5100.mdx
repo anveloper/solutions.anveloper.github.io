@@ -1,0 +1,57 @@
+---
+title: "BOJ 5100 - Jean and Joe's Clothes"
+date: "2026-03-30"
+description: "옷 표기(M/L, S, 숫자 사이즈)를 카테고리별로 분류해 개수를 세는 문자열 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "5100"
+problem_url: "https://www.acmicpc.net/problem/5100"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5100 - Jean and Joe's Clothes](https://www.acmicpc.net/problem/5100)
+
+> 각 옷은 `M`/`L`/`S` 또는 숫자 사이즈로 표기된다. `M`·`L`은 Joe, 숫자 12 이상은 Jean, 숫자 12 미만은 Jane, `S`는 James, 그 외는 알 수 없음(`x`)으로 분류해 개수를 출력한다. 입력 `n=0`이면 종료.
+
+## 풀이
+
+각 토큰의 첫 글자가 숫자인지 확인한 뒤 `stoi`로 크기를 파싱해 12 기준으로 Jean/Jane을 나눈다. 그렇지 않으면 `M`/`L`은 Joe, `S`는 James, 나머지는 unknown 카운터를 올린다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+  int n;
+  while (cin >> n && n != 0) {
+    int joe = 0, jean = 0, jane = 0, james = 0, x = 0;
+    for (int i = 0; i < n; i++) {
+      string s;
+      cin >> s;
+      if (isdigit(s[0])) {
+        int size = stoi(s);
+        if (size >= 12) jean++;
+        else jane++;
+      } else {
+        if (s == "M" || s == "L") joe++;
+        else if (s == "S") james++;
+        else x++;
+      }
+    }
+    cout << joe << " " << jean << " " << jane << " " << james << " " << x << endl;
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n)
+- 공간: O(1)

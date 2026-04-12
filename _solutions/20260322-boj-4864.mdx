@@ -1,0 +1,65 @@
+---
+title: "BOJ 4864 - Gold Coins"
+date: "2026-03-22"
+description: "해적이 d일 동안 받는 금화 총합을 주(week) 단위 누적으로 계산하는 수학 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "4864"
+problem_url: "https://www.acmicpc.net/problem/4864"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4864 - Gold Coins](https://www.acmicpc.net/problem/4864)
+
+> 해적이 첫 날 1개, 다음 이틀 각 2개, 그 다음 사흘 각 3개, ... 와 같이 `k`일째 주기에는 `k`개씩 `k`일 동안 금화를 받는다. `d`일까지의 누적 금화 수를 출력한다. `d=0`이면 종료.
+
+## 풀이
+
+`k`번째 주기는 `k`일 동안 진행되며 하루에 `k`개, 합 `k²`개를 준다. `d`에서 `k`를 계속 빼가며 완전한 주기는 `k²`씩 누적하고, 마지막에 남은 일수가 `k`보다 작으면 `남은 일수 * k`를 더한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  int d;
+
+  while (true) {
+    cin >> d;
+    if (d == 0) break;
+
+    int r = d;
+    int tmp = 1;
+    int sum = 0;
+    while (r > 0) {
+      if (r >= tmp) {
+        sum += tmp * tmp;
+        r -= tmp;
+      }
+      else {
+        sum += r * tmp;
+        break;
+      }
+      ++tmp;
+    }
+
+    cout << d << " " << sum << '\n';
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(√d) (주기 수)
+- 공간: O(1)

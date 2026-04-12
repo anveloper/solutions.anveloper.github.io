@@ -1,0 +1,72 @@
+---
+title: "BOJ 5145 - Subway Fares"
+date: "2026-04-08"
+description: "역 이름과 구간 요금이 주어질 때 두 역 사이 이동 요금을 출력하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5145"
+problem_url: "https://www.acmicpc.net/problem/5145"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5145 - Subway Fares](https://www.acmicpc.net/problem/5145)
+
+> 지하철 노선의 역 순서와 구간별 요금이 주어졌을 때, 출발역과 도착역 사이의 요금을 구한다.
+
+## 풀이
+
+역 이름을 인덱스와 매핑해 두고, 출발역과 도착역 인덱스 차의 절댓값을 구간 수로 삼아 미리 입력된 요금 테이블에서 조회한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <map>
+#include <cmath>
+
+using namespace std;
+
+void solve(int t) {
+  int n;
+  if (!(cin >> n)) return;
+
+  vector<int> fares(n);
+  for (int i = 1; i < n; ++i) {
+    cin >> fares[i];
+  }
+
+  map<string, int> stations;
+  for (int i = 0; i < n; ++i) {
+    string name;
+    cin >> name;
+    stations[name] = i;
+  }
+
+  string start, end;
+  cin >> start >> end;
+
+  int dist = abs(stations[start] - stations[end]);
+
+  cout << "Data Set " << t << ":" << endl;
+  cout << fares[dist] << endl << endl;
+}
+
+int main() {
+  int k;
+  if (!(cin >> k)) return 0;
+  for (int i = 1; i <= k; ++i) {
+    solve(i);
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n) (n: 역 수)
+- 공간: O(n)

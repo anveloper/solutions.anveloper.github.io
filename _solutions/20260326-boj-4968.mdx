@@ -1,0 +1,80 @@
+---
+title: "BOJ 4968 - Equal Total Scores"
+date: "2026-03-26"
+description: "두 카드 집합에서 한 장씩 교환해 두 합을 같게 만들면서 교환 카드 합이 최소가 되는 쌍을 찾는 브루트포스 문제"
+tags: ["수학", "브루트포스"]
+platform: "boj"
+problem_number: "4968"
+problem_url: "https://www.acmicpc.net/problem/4968"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4968 - Equal Total Scores](https://www.acmicpc.net/problem/4968)
+
+> 두 플레이어가 카드 한 장씩을 교환해 각자의 점수 합을 같게 만들려고 한다. `a[i] - b[j] = (sumA - sumB) / 2`를 만족하는 쌍 중 교환 카드 합이 최소인 쌍을 출력하고, 없으면 `-1`.
+
+## 풀이
+
+합의 차 `diff = sumA - sumB`가 홀수면 해가 없다. 짝수라면 목표 차 `target = diff / 2`를 정해 두고 모든 `(a[i], b[j])` 쌍을 이중 반복문으로 탐색하면서 `a[i] - b[j] == target`인 쌍 중 합 `a[i]+b[j]`가 최소인 것을 고른다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int n, m;
+  while (cin >> n >> m && (n != 0 || m != 0)) {
+    vector<int> a(n), b(m);
+    int sumA = 0, sumB = 0;
+
+    for (int i = 0; i < n; i++) {
+      cin >> a[i];
+      sumA += a[i];
+    }
+    for (int i = 0; i < m; i++) {
+      cin >> b[i];
+      sumB += b[i];
+    }
+
+    int diff = sumA - sumB;
+    int ansA = -1, ansB = -1;
+    int minSum = 1000000;
+
+    if (diff % 2 == 0) {
+      int target = diff / 2;
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+          if (a[i] - b[j] == target) {
+            if (ansA == -1 || a[i] + b[j] < minSum) {
+              minSum = a[i] + b[j];
+              ansA = a[i];
+              ansB = b[j];
+            }
+          }
+        }
+      }
+    }
+
+    if (ansA == -1) cout << -1 << "\n";
+    else cout << ansA << " " << ansB << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n * m)
+- 공간: O(n + m)

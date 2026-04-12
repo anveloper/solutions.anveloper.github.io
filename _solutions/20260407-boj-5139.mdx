@@ -1,0 +1,79 @@
+---
+title: "BOJ 5139 - Oil Exploration"
+date: "2026-04-07"
+description: "격자 형태의 시추 비용 지도에서 각 열의 석유 도달 비용을 계산하는 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "5139"
+problem_url: "https://www.acmicpc.net/problem/5139"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5139 - Oil Exploration](https://www.acmicpc.net/problem/5139)
+
+> 격자 지도에서 각 열을 위에서 아래로 시추할 때, 암반(`H`)은 비용 3, 모래(`S`)는 비용 1이 들고 석유(`X`)를 만나면 총 비용을 출력한다. 석유가 없으면 `N`을 출력한다.
+
+## 풀이
+
+각 열을 위에서 아래로 훑으면서 비용을 누적한다. `X`를 만나면 누적 비용을 출력하고, 열이 끝날 때까지 `X`를 못 만나면 `N`을 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+void solve(int t) {
+  int h, w;
+  if (!(cin >> h >> w)) return;
+
+  vector<string> map(h);
+  for (int i = 0; i < h; ++i) {
+    cin >> map[i];
+  }
+
+  cout << "Data Set " << t << ":" << endl;
+
+  for (int j = 0; j < w; ++j) {
+    int totalCost = 0;
+    bool found = false;
+
+    for (int i = 0; i < h; ++i) {
+      if (map[i][j] == 'X') {
+        found = true;
+        break;
+      } else if (map[i][j] == 'H') {
+        totalCost += 3;
+      } else if (map[i][j] == 'S') {
+        totalCost += 1;
+      }
+    }
+
+    if (found) cout << totalCost;
+    else cout << 'N';
+
+    if (j < w - 1) cout << " ";
+  }
+  cout << endl << endl;
+}
+
+int main() {
+  int k;
+  if (!(cin >> k)) return 0;
+  for (int i = 1; i <= k; ++i) {
+    solve(i);
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(h * w)
+- 공간: O(h * w)

@@ -1,0 +1,74 @@
+---
+title: "BOJ 4927 - Casting Out Nines"
+date: "2026-03-24"
+description: "9로 나눈 나머지 성질을 이용해 `A op B = C` 형태 수식의 유효성을 검사하는 수학 문제"
+tags: ["수학", "구현", "문자열"]
+platform: "boj"
+problem_number: "4927"
+problem_url: "https://www.acmicpc.net/problem/4927"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4927 - Casting Out Nines](https://www.acmicpc.net/problem/4927)
+
+> `A op B = C` 형태(`op`는 `+` 또는 `*`, 종료 문자는 `.`)의 수식이 주어질 때, 9로 나눈 나머지 검사(casting out nines)를 통해 `PASS`/`NOT!`을 출력한다.
+
+## 풀이
+
+어떤 수의 각 자리 합은 그 수를 9로 나눈 나머지와 같다(digit root). 이를 이용해 `A`, `B`, `C`를 자릿수 합으로 환산한 뒤 `op`에 따라 `(A%9 op B%9) % 9 == C % 9`이면 `PASS`, 아니면 `NOT!`으로 판단한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  string s;
+  for (int tc = 1; cin >> s && s != "."; ++tc) {
+    cout << tc << ". ";
+
+    int pos = 0;
+    int A = 0;
+    while (s[pos] != '*' && s[pos] != '+') {
+      A += s[pos] - '0';
+      pos++;
+    }
+
+    char op = s[pos++];
+
+    int B = 0;
+    while (s[pos] != '=') {
+      B += s[pos] - '0';
+      pos++;
+    }
+
+    pos++;
+
+    int C = 0;
+    while (s[pos] != '.') {
+      C += s[pos] - '0';
+      pos++;
+    }
+
+    int res = (op == '*' ? (A % 9) * (B % 9) : (A % 9) + (B % 9));
+    if (res % 9 == C % 9) cout << "PASS\n";
+    else cout << "NOT!\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(수식 길이)
+- 공간: O(1)

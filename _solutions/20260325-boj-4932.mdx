@@ -1,0 +1,57 @@
+---
+title: "BOJ 4932 - Still Johnny Can't Add"
+date: "2026-03-25"
+description: "NxN 격자가 행·열 차이 규칙을 만족하는 덧셈표인지 판별하는 구현 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "4932"
+problem_url: "https://www.acmicpc.net/problem/4932"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4932 - Still Johnny Can't Add](https://www.acmicpc.net/problem/4932)
+
+> NxN 격자가 올바른 덧셈표인지 판별한다. 모든 행에서 `arr[i][j] - arr[i][j-1]`은 첫 행의 동일 열 차이와 같아야 한다. 하나라도 다르면 `NO`, 모두 같으면 `YES`.
+
+## 풀이
+
+덧셈표라면 각 열의 차이가 행에 관계없이 일정하다는 성질을 이용한다. 첫 행에서 `arr[0][j] - arr[0][j-1]`을 기준값으로 삼고, 다른 모든 행에서 같은 위치의 차이가 기준과 일치하는지 검사한다. 하나라도 어긋나면 `NO`로 바꾼다.
+
+## 코드
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+  int tt;
+  cin >> tt;
+  for (int t = 1; t <= tt; t++) {
+    int n;
+    string answer("YES");
+    cin >> n;
+    int arr[n][n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        cin >> arr[i][j];
+      }
+    }
+    for (int j = 1; j < n; j++) {
+      for (int i = 1; i < n; i++) {
+        if (arr[i][j] - arr[i][j - 1] != arr[0][j] - arr[0][j - 1]) {
+          answer = "NO";
+        }
+      }
+    }
+    cout << t << ". " << answer << "\n";
+  }
+}
+```
+
+## 복잡도
+
+- 시간: O(n²)
+- 공간: O(n²)

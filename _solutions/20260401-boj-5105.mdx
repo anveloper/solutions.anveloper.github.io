@@ -1,0 +1,85 @@
+---
+title: "BOJ 5105 - Postman Joe"
+date: "2026-04-01"
+description: "1~20번 집을 상대 이동 명령으로 순회할 때 경로 유효성과 누락된 집을 판정하는 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "5105"
+problem_url: "https://www.acmicpc.net/problem/5105"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5105 - Postman Joe](https://www.acmicpc.net/problem/5105)
+
+> 시작 집 번호와 `U{n}`(위로 n칸), `D{n}`(아래로 n칸) 이동 명령이 주어졌을 때, 범위(1~20)를 벗어나거나 같은 집을 두 번 방문하면 `illegal`을 출력하고, 유효하면 방문하지 않은 집 번호를 오름차순으로 출력한다(모두 방문하면 `none`).
+
+## 풀이
+
+방문 배열 `visited[21]`을 두고 현재 위치를 이동 명령에 따라 갱신한다. 매 단계마다 1~20 범위를 벗어나거나 이미 방문한 집이면 `illegal` 플래그를 세운다. 끝까지 유효했다면 방문하지 않은 집 번호를 모아 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+int main() {
+  string line;
+  while (getline(cin, line) && line != "#") {
+    stringstream ss(line);
+    int s;
+    ss >> s;
+
+    bool visited[21] = {false};
+    bool illegal = false;
+    int current = s;
+    visited[current] = true;
+
+    string op;
+    while (ss >> op) {
+      char dir = op[0];
+      int dist = op[1] - '0';
+
+      if (dir == 'U') current += dist;
+      else current -= dist;
+
+      if (current < 1 || current > 20 || visited[current]) {
+        illegal = true;
+      } else {
+        visited[current] = true;
+      }
+    }
+
+    if (illegal) {
+      cout << "illegal" << endl;
+    } else {
+      vector<int> missing;
+      for (int i = 1; i <= 20; ++i) {
+        if (!visited[i]) missing.push_back(i);
+      }
+
+      if (missing.empty()) {
+        cout << "none" << endl;
+      } else {
+        for (int i = 0; i < (int)missing.size(); ++i) {
+          cout << missing[i] << (i == (int)missing.size() - 1 ? "" : " ");
+        }
+        cout << endl;
+      }
+    }
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(명령 수)
+- 공간: O(1)

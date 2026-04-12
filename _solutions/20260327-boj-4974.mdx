@@ -1,0 +1,61 @@
+---
+title: "BOJ 4974 - ICPC Score Totalizer Software"
+date: "2026-03-27"
+description: "심사위원 점수 합계에서 최고·최저를 제외한 평균을 계산하는 수학 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "4974"
+problem_url: "https://www.acmicpc.net/problem/4974"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4974 - ICPC Score Totalizer Software](https://www.acmicpc.net/problem/4974)
+
+> `n`명의 심사위원 점수에서 최고점과 최저점을 제외한 나머지의 평균(내림)을 출력한다. `n=0`이면 종료.
+
+## 풀이
+
+입력을 받으면서 합계, 최솟값, 최댓값을 동시에 추적하고, `(sum - min - max) / (n - 2)` 정수 나눗셈으로 계산한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int n;
+  while (cin >> n && n != 0) {
+    int sum = 0;
+    int min_score = 1001;
+    int max_score = -1;
+
+    for (int i = 0; i < n; ++i) {
+      int score;
+      cin >> score;
+      sum += score;
+      if (score < min_score) min_score = score;
+      if (score > max_score) max_score = score;
+    }
+
+    int result = (sum - min_score - max_score) / (n - 2);
+    cout << result << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n)
+- 공간: O(1)

@@ -1,0 +1,64 @@
+---
+title: "BOJ 4872 - SPIN"
+date: "2026-03-23"
+description: "자릿수별 회전 명령에 따라 숫자 자물쇠의 각 자리를 모듈러 10으로 갱신하는 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4872"
+problem_url: "https://www.acmicpc.net/problem/4872"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4872 - SPIN](https://www.acmicpc.net/problem/4872)
+
+> 초기 숫자 자물쇠 상태 `s`와 여러 개의 회전 명령이 주어지면, 각 명령의 자리별 값만큼 해당 자리 숫자를 돌리고 최종 상태를 출력한다. 덧셈은 10으로 나눈 나머지를 사용한다.
+
+## 풀이
+
+초기 상태를 정수 배열로 변환한 뒤, 각 명령을 읽을 때마다 자리별로 `(current[i] + move[i]) % 10`을 적용해 갱신한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  string s;
+  if (!(cin >> s)) return 0;
+
+  int n = s.length();
+  vector<int> current(n);
+  for (int i = 0; i < n; ++i) {
+    current[i] = s[i] - '0';
+  }
+
+  string move;
+  while (cin >> move) {
+    for (int i = 0; i < n; ++i) {
+      current[i] = (current[i] + (move[i] - '0')) % 10;
+    }
+  }
+
+  for (int i = 0; i < n; ++i) {
+    cout << current[i];
+  }
+  cout << endl;
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(명령 수 * n) (n: 자릿수)
+- 공간: O(n)

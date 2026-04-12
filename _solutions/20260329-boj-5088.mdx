@@ -1,0 +1,65 @@
+---
+title: "BOJ 5088 - Archaeological Digs"
+date: "2026-03-29"
+description: "101x101 격자에 유물 위치를 카운트해 두고 질의 지점의 유물 수 총합을 구하는 구현 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "5088"
+problem_url: "https://www.acmicpc.net/problem/5088"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5088 - Archaeological Digs](https://www.acmicpc.net/problem/5088)
+
+> `M`개의 유물 좌표가 주어진 발굴 구역에서 `N`개의 질의 지점에 존재하는 유물 개수의 총합을 출력한다. 입력 `0 0`이 나오면 종료.
+
+## 풀이
+
+좌표 범위가 0~100으로 작으므로 101x101 격자에 유물 개수를 카운트 배열로 유지한다. 질의 지점마다 격자 값을 더해 총합을 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int X, Y;
+  while (cin >> X >> Y && (X != 0 || Y != 0)) {
+    vector<vector<int>> grid(101, vector<int>(101, 0));
+
+    int M;
+    cin >> M;
+    for (int i = 0; i < M; ++i) {
+      int curX, curY;
+      cin >> curX >> curY;
+      grid[curX][curY]++;
+    }
+
+    int N;
+    cin >> N;
+    int totalFound = 0;
+    for (int i = 0; i < N; ++i) {
+      int queryX, queryY;
+      cin >> queryX >> queryY;
+      totalFound += grid[queryX][queryY];
+    }
+    cout << totalFound << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(M + N)
+- 공간: O(101 * 101)

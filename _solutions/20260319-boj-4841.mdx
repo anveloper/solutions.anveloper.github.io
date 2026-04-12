@@ -1,0 +1,72 @@
+---
+title: "BOJ 4841 - Look and Say"
+date: "2026-03-19"
+description: "연속된 같은 숫자를 `개수+숫자`로 치환해 다음 항을 생성하는 문자열 구현 문제"
+tags: ["구현", "문자열"]
+platform: "boj"
+problem_number: "4841"
+problem_url: "https://www.acmicpc.net/problem/4841"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4841 - Look and Say](https://www.acmicpc.net/problem/4841)
+
+> 숫자열을 읽고 '같은 숫자가 몇 번 나왔는지'를 그대로 말하는 다음 항을 출력한다. 예: `1 → 11`, `11 → 21`, `21 → 1211`.
+
+## 풀이
+
+문자열을 왼쪽부터 스캔하며 현재 문자 `current`와 연속 개수 `count`를 유지한다. 다음 문자가 달라지거나 끝에 도달하면 `count`와 `current`를 결과에 이어 붙이고 `count`를 1로 리셋한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+void solve() {
+  string s;
+  cin >> s;
+
+  if (s.empty()) return;
+
+  string result = "";
+  int count = 1;
+  char current = s[0];
+
+  for (int i = 1; i <= (int)s.length(); ++i) {
+    if (i < (int)s.length() && s[i] == current) {
+      count++;
+    } else {
+      result += to_string(count) + current;
+      if (i < (int)s.length()) {
+        current = s[i];
+        count = 1;
+      }
+    }
+  }
+  cout << result << "\n";
+}
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int t;
+  cin >> t;
+  while (t--) {
+    solve();
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(L) (L: 입력 문자열 길이)
+- 공간: O(L)

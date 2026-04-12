@@ -1,0 +1,82 @@
+---
+title: "BOJ 4807 - Iterated Difference"
+date: "2026-03-16"
+description: "인접 값의 차이를 반복 적용해 모든 원소가 같아지는 반복 횟수를 구하는 시뮬레이션 문제"
+tags: ["구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "4807"
+problem_url: "https://www.acmicpc.net/problem/4807"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4807 - Iterated Difference](https://www.acmicpc.net/problem/4807)
+
+> 원형으로 놓인 `n`개의 수에 대해 인접 값 차의 절댓값(`|v[i] - v[(i+1) % n]|`)을 새 값으로 교체하는 연산을 반복할 때, 모든 원소가 같아질 때까지의 반복 횟수를 출력한다. 1000회까지 도달하지 못하면 `not attained`.
+
+## 풀이
+
+매 반복마다 모든 원소가 같은지 확인하고, 같지 않다면 `next_v[i] = |v[i] - v[(i+1) % n]|`로 새 벡터를 만들어 교체한다. 1000회 한계를 두고 도달 여부를 추적한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+bool is_all_same(const vector<int>& v) {
+  for (int i = 1; i < (int)v.size(); i++) {
+    if (v[i] != v[0]) return false;
+  }
+  return true;
+}
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  int n, caseNum = 1;
+  while (cin >> n && n != 0) {
+    vector<int> v(n);
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
+    }
+
+    int iterations = 0;
+    bool attained = false;
+
+    while (iterations <= 1000) {
+      if (is_all_same(v)) {
+        attained = true;
+        break;
+      }
+
+      vector<int> next_v(n);
+      for (int i = 0; i < n; i++) {
+        next_v[i] = abs(v[i] - v[(i + 1) % n]);
+      }
+      v = next_v;
+      iterations++;
+    }
+
+    cout << "Case " << caseNum++ << ": ";
+    if (attained) {
+      cout << iterations << " iterations" << "\n";
+    } else {
+      cout << "not attained" << "\n";
+    }
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(iter * n) (iter ≤ 1000)
+- 공간: O(n)

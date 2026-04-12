@@ -1,0 +1,62 @@
+---
+title: "BOJ 5122 - Countdown"
+date: "2026-04-04"
+description: "마야 장주기력(Long Count) 날짜와 오늘 날짜(JDN)로부터 세상의 종말까지 남은 일수를 계산하는 구현 문제"
+tags: ["구현", "수학"]
+platform: "boj"
+problem_number: "5122"
+problem_url: "https://www.acmicpc.net/problem/5122"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5122 - Countdown](https://www.acmicpc.net/problem/5122)
+
+> 마야 장주기력의 `baktun.katun.tun.uinal.kin` 값과 해당 날짜의 율리우스일(JDN)이 주어질 때, 오늘(`2012-12-21`, JDN 2456054)을 기준으로 1872000일 주기의 종말까지 남은 일수를 계산한다.
+
+## 풀이
+
+주어진 마야 날짜를 일수로 환산한 뒤(`b*144000 + ka*7200 + tun*360 + w*20 + ki`) 입력 JDN에서 빼면 장주기력 0일이 시작된 JDN을 구할 수 있다. 여기에 한 주기(1872000일)를 더해 종말 JDN을 얻고, 오늘 JDN과의 차로 남은 일수를 출력한다. 음수면 이미 지난 가짜 예언(`It's a hoax!`), 0이면 당일(`Panic!`)이다.
+
+## 코드
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+  int K;
+  if (!(cin >> K)) return 0;
+
+  for (int t = 1; t <= K; t++) {
+    long long b, ka, tun, w, ki, input_jdn;
+    cin >> b >> ka >> tun >> w >> ki >> input_jdn;
+
+    long long mlc_days = b * 144000LL + ka * 7200LL + tun * 360LL + w * 20LL + ki;
+    long long jdn_at_zero = input_jdn - mlc_days;
+    long long end_world_jdn = jdn_at_zero + 1872000LL;
+
+    long long today_jdn = 2456054;
+    long long diff = end_world_jdn - today_jdn;
+
+    cout << "Data Set " << t << ":" << endl;
+    if (diff < 0) {
+      cout << "It's a hoax!" << endl;
+    } else if (diff == 0) {
+      cout << "Panic!" << endl;
+    } else {
+      cout << diff << endl;
+    }
+    cout << endl;
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(K)
+- 공간: O(1)

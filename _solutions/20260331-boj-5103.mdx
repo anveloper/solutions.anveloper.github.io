@@ -1,0 +1,63 @@
+---
+title: "BOJ 5103 - DVDs"
+date: "2026-03-31"
+description: "DVD 대여·반납 이벤트를 처리해 각 상품의 재고를 계산하는 시뮬레이션 문제"
+tags: ["구현", "문자열", "시뮬레이션"]
+platform: "boj"
+problem_number: "5103"
+problem_url: "https://www.acmicpc.net/problem/5103"
+difficulty: "브론즈 II"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5103 - DVDs](https://www.acmicpc.net/problem/5103)
+
+> 각 DVD 상품의 최대 보유량 `m`, 현재 재고 `s`, 이벤트 수 `t`가 주어지고 `S amount`(대여)와 `R amount`(반납) 이벤트가 이어진다. 모든 이벤트 처리 후 상품 코드와 최종 재고를 출력한다. 재고는 0 이하가 될 수 없고 `m`을 초과할 수도 없다.
+
+## 풀이
+
+상품 코드가 `#`일 때까지 반복하면서 `t`개의 이벤트를 처리한다. `S`는 대여로 `s`를 감소시키되 음수가 되면 0으로 클램핑, `R`은 반납으로 `s`를 증가시키되 `m`을 초과하면 `m`으로 클램핑한다. 입출력 동기화를 꺼서 처리 속도를 확보한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  string stockCode;
+  while (cin >> stockCode && stockCode != "#") {
+    int m, s, t;
+    cin >> m >> s >> t;
+
+    for (int i = 0; i < t; ++i) {
+      char type;
+      int amount;
+      cin >> type >> amount;
+
+      if (type == 'S') {
+        s -= amount;
+        if (s < 0) s = 0;
+      } else if (type == 'R') {
+        s += amount;
+        if (s > m) s = m;
+      }
+    }
+    cout << stockCode << " " << s << "\n";
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(상품 수 * t)
+- 공간: O(1)

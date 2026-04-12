@@ -1,0 +1,63 @@
+---
+title: "BOJ 4826 - Range"
+date: "2026-03-18"
+description: "주유 기록의 누적 주행거리와 연료로 단위 연료당 주행거리를 구해 남은 연료의 주행 가능 거리를 계산하는 시뮬레이션 문제"
+tags: ["수학", "구현", "시뮬레이션"]
+platform: "boj"
+problem_number: "4826"
+problem_url: "https://www.acmicpc.net/problem/4826"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4826 - Range](https://www.acmicpc.net/problem/4826)
+
+> 각 시점의 누적 주행거리와 연료량이 주어진다. 연료가 줄어든 구간마다 `(주행거리, 소비 연료)`를 누적해 단위 연료당 주행거리를 구한 뒤, 마지막 시점의 연료로 갈 수 있는 거리를 계산한다. 입력 첫 값이 `-1`이면 종료, 구간 종료는 `0`.
+
+## 풀이
+
+주유 시점(연료 증가)은 건너뛰고 소비 구간(`curFuel <= prevFuel`)만 누적한다. 총 주행거리와 총 연료 소비량이 계산되면 `(totalDist / totalFuel) * lastFuel`로 남은 연료의 주행 가능 거리를 얻고 반올림해 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+  double curDist, curFuel;
+
+  while (cin >> curDist >> curFuel && curDist != -1.0) {
+    double prevDist = curDist;
+    double prevFuel = curFuel;
+    double totalDist = 0;
+    double totalFuel = 0;
+    double lastFuel = 0;
+
+    while (cin >> curDist >> curFuel && curDist != 0.0) {
+      if (curFuel <= prevFuel) {
+        totalDist += (curDist - prevDist);
+        totalFuel += (prevFuel - curFuel);
+      }
+      prevDist = curDist;
+      prevFuel = curFuel;
+      lastFuel = curFuel;
+    }
+
+    double range = (totalDist / totalFuel) * lastFuel;
+
+    cout << (int)round(range) << endl;
+  }
+
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(기록 수)
+- 공간: O(1)

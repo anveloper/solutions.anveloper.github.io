@@ -1,0 +1,62 @@
+---
+title: "BOJ 4824 - Post Office"
+date: "2026-03-17"
+description: "우편물의 세 치수로 최소·최대 규격을 검사해 letter/packet/parcel/not mailable을 판정하는 조건 분기 문제"
+tags: ["구현"]
+platform: "boj"
+problem_number: "4824"
+problem_url: "https://www.acmicpc.net/problem/4824"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 4824 - Post Office](https://www.acmicpc.net/problem/4824)
+
+> 우편물의 세 변 길이가 주어질 때, 최소 규격(길이 125, 너비 90, 두께 0.25)을 만족하고 추가 조건에 맞춰 `letter`, `packet`, `parcel`, `not mailable`로 분류한다.
+
+## 풀이
+
+세 값을 정렬해 길이(`L`)·너비(`H`)·두께(`T`) 순으로 대응시킨 뒤 최소 치수 미달이면 `not mailable`로 조기 종료한다. 이후 letter → packet → parcel 순으로 조건 분기한다. parcel은 `L + 2*(H + T) <= 2100`을 만족해야 한다.
+
+## 코드
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+  double d[3];
+  while (cin >> d[0] >> d[1] >> d[2] && (d[0] != 0 || d[1] != 0 || d[2] != 0)) {
+    sort(d, d + 3);
+    double L = d[2];
+    double H = d[1];
+    double T = d[0];
+
+    if (L < 125 || H < 90 || T < 0.25) {
+      cout << "not mailable" << endl;
+      continue;
+    }
+
+    if (L <= 290 && H <= 155 && T <= 7) {
+      cout << "letter" << endl;
+    } else if (L <= 380 && H <= 300 && T <= 50) {
+      cout << "packet" << endl;
+    } else if (L + 2 * (H + T) <= 2100) {
+      cout << "parcel" << endl;
+    } else {
+      cout << "not mailable" << endl;
+    }
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(1) (테스트 케이스당)
+- 공간: O(1)

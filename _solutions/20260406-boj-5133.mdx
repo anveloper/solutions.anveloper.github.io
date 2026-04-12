@@ -1,0 +1,83 @@
+---
+title: "BOJ 5133 - Recipes"
+date: "2026-04-06"
+description: "대분수 형태의 재료를 배율에 맞춰 확대한 뒤 기약 대분수로 출력하는 수학 문제"
+tags: ["수학", "구현"]
+platform: "boj"
+problem_number: "5133"
+problem_url: "https://www.acmicpc.net/problem/5133"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5133 - Recipes](https://www.acmicpc.net/problem/5133)
+
+> 레시피의 각 재료가 `w n/d` 형태의 대분수로 주어질 때, 정수 배율 `C`를 곱한 결과를 다시 기약 대분수 형태로 출력한다.
+
+## 풀이
+
+대분수 `w n/d`를 가분수 `(w*d + n) / d`로 바꾸고 배율 `C`를 곱한다. 분자·분모를 GCD로 약분한 뒤 몫과 나머지로 다시 대분수 형태를 복원한다. 나머지가 0이면 정수만, 정수부가 0이면 `0 n/d` 형태로 출력한다.
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <cstdio>
+
+using namespace std;
+
+long long get_gcd(long long a, long long b) {
+  while (b) {
+    a %= b;
+    swap(a, b);
+  }
+  return a;
+}
+
+void solve(int idx) {
+  int I;
+  long long C;
+  if (!(cin >> I >> C)) return;
+
+  cout << "Data Set " << idx << ":" << endl;
+
+  for (int i = 0; i < I; ++i) {
+    long long w, n, d;
+    scanf("%lld %lld/%lld", &w, &n, &d);
+
+    long long total_n = (w * d + n) * C;
+    long long total_d = d;
+
+    long long common = get_gcd(total_n, total_d);
+    total_n /= common;
+    total_d /= common;
+
+    long long new_w = total_n / total_d;
+    long long new_n = total_n % total_d;
+
+    if (new_n == 0) {
+      cout << new_w << endl;
+    } else {
+      if (new_w == 0) cout << "0 " << new_n << "/" << total_d << endl;
+      else cout << new_w << " " << new_n << "/" << total_d << endl;
+    }
+  }
+  cout << endl;
+}
+
+int main() {
+  int K;
+  if (!(cin >> K)) return 0;
+  for (int i = 1; i <= K; ++i) {
+    solve(i);
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(I * log(max)) (I: 재료 수, GCD 계산 포함)
+- 공간: O(1)

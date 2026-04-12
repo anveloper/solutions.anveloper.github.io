@@ -1,0 +1,75 @@
+---
+title: "BOJ 5115 - Coded Communication"
+date: "2026-04-02"
+description: "수신된 코드워드와 가장 가까운 코드북 항목 사이의 해밍 거리 최솟값을 구하는 문자열 문제"
+tags: ["문자열", "해밍 거리"]
+platform: "boj"
+problem_number: "5115"
+problem_url: "https://www.acmicpc.net/problem/5115"
+difficulty: "브론즈 I"
+language: "cpp"
+---
+
+## 문제
+
+[BOJ 5115 - Coded Communication](https://www.acmicpc.net/problem/5115)
+
+> `n`개의 이진 코드워드(길이 `b`)와 수신된 코드워드 `r`이 주어질 때, 코드북의 모든 항목과 `r` 사이의 해밍 거리 중 최솟값을 출력한다.
+
+## 풀이
+
+코드북의 각 항목을 순회하며 위치별로 비트가 다른 개수를 세고, 그 중 최솟값을 추적한다. 초기 최솟값은 `b`로 둔다(코드워드 길이가 상한).
+
+## 코드
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+void solve(int t) {
+  int n, b;
+  cin >> n >> b;
+
+  vector<string> codes(n);
+  for (int i = 0; i < n; ++i) {
+    cin >> codes[i];
+  }
+
+  string r;
+  cin >> r;
+
+  int min_dist = b;
+  for (int i = 0; i < n; ++i) {
+    int current_dist = 0;
+    for (int j = 0; j < b; ++j) {
+      if (codes[i][j] != r[j]) {
+        current_dist++;
+      }
+    }
+    if (current_dist < min_dist) {
+      min_dist = current_dist;
+    }
+  }
+
+  cout << "Data Set " << t << ":" << endl;
+  cout << min_dist << endl << endl;
+}
+
+int main() {
+  int k;
+  if (!(cin >> k)) return 0;
+  for (int i = 1; i <= k; ++i) {
+    solve(i);
+  }
+  return 0;
+}
+```
+
+## 복잡도
+
+- 시간: O(n * b)
+- 공간: O(n * b)
