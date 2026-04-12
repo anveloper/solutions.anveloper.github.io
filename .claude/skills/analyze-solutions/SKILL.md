@@ -174,11 +174,13 @@ find $REPO_PATH -type f \( -name "*.py" -o -name "*.cpp" -o -name "*.rs" -o -nam
 ## 3단계: 기존 MDX와 대조하여 중복 제거
 
 ```bash
-ls _solutions/*.mdx 2>/dev/null
+# _solutions/는 YYYYMM/ 서브디렉토리로 구분되어 있으므로 재귀 탐색
+find _solutions -type f -name '*.mdx' 2>/dev/null
 ```
 
 - slug 기준으로 중복 판별
-- slug 생성 규칙: `boj-{number}` (예: `boj-1000`)
+- slug 생성 규칙: `boj-{number}` (예: `boj-1000`) — 파일의 basename에서 추출
+- 저장 위치와 무관하게 slug는 유일해야 함
 - **같은 문제를 여러 언어/레포에서 풀었을 경우**: 가장 먼저 발견된 풀이만 생성 (중복 방지)
   - 또는 사용자에게 어떤 언어 풀이를 사용할지 확인
 
@@ -237,7 +239,8 @@ API 실패 시 WebFetch로 문제 페이지에서 제목만 추출합니다.
 
 ### 5.4 MDX 파일 생성
 
-파일명: `_solutions/YYYYMMDD-boj-{number}.mdx`
+파일명: `_solutions/YYYYMM/YYYYMMDD-boj-{number}.mdx`
+(YYYYMM 폴더는 풀이 날짜 기준. 해당 폴더가 없으면 먼저 생성)
 
 #### Frontmatter
 

@@ -43,12 +43,12 @@ frontmatter에 `enhanced: true`가 있는 파일은 스킵합니다.
 
 ```bash
 # C-grade 검색 예시
-grep -rl "문제의 조건을 그대로 구현한다" _solutions/*.mdx
-grep -rl "문제의 조건에 맞게 풀이한다" _solutions/*.mdx
-grep -rl "가능한 모든 경우를 탐색하여 답을 구한다" _solutions/*.mdx
+grep -rl "문제의 조건을 그대로 구현한다" _solutions --include='*.mdx'
+grep -rl "문제의 조건에 맞게 풀이한다" _solutions --include='*.mdx'
+grep -rl "가능한 모든 경우를 탐색하여 답을 구한다" _solutions --include='*.mdx'
 
 # enhanced 제외
-grep -rL "enhanced: true" _solutions/*.mdx
+grep -rL "enhanced: true" _solutions --include='*.mdx'
 ```
 
 C-grade와 enhanced 제외를 교차하여 최종 대상 목록을 만듭니다.
@@ -304,8 +304,8 @@ enhanced: true
 
 ```bash
 # 처리 완료 파일 수
-grep -rl "enhanced: true" _solutions/*.mdx | wc -l
+grep -rl "enhanced: true" _solutions --include='*.mdx' | wc -l
 
 # 미처리 파일 수
-grep -rL "enhanced: true" _solutions/*.mdx | wc -l
+grep -rL "enhanced: true" _solutions --include='*.mdx' | wc -l
 ```
