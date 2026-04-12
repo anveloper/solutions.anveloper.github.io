@@ -42,9 +42,9 @@ const themeOptions: ThemeOption[] = [
   },
 ];
 
-const currentIcon = (theme: Theme) => {
-  const option = themeOptions.find((o) => o.value === theme);
-  return option?.icon ?? Sun;
+const currentIconElement = (theme: Theme) => {
+  const Icon = themeOptions.find((o) => o.value === theme)?.icon ?? Sun;
+  return <Icon className="w-4 h-4" />;
 };
 
 export const ThemeSelector = () => {
@@ -128,8 +128,6 @@ export const ThemeSelector = () => {
     }
   }, [open, focusedIndex]);
 
-  const Icon = currentIcon(theme);
-
   return (
     <div ref={ref} className="relative" onKeyDown={handleKeyDown}>
       <button
@@ -139,7 +137,7 @@ export const ThemeSelector = () => {
         aria-expanded={open}
         aria-haspopup="listbox"
       >
-        <Icon className="w-4 h-4" />
+        {currentIconElement(theme)}
       </button>
 
       {open && (
